@@ -1,2 +1,2 @@
-# neuronomixer
+# NeuroNomixer
 My personal website
