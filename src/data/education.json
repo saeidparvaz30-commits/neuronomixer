@@ -1,0 +1,77 @@
+[
+  {
+    "slug": "masters-information-systems-business-analytics-kristiania",
+    "degree": "Master's Degree",
+    "field": "Information Systems: Business Analytics",
+    "institution": "Kristiania University College",
+    "city": "Oslo, Norway",
+    "locationCountry": "Norway",
+    "startDate": "2022-08",
+    "endDate": "2024-06",
+    "description": "Focused on data-driven decision-making, machine learning, and visual analytics. Coursework included Advanced Visual Analytics, Data Management, Statistics, and Machine Learning. Thesis explored the application of deep learning models for industrial anomaly detection.",
+    "achievements": [
+      "Developed predictive models using Python and Power BI for real-world datasets.",
+      "Assisted teaching in data science courses as a Teaching Assistant.",
+      "Published research on anomaly detection in offshore wind turbines."
+    ],
+    "icon": "Kristiania_Logo.png",
+    "website": "https://www.kristiania.no/",
+    "tags": [
+      "Machine Learning",
+      "Data Analytics",
+      "Information Systems",
+      "Business Analytics"
+    ],
+    "keywords": [
+      "Data analytics degree",
+      "Machine learning master's Norway",
+      "Kristiania University College"
+    ]
+  },
+  {
+    "slug": "masters-business-administration-management-kharazmi",
+    "degree": "Master's Degree",
+    "field": "Business Administration and Management",
+    "institution": "Kharazmi University",
+    "city": "Tehran, Iran",
+    "locationCountry": "Iran",
+    "startDate": "2020-09",
+    "endDate": "2022-06",
+    "description": "Explored strategic management, marketing analytics, and financial decision-making frameworks. Focused on bridging business intelligence with operational efficiency and data analytics.",
+    "achievements": [
+      "Completed a thesis on data-driven marketing strategies for emerging markets.",
+      "Collaborated on case studies analyzing organizational performance using KPI metrics."
+    ],
+    "icon": "Kharazmi_Logo.png",
+    "website": "https://khu.ac.ir/",
+    "tags": ["Business Administration", "Management", "Marketing", "Finance"],
+    "keywords": ["MBA", "Business management Iran", "Kharazmi University"]
+  },
+  {
+    "slug": "bachelors-industrial-engineering-raja",
+    "degree": "Bachelor's Degree",
+    "field": "Industrial Engineering",
+    "institution": "Raja University",
+    "city": "Qazvin, Iran",
+    "locationCountry": "Iran",
+    "startDate": "2014-09",
+    "endDate": "2019-06",
+    "description": "Studied systems optimization, operations research, and process engineering. Built a strong quantitative foundation for data-driven problem solving and efficiency improvement.",
+    "achievements": [
+      "Graduated with honors in Industrial Systems Optimization.",
+      "Completed capstone project on process improvement for a manufacturing firm."
+    ],
+    "icon": "Raja_Logo.png",
+    "website": null,
+    "tags": [
+      "Industrial Engineering",
+      "Operations Research",
+      "Process Optimization"
+    ],
+    "keywords": [
+      "Industrial engineering",
+      "Operations management",
+      "Raja University"
+    ]
+  }
+]

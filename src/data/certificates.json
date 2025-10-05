@@ -1,0 +1,136 @@
+[
+  {
+    "slug": "deep-learning-specialization",
+    "title": "Deep Learning Specialization",
+    "issuer": "DeepLearning.AI",
+    "issueDate": "2023-12",
+    "expirationDate": null,
+    "credentialId": null,
+    "credentialUrl": null,
+    "skills": ["Data Science", "Deep Learning", "Python"],
+    "description": "A comprehensive five-course specialization covering neural networks, convolutional networks, and sequence models. Developed under the guidance of Andrew Ng to provide practical knowledge in building and deploying deep learning systems.",
+    "icon": "DeepLearningAI_Logo.png",
+    "website": "https://www.deeplearning.ai/",
+    "tags": ["Deep Learning", "Neural Networks", "AI", "Machine Learning"],
+    "keywords": [
+      "Deep learning certification",
+      "Neural networks",
+      "Andrew Ng",
+      "AI specialization"
+    ]
+  },
+  {
+    "slug": "azure-fundamentals",
+    "title": "Microsoft Certified: Azure Fundamentals",
+    "issuer": "Microsoft",
+    "issueDate": "2023-06",
+    "expirationDate": null,
+    "credentialId": null,
+    "credentialUrl": null,
+    "skills": ["Cloud Computing", "Azure", "Data Management"],
+    "description": "Foundational certification validating understanding of Microsoft Azure cloud services, including computing, storage, networking, and data solutions.",
+    "icon": "Microsoft_Logo.png",
+    "website": "https://learn.microsoft.com/en-us/certifications/azure-fundamentals/",
+    "tags": ["Cloud", "Microsoft", "Azure", "Fundamentals"],
+    "keywords": [
+      "Azure fundamentals",
+      "Microsoft certification",
+      "Cloud computing basics"
+    ]
+  },
+  {
+    "slug": "machine-learning-specialization",
+    "title": "Machine Learning Specialization",
+    "issuer": "DeepLearning.AI",
+    "issueDate": "2023-01",
+    "expirationDate": null,
+    "credentialId": "9PYHJGT37QBE",
+    "credentialUrl": null,
+    "skills": ["Python", "Machine Learning"],
+    "description": "Specialization covering supervised and unsupervised learning, model evaluation, and best practices in machine learning. Provided hands-on projects using Python and scikit-learn.",
+    "icon": "DeepLearningAI_Logo.png",
+    "website": "https://www.deeplearning.ai/",
+    "tags": ["Machine Learning", "AI", "Python"],
+    "keywords": [
+      "Machine learning certification",
+      "DeepLearning.AI",
+      "Andrew Ng courses"
+    ]
+  },
+  {
+    "slug": "google-data-analytics-certificate",
+    "title": "Google Data Analytics Certificate",
+    "issuer": "Coursera",
+    "issueDate": "2022-12",
+    "expirationDate": null,
+    "credentialId": "KWT68QFBRRQ6",
+    "credentialUrl": null,
+    "skills": [
+      "Business Intelligence",
+      "Statistical Analysis",
+      "Data Quality",
+      "SQL",
+      "Python"
+    ],
+    "description": "Eight-course professional certificate designed to prepare analysts for data-driven roles. Focused on cleaning, organizing, and visualizing data using spreadsheets, SQL, and visualization tools.",
+    "icon": "Coursera_Logo.png",
+    "website": "https://www.coursera.org/professional-certificates/google-data-analytics",
+    "tags": ["Data Analytics", "SQL", "Business Intelligence", "Python"],
+    "keywords": [
+      "Google data analytics",
+      "Coursera certification",
+      "SQL analytics",
+      "Data visualization"
+    ]
+  },
+  {
+    "slug": "tableau-desktop-specialist",
+    "title": "Tableau Desktop Specialist",
+    "issuer": "Tableau",
+    "issueDate": "2022-12",
+    "expirationDate": null,
+    "credentialId": null,
+    "credentialUrl": null,
+    "skills": ["Tableau", "Data Visualization", "Analytics"],
+    "description": "Certification demonstrating proficiency in Tableau Desktop, including connecting data sources, building dashboards, and visualizing key insights.",
+    "icon": "Tableau_Logo.png",
+    "website": "https://www.tableau.com/learn/certification/desktop-specialist",
+    "tags": ["Data Visualization", "Business Intelligence", "Analytics"],
+    "keywords": [
+      "Tableau certification",
+      "Data visualization",
+      "Dashboard design"
+    ]
+  },
+  {
+    "slug": "data-scientist-professional",
+    "title": "Data Scientist Professional",
+    "issuer": "DataCamp",
+    "issueDate": "2023-09",
+    "expirationDate": "2025-09",
+    "credentialId": "DS0027F791638046",
+    "credentialUrl": null,
+    "skills": [
+      "Business Intelligence",
+      "Big Data",
+      "Data Science",
+      "Data-driven Decision Making",
+      "Statistical Analysis",
+      "Machine Learning",
+      "SQL",
+      "Python",
+      "Data Cleaning",
+      "Visualization"
+    ],
+    "description": "Comprehensive professional certification covering the full data science lifecycle, including big data, predictive modeling, machine learning, and business decision support.",
+    "icon": "DataCamp_Logo.png",
+    "website": "https://www.datacamp.com/",
+    "tags": ["Data Science", "Machine Learning", "Big Data", "Analytics"],
+    "keywords": [
+      "Data science certification",
+      "DataCamp professional",
+      "Python and SQL",
+      "Machine learning"
+    ]
+  }
+]

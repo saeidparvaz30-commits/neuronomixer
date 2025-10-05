@@ -1,0 +1,132 @@
+[
+  {
+    "slug": "credit-risk",
+    "name": "Credit Risk",
+    "category": "Finance & Risk",
+    "description": "Expertise in credit risk modeling, policy development, and portfolio analytics for retail and SME segments. Experienced in applying data-driven approaches to assess borrower creditworthiness and reduce non-performing loans (NPLs).",
+    "tags": ["Banking", "Risk Modeling", "SME Lending", "Basel Framework"],
+    "keywords": [
+      "Credit risk analysis",
+      "Risk management",
+      "Portfolio modeling",
+      "Banking analytics"
+    ]
+  },
+  {
+    "slug": "data-analytics",
+    "name": "Data Analytics",
+    "category": "Data & Insights",
+    "description": "Proficient in transforming raw data into actionable insights through advanced analytical techniques. Skilled in data cleaning, feature engineering, and visualization to support data-driven decision-making.",
+    "tags": ["Data Visualization", "Business Intelligence", "Data Wrangling"],
+    "keywords": [
+      "Data analytics",
+      "Business intelligence",
+      "Data visualization",
+      "Decision support"
+    ]
+  },
+  {
+    "slug": "data-science",
+    "name": "Data Science",
+    "category": "Machine Learning & AI",
+    "description": "Experienced in designing and deploying machine learning models for prediction, classification, and anomaly detection. Strong foundation in supervised and unsupervised learning, feature engineering, and evaluation metrics.",
+    "tags": ["Machine Learning", "AI", "Predictive Modeling"],
+    "keywords": [
+      "Data science",
+      "Machine learning",
+      "AI modeling",
+      "Predictive analytics"
+    ]
+  },
+  {
+    "slug": "fabric",
+    "name": "Microsoft Fabric",
+    "category": "Cloud & Data Engineering",
+    "description": "Hands-on experience with Microsoft Fabric for unified data integration, analytics, and governance. Skilled in building scalable data pipelines and implementing modern data architecture for enterprise analytics.",
+    "tags": ["Data Engineering", "Cloud Analytics", "Microsoft"],
+    "keywords": [
+      "Microsoft Fabric",
+      "Data pipeline",
+      "Cloud analytics",
+      "Fabric workspace"
+    ]
+  },
+  {
+    "slug": "power-bi",
+    "name": "Power BI",
+    "category": "Data Visualization",
+    "description": "Proficient in building interactive dashboards and reports using Power BI. Experienced in data modeling, DAX calculations, and integrating SQL and Fabric datasets for automated reporting.",
+    "tags": ["Visualization", "Business Intelligence", "Reporting"],
+    "keywords": [
+      "Power BI dashboards",
+      "Data visualization",
+      "Business analytics",
+      "DAX modeling"
+    ]
+  },
+  {
+    "slug": "python",
+    "name": "Python",
+    "category": "Programming",
+    "description": "Advanced Python user with expertise in data analytics, automation, and machine learning. Familiar with libraries such as Pandas, NumPy, scikit-learn, and Matplotlib for end-to-end data workflows.",
+    "tags": ["Programming", "Machine Learning", "Automation"],
+    "keywords": [
+      "Python programming",
+      "Pandas",
+      "Data analysis",
+      "Machine learning"
+    ]
+  },
+  {
+    "slug": "react",
+    "name": "React",
+    "category": "Web Development",
+    "description": "Experienced in building responsive and dynamic web interfaces using React. Skilled in state management, component-driven design, and integrating APIs to create modern web applications.",
+    "tags": ["Frontend Development", "JavaScript", "UI Components"],
+    "keywords": [
+      "React.js",
+      "Frontend development",
+      "JavaScript framework",
+      "Single-page apps"
+    ]
+  },
+  {
+    "slug": "next-js",
+    "name": "Next.js",
+    "category": "Web Development",
+    "description": "Proficient in using Next.js for full-stack development, server-side rendering, and SEO optimization. Experienced in building scalable web applications with modern deployment workflows (Vercel).",
+    "tags": ["Full Stack", "Web Framework", "SEO"],
+    "keywords": [
+      "Next.js development",
+      "React framework",
+      "SSR",
+      "Vercel deployment"
+    ]
+  },
+  {
+    "slug": "statistics",
+    "name": "Statistics",
+    "category": "Mathematics & Analysis",
+    "description": "Strong understanding of statistical theory, hypothesis testing, and regression analysis. Applied statistical methods for data-driven research and risk modeling in financial and academic contexts.",
+    "tags": ["Data Analysis", "Probability", "Regression"],
+    "keywords": [
+      "Statistical analysis",
+      "Regression modeling",
+      "Hypothesis testing",
+      "Probability theory"
+    ]
+  },
+  {
+    "slug": "ai-alignment",
+    "name": "AI Alignment",
+    "category": "Artificial Intelligence",
+    "description": "Interested in AI safety, interpretability, and alignment research. Focused on understanding how to design and monitor machine learning systems that align with human values and societal goals.",
+    "tags": ["AI Safety", "Ethics", "Machine Learning"],
+    "keywords": [
+      "AI alignment",
+      "AI safety",
+      "Responsible AI",
+      "Interpretability"
+    ]
+  }
+]

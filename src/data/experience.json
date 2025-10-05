@@ -1,0 +1,240 @@
+[
+  {
+    "slug": "retail-risk-analyst-santander",
+    "jobTitle": "Retail Risk Analyst - Norway Auto SME",
+    "company": "Santander Consumer Bank",
+    "city": "Oslo, Norway",
+    "locationCountry": "Norway",
+    "industry": "Banking",
+    "employmentType": "Full-time",
+    "startDate": "2024-09",
+    "endDate": null,
+    "description": "Lead quantitative analysis and risk assessment for SME and auto lending portfolios within Santander Consumer Bank Norway. Develop admission and risk policies using data analytics and machine learning. Identify credit risk exposures and emerging trends based on market dynamics. Deliver portfolio insights and risk mitigation strategies to senior stakeholders. Contribute to the implementation of cloud-based data infrastructure using Microsoft Fabric.",
+    "achievements": [
+      "Developed and automated risk models improving portfolio monitoring accuracy.",
+      "Introduced machine learning workflows for SME credit evaluation.",
+      "Collaborated with cross-country risk teams across the Nordics to align policy design."
+    ],
+    "icon": "Santander_Logo.png",
+    "website": "https://www.santanderconsumer.no/",
+    "tags": [
+      "Credit Risk",
+      "SME Lending",
+      "Machine Learning",
+      "Financial Analysis",
+      "Data Engineering"
+    ],
+    "skills": ["Python", "SQL", "Power BI", "Excel", "Microsoft Fabric"],
+    "keywords": [
+      "Retail risk",
+      "Credit risk analysis",
+      "SME portfolio",
+      "Machine learning",
+      "Basel compliance"
+    ]
+  },
+  {
+    "slug": "risk-analyst-cards-payments-santander",
+    "jobTitle": "Risk Analyst - Cards & Payments",
+    "company": "Santander Consumer Bank",
+    "city": "Viken, Norway",
+    "locationCountry": "Norway",
+    "industry": "Banking",
+    "employmentType": "Full-time",
+    "startDate": "2024-02",
+    "endDate": "2024-08",
+    "description": "Analyzed credit card and payment portfolios to identify emerging risk trends and develop mitigation strategies. Supported cross-functional projects aimed at improving underwriting, collections, and fraud prevention. Presented analytical findings to stakeholders, promoting data-driven risk management practices.",
+    "achievements": [
+      "Designed analytical dashboards to monitor application performance metrics.",
+      "Implemented early-warning indicators that improved default detection efficiency."
+    ],
+    "icon": "Santander_Logo.png",
+    "website": "https://www.santanderconsumer.no/",
+    "tags": [
+      "Credit Cards",
+      "Credit Risk",
+      "Fraud Detection",
+      "Risk Analytics"
+    ],
+    "skills": ["Python", "SQL", "Power BI", "Excel"],
+    "keywords": [
+      "Credit cards",
+      "Payment risk",
+      "Risk analytics",
+      "Portfolio monitoring"
+    ]
+  },
+  {
+    "slug": "teaching-assistant-data-science-kristiania",
+    "jobTitle": "Teaching Assistant - Data Science",
+    "company": "Kristiania University College",
+    "city": "Oslo, Norway",
+    "locationCountry": "Norway",
+    "industry": "Higher Education",
+    "employmentType": "Part-time",
+    "startDate": "2023-01",
+    "endDate": "2024-01",
+    "description": "Assisted professors in teaching undergraduate and graduate-level courses in Data Science and Machine Learning. Supported coursework in Visual Analytics, Natural Language Processing, and Statistical Modeling. Provided academic support, supervised lab sessions, and evaluated student projects.",
+    "achievements": [
+      "Designed interactive tutorials using Python and visualization libraries.",
+      "Helped over 100 students improve practical understanding of data analysis tools."
+    ],
+    "icon": "Kristiania_Logo.png",
+    "website": "https://www.kristiania.no/",
+    "tags": [
+      "Data Science",
+      "Education",
+      "Machine Learning",
+      "Visual Analytics"
+    ],
+    "skills": ["Python", "Pandas", "Matplotlib", "Power BI", "Statistics"],
+    "keywords": [
+      "Teaching assistant",
+      "Data science education",
+      "Machine learning",
+      "Visual analytics"
+    ]
+  },
+  {
+    "slug": "data-scientist-intern-sirk-norge",
+    "jobTitle": "Data Scientist - Summer Intern",
+    "company": "Sirk Norge",
+    "city": "Oslo, Norway",
+    "locationCountry": "Norway",
+    "industry": "Environmental Services",
+    "employmentType": "Internship",
+    "startDate": "2023-06",
+    "endDate": "2023-08",
+    "description": "Worked on research and development projects involving machine learning and sustainability analytics. Enhanced data collection models supporting Targeted Producer Responsibility research. Conducted exploratory analysis and built predictive models for automated textile sorting.",
+    "achievements": [
+      "Developed a prototype ML model for textile waste classification.",
+      "Produced data visualizations that guided sustainability reporting."
+    ],
+    "icon": "Sirk_Logo.png",
+    "website": "https://www.sirknorge.no/",
+    "tags": ["Machine Learning", "Research", "Sustainability", "Data Analysis"],
+    "skills": ["Python", "R", "Data Visualization", "Pandas", "Matplotlib"],
+    "keywords": [
+      "Circular economy",
+      "Machine learning research",
+      "Sustainability analytics"
+    ]
+  },
+  {
+    "slug": "summer-intern-norsirk",
+    "jobTitle": "Summer Intern",
+    "company": "Norsirk",
+    "city": "Oslo, Norway",
+    "locationCountry": "Norway",
+    "industry": "Recycling & Waste Management",
+    "employmentType": "Internship",
+    "startDate": "2023-06",
+    "endDate": "2023-07",
+    "description": "Conducted research on sustainability certification standards and competitor benchmarking. Consulted on branding and marketing strategies, leveraging data-driven insights. Provided recommendations for effective data utilization in corporate reporting.",
+    "achievements": [
+      "Mapped certification pathways aligning with EU sustainability standards.",
+      "Delivered actionable insights to improve Norsirk’s communication strategy."
+    ],
+    "icon": "Norsirk_Logo.png",
+    "website": "https://norsirk.no/",
+    "tags": ["Sustainability", "Research", "Marketing", "Data Analysis"],
+    "skills": ["Python", "Excel", "Data Visualization"],
+    "keywords": [
+      "Sustainability consulting",
+      "Brand analysis",
+      "Data-driven strategy"
+    ]
+  },
+  {
+    "slug": "senior-marketing-specialist-monib-health",
+    "jobTitle": "Senior Marketing Specialist",
+    "company": "Monib Health",
+    "city": "Tehran, Iran",
+    "locationCountry": "Iran",
+    "industry": "Healthcare Technology",
+    "employmentType": "Full-time",
+    "startDate": "2020-12",
+    "endDate": "2021-12",
+    "description": "Led market analysis and digital marketing initiatives for a multinational medical device firm. Conducted weekly data analyses across 20+ countries to identify emerging opportunities. Provided strategic insights and trained sales agents to expand regional presence.",
+    "achievements": [
+      "Expanded company reach into 3 new international markets.",
+      "Built analytical reports used by leadership for strategic decision-making."
+    ],
+    "icon": "Monib_Logo.png",
+    "website": null,
+    "tags": ["Marketing", "Market Research", "Business Development"],
+    "skills": ["Excel", "Power BI", "CRM Systems", "Data Analysis"],
+    "keywords": [
+      "Healthtech marketing",
+      "Market analysis",
+      "International business development"
+    ]
+  },
+  {
+    "slug": "marketing-specialist-saman-insurance",
+    "jobTitle": "Marketing Specialist",
+    "company": "Saman Insurance",
+    "city": "Tehran, Iran",
+    "locationCountry": "Iran",
+    "industry": "Insurance",
+    "employmentType": "Full-time",
+    "startDate": "2018-12",
+    "endDate": "2020-11",
+    "description": "Provided tailored insurance consulting to export-oriented businesses and developed customized policies based on industry data. Managed freight insurance solutions for local and international clients. Collaborated with sales and underwriting teams to improve client acquisition.",
+    "achievements": [
+      "Served over 200 business clients with data-driven insurance solutions.",
+      "Improved sales efficiency through automated client segmentation."
+    ],
+    "icon": "Saman_Logo.png",
+    "website": "https://samaninsurer.com/",
+    "tags": ["Insurance", "Marketing", "Risk Assessment"],
+    "skills": ["Excel", "CRM", "Data Analysis", "Sales Strategy"],
+    "keywords": [
+      "Insurance marketing",
+      "Export business insurance",
+      "Risk consulting"
+    ]
+  },
+  {
+    "slug": "associate-marketing-specialist-iran-insurance",
+    "jobTitle": "Associate Marketing Specialist",
+    "company": "Iran Insurance Corporation",
+    "city": "Tehran, Iran",
+    "locationCountry": "Iran",
+    "industry": "Insurance",
+    "employmentType": "Full-time",
+    "startDate": "2017-09",
+    "endDate": "2018-11",
+    "description": "Supported senior marketers in developing new insurance campaigns and customer solutions. Conducted risk assessments and prepared initial pricing analyses. Assisted in delivering consulting services to corporate and individual clients.",
+    "achievements": [
+      "Delivered consulting to over 50 corporate clients.",
+      "Streamlined client onboarding documentation improving processing time."
+    ],
+    "icon": "Iran_Insurance_Logo.png",
+    "website": null,
+    "tags": ["Insurance", "Marketing", "Risk Analysis"],
+    "skills": ["Excel", "Sales", "Customer Service"],
+    "keywords": ["Insurance consulting", "Risk pricing", "Corporate marketing"]
+  },
+  {
+    "slug": "associate-marketing-specialist-patak-mining",
+    "jobTitle": "Associate Marketing Specialist",
+    "company": "Patak Mining Complex",
+    "city": "Tehran, Iran",
+    "locationCountry": "Iran",
+    "industry": "Mining",
+    "employmentType": "Full-time",
+    "startDate": "2015-07",
+    "endDate": "2017-08",
+    "description": "Managed communications and market analysis for a marble production and export business. Analyzed global marble market trends to identify growth opportunities. Supported customer relations and export coordination efforts.",
+    "achievements": [
+      "Increased lead generation by 25% through targeted marketing campaigns.",
+      "Developed an internal market trend report improving export forecasting."
+    ],
+    "icon": "Patak_Logo.png",
+    "website": null,
+    "tags": ["Market Research", "Mining Industry", "Marketing"],
+    "skills": ["Excel", "Data Analysis", "Sales"],
+    "keywords": ["Marble export", "Mining marketing", "Market research"]
+  }
+]

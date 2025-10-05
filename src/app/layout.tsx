@@ -1,34 +1,18 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import "../styles/globals.css";
+import { Inter } from "next/font/google";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
-export const metadata: Metadata = {
-  title: "NeuroNomixer – Where Data Meets Intelligence",
-  description: "Exploring data, AI, and life’s hidden codes.",
-  openGraph: {
-    title: "NeuroNomixer – Where Data Meets Intelligence",
-    description: "Exploring data, AI, and life’s hidden codes.",
-    url: "https://www.neuronomixer.com",
-    siteName: "NeuroNomixer",
-    images: [
-      {
-        url: "/og-image.png", // make sure this exists in /public
-        width: 1200,
-        height: 630,
-        alt: "NeuroNomixer preview image",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "NeuroNomixer – Where Data Meets Intelligence",
-    description: "Exploring data, AI, and life’s hidden codes.",
-    images: ["/og-image.png"],
-  },
-  icons: {
-    icon: "/favicon.ico",
-  },
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+export const metadata = {
+  title: "NeuroNomixer",
+  description: "Exploring the intersection of AI, data & risk analytics.",
 };
 
 export default function RootLayout({
@@ -38,7 +22,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="bg-[var(--background)] text-[var(--color-text)]">
+        <Navbar />
+        <main className="min-h-screen max-w-6xl mx-auto px-6 py-8">
+          {children}
+        </main>
+        <Footer />
+      </body>
     </html>
   );
 }

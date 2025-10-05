@@ -1,0 +1,54 @@
+[
+  {
+    "slug": "deep-learning-image-processing-anomaly-detection-wind-turbines",
+    "title": "Comparing Deep Learning Based Image Processing Techniques for Unsupervised Anomaly Detection in Offshore Wind Turbines",
+    "authors": ["A. Keprate", "S. Sheikhi", "M. S. Siddiqui", "M. Tanwar"],
+    "publisher": "IEEE",
+    "conference": "2023 IEEE International Conference on Industrial Engineering and Engineering Management (IEEM)",
+    "publishedDate": "2023-12",
+    "doi": "10.1109/IEEM58616.2023.10406361",
+    "link": "https://ieeexplore.ieee.org/abstract/document/10406361",
+    "location": "Singapore",
+    "description": "This study compares deep learning–based image processing techniques for unsupervised anomaly detection in offshore wind turbines (OWTs). It investigates three signal-to-image encoding algorithms—Gramian Angular Summation Field, Gramian Angular Difference Field, and Markov Transition Field—to transform time-series data into image-like representations. The results demonstrate that encoding choice strongly affects anomaly detection performance, highlighting the value of image-like data representations in deep learning frameworks for industrial monitoring.",
+    "tags": [
+      "Deep Learning",
+      "Image Processing",
+      "Anomaly Detection",
+      "Renewable Energy",
+      "AI"
+    ],
+    "keywords": [
+      "offshore wind turbines",
+      "unsupervised learning",
+      "image encoding",
+      "AI monitoring systems",
+      "IEEE conference paper"
+    ]
+  },
+  {
+    "slug": "wind-turbine-gearbox-anomaly-detection-cae",
+    "title": "Wind Turbine Gearbox Anomaly Detection Using Signal-to-Image Processing Algorithms and Convolutional Autoencoder",
+    "authors": ["S. Sheikhi", "A. Keprate", "D. Ghose"],
+    "publisher": "IOP Publishing",
+    "conference": "EERA DeepWind Conference 2024 – Journal of Physics: Conference Series, Volume 2875",
+    "publishedDate": "2024-01",
+    "doi": "10.1088/1742-6596/2875/1/012024",
+    "link": "https://iopscience.iop.org/article/10.1088/1742-6596/2875/1/012024",
+    "location": "Trondheim, Norway",
+    "description": "This paper introduces a signal-to-image conversion approach integrated with a convolutional autoencoder (CAE) for detecting anomalies in wind turbine gearbox systems. The study evaluates six conversion algorithms that transform time-series data into image-like formats for anomaly detection. Results show that Gramian Angular Field–based encodings significantly enhance model accuracy, paving the way for affordable and automated wind turbine monitoring systems.",
+    "tags": [
+      "Machine Learning",
+      "Signal Processing",
+      "Anomaly Detection",
+      "Convolutional Autoencoder",
+      "Renewable Energy"
+    ],
+    "keywords": [
+      "wind turbine monitoring",
+      "autoencoder",
+      "signal-to-image conversion",
+      "machine learning research",
+      "renewable energy AI"
+    ]
+  }
+]
