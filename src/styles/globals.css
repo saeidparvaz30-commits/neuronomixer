@@ -5,16 +5,30 @@ body {
   background-color: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-sans, Arial, Helvetica, sans-serif);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
-/* Links */
-a {
+a.btn-link {
+  color: white !important;
+}
+a.btn-link:hover {
+  color: var(--color-accent) !important;
+  text-decoration: none;
+}
+
+/* General text links only */
+main a,
+footer a,
+p a {
   color: var(--color-primary);
   text-decoration: none;
 }
 
-a:hover {
+main a:hover,
+footer a:hover,
+p a:hover {
   color: var(--color-secondary);
 }
 

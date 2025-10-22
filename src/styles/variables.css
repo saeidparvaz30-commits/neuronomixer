@@ -1,27 +1,13 @@
 :root {
-  /* Base Light Theme */
-  --background: #f9f6ee; /* Ivory Sand */
-  --foreground: #0f172a; /* Charcoal Night text */
+  /* Dark Mode */
+  --background: #0f172a; /* Charcoal Night */
+  --foreground: #f1f5f9; /* Soft White */
   --color-primary: #1e5d8a; /* Persian Blue */
   --color-secondary: #3bb4a4; /* Turquoise Green */
   --color-accent: #d4af37; /* Persian Gold */
-  --color-surface: #ffffff; /* Light surface */
-  --color-text: #0f172a; /* Dark text */
-  --color-text-muted: #475569; /* Muted gray text */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Dark Mode */
-    --background: #0f172a; /* Charcoal Night */
-    --foreground: #f1f5f9; /* Soft White */
-    --color-primary: #1e5d8a; /* Persian Blue */
-    --color-secondary: #3bb4a4; /* Turquoise Green */
-    --color-accent: #d4af37; /* Persian Gold */
-    --color-surface: #1e293b; /* Dark surface */
-    --color-text: #f1f5f9; /* Soft White */
-    --color-text-muted: #94a3b8; /* Slate Gray */
-  }
+  --color-surface: #1e293b; /* Dark surface */
+  --color-text: #f1f5f9; /* Soft White */
+  --color-text-muted: #94a3b8; /* Slate Gray */
 }
 
 /* Tailwind inline theme bindings */
