@@ -23,7 +23,7 @@ export default function Navbar() {
           className="hover:text-[var(--color-accent)] transition-colors duration-200 text-lg font-bold flex items-center space-x-2"
         >
           <Image
-            src="/pictures/logo.png"
+            src="/pictures/Logo.png"
             alt="Neuronomixer logo"
             width={75}
             height={75}
