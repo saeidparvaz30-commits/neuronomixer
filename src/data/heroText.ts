@@ -1,7 +1,7 @@
 export const heroSentences = [
-  "Welcome to the website of Saeid Sheikhi.",
-  "Exploring the frontiers of AI and data science.",
-  "Sharing insights, tools, and stories that inspire learning.",
-  "Bridging analytics, machine learning, and meaningful decisions.",
-  "Building transparent intelligence for modern finance.",
+  "NeuroNomixer: decoding intelligence in data.",
+  "Exploring AI applications in risk, finance, and analytics.",
+  "From data infrastructure to explainable models.",
+  "Bridging human understanding and machine intelligence.",
+  "Join the conversation shaping the data-driven future.",
 ];
