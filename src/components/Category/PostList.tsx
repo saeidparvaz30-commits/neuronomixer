@@ -64,7 +64,7 @@ export default function PostList({
       variants={list}
       initial="hidden"
       animate="show"
-      className={`${wrapperClass} pb-8`}
+      className={`${wrapperClass} justify-center place-items-left pb-8 px-20`}
     >
       {posts?.map((post, i) => {
         const isRead = visited[post._id];
@@ -74,8 +74,9 @@ export default function PostList({
               <Link
                 href={`/blog/${categorySlug}/${post.slug.current}`}
                 onClick={() => markVisited(post._id)}
-                className="group block w-[75vw] mx-auto p-4 rounded-xl border border-[var(--color-accent)]/40
-                           hover:bg-[var(--color-primary)]/10 transition-colors"
+                className="group block w-full max-w-[1100px] mx-auto p-4 
+                            rounded-xl border border-[var(--color-accent)]/40
+                            hover:bg-[var(--color-primary)]/10 transition-colors"
               >
                 <div className="flex items-start gap-4">
                   <span
