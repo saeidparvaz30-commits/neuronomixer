@@ -12,17 +12,17 @@ export default function Footer() {
       before:content-[''] before:absolute before:-top-[6px] before:left-0 
       before:w-full before:border-t before:border-[var(--color-accent)]"
     >
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-6 py-8 relative">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-0 py-8 relative">
         {/* ===== Left Column ===== */}
         <div className="flex flex-col md:flex-row md:items-start gap-6 relative">
           {/* === Logo (hidden on small screens) === */}
-          <div className="absolute w-48 h-48 left-8 top-2 hidden md:block">
+          <div className="absolute w-48 h-48 left-0 top-0 hidden md:block">
             <Image
               src="/pictures/Logo.png"
               alt="NeuroNomixer logo"
               fill
               className="object-contain opacity-90"
-              sizes="(max-width: 768px) 0px, 200px"
+              sizes="(max-width: 700px) 0px, 200px"
               priority
             />
           </div>

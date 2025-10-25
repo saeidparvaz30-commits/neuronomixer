@@ -63,7 +63,7 @@ export default function RootLayout({
             {/* ✅ reCAPTCHA context (for SubscribeBox and other forms) */}
             <ReCaptchaProviderClient>
               <Navbar />
-              <main className="min-h-screen pt-20">{children}</main>
+              <main className="min-h-screen pt-18">{children}</main>
               <Footer />
               <GoogleAnalyticsTracker />
               <SpeedInsights />
