@@ -64,7 +64,7 @@ export default function PostList({
       variants={list}
       initial="hidden"
       animate="show"
-      className={wrapperClass}
+      className={`${wrapperClass} pb-8`}
     >
       {posts?.map((post, i) => {
         const isRead = visited[post._id];
