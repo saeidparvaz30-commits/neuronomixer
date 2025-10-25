@@ -1,8 +1,7 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
 import { TypeAnimation } from "react-type-animation";
 import { heroSentences } from "@/data/heroText";
 import HeroBackground from "./HeroBackground";
@@ -14,40 +13,49 @@ export default function Hero() {
       <HeroBackground />
 
       {/* ===== Hero Content ===== */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between min-h-screen px-0 md:px-0 gap-8">
-        {/* ===== Left Column: Text & Buttons ===== */}
+      <div
+        className="
+          relative z-10 flex flex-col md:flex-row
+          items-center justify-between
+          min-h-screen px-0 md:px-0
+          pt-28 md:pt-40 pb-16
+          gap-8
+        "
+      >
+        {/* ===== Glass Box ===== */}
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
           className="
-            self-end md:self-center
             backdrop-blur-md 
             bg-white/10 
             border-t border-r border-b 
             border-[var(--color-accent)]/40 
             rounded-tr-3xl rounded-br-3xl
             p-8 md:p-14
-            max-w-3xl 
-            w-full 
+            max-w-3xl w-full
             text-left
+            flex flex-col space-y-6
           "
         >
+          {/* ===== Title ===== */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
-            className="text-3xl md:text-5xl font-bold text-white mb-4"
+            className="text-3xl md:text-5xl font-bold text-white leading-tight"
           >
             A <span className="text-[var(--color-accent)]">Crystal Box</span>
             <br /> Where Data Speaks Clearly.
           </motion.h1>
 
+          {/* ===== Animated Text ===== */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
-            className="text-lg text-gray-300 mb-8 h-[2.5rem] md:h-[3rem] overflow-hidden"
+            className="text-lg text-gray-300 overflow-hidden min-h-[2.5rem] sm:min-h-[3rem]"
           >
             <TypeAnimation
               sequence={heroSentences.flatMap((sentence) => [
@@ -59,15 +67,20 @@ export default function Hero() {
               speed={50}
               deletionSpeed={40}
               repeat={Infinity}
-              style={{ display: "inline-block", whiteSpace: "pre-line" }}
+              style={{
+                display: "inline-block",
+                whiteSpace: "pre-line",
+                wordBreak: "break-word",
+              }}
             />
           </motion.div>
 
+          {/* ===== Buttons ===== */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.8 }}
-            className="flex flex-wrap justify-start gap-4 mt-6"
+            className="flex flex-col sm:flex-row justify-start items-start gap-4 pt-2"
           >
             {/* Primary button — gradient glow */}
             <Link
@@ -105,11 +118,6 @@ export default function Hero() {
             </Link>
           </motion.div>
         </motion.div>
-
-        {/* ===== Right Column: Placeholder for Portrait / Image ===== */}
-        {/* <motion.div>
-        empty for now
-        </motion.div> */}
       </div>
     </section>
   );

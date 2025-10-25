@@ -58,7 +58,7 @@ export default async function PostPage({
   const nextPost = siblings[currentIndex + 1];
 
   return (
-    <main className="max-w-[1600px] mx-auto px-6 py-12 flex flex-col lg:flex-row lg:items-start lg:gap-12 relative">
+    <main className="max-w-[1600px] mx-auto px-6 sm:px-6 py-12 flex flex-col lg:flex-row lg:items-start lg:gap-12 relative">
       {/* ===== Left Column: Main Post ===== */}
       <div className="flex-1">
         {/* Back link */}
@@ -84,27 +84,27 @@ export default async function PostPage({
         </div>
 
         {/* Post container */}
-        <div className="bg-gray-300 text-black rounded-2xl shadow-lg p-6 md:p-12">
+        <div className="bg-gray-300 text-black rounded-2xl shadow-lg p-5 sm:p-8 md:p-10">
           <div className="mb-8 text-center relative">
             <p className="text-sm text-gray-600 mb-2 italic text-right">
               Published: {new Date(post._createdAt).toLocaleDateString()}
             </p>
 
             {/* Image + overlay title */}
-            <div className="relative w-full max-w-[1000px] mx-auto">
+            <div className="relative mb-6">
               {post.mainImage?.asset?.url && (
                 <Image
                   src={post.mainImage.asset.url}
                   alt={post.mainImage.asset.altText || post.title}
                   width={2000}
                   height={500}
-                  className="rounded-xl shadow-md my-6 object-cover w-full h-60 md:h-96 mx-auto block"
+                  className="rounded-xl shadow-md object-cover my-2 w-full h-60 sm:h-80 md:h-96"
                 />
               )}
               {/* Title overlay */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="bg-gray-300/60 text-black px-8 py-4 rounded-lg shadow-md">
-                  <h1 className="text-4xl md:text-6xl font-bold">
+                  <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold">
                     {post.title}
                   </h1>
                 </div>
@@ -112,7 +112,7 @@ export default async function PostPage({
             </div>
 
             {/* Post body */}
-            <article className="prose max-w-none mx-auto mt-8 text-justify">
+            <article className="prose prose-sm sm:prose lg:prose-lg max-w-none mx-auto mt-8 text-left sm:text-justify">
               <RichText value={post.body} />
             </article>
           </div>

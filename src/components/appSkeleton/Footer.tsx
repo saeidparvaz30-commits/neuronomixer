@@ -1,5 +1,4 @@
 // app/components/Footer.tsx
-// Global footer for Neuronomixer
 import Link from "next/link";
 import { Mail, Linkedin, Github, ExternalLink, Twitter } from "lucide-react";
 import blogPosts from "../../data/highlightsFooter.json";
@@ -13,23 +12,23 @@ export default function Footer() {
       before:content-[''] before:absolute before:-top-[6px] before:left-0 
       before:w-full before:border-t before:border-[var(--color-accent)]"
     >
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-6 py-8">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-6 py-8 relative">
         {/* ===== Left Column ===== */}
-        <div className="flex flex-col md:flex-row md:items-start gap-6">
-          {/* === Logo on the far left === */}
-          <div className="absolute w-50 h-50 left-20 top-5">
+        <div className="flex flex-col md:flex-row md:items-start gap-6 relative">
+          {/* === Logo (hidden on small screens) === */}
+          <div className="absolute w-48 h-48 left-8 top-2 hidden md:block">
             <Image
               src="/pictures/Logo.png"
               alt="NeuroNomixer logo"
               fill
-              className="object-contain"
-              sizes="1460px"
+              className="object-contain opacity-90"
+              sizes="(max-width: 768px) 0px, 200px"
               priority
             />
           </div>
 
           {/* === Text & Links block === */}
-          <div>
+          <div className="md:ml-56">
             {/* Navigation / Branding */}
             <ul className="flex items-center flex-wrap space-x-4 mt-2">
               <li className="mr-8 font-bold text-[var(--color-primary)] text-md">

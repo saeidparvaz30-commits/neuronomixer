@@ -74,29 +74,30 @@ export default function PostList({
               <Link
                 href={`/blog/${categorySlug}/${post.slug.current}`}
                 onClick={() => markVisited(post._id)}
-                className="group block w-[1200px] p-4 rounded-xl border border-[var(--color-accent)]/40
+                className="group block w-[75vw] mx-auto p-4 rounded-xl border border-[var(--color-accent)]/40
                            hover:bg-[var(--color-primary)]/10 transition-colors"
               >
                 <div className="flex items-start gap-4">
                   <span
-                    className="mt-0 inline-flex h-8 w-8 items-center justify-center
+                    className="mt-0 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center
                                    rounded-full bg-[var(--color-accent)] text-[var(--background)]
                                    font-bold"
                   >
                     {i + 1}
                   </span>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <h2
-                      className={`text-xl font-semibold ${
-                        isRead
-                          ? "text-[var(--color-secondary)]"
-                          : "group-hover:text-[var(--color-secondary)]"
-                      }`}
+                      className={`text-lg sm:text-xl font-semibold leading-snug break-words whitespace-normal 
+                        ${
+                          isRead
+                            ? "text-[var(--color-secondary)]"
+                            : "group-hover:text-[var(--color-secondary)]"
+                        }`}
                     >
                       {post.title}
                     </h2>
                     {post.description && (
-                      <p className="text-sm text-[var(--color-text-muted)]">
+                      <p className="text-sm text-[var(--color-text-muted)] mt-1 break-words">
                         {post.description}
                       </p>
                     )}
@@ -111,14 +112,13 @@ export default function PostList({
                            hover:bg-[var(--color-primary)]/10 transition-colors h-full"
               >
                 <h3
-                  className={`text-lg font-bold mb-1 ${
-                    isRead ? "text-[var(--color-secondary)]" : ""
-                  }`}
+                  className={`text-base sm:text-lg font-bold mb-1 leading-snug break-words whitespace-normal 
+                    ${isRead ? "text-[var(--color-secondary)]" : ""}`}
                 >
                   {post.title}
                 </h3>
                 {post.description && (
-                  <p className="text-sm text-[var(--color-text-muted)]">
+                  <p className="text-sm text-[var(--color-text-muted)] break-words">
                     {post.description}
                   </p>
                 )}
