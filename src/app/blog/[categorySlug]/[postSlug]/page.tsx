@@ -34,6 +34,48 @@ const postQuery = `
                }
 }
 `;
+export async function generateMetadata({
+  params,
+}: {
+  params: { categorySlug: string; postSlug: string };
+}) {
+  const { postSlug, categorySlug } = params;
+
+  const post = await client.fetch(
+    `*[_type == "post" && slug.current == $slug][0]{ 
+        title, 
+        "description": pt::text(body[0..1]) 
+      }`,
+    { slug: postSlug }
+  );
+
+  const title = post?.title || "NeuroNomixer Blog Post";
+  const description =
+    post?.description?.slice(0, 150) ||
+    "Exploring AI, data, and analytics with NeuroNomixer.";
+
+  const canonicalUrl = `https://www.neuronomixer.com/blog/${categorySlug}/${postSlug}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "NeuroNomixer",
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+  };
+}
 
 export default async function PostPage({
   params,
