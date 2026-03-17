@@ -133,22 +133,22 @@ const components: PortableTextComponents = {
       </h1>
     ),
     h2: ({ children }) => (
-      <h2 className="text-2xl md:text-3xl font-semibold my-4 text-gray-2000">
+      <h2 className="text-2xl md:text-3xl font-semibold my-4 text-gray-800">
         {children}
       </h2>
     ),
     h3: ({ children }) => (
-      <h3 className="text-xl md:text-1xl font-bold my-3 text-gray-1500">
+      <h3 className="text-xl font-bold my-3 text-gray-700">
         {children}
       </h3>
     ),
     h4: ({ children }) => (
-      <h3 className="text-xl md:text-1xl font-bold my-3 text-gray-1500">
+      <h4 className="text-xl font-bold my-3 text-gray-700">
         {children}
-      </h3>
+      </h4>
     ),
     normal: ({ children }) => (
-      <p className="my-3 leading-relaxed text-gray-1500">{children}</p>
+      <p className="my-3 leading-relaxed text-gray-700">{children}</p>
     ),
     blockquote: ({ children }) => (
       <blockquote className="border-l-4 border-[var(--color-accent)] pl-4 italic my-6">
@@ -158,10 +158,10 @@ const components: PortableTextComponents = {
   },
   list: {
     bullet: ({ children }) => (
-      <ul className="list-disc ml-6 space-y-1 text-gray-1500">{children}</ul>
+      <ul className="list-disc ml-6 space-y-1 text-gray-700">{children}</ul>
     ),
     number: ({ children }) => (
-      <ol className="list-decimal ml-6 space-y-1 text-gray-1500">{children}</ol>
+      <ol className="list-decimal ml-6 space-y-1 text-gray-700">{children}</ol>
     ),
   },
 };

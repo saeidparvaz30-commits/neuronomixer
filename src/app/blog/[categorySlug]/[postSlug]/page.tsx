@@ -1,5 +1,4 @@
 import { client } from "@/sanity/lib/client";
-import { PortableText } from "@portabletext/react";
 import Image from "next/image";
 import Link from "next/link";
 import SubscribeBox from "@/components/appSkeleton/SubscribeBox";
