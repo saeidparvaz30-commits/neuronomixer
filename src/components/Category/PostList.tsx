@@ -38,11 +38,16 @@ export default function PostList({
   const [visited, setVisited] = useState<Record<string, true>>({});
 
   useEffect(() => {
-    const raw = localStorage.getItem("readPosts") || "[]";
-    const ids: string[] = JSON.parse(raw);
-    const m: Record<string, true> = {};
-    ids.forEach((id) => (m[id] = true));
-    setVisited(m);
+    try {
+      const raw = localStorage.getItem("readPosts") || "[]";
+      const ids: string[] = JSON.parse(raw);
+      const m: Record<string, true> = {};
+      ids.forEach((id) => (m[id] = true));
+      setVisited(m);
+    } catch {
+      // Corrupted localStorage — start fresh
+      setVisited({});
+    }
   }, []);
 
   const markVisited = (id: string) => {

@@ -37,9 +37,9 @@ const postQuery = `
 export async function generateMetadata({
   params,
 }: {
-  params: { categorySlug: string; postSlug: string };
+  params: Promise<{ categorySlug: string; postSlug: string }>;
 }) {
-  const { postSlug, categorySlug } = params;
+  const { postSlug, categorySlug } = await params;
 
   const post = await client.fetch(
     `*[_type == "post" && slug.current == $slug][0]{ 
@@ -54,7 +54,8 @@ export async function generateMetadata({
     post?.description?.slice(0, 150) ||
     "Exploring AI, data, and analytics with NeuroNomixer.";
 
-  const canonicalUrl = `https://www.neuronomixer.com/blog/${categorySlug}/${postSlug}`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com";
+  const canonicalUrl = `${siteUrl}/blog/${categorySlug}/${postSlug}`;
 
   return {
     title,
@@ -92,9 +93,10 @@ export default async function PostPage({
     return <p className="text-center mt-20 text-lg">Post not found.</p>;
   }
 
+  type Sibling = { title: string; slug: { current: string }; category: { slug: { current: string } } };
   // Find current index in category’s list
-  const currentIndex = siblings.findIndex(
-    (p: any) => p.slug.current === postSlug
+  const currentIndex = (siblings as Sibling[]).findIndex(
+    (p) => p.slug.current === postSlug
   );
   const prevPost = siblings[currentIndex - 1];
   const nextPost = siblings[currentIndex + 1];
