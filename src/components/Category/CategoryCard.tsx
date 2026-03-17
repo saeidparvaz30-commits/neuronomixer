@@ -1,13 +1,14 @@
 "use client";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import type { Category } from "./AnimatedCategories";
 
 export default function CategoryCard({
   category,
   onClick,
   isSelected = false,
 }: {
-  category: any;
+  category: Category;
   onClick?: () => void;
   isSelected?: boolean;
 }) {

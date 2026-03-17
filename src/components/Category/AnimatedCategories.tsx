@@ -5,20 +5,30 @@ import { motion, AnimatePresence } from "framer-motion";
 import CategoryCard from "./CategoryCard";
 import SubscribeBox from "@/components/appSkeleton/SubscribeBox";
 
+export type Category = {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  description?: string;
+  image?: { asset?: { url: string } };
+  active?: boolean;
+  intuitive?: boolean;
+};
+
 export default function AnimatedCategories({
   categories,
 }: {
-  categories: any[];
+  categories: Category[];
 }) {
-  const [selected, setSelected] = useState<any>(null);
+  const [selected, setSelected] = useState<Category | null>(null);
   const [animStyle, setAnimStyle] = useState<React.CSSProperties>({});
   const router = useRouter();
   const clickedSlugRef = useRef<string | null>(null);
 
-  // ✅ Filter only active categories
+  // Filter only active categories
   const visibleCategories = categories.filter((cat) => cat.active !== false);
 
-  const handleClick = (cat: any, el: HTMLDivElement | null) => {
+  const handleClick = (cat: Category, el: HTMLDivElement | null) => {
     if (clickedSlugRef.current) return;
     if (el) {
       const r = el.getBoundingClientRect();

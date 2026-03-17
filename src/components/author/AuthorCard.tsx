@@ -4,11 +4,26 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Linkedin, Github, Twitter, Mail, Globe } from "lucide-react";
 
+type PortableTextChild = { text: string; _key?: string };
+type PortableTextBlock = { children?: PortableTextChild[]; _key?: string };
+
+export type Author = {
+  name: string;
+  image?: { asset?: { url: string } };
+  shortBio?: string;
+  longBio?: PortableTextBlock[];
+  linkedIn?: string;
+  github?: string;
+  twitter?: string;
+  personalWebsite?: string;
+  email?: string;
+};
+
 export default function AuthorCard({
   author,
   index,
 }: {
-  author: any;
+  author: Author;
   index: number;
 }) {
   return (
@@ -65,7 +80,7 @@ export default function AuthorCard({
       {/* Long Bio */}
       {author.longBio && (
         <div className="text-gray-200 text-sm sm:text-base leading-relaxed mb-4 text-center">
-          {author.longBio[0]?.children?.map((c: any) => c.text).join(" ")}
+          {author.longBio[0]?.children?.map((c) => c.text).join(" ")}
         </div>
       )}
 

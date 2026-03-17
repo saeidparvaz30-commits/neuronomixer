@@ -7,9 +7,18 @@ export default function ReCaptchaProviderClient({
 }: {
   children: React.ReactNode;
 }) {
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+  if (!siteKey) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("NEXT_PUBLIC_RECAPTCHA_SITE_KEY is not set — reCAPTCHA disabled.");
+    }
+    return <>{children}</>;
+  }
+
   return (
     <GoogleReCaptchaProvider
-      reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+      reCaptchaKey={siteKey}
       scriptProps={{
         async: true,
         defer: true,

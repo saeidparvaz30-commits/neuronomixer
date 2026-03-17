@@ -1,7 +1,16 @@
 import React from "react";
 import { set, unset } from "sanity";
 
-export default function TableInput({ value = { rows: [] }, onChange }) {
+type TableValue = { rows?: { _key: string; _type: string; cells: string[] }[] };
+type OnChangeFn = (patch: ReturnType<typeof set> | ReturnType<typeof unset>) => void;
+
+export default function TableInput({
+  value = { rows: [] },
+  onChange,
+}: {
+  value?: TableValue;
+  onChange: OnChangeFn;
+}) {
   const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const pasted = e.clipboardData.getData("text");
 

@@ -1,8 +1,12 @@
 "use client";
 import { motion } from "framer-motion";
 import PostList from "@/components/Category/PostList";
+import type { Category } from "./AnimatedCategories";
+import type { Post } from "./PostList";
 
-export default function CategoryViewClient({ category }: { category: any }) {
+type CategoryWithPosts = Category & { posts: Post[] };
+
+export default function CategoryViewClient({ category }: { category: CategoryWithPosts }) {
   const imageUrl = category?.image?.asset?.url || "/fallback.jpg";
 
   return (
