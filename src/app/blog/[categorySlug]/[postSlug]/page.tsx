@@ -25,7 +25,7 @@ const postQuery = `
     "category": category->{title, slug},
     "author": author->{name, image{asset->{url}}, shortBio}
   },
-  "siblings": *[_type == "post" && references(*[_type=="category" && slug.current == $categorySlug]._id)] 
+  "siblings": *[_type == "post" && references(*[_type=="category" && slug.current == $categorySlug]._id)]
                | order(_createdAt asc){
                  title,
                  slug,
@@ -41,9 +41,9 @@ export async function generateMetadata({
   const { postSlug, categorySlug } = await params;
 
   const post = await client.fetch(
-    `*[_type == "post" && slug.current == $slug][0]{ 
-        title, 
-        "description": pt::text(body[0..1]) 
+    `*[_type == "post" && slug.current == $slug][0]{
+        title,
+        "description": pt::text(body[0..1])
       }`,
     { slug: postSlug }
   );
@@ -93,7 +93,6 @@ export default async function PostPage({
   }
 
   type Sibling = { title: string; slug: { current: string }; category: { slug: { current: string } } };
-  // Find current index in category’s list
   const currentIndex = (siblings as Sibling[]).findIndex(
     (p) => p.slug.current === postSlug
   );
@@ -101,7 +100,7 @@ export default async function PostPage({
   const nextPost = siblings[currentIndex + 1];
 
   return (
-    <main className="max-w-[1600px] mx-auto px-6 sm:px-6 py-12 flex flex-col lg:flex-row lg:items-start lg:gap-12 relative">
+    <main className="max-w-[1600px] mx-auto px-4 sm:px-6 py-12 flex flex-col lg:flex-row lg:items-start lg:gap-12 relative">
       {/* ===== Left Column: Main Post ===== */}
       <div className="flex-1">
         {/* Back link */}
@@ -110,16 +109,16 @@ export default async function PostPage({
             href={`/blog/${categorySlug}`}
             className="
       inline-block
-      bg-white
+      bg-[var(--color-surface)]
       text-[var(--color-accent)]
       font-medium
       px-5 py-3
       rounded-lg
       shadow-md
-      border border-[var(--color-accent)]
+      border border-[var(--color-accent)]/60
       transition-all duration-300
-      hover:bg-[var(--color-primary)] hover:text-white
-      active:bg-[var(--color-secondary)] active:scale-95
+      hover:bg-[var(--color-primary)] hover:text-white hover:border-transparent
+      active:scale-95
     "
           >
             ← Back to {post.category?.title}
@@ -127,9 +126,9 @@ export default async function PostPage({
         </div>
 
         {/* Post container */}
-        <div className="bg-gray-300 text-black rounded-2xl shadow-lg p-5 sm:p-8 md:p-10">
+        <div className="bg-white text-gray-900 rounded-2xl shadow-lg p-5 sm:p-8 md:p-10">
           <div className="mb-8 text-center relative">
-            <p className="text-sm text-gray-600 mb-2 italic text-right">
+            <p className="text-sm text-gray-500 mb-2 italic text-right">
               Published: {new Date(post._createdAt).toLocaleDateString()}
             </p>
 
@@ -146,8 +145,8 @@ export default async function PostPage({
               )}
               {/* Title overlay */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-gray-300/60 text-black px-8 py-4 rounded-lg shadow-md">
-                  <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold">
+                <div className="bg-black/55 text-white px-6 sm:px-8 py-4 rounded-lg shadow-md max-w-[90%]">
+                  <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold leading-tight">
                     {post.title}
                   </h1>
                 </div>
@@ -168,7 +167,7 @@ export default async function PostPage({
         <aside
           className="
                       hidden lg:flex
-                      sticky top-48
+                      sticky top-24
                       h-fit
                       flex-col
                       items-center
@@ -182,83 +181,81 @@ export default async function PostPage({
               href="/authors"
               className="
                   block
-                  bg-[var(--surface)]/95
+                  bg-[var(--color-surface)]
                   border border-[var(--color-accent)]/30
                   rounded-xl
-                  p-8
+                  p-6
                   shadow-md
                   w-full
                   flex flex-col
                   items-center
                   text-center
                   transition-all duration-300
-                  hover:bg-white hover:text-white
-                  active:bg-[var(--color-secondary)] active:scale-95
+                  hover:border-[var(--color-accent)] hover:shadow-[0_0_10px_var(--color-accent)]
+                  active:scale-95
                 "
             >
               {post.author.image?.asset?.url && (
                 <Image
                   src={post.author.image.asset.url}
                   alt={post.author.name}
-                  width={120}
-                  height={120}
+                  width={100}
+                  height={100}
                   className="rounded-full object-cover shadow-md mb-4 aspect-square"
                 />
               )}
-              <h3 className="text-base font-semibold text-[var(--color-primary)] mb-1 group-hover:text-white">
+              <h3 className="text-base font-semibold text-[var(--color-accent)] mb-1">
                 {post.author.name}
               </h3>
-              <p className="text-sm text-[var(--color-text-muted)] group-hover:text-white/80">
+              <p className="text-sm text-[var(--color-text-muted)]">
                 {post.author.shortBio}
               </p>
             </Link>
           )}
 
-          {/* Next post button below author */}
+          {/* Next post */}
           {nextPost && (
             <Link
               href={`/blog/${nextPost.category.slug.current}/${nextPost.slug.current}`}
               className="
-          bg-white 
-          text-[var(--color-accent)] 
-          font-medium 
-          px-5 py-3 
-          rounded-lg 
-          shadow-md 
-          border border-[var(--color-accent)] 
-          transition-all duration-300 
-          hover:bg-[var(--color-primary)] hover:text-white 
-          active:bg-[var(--color-secondary)] active:scale-95
+          bg-[var(--color-surface)]
+          text-[var(--color-accent)]
+          font-medium
+          px-5 py-3
+          rounded-lg
+          shadow-md
+          border border-[var(--color-accent)]/60
+          transition-all duration-300
+          hover:bg-[var(--color-primary)] hover:text-white hover:border-transparent
+          active:scale-95
           w-full text-center
         "
             >
               {nextPost.title} →
             </Link>
           )}
-          {/* Prev navigation */}
-          <div className="flex justify-between items-center mt-0 max-w-[1000px] mx-auto">
-            {prevPost ? (
-              <Link
-                href={`/blog/${prevPost.category.slug.current}/${prevPost.slug.current}`}
-                className="
-            bg-white 
-            text-[var(--color-accent)] 
-            font-medium 
-            px-5 py-2 
-            rounded-lg 
-            shadow-md 
-            border border-[var(--color-accent)] 
-            transition-all duration-300 
-            hover:bg-[var(--color-primary)] hover:text-white 
-            active:bg-[var(--color-secondary)] active:scale-95
-          "
-              >
-                ← {prevPost.title}
-              </Link>
-            ) : (
-              <span />
-            )}
-          </div>
+
+          {/* Prev post */}
+          {prevPost && (
+            <Link
+              href={`/blog/${prevPost.category.slug.current}/${prevPost.slug.current}`}
+              className="
+          bg-[var(--color-surface)]
+          text-[var(--color-accent)]
+          font-medium
+          px-5 py-3
+          rounded-lg
+          shadow-md
+          border border-[var(--color-accent)]/60
+          transition-all duration-300
+          hover:bg-[var(--color-primary)] hover:text-white hover:border-transparent
+          active:scale-95
+          w-full text-center
+        "
+            >
+              ← {prevPost.title}
+            </Link>
+          )}
         </aside>
       )}
     </main>

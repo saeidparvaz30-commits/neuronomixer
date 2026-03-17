@@ -21,9 +21,7 @@ export default function SubscribeBox() {
     }
 
     try {
-      // get token from Google
       const token = await executeRecaptcha("subscribe_form");
-      console.log("📮 Sending token:", token);
 
       // send email and token to backend
       const res = await fetch("/api/subscribe", {
@@ -87,6 +85,27 @@ export default function SubscribeBox() {
         By subscribing, you agree to receive updates from NeuroNomixer. Your
         email will only be used for updates and will never be shared with third
         parties. You can unsubscribe anytime by sending us an email.
+      </p>
+      <p className="mt-2 text-xs text-gray-400">
+        This site is protected by reCAPTCHA and the Google{" "}
+        <a
+          href="https://policies.google.com/privacy"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-gray-600"
+        >
+          Privacy Policy
+        </a>{" "}
+        and{" "}
+        <a
+          href="https://policies.google.com/terms"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-gray-600"
+        >
+          Terms of Service
+        </a>{" "}
+        apply.
       </p>
     </div>
   );

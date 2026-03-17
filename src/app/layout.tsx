@@ -58,18 +58,18 @@ export default function RootLayout({
           }}
         />
 
-        <FramerMotionProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {/* ✅ reCAPTCHA context (for SubscribeBox and other forms) */}
             <ReCaptchaProviderClient>
               <Navbar />
-              <main className="min-h-screen pt-18">{children}</main>
+              <main className="min-h-screen pt-24">
+                <FramerMotionProvider>{children}</FramerMotionProvider>
+              </main>
               <Footer />
               <GoogleAnalyticsTracker />
               <SpeedInsights />
             </ReCaptchaProviderClient>
           </ThemeProvider>
-        </FramerMotionProvider>
       </body>
     </html>
   );

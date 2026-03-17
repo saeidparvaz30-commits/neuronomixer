@@ -24,7 +24,7 @@ export default async function AuthorsPage() {
   const authors = await client.fetch(query);
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-16">
       {/* Responsive title */}
       <h1
         className="

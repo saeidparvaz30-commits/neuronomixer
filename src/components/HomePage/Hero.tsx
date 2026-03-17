@@ -8,7 +8,7 @@ import HeroBackground from "./HeroBackground";
 
 export default function Hero() {
   return (
-    <section className="relative w-full min-h-screen overflow-hidden">
+    <section className="relative w-full min-h-screen overflow-hidden -mt-24">
       {/* ===== Background Image ===== */}
       <HeroBackground />
 

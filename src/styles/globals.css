@@ -44,3 +44,8 @@ hr {
   margin: 0 auto;
   padding: 0 1rem;
 }
+
+/* Hide reCAPTCHA badge — disclosure is included in subscribe/contact forms per Google ToS */
+.grecaptcha-badge {
+  visibility: hidden !important;
+}

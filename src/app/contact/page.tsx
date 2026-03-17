@@ -46,13 +46,15 @@ export default function ContactPage() {
   };
 
   return (
-    <section className="relative w-full h-screen overflow-hidden flex items-center justify-center mb-0 pb-0">
+    <section className="relative w-full h-screen overflow-hidden flex items-center justify-center mb-0 pb-0 -mt-24">
       {/* === Background Image/Video === */}
       <div className="absolute inset-0">
         <Image
           src="/pictures/contact-bg.jpg"
           alt="Contact background"
           fill
+          sizes="100vw"
+          quality={80}
           className="object-cover"
           priority
         />

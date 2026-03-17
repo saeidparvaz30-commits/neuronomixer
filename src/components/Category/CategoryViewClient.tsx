@@ -10,18 +10,17 @@ export default function CategoryViewClient({ category }: { category: CategoryWit
   const imageUrl = category?.image?.asset?.url || "/fallback.jpg";
 
   return (
-    <main className="max-w-6xl  mx-auto py-0">
-      {/* header matches AnimatedCategories target geometry */}
-      <div className="relative w-[80vw] max-w-[1200px] mx-auto mt-[30px] h-[280px] overflow-hidden rounded-2xl shadow-xl rounded-2xl ring-1 ring-[var(--color-accent)]/30 border border-[var(--color-accent)]/20 bg-[var(--background)]">
+    <main className="max-w-6xl mx-auto py-0 px-4 sm:px-6">
+      <div className="relative w-full mx-auto mt-8 h-[200px] sm:h-[280px] overflow-hidden rounded-2xl shadow-xl ring-1 ring-[var(--color-accent)]/30 border border-[var(--color-accent)]/20 bg-[var(--background)]">
         <div
-          className="absolute inset-0 bg-cover bg-center "
+          className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${imageUrl})` }}
         />
-        <div className="absolute inset-0 flex flex-col justify-center text-center p-10 bg-gradient-to-t from-[rgba(0,0,0,0.4)] to-transparent">
-          <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg mt-20">
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-6 bg-gradient-to-t from-black/60 to-transparent">
+          <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-lg">
             {category.title}
           </h1>
-          <div className="h-[3px] bg-[var(--color-accent)] rounded-full mt-1 w-[100%] mx-auto" />
+          <div className="h-[3px] bg-[var(--color-accent)] rounded-full mt-3 w-1/3 mx-auto" />
         </div>
       </div>
 
