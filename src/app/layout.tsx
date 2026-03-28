@@ -7,6 +7,8 @@ import FramerMotionProvider from "@/components/FrameMotionProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
 import GoogleAnalyticsTracker from "@/components/appSkeleton/GoogleAnalyticsTracker";
+import ReCaptchaProviderClient from "@/components/appSkeleton/ReCaptchaProviderClient";
+import NextAuthProvider from "@/components/appSkeleton/NextAuthProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,7 +39,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} bg-[var(--background)] text-[var(--color-text)] transition-colors duration-300`}
       >
-        {/* ✅ Google Analytics Scripts */}
+        {/* ✅ Google Analytics */}
         <Script
           strategy="afterInteractive"
           src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
@@ -56,15 +58,21 @@ export default function RootLayout({
             `,
           }}
         />
-        <FramerMotionProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <Navbar />
-            <main className="pt-20"></main>
-            <GoogleAnalyticsTracker />
-            <main className="min-h-screen px-0 py-0">{children}</main>
-            <Footer />
-          </ThemeProvider>
-        </FramerMotionProvider>
+
+          <NextAuthProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              {/* ✅ reCAPTCHA context (for SubscribeBox and other forms) */}
+              <ReCaptchaProviderClient>
+                <Navbar />
+                <main className="min-h-screen pt-24">
+                  <FramerMotionProvider>{children}</FramerMotionProvider>
+                </main>
+                <Footer />
+                <GoogleAnalyticsTracker />
+                <SpeedInsights />
+              </ReCaptchaProviderClient>
+            </ThemeProvider>
+          </NextAuthProvider>
       </body>
     </html>
   );

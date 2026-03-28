@@ -56,6 +56,28 @@ export const postType = defineType({
       of: [defineArrayMember({ type: "reference", to: { type: "category" } })],
     }),
     defineField({
+      name: "status",
+      title: "Status",
+      type: "string",
+      options: {
+        list: [
+          { title: "Draft", value: "draft" },
+          { title: "Pending Review", value: "pending" },
+          { title: "Approved", value: "approved" },
+          { title: "Rejected", value: "rejected" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "draft",
+    }),
+    defineField({
+      name: "submittedBy",
+      title: "Submitted By (User ID)",
+      type: "string",
+      readOnly: true,
+      description: "The Prisma User ID of the author who submitted this post.",
+    }),
+    defineField({
       name: "publishedAt",
       type: "datetime",
     }),
