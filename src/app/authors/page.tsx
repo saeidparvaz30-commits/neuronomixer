@@ -1,5 +1,5 @@
 import { client } from "@/sanity/lib/client";
-import AuthorCard from "@/components/author/AuthorCard";
+import AuthorCard, { Author } from "@/components/author/AuthorCard";
 import AuthorSignupForm from "@/components/author/AuthorSignupForm";
 
 const query = `
@@ -46,7 +46,7 @@ export default async function AuthorsPage() {
           gap-8 sm:gap-10 lg:gap-12
         "
       >
-        {authors.map((author: any, i: number) => (
+        {authors.map((author: Author, i: number) => (
           <AuthorCard key={author._id} author={author} index={i} />
         ))}
       </div>

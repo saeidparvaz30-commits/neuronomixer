@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     const text = await recaptchaRes.text();
     console.log("🧩 reCAPTCHA response text:", text);
 
-    let recaptchaData: any = {};
+    let recaptchaData: { success: boolean; [key: string]: unknown } = { success: false };
     try {
       recaptchaData = JSON.parse(text);
     } catch (err) {

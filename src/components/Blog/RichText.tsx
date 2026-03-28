@@ -13,7 +13,7 @@ const components: PortableTextComponents = {
 
       // Choose layout classes based on alignment
       let wrapperClass = "";
-      let imageClass =
+      const imageClass =
         "rounded-xl object-cover shadow-md transition-all duration-300";
 
       switch (alignment) {
@@ -50,7 +50,7 @@ const components: PortableTextComponents = {
         <div className="overflow-x-auto my-8">
           <table className="min-w-full border-[2px] border-gray-500 border-collapse rounded-md text-sm text-center">
             <tbody>
-              {value.rows.map((row: any, i: number) => (
+              {value.rows.map((row: { cells?: string[] }, i: number) => (
                 <tr key={i} className="even:bg-gray-100">
                   {row.cells?.map((cell: string, j: number) => (
                     <td
