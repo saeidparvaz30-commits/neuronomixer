@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SubscribeBox from "@/components/appSkeleton/SubscribeBox";
 import RichText from "@/components/Blog/RichText";
+import ReadTracker from "@/components/Blog/ReadTracker";
 
 const postQuery = `
 {
@@ -101,6 +102,12 @@ export default async function PostPage({
 
   return (
     <main className="max-w-[1600px] mx-auto px-4 sm:px-6 py-12 flex flex-col lg:flex-row lg:items-start lg:gap-12 relative">
+      <ReadTracker
+        postSlug={postSlug}
+        postTitle={post.title}
+        categorySlug={categorySlug}
+        authorName={post.author?.name}
+      />
       {/* ===== Left Column: Main Post ===== */}
       <div className="flex-1">
         {/* Back link */}

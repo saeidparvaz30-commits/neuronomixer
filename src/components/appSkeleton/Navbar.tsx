@@ -4,16 +4,20 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSession, signOut } from "next-auth/react";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
   const [visible, setVisible] = useState(true);
   const lastScrollY = useRef(0);
-  const hoverReveal = useRef(false);  // true when visibility was triggered by hover, not scroll
+  const hoverReveal = useRef(false);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const avatarRef = useRef<HTMLDivElement>(null);
 
   const clearHideTimer = () => {
     if (hideTimer.current) {
@@ -41,6 +45,7 @@ export default function Navbar() {
         hoverReveal.current = false;
         setVisible(false);
         setIsOpen(false);
+        setAvatarOpen(false);
       }
 
       lastScrollY.current = currentY;
@@ -71,11 +76,19 @@ export default function Navbar() {
       }
     };
 
+    const handleClickOutside = (e: MouseEvent) => {
+      if (avatarRef.current && !avatarRef.current.contains(e.target as Node)) {
+        setAvatarOpen(false);
+      }
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mousedown", handleClickOutside);
       clearHideTimer();
     };
   }, []);
@@ -86,6 +99,14 @@ export default function Navbar() {
     { href: "/authors", label: "Authors" },
     { href: "/contact", label: "Contact" },
   ];
+
+  const role = (session?.user as any)?.role;
+  const dashboardHref =
+    role === "ADMIN"
+      ? "/dashboard/admin"
+      : role === "AUTHOR"
+      ? "/dashboard/author"
+      : "/dashboard/subscriber";
 
   return (
     <motion.nav
@@ -101,7 +122,7 @@ export default function Navbar() {
                         rounded-2xl
                         border border-[var(--color-accent)]/30
                         shadow-[0_4px_32px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.04)]
-                        overflow-hidden">
+                        overflow-visible">
 
           {/* Gradient bottom accent line */}
           <div className="absolute bottom-0 left-[8%] right-[8%] h-px
@@ -157,6 +178,92 @@ export default function Navbar() {
             })}
           </ul>
 
+          {/* Right side: avatar or sign-in */}
+          <div className="hidden md:flex items-center gap-2">
+            {session?.user ? (
+              <div ref={avatarRef} className="relative">
+                <button
+                  onClick={() => setAvatarOpen(!avatarOpen)}
+                  className="flex items-center gap-2 rounded-full focus:outline-none"
+                  aria-label="User menu"
+                >
+                  {session.user.image ? (
+                    <Image
+                      src={session.user.image}
+                      alt={session.user.name ?? "User"}
+                      width={34}
+                      height={34}
+                      className="rounded-full border-2 border-[var(--color-accent)]/50 hover:border-[var(--color-accent)] transition-colors"
+                    />
+                  ) : (
+                    <div className="w-[34px] h-[34px] rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white text-sm font-bold border-2 border-[var(--color-accent)]/50">
+                      {session.user.name?.[0]?.toUpperCase() ?? "U"}
+                    </div>
+                  )}
+                </button>
+
+                <AnimatePresence>
+                  {avatarOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 top-[calc(100%+10px)] w-48
+                                 bg-[#060d18] border border-[var(--color-accent)]/30
+                                 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.8)]
+                                 py-1 z-[100]"
+                    >
+                      <div className="px-3 py-2 border-b border-white/10">
+                        <p className="text-xs font-medium text-white line-clamp-1">
+                          {session.user.name}
+                        </p>
+                        <p className="text-xs text-gray-500 line-clamp-1">
+                          {session.user.email}
+                        </p>
+                      </div>
+                      <Link
+                        href={dashboardHref}
+                        onClick={() => setAvatarOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                      >
+                        <LayoutDashboard size={14} />
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={() => { setAvatarOpen(false); signOut({ callbackUrl: "/" }); }}
+                        className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-300 hover:text-red-400 hover:bg-red-500/5 transition-colors"
+                      >
+                        <LogOut size={14} />
+                        Sign Out
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/auth/sign-in"
+                  className="px-4 py-1.5 text-sm font-medium
+                             text-white/70 hover:text-white
+                             transition-colors duration-200"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/auth/sign-up"
+                  className="px-4 py-1.5 text-sm font-medium
+                             bg-[var(--color-accent)] hover:bg-[var(--color-accent)]/80
+                             text-[#0f172a]
+                             rounded-lg transition-colors duration-200"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
+          </div>
+
           {/* Mobile burger */}
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -198,6 +305,47 @@ export default function Navbar() {
                   {label}
                 </Link>
               ))}
+
+              <div className="border-t border-white/10 pt-2 mt-1">
+                {session?.user ? (
+                  <>
+                    <Link
+                      href={dashboardHref}
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                    >
+                      <LayoutDashboard size={14} />
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={() => { setIsOpen(false); signOut({ callbackUrl: "/" }); }}
+                      className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm text-gray-400 hover:text-red-400 hover:bg-red-500/5 transition-colors"
+                    >
+                      <LogOut size={14} />
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex flex-col gap-1">
+                    <Link
+                      href="/auth/sign-up"
+                      onClick={() => setIsOpen(false)}
+                      className="block text-center py-2.5 rounded-xl text-sm font-semibold
+                                 bg-[var(--color-accent)] text-[#0f172a]
+                                 hover:bg-[var(--color-accent)]/80 transition-colors"
+                    >
+                      Sign Up
+                    </Link>
+                    <Link
+                      href="/auth/sign-in"
+                      onClick={() => setIsOpen(false)}
+                      className="block text-center py-2.5 rounded-xl text-sm text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+                    >
+                      Sign In
+                    </Link>
+                  </div>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

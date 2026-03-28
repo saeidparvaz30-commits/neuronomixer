@@ -58,6 +58,28 @@ export const postType = defineType({
       description: "Brief summary shown in post lists (1–2 sentences).",
     }),
     defineField({
+      name: "status",
+      title: "Status",
+      type: "string",
+      options: {
+        list: [
+          { title: "Draft", value: "draft" },
+          { title: "Pending Review", value: "pending" },
+          { title: "Approved", value: "approved" },
+          { title: "Rejected", value: "rejected" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "draft",
+    }),
+    defineField({
+      name: "submittedBy",
+      title: "Submitted By (User ID)",
+      type: "string",
+      readOnly: true,
+      description: "The Prisma User ID of the author who submitted this post.",
+    }),
+    defineField({
       name: "publishedAt",
       type: "datetime",
     }),

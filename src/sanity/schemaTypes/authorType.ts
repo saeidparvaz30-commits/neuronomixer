@@ -91,6 +91,27 @@ export const authorType = defineType({
       validation: (Rule) =>
         Rule.email().error("Please enter a valid email address."),
     }),
+    defineField({
+      name: "userId",
+      title: "Auth User ID",
+      type: "string",
+      readOnly: true,
+      description: "The Prisma User ID linked to this author account.",
+    }),
+    defineField({
+      name: "applicationStatus",
+      title: "Application Status",
+      type: "string",
+      options: {
+        list: [
+          { title: "Pending", value: "pending" },
+          { title: "Approved", value: "approved" },
+          { title: "Rejected", value: "rejected" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "pending",
+    }),
   ],
   preview: {
     select: {

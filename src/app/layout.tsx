@@ -7,7 +7,7 @@ import FramerMotionProvider from "@/components/FrameMotionProvider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
 import GoogleAnalyticsTracker from "@/components/appSkeleton/GoogleAnalyticsTracker";
-import ReCaptchaProviderClient from "@/components/appSkeleton/ReCaptchaProviderClient";
+import NextAuthProvider from "@/components/appSkeleton/NextAuthProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -58,18 +58,17 @@ export default function RootLayout({
           }}
         />
 
+        <NextAuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {/* ✅ reCAPTCHA context (for SubscribeBox and other forms) */}
-            <ReCaptchaProviderClient>
-              <Navbar />
-              <main className="min-h-screen pt-24">
-                <FramerMotionProvider>{children}</FramerMotionProvider>
-              </main>
-              <Footer />
-              <GoogleAnalyticsTracker />
-              <SpeedInsights />
-            </ReCaptchaProviderClient>
+            <Navbar />
+            <main className="min-h-screen pt-24">
+              <FramerMotionProvider>{children}</FramerMotionProvider>
+            </main>
+            <Footer />
+            <GoogleAnalyticsTracker />
+            <SpeedInsights />
           </ThemeProvider>
+        </NextAuthProvider>
       </body>
     </html>
   );
