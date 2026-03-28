@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -28,7 +28,18 @@ export default function SignInPage() {
     if (result?.error) {
       setError("Invalid email or password.");
     } else {
-      router.push("/dashboard/admin");
+      const session = await getSession();
+      const role = (session?.user as any)?.role;
+      const onboarded = (session?.user as any)?.onboarded;
+      if (!onboarded) {
+        router.push("/auth/complete-signup");
+      } else if (role === "ADMIN") {
+        router.push("/dashboard/admin");
+      } else if (role === "AUTHOR") {
+        router.push("/dashboard/author");
+      } else {
+        router.push("/dashboard/subscriber");
+      }
     }
   }
 
