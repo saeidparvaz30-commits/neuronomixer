@@ -1,7 +1,8 @@
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { BookOpen, Users, Clock, Settings, Rss } from "lucide-react";
+import { Users, Clock, Settings, Rss } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard/subscriber", label: "Feed", icon: Rss, exact: true },
@@ -16,7 +17,12 @@ export default async function SubscriberLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
-  if (!session?.user) redirect("/auth/sign-in");
+  if (!session?.user?.id) redirect("/auth/sign-in");
+
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { name: true },
+  });
 
   return (
     <div className="min-h-screen bg-[var(--background)] pt-24">
@@ -24,7 +30,7 @@ export default async function SubscriberLayout({
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white">
-            Welcome back, {session.user.name?.split(" ")[0] ?? "Reader"}
+            Welcome back, {dbUser?.name?.split(" ")[0] ?? "Reader"}
           </h1>
           <p className="text-sm text-gray-500 mt-1">Your personal reading space</p>
         </div>
