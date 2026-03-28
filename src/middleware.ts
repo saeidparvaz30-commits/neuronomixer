@@ -30,10 +30,7 @@ export default auth((req) => {
     return NextResponse.redirect(new URL("/auth/sign-in", req.url));
   }
 
-  // Redirect un-onboarded users to complete signup
-  if (pathname.startsWith("/dashboard") && session?.user && !onboarded) {
-    return NextResponse.redirect(new URL("/auth/complete-signup", req.url));
-  }
+  // onboarded check is handled in src/app/dashboard/layout.tsx (Prisma, always fresh)
 });
 
 export const config = {

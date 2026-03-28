@@ -9,8 +9,22 @@ export default async function CompleteSignupPage() {
     redirect("/auth/sign-in");
   }
 
-  if ((session.user as any).onboarded) {
-    redirect("/dashboard/subscriber");
+  // Check DB directly so we don't act on a stale JWT
+  const { prisma } = await import("@/lib/prisma");
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { onboarded: true, role: true },
+  });
+
+  if (dbUser?.onboarded) {
+    const role = dbUser.role;
+    redirect(
+      role === "ADMIN"
+        ? "/dashboard/admin"
+        : role === "AUTHOR"
+        ? "/dashboard/author"
+        : "/dashboard/subscriber"
+    );
   }
 
   return (
