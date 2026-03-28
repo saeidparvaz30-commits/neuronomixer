@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface Props {
   userEmail: string;
@@ -10,6 +11,7 @@ interface Props {
 
 export default function CompleteSignupForm({ userEmail, userName }: Props) {
   const router = useRouter();
+  const { update } = useSession();
   const params = useSearchParams();
   const initialRole =
     params.get("role") === "AUTHOR" ? "AUTHOR" : "SUBSCRIBER";
@@ -39,8 +41,9 @@ export default function CompleteSignupForm({ userEmail, userName }: Props) {
         return;
       }
 
+      // Force JWT refresh so middleware sees onboarded: true
+      await update();
       router.push("/blog");
-      router.refresh();
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {

@@ -41,12 +41,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      // On first sign-in, load full user data from DB into token
-      if (user?.id) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: user.id },
-        });
+    async jwt({ token, user, trigger }) {
+      // On first sign-in OR forced update, load full user data from DB
+      if (user?.id || trigger === "update") {
+        const userId = (user?.id ?? token.id) as string;
+        const dbUser = await prisma.user.findUnique({ where: { id: userId } });
         if (dbUser) {
           token.id = dbUser.id;
           token.role = dbUser.role;
