@@ -1,13 +1,14 @@
 "use client";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import type { Category } from "./AnimatedCategories";
 
 export default function CategoryCard({
   category,
   onClick,
   isSelected = false,
 }: {
-  category: any;
+  category: Category;
   onClick?: () => void;
   isSelected?: boolean;
 }) {
@@ -16,7 +17,7 @@ export default function CategoryCard({
       onClick={onClick}
       className="relative w-full text-left rounded-2xl overflow-hidden shadow-lg
                  ring-1 ring-[var(--color-accent)]/30 hover:scale-[1.02]
-                 transition-transform duration-300 focus:outline-none"
+                 transition-transform duration-300 focus:outline-none mb-3"
     >
       <Image
         src={category.image?.asset?.url || "/fallback.jpg"}

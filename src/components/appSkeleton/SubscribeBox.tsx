@@ -1,27 +1,37 @@
 "use client";
+
 import { useState } from "react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 export default function SubscribeBox() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault(); // prevent page reload
+    e.preventDefault();
     setMessage("");
     setLoading(true);
 
+    if (!executeRecaptcha) {
+      setMessage("Captcha not ready, please try again.");
+      setLoading(false);
+      return;
+    }
+
     try {
+      const token = await executeRecaptcha("subscribe_form");
+
+      // send email and token to backend
       const res = await fetch("/api/subscribe", {
         method: "POST",
-        body: JSON.stringify({ email }),
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, token }),
       });
 
       const data = await res.json();
       setMessage(data.message);
-      console.log("📩 Email received:", email);
-
       if (data.success) setEmail("");
     } catch (err) {
       console.error("Subscription error:", err);
@@ -60,20 +70,42 @@ export default function SubscribeBox() {
       </form>
 
       {message && (
-        <>
-          <p
-            className={`mt-4 text-sm font-medium ${
-              message.includes("success") ? "text-green-600" : "text-red-600"
-            }`}
-          >
-            {message}
-          </p>
-        </>
+        <p
+          className={`mt-4 text-sm font-medium ${
+            message.toLowerCase().includes("success")
+              ? "text-green-600"
+              : "text-red-600"
+          }`}
+        >
+          {message}
+        </p>
       )}
+
       <p className="mt-4 text-xs text-gray-400">
         By subscribing, you agree to receive updates from NeuroNomixer. Your
         email will only be used for updates and will never be shared with third
         parties. You can unsubscribe anytime by sending us an email.
+      </p>
+      <p className="mt-2 text-xs text-gray-400">
+        This site is protected by reCAPTCHA and the Google{" "}
+        <a
+          href="https://policies.google.com/privacy"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-gray-600"
+        >
+          Privacy Policy
+        </a>{" "}
+        and{" "}
+        <a
+          href="https://policies.google.com/terms"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-gray-600"
+        >
+          Terms of Service
+        </a>{" "}
+        apply.
       </p>
     </div>
   );

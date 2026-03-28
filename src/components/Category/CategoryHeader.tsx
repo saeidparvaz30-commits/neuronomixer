@@ -5,7 +5,7 @@ export default function CategoryHeader({
   category,
   onSettled,
 }: {
-  category: any;
+  category: { slug: { current: string }; title: string; image?: { asset?: { url: string } } };
   onSettled?: () => void;
 }) {
   return (

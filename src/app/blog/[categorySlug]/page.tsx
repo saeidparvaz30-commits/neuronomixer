@@ -19,9 +19,9 @@ const query = `
 export default async function CategoryPage({
   params,
 }: {
-  params: { categorySlug: string };
+  params: Promise<{ categorySlug: string }>;
 }) {
-  const slug = params?.categorySlug;
+  const { categorySlug: slug } = await params;
   if (!slug) notFound();
 
   const category = await client.fetch(query, { slug });

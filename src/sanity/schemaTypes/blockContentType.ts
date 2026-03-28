@@ -1,5 +1,6 @@
 import { defineType, defineArrayMember, defineField } from "sanity";
 import { ImageIcon } from "@sanity/icons";
+import TableInput from "@/components/Sanity/TableInput";
 
 /**
  * This is the schema type for block content used in the post document type
@@ -90,6 +91,79 @@ export const blockContentType = defineType({
           description: "Optional custom width (default 800)",
         }),
       ],
+    }),
+    defineArrayMember({
+      name: "table",
+      title: "Table",
+      type: "object",
+      components: { input: TableInput },
+      fields: [
+        defineField({
+          name: "rows",
+          title: "Rows",
+          type: "array",
+          of: [
+            defineArrayMember({
+              type: "object",
+              fields: [
+                defineField({
+                  name: "cells",
+                  title: "Cells",
+                  type: "array",
+                  of: [{ type: "string" }],
+                }),
+              ],
+            }),
+          ],
+        }),
+      ],
+    }),
+    defineArrayMember({
+      name: "video",
+      title: "Video",
+      type: "object",
+      fields: [
+        defineField({
+          name: "source",
+          title: "Video Source",
+          type: "string",
+          options: {
+            list: [
+              { title: "YouTube / Vimeo", value: "external" },
+              { title: "Uploaded file", value: "file" },
+            ],
+            layout: "radio",
+          },
+          initialValue: "external",
+        }),
+        defineField({
+          name: "url",
+          title: "Video URL (YouTube or Vimeo link)",
+          type: "url",
+          hidden: ({ parent }) => parent?.source !== "external",
+        }),
+        defineField({
+          name: "file",
+          title: "Video File Upload",
+          type: "file",
+          options: { accept: "video/*" },
+          hidden: ({ parent }) => parent?.source !== "file",
+        }),
+        defineField({
+          name: "caption",
+          title: "Caption",
+          type: "string",
+        }),
+      ],
+      preview: {
+        select: { title: "caption", source: "source" },
+        prepare({ title, source }) {
+          return {
+            title: title || "Video",
+            subtitle: source === "file" ? "Uploaded video" : "External link",
+          };
+        },
+      },
     }),
   ],
 });

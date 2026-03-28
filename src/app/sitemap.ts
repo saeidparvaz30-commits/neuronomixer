@@ -15,7 +15,7 @@ type PostItem = {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = (
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://neuronomixer.com"
   ).replace(/\/$/, "");
 
   // Fetch dynamic slugs for categories and posts from Sanity

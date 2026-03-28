@@ -19,7 +19,7 @@ const item = {
   },
 };
 
-type Post = {
+export type Post = {
   _id: string;
   title: string;
   slug: { current: string };
@@ -38,11 +38,16 @@ export default function PostList({
   const [visited, setVisited] = useState<Record<string, true>>({});
 
   useEffect(() => {
-    const raw = localStorage.getItem("readPosts") || "[]";
-    const ids: string[] = JSON.parse(raw);
-    const m: Record<string, true> = {};
-    ids.forEach((id) => (m[id] = true));
-    setVisited(m);
+    try {
+      const raw = localStorage.getItem("readPosts") || "[]";
+      const ids: string[] = JSON.parse(raw);
+      const m: Record<string, true> = {};
+      ids.forEach((id) => (m[id] = true));
+      setVisited(m);
+    } catch {
+      // Corrupted localStorage — start fresh
+      setVisited({});
+    }
   }, []);
 
   const markVisited = (id: string) => {
@@ -64,7 +69,7 @@ export default function PostList({
       variants={list}
       initial="hidden"
       animate="show"
-      className={wrapperClass}
+      className={`${wrapperClass} justify-center place-items-left pb-8 px-4 sm:px-8 lg:px-16`}
     >
       {posts?.map((post, i) => {
         const isRead = visited[post._id];
@@ -74,29 +79,31 @@ export default function PostList({
               <Link
                 href={`/blog/${categorySlug}/${post.slug.current}`}
                 onClick={() => markVisited(post._id)}
-                className="group block w-[1200px] p-4 rounded-xl border border-[var(--color-accent)]/40
-                           hover:bg-[var(--color-primary)]/10 transition-colors"
+                className="group block w-full max-w-[1100px] mx-auto p-4 
+                            rounded-xl border border-[var(--color-accent)]/40
+                            hover:bg-[var(--color-primary)]/10 transition-colors"
               >
                 <div className="flex items-start gap-4">
                   <span
-                    className="mt-0 inline-flex h-8 w-8 items-center justify-center
+                    className="mt-0 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center
                                    rounded-full bg-[var(--color-accent)] text-[var(--background)]
                                    font-bold"
                   >
                     {i + 1}
                   </span>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <h2
-                      className={`text-xl font-semibold ${
-                        isRead
-                          ? "text-[var(--color-secondary)]"
-                          : "group-hover:text-[var(--color-secondary)]"
-                      }`}
+                      className={`text-lg sm:text-xl font-semibold leading-snug break-words whitespace-normal 
+                        ${
+                          isRead
+                            ? "text-[var(--color-secondary)]"
+                            : "group-hover:text-[var(--color-secondary)]"
+                        }`}
                     >
                       {post.title}
                     </h2>
                     {post.description && (
-                      <p className="text-sm text-[var(--color-text-muted)]">
+                      <p className="text-sm text-[var(--color-text-muted)] mt-1 break-words">
                         {post.description}
                       </p>
                     )}
@@ -111,14 +118,13 @@ export default function PostList({
                            hover:bg-[var(--color-primary)]/10 transition-colors h-full"
               >
                 <h3
-                  className={`text-lg font-bold mb-1 ${
-                    isRead ? "text-[var(--color-secondary)]" : ""
-                  }`}
+                  className={`text-base sm:text-lg font-bold mb-1 leading-snug break-words whitespace-normal 
+                    ${isRead ? "text-[var(--color-secondary)]" : ""}`}
                 >
                   {post.title}
                 </h3>
                 {post.description && (
-                  <p className="text-sm text-[var(--color-text-muted)]">
+                  <p className="text-sm text-[var(--color-text-muted)] break-words">
                     {post.description}
                   </p>
                 )}

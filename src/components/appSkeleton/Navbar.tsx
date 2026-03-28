@@ -35,10 +35,12 @@ export default function Navbar() {
         hoverReveal.current = false;
         setVisible(true);
       } else if (currentY < lastScrollY.current) {
+        // Scrolling up → show (scroll controls it, not hover)
         clearHideTimer();
         hoverReveal.current = false;
         setVisible(true);
       } else if (currentY > lastScrollY.current + 5) {
+        // Scrolling down → hide
         clearHideTimer();
         hoverReveal.current = false;
         setVisible(false);
@@ -51,12 +53,14 @@ export default function Navbar() {
 
     const handleMouseMove = (e: MouseEvent) => {
       if (e.clientY < 8) {
+        // Near top edge — only activate hover-reveal if we're actually scrolled down
         if (lastScrollY.current > 60) {
           clearHideTimer();
           hoverReveal.current = true;
           setVisible(true);
         }
       } else if (hoverReveal.current && e.clientY > 90) {
+        // Mouse moved well past the navbar area while hover-revealed → start hide timer
         if (!hideTimer.current) {
           hideTimer.current = setTimeout(() => {
             if (hoverReveal.current) {
@@ -67,6 +71,7 @@ export default function Navbar() {
           }, 800);
         }
       } else if (hoverReveal.current && e.clientY <= 90) {
+        // Mouse is still over navbar area — cancel any pending hide
         clearHideTimer();
       }
     };

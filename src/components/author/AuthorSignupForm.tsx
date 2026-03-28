@@ -33,9 +33,9 @@ export default function AuthorSignupForm() {
 
       setStatus("success");
       setForm({ name: "", email: "", message: "" });
-    } catch (err: any) {
+    } catch (err) {
       setStatus("error");
-      setErrorMsg(err.message);
+      setErrorMsg(err instanceof Error ? err.message : "Something went wrong.");
     }
   };
 

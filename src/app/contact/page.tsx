@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Linkedin, Github, ExternalLink, Twitter } from "lucide-react";
+import { Mail, Linkedin, Github, Twitter } from "lucide-react";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -46,17 +46,17 @@ export default function ContactPage() {
   };
 
   return (
-    <section className="relative w-full h-screen overflow-hidden flex items-center justify-center mb-0 pb-0">
+    <section className="relative w-full h-screen overflow-hidden flex items-center justify-center mb-0 pb-0 -mt-24">
       {/* === Background Image/Video === */}
       <div className="absolute inset-0">
-        {/* Example: replace with your video or image */}
-        {/* <video autoPlay loop muted className="w-full h-full object-cover">
-          <source src="/videos/contact-bg.mp4" type="video/mp4" />
-        </video> */}
-        <img
+        <Image
           src="/pictures/contact-bg.jpg"
           alt="Contact background"
-          className="w-full h-full object-cover"
+          fill
+          sizes="100vw"
+          quality={80}
+          className="object-cover"
+          priority
         />
         {/* Overlay for contrast */}
         <div className="absolute inset-0 bg-black/50" />

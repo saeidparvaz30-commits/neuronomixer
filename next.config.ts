@@ -2,7 +2,7 @@
 const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   typescript: {
-    // ✅ Don’t block production builds on type errors
+    // ✅ Don't block production builds on type errors
     ignoreBuildErrors: true,
   },
   images: {
@@ -11,6 +11,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "cdn.sanity.io",
         pathname: "/images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
       },
     ],
   },
