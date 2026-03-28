@@ -39,7 +39,7 @@ export default function CompleteSignupForm({ userEmail, userName }: Props) {
         return;
       }
 
-      router.push("/dashboard/subscriber");
+      router.push("/blog");
       router.refresh();
     } catch {
       setError("Something went wrong. Please try again.");
