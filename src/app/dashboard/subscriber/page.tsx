@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { client } from "@/sanity/lib/client";
 import Link from "next/link";
-import { Rss } from "lucide-react";
+import { Rss, PenLine } from "lucide-react";
 
 interface Post {
   _id: string;
@@ -49,7 +49,24 @@ export default async function SubscriberFeedPage() {
   ]);
 
   return (
-    <div>
+    <div className="flex flex-col gap-6">
+      {/* Apply as Author CTA */}
+      <div className="flex items-center justify-between bg-[#060d18]/80 border border-[var(--color-accent)]/20 rounded-2xl px-5 py-4">
+        <div className="flex items-center gap-3">
+          <PenLine size={16} className="text-[var(--color-accent)] shrink-0" />
+          <p className="text-sm text-gray-400">
+            Want to write articles on NeuroNomixer?
+          </p>
+        </div>
+        <Link
+          href="/authors"
+          className="text-xs font-medium px-3 py-1.5 rounded-lg bg-[var(--color-accent)]/15 text-[var(--color-accent)] border border-[var(--color-accent)]/30 hover:bg-[var(--color-accent)]/25 transition-colors whitespace-nowrap ml-4"
+        >
+          Apply as Author
+        </Link>
+      </div>
+
+      <div>
       <div className="flex items-center gap-2 mb-6">
         <Rss size={18} className="text-[var(--color-accent)]" />
         <h2 className="text-lg font-semibold text-white">Your Feed</h2>
@@ -123,6 +140,7 @@ export default async function SubscriberFeedPage() {
           ))}
         </div>
       )}
+      </div>
     </div>
   );
 }
