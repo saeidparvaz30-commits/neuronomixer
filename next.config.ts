@@ -5,7 +5,6 @@ const nextConfig = {
     // ✅ Don’t block production builds on type errors
     ignoreBuildErrors: true,
   },
-  experimental: { turbo: false },
   images: {
     remotePatterns: [
       {
