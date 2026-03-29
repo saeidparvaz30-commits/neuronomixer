@@ -57,12 +57,17 @@ model User {
   motivation     String?       @db.Text
   onboarded          Boolean          @default(false)
   emailNotifications Boolean          @default(false)
+  suspended          Boolean          @default(false)
   authorStatus       AuthorStatus?
   sanityAuthorId     String?
   accounts           Account[]
   sessions           Session[]
   follows            Follow[]
   readingHistory     ReadingHistory[]
+  likes              Like[]
+  bookmarks          Bookmark[]
+  comments           Comment[]
+  passwordResetTokens PasswordResetToken[]
   createdAt          DateTime         @default(now())
 }
 
@@ -88,6 +93,45 @@ model ReadingHistory {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postSlug])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  postSlug  String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postSlug])
+}
+
+model Bookmark {
+  id           String   @id @default(cuid())
+  userId       String
+  postSlug     String
+  postTitle    String
+  categorySlug String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+
+  @@unique([userId, postSlug])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  userId    String
+  postSlug  String
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expires   DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum Role {

@@ -2,12 +2,13 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Users, Clock, Settings, Rss } from "lucide-react";
+import { Users, Clock, Settings, Rss, UserCircle } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard/subscriber", label: "Feed", icon: Rss, exact: true },
   { href: "/dashboard/subscriber/history", label: "Reading History", icon: Clock },
   { href: "/dashboard/subscriber/following", label: "Following", icon: Users },
+  { href: "/dashboard/subscriber/profile", label: "Profile", icon: UserCircle },
   { href: "/dashboard/subscriber/settings", label: "Settings", icon: Settings },
 ];
 

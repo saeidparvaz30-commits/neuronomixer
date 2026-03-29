@@ -10,6 +10,7 @@ export default async function AdminUsersPage() {
       email: true,
       role: true,
       vip: true,
+      suspended: true,
       authorStatus: true,
       createdAt: true,
     },

@@ -24,6 +24,7 @@ export const authConfig = {
         session.user.id = token.id as string;
         (session.user as any).role = token.role;
         (session.user as any).onboarded = token.onboarded;
+        (session.user as any).suspended = token.suspended;
       }
       return session;
     },

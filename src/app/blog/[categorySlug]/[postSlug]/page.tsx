@@ -4,6 +4,11 @@ import Link from "next/link";
 import SubscribeBox from "@/components/appSkeleton/SubscribeBox";
 import RichText from "@/components/Blog/RichText";
 import ReadTracker from "@/components/Blog/ReadTracker";
+import PostEngagement from "@/components/Blog/PostEngagement";
+import CommentsSection from "@/components/Blog/CommentsSection";
+import AuthorFollowButton from "@/components/author/AuthorFollowButton";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 const postQuery = `
 {
@@ -24,7 +29,7 @@ const postQuery = `
 },
     _createdAt,
     "category": category->{title, slug},
-    "author": author->{name, image{asset->{url}}, shortBio}
+    "author": author->{_id, name, slug, image{asset->{url}}, shortBio, jobTitle, employer, education}
   },
   "siblings": *[_type == "post" && references(*[_type=="category" && slug.current == $categorySlug]._id)]
                | order(_createdAt asc){
@@ -84,10 +89,36 @@ export default async function PostPage({
   params: Promise<{ categorySlug: string; postSlug: string }>;
 }) {
   const { postSlug, categorySlug } = await params;
-  const data = await client.fetch(postQuery, { slug: postSlug, categorySlug });
+
+  const session = await auth();
+
+  // NOTE: like/bookmark require `npx prisma migrate dev --name p1-engagement` to be run first.
+  // Until then they degrade gracefully (0 likes, not bookmarked).
+  const db = prisma as any;
+
+  const [data, likeCount, userLike, userBookmark] = await Promise.all([
+    client.fetch(postQuery, { slug: postSlug, categorySlug }),
+    (db.like?.count({ where: { postSlug } }) ?? Promise.resolve(0)).catch(() => 0),
+    session?.user
+      ? (db.like?.findUnique({
+          where: { userId_postSlug: { userId: session.user.id, postSlug } },
+        }) ?? Promise.resolve(null)).catch(() => null)
+      : null,
+    session?.user
+      ? (db.bookmark?.findUnique({
+          where: { userId_postSlug: { userId: session.user.id, postSlug } },
+        }) ?? Promise.resolve(null)).catch(() => null)
+      : null,
+  ]);
 
   const post = data?.post;
   const siblings = data?.siblings || [];
+
+  const isFollowingAuthor = session?.user && post?.author?._id
+    ? !!(await (prisma as any).follow.findUnique({
+        where: { userId_type_sanityId: { userId: session.user.id, type: "author", sanityId: post.author._id } },
+      }).catch(() => null))
+    : false;
 
   if (!post) {
     return <p className="text-center mt-20 text-lg">Post not found.</p>;
@@ -164,6 +195,23 @@ export default async function PostPage({
             <article className="prose prose-sm sm:prose lg:prose-lg max-w-none mx-auto mt-8 text-left sm:text-justify">
               <RichText value={post.body} />
             </article>
+
+            <PostEngagement
+              postSlug={postSlug}
+              postTitle={post.title}
+              categorySlug={categorySlug}
+              isLoggedIn={!!session?.user}
+              initialLiked={!!userLike}
+              initialLikeCount={likeCount}
+              initialBookmarked={!!userBookmark}
+            />
+
+            <CommentsSection
+              postSlug={postSlug}
+              isLoggedIn={!!session?.user}
+              currentUserId={session?.user?.id}
+              isAdmin={(session?.user as any)?.role === "ADMIN"}
+            />
           </div>
         </div>
         <SubscribeBox />
@@ -184,40 +232,48 @@ export default async function PostPage({
         >
           {/* Author box */}
           {post.author && (
-            <Link
-              href="/authors"
-              className="
-                  block
-                  bg-[var(--color-surface)]
-                  border border-[var(--color-accent)]/30
-                  rounded-xl
-                  p-6
-                  shadow-md
-                  w-full
-                  flex flex-col
-                  items-center
-                  text-center
-                  transition-all duration-300
-                  hover:border-[var(--color-accent)] hover:shadow-[0_0_10px_var(--color-accent)]
-                  active:scale-95
-                "
-            >
-              {post.author.image?.asset?.url && (
-                <Image
-                  src={post.author.image.asset.url}
-                  alt={post.author.name}
-                  width={100}
-                  height={100}
-                  className="rounded-full object-cover shadow-md mb-4 aspect-square"
-                />
+            <div className="bg-[var(--color-surface)] border border-[var(--color-accent)]/30 rounded-xl p-6 shadow-md w-full flex flex-col items-center text-center">
+              <Link href={post.author.slug?.current ? `/authors/${post.author.slug.current}` : "/authors"}>
+                {post.author.image?.asset?.url && (
+                  <Image
+                    src={post.author.image.asset.url}
+                    alt={post.author.name}
+                    width={100}
+                    height={100}
+                    className="rounded-full object-cover shadow-md mb-4 aspect-square hover:opacity-90 transition-opacity"
+                  />
+                )}
+              </Link>
+
+              <Link href={post.author.slug?.current ? `/authors/${post.author.slug.current}` : "/authors"}>
+                <h3 className="text-base font-semibold text-[var(--color-accent)] mb-1 hover:underline">
+                  {post.author.name}
+                </h3>
+              </Link>
+
+              {(post.author.jobTitle || post.author.employer) && (
+                <p className="text-xs text-gray-400 mb-0.5">
+                  {post.author.jobTitle}
+                  {post.author.jobTitle && post.author.employer && " · "}
+                  {post.author.employer}
+                </p>
               )}
-              <h3 className="text-base font-semibold text-[var(--color-accent)] mb-1">
-                {post.author.name}
-              </h3>
-              <p className="text-sm text-[var(--color-text-muted)]">
-                {post.author.shortBio}
-              </p>
-            </Link>
+              {post.author.education && (
+                <p className="text-xs text-gray-500 mb-2">{post.author.education}</p>
+              )}
+
+              {post.author.shortBio && (
+                <p className="text-xs text-[var(--color-text-muted)] italic mb-4">
+                  {post.author.shortBio}
+                </p>
+              )}
+
+              <AuthorFollowButton
+                authorId={post.author._id}
+                isFollowing={isFollowingAuthor}
+                isLoggedIn={!!session?.user}
+              />
+            </div>
           )}
 
           {/* Next post */}

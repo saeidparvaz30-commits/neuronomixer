@@ -30,6 +30,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           user.password
         );
         if (!valid) return null;
+        if (user.suspended) return null; // Block suspended accounts
 
         return {
           id: user.id,
@@ -41,6 +42,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
+    async signIn({ user }) {
+      // Block Google OAuth sign-in for suspended accounts
+      if (!user?.id) return true;
+      const dbUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { suspended: true },
+      });
+      if (dbUser?.suspended) return false;
+      return true;
+    },
     async jwt({ token, user, trigger }) {
       // On first sign-in OR forced update, load full user data from DB
       if (user?.id || trigger === "update") {
@@ -51,6 +62,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.role = dbUser.role;
           token.vip = dbUser.vip;
           token.onboarded = dbUser.onboarded;
+          token.suspended = dbUser.suspended;
         }
       }
       return token;

@@ -67,6 +67,8 @@ export const postType = defineType({
           { title: "Pending Review", value: "pending" },
           { title: "Approved", value: "approved" },
           { title: "Rejected", value: "rejected" },
+          { title: "Hidden", value: "hidden" },
+          { title: "Deletion Requested", value: "deletion_requested" },
         ],
         layout: "radio",
       },

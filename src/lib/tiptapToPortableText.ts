@@ -1,6 +1,7 @@
 /**
  * Converts Tiptap editor JSON output to Sanity Portable Text blocks.
- * Supports: paragraphs, headings (h1-h4), bold, italic, links, lists, blockquotes.
+ * Supports: paragraphs, headings (h1-h4), bold, italic, links, lists,
+ * blockquotes, inline images (with Sanity asset ref), YouTube embeds.
  */
 
 interface TiptapMark {
@@ -67,12 +68,47 @@ function extractSpans(
   });
 }
 
-function convertNode(node: TiptapNode): PortableTextBlock[] {
+function convertNode(node: TiptapNode): unknown[] {
+  // Inline image with Sanity asset reference
+  if (node.type === "image") {
+    const assetId = node.attrs?.assetId as string | undefined;
+    if (!assetId) return [];
+    return [
+      {
+        _type: "image",
+        _key: nextKey(),
+        asset: { _type: "reference", _ref: assetId },
+        alt: (node.attrs?.alt as string) || undefined,
+        alignment: (node.attrs?.alignment as string) || "full",
+        width: (node.attrs?.width as number) || undefined,
+      },
+    ];
+  }
+
+  // YouTube / Vimeo embed
+  if (node.type === "youtube") {
+    const src = node.attrs?.src as string | undefined;
+    if (!src) return [];
+    return [
+      {
+        _type: "video",
+        _key: nextKey(),
+        source: "external",
+        url: src,
+        caption: "",
+      },
+    ];
+  }
+
   const headingMap: Record<string, string> = {
     heading: `h${(node.attrs?.level as number) ?? 2}`,
   };
 
-  if (node.type === "paragraph" || node.type === "heading" || node.type === "blockquote") {
+  if (
+    node.type === "paragraph" ||
+    node.type === "heading" ||
+    node.type === "blockquote"
+  ) {
     const style =
       node.type === "heading"
         ? headingMap["heading"]
@@ -93,7 +129,7 @@ function convertNode(node: TiptapNode): PortableTextBlock[] {
             ? children
             : [{ _type: "span", _key: nextKey(), text: "", marks: [] }],
         markDefs,
-      },
+      } as PortableTextBlock,
     ];
   }
 
@@ -117,7 +153,7 @@ function convertNode(node: TiptapNode): PortableTextBlock[] {
               ? children
               : [{ _type: "span", _key: nextKey(), text: "", marks: [] }],
           markDefs,
-        },
+        } as PortableTextBlock,
       ];
     });
   }
@@ -126,7 +162,7 @@ function convertNode(node: TiptapNode): PortableTextBlock[] {
   return (node.content ?? []).flatMap(convertNode);
 }
 
-export function tiptapToPortableText(tiptapJson: TiptapNode): PortableTextBlock[] {
+export function tiptapToPortableText(tiptapJson: TiptapNode): unknown[] {
   keyCounter = 0;
   return convertNode(tiptapJson);
 }

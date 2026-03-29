@@ -49,3 +49,33 @@ hr {
 .grecaptcha-badge {
   visibility: hidden !important;
 }
+
+/* Tiptap editor — YouTube / video embeds */
+.ProseMirror div[data-youtube-video] {
+  position: relative;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.ProseMirror div[data-youtube-video] iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border-radius: 0.5rem;
+  border: none;
+}
+
+/* Tiptap editor — inline images */
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+/* Selected node highlight in Tiptap */
+.ProseMirror .ProseMirror-selectednode {
+  outline: 2px solid var(--color-accent);
+  border-radius: 0.25rem;
+}
+

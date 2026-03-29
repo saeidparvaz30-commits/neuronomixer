@@ -14,14 +14,21 @@ export async function POST(req: NextRequest) {
 
   const userId = session!.user!.id;
 
-  let body: { title?: string; categoryId?: string; excerpt?: string; body?: unknown };
+  let body: {
+    title?: string;
+    categoryId?: string;
+    excerpt?: string;
+    body?: unknown;
+    coverImageAssetId?: string;
+    action?: "draft" | "submit";
+  };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const { title, categoryId, excerpt, body: tiptapBody } = body;
+  const { title, categoryId, excerpt, body: tiptapBody, coverImageAssetId, action = "submit" } = body;
 
   if (!title?.trim()) {
     return NextResponse.json({ error: "Title is required" }, { status: 400 });
@@ -53,7 +60,7 @@ export async function POST(req: NextRequest) {
     _type: "post",
     title: title.trim(),
     slug: { _type: "slug", current: slug },
-    status: "pending",
+    status: action === "draft" ? "draft" : "pending",
     submittedBy: userId,
     description: excerpt?.trim() || undefined,
     body: portableTextBody,
@@ -62,6 +69,13 @@ export async function POST(req: NextRequest) {
 
   if (user?.sanityAuthorId) {
     doc.author = { _type: "reference", _ref: user.sanityAuthorId };
+  }
+
+  if (coverImageAssetId) {
+    doc.mainImage = {
+      _type: "image",
+      asset: { _type: "reference", _ref: coverImageAssetId },
+    };
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

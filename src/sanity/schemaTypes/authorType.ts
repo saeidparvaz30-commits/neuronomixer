@@ -85,6 +85,22 @@ export const authorType = defineType({
     }),
 
     defineField({
+      name: "education",
+      type: "string",
+      title: "Education",
+      description: "Highest level of education (e.g. MSc Data Science, Stanford University)",
+    }),
+    defineField({
+      name: "jobTitle",
+      type: "string",
+      title: "Job Title",
+    }),
+    defineField({
+      name: "employer",
+      type: "string",
+      title: "Employer / Organisation",
+    }),
+    defineField({
       name: "email",
       type: "string",
       title: "Email Address",

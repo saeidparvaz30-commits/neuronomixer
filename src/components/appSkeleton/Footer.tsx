@@ -8,8 +8,8 @@ export default function Footer() {
   return (
     <footer
       className="relative w-full bg-[var(--background)] text-[var(--color-text-muted)] mt-1
-      border-t-2 border-[var(--color-accent)] 
-      before:content-[''] before:absolute before:-top-[6px] before:left-0 
+      border-t-2 border-[var(--color-accent)]
+      before:content-[''] before:absolute before:-top-[6px] before:left-0
       before:w-full before:border-t before:border-[var(--color-accent)]"
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-0 py-8 relative">

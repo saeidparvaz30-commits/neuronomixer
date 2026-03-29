@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import CompleteSignupForm from "./CompleteSignupForm";
 
 export default async function CompleteSignupPage() {
@@ -26,6 +27,9 @@ export default async function CompleteSignupPage() {
         : "/dashboard/subscriber"
     );
   }
+
+  const cookieStore = await cookies();
+  const roleHint = cookieStore.get("role_intent")?.value as "AUTHOR" | "SUBSCRIBER" | undefined;
 
   return (
     <section className="relative min-h-screen flex items-center justify-center -mt-24 py-16 px-4">
@@ -54,6 +58,7 @@ export default async function CompleteSignupPage() {
           <CompleteSignupForm
             userEmail={session.user.email ?? ""}
             userName={session.user.name ?? ""}
+            roleHint={roleHint}
           />
         </div>
       </div>

@@ -1,21 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 interface Props {
   userEmail: string;
   userName: string;
+  roleHint?: "AUTHOR" | "SUBSCRIBER";
 }
 
-export default function CompleteSignupForm({ userEmail, userName }: Props) {
+export default function CompleteSignupForm({ userEmail, userName, roleHint }: Props) {
   const router = useRouter();
   const { update } = useSession();
   const params = useSearchParams();
   const initialRole =
-    params.get("role") === "AUTHOR" ? "AUTHOR" : "SUBSCRIBER";
+    params.get("role") === "AUTHOR" || roleHint === "AUTHOR" ? "AUTHOR" : "SUBSCRIBER";
   const [role, setRole] = useState<"SUBSCRIBER" | "AUTHOR">(initialRole);
+
+  useEffect(() => {
+    // Clear role intent cookie once it's been consumed
+    document.cookie = "role_intent=; path=/; max-age=0";
+  }, []);
   const [name, setName] = useState(userName);
   const [bio, setBio] = useState("");
   const [motivation, setMotivation] = useState("");

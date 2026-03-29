@@ -219,11 +219,12 @@ function SignUpCard({
 
       {/* Google button */}
       <button
-        onClick={() =>
+        onClick={() => {
+          document.cookie = `role_intent=${role}; path=/; max-age=300; SameSite=Lax`;
           signIn("google", {
             callbackUrl: `/auth/complete-signup?role=${role}`,
-          })
-        }
+          });
+        }}
         className={`flex items-center justify-center gap-2.5 w-full px-4 py-3 font-semibold rounded-xl transition-all duration-200 ${googleBtnClass}`}
       >
         <GoogleIcon />

@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Users, FileText, BookOpen } from "lucide-react";
+import { LayoutDashboard, Users, FileText, BookOpen, PenSquare, Lightbulb, Tag, UserCircle } from "lucide-react";
 
 export default async function AdminLayout({
   children,
@@ -14,12 +14,21 @@ export default async function AdminLayout({
     redirect("/auth/sign-in");
   }
 
-  const navItems = [
+  const adminItems = [
     { href: "/dashboard/admin", label: "Overview", icon: LayoutDashboard },
     { href: "/dashboard/admin/authors", label: "Authors", icon: Users },
     { href: "/dashboard/admin/posts", label: "Posts", icon: FileText },
+    { href: "/dashboard/admin/categories", label: "Categories", icon: Tag },
     { href: "/dashboard/admin/users", label: "All Users", icon: BookOpen },
   ];
+
+  const writingItems = [
+    { href: "/dashboard/admin/submit", label: "Submit Post", icon: PenSquare },
+    { href: "/dashboard/admin/my-posts", label: "My Posts", icon: FileText },
+    { href: "/dashboard/admin/suggest-category", label: "Suggest Category", icon: Lightbulb },
+  ];
+
+  const navLink = "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors";
 
   return (
     <div className="min-h-screen bg-[var(--background)] flex pt-24">
@@ -28,16 +37,31 @@ export default async function AdminLayout({
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-3">
           Admin
         </p>
-        {navItems.map(({ href, label, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
-          >
+        {adminItems.map(({ href, label, icon: Icon }) => (
+          <Link key={href} href={href} className={navLink}>
             <Icon size={16} />
             {label}
           </Link>
         ))}
+
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mt-6 mb-3">
+          Writing
+        </p>
+        {writingItems.map(({ href, label, icon: Icon }) => (
+          <Link key={href} href={href} className={navLink}>
+            <Icon size={16} />
+            {label}
+          </Link>
+        ))}
+
+        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mt-6 mb-3">
+          Account
+        </p>
+        <Link href="/dashboard/admin/profile" className={navLink}>
+          <UserCircle size={16} />
+          Profile
+        </Link>
+
         <div className="mt-auto pt-6 border-t border-white/10">
           <a
             href="/studio"

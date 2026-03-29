@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { client } from "@/sanity/lib/client";
 
 function escapeHtml(str: string): string {
   return str
@@ -67,6 +68,22 @@ export async function POST(request: Request) {
         <p><strong>Message:</strong></p>
         <p>${safeMessage}</p>
       `,
+    });
+
+    // 3️⃣ Create Sanity author draft so admin can review it in the dashboard
+    const slugBase = name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+    const slugValue = `${slugBase}-${Date.now()}`;
+
+    await client.create({
+      _type: "author",
+      name,
+      slug: { _type: "slug", current: slugValue },
+      email,
+      shortBio: message || "",
+      applicationStatus: "pending",
     });
 
     return NextResponse.json({ success: true });
