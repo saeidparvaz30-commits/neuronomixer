@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
 
@@ -14,6 +14,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [visible, setVisible] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
   const lastScrollY = useRef(0);
   const hoverReveal = useRef(false);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -92,6 +93,14 @@ export default function Navbar() {
       clearHideTimer();
     };
   }, []);
+
+  useEffect(() => {
+    if (!session?.user) return;
+    fetch("/api/notifications")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data) setUnreadCount(data.unreadCount ?? 0); })
+      .catch(() => {});
+  }, [session?.user]);
 
   const links = [
     { href: "/", label: "Home" },
@@ -181,6 +190,18 @@ export default function Navbar() {
           {/* Right side: avatar or sign-in */}
           <div className="hidden md:flex items-center gap-2">
             {session?.user ? (
+              <>
+                {/* Notification bell */}
+                <Link
+                  href={dashboardHref + "/notifications"}
+                  className="relative p-1.5 text-white/60 hover:text-white transition-colors"
+                  aria-label="Notifications"
+                >
+                  <Bell size={18} />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-[var(--color-accent)]" />
+                  )}
+                </Link>
               <div ref={avatarRef} className="relative">
                 <button
                   onClick={() => setAvatarOpen(!avatarOpen)}
@@ -241,6 +262,7 @@ export default function Navbar() {
                   )}
                 </AnimatePresence>
               </div>
+              </>
             ) : (
               <div className="flex items-center gap-2">
                 <Link

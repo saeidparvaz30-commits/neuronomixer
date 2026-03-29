@@ -33,9 +33,10 @@ export async function POST(req: NextRequest) {
   const { name, shortBio, longBio, jobTitle, employer, education, linkedIn, github, twitter, personalWebsite, contactEmail, imageUrl, imageAssetId } = body;
   if (!name?.trim()) return NextResponse.json({ error: "Name is required" }, { status: 400 });
 
-  // Update Prisma (name + image only — bio now lives in Sanity shortBio)
+  // Update Prisma (name, image, and bio for subscribers without Sanity)
   const prismaData: Record<string, unknown> = { name: name.trim() };
   if (imageUrl) prismaData.image = imageUrl;
+  if (shortBio !== undefined) prismaData.bio = shortBio?.trim() ?? "";
 
   const updated = await (prisma as any).user.update({
     where: { id: session.user.id },

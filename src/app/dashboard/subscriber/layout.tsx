@@ -1,16 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import Link from "next/link";
-import { Users, Clock, Settings, Rss, UserCircle } from "lucide-react";
-
-const navItems = [
-  { href: "/dashboard/subscriber", label: "Feed", icon: Rss, exact: true },
-  { href: "/dashboard/subscriber/history", label: "Reading History", icon: Clock },
-  { href: "/dashboard/subscriber/following", label: "Following", icon: Users },
-  { href: "/dashboard/subscriber/profile", label: "Profile", icon: UserCircle },
-  { href: "/dashboard/subscriber/settings", label: "Settings", icon: Settings },
-];
+import SubscriberSidebarNav from "@/components/dashboard/SubscriberSidebarNav";
 
 export default async function SubscriberLayout({
   children,
@@ -37,38 +28,7 @@ export default async function SubscriberLayout({
         </div>
 
         <div className="flex gap-6 items-start">
-          {/* Sidebar */}
-          <aside className="hidden md:block w-52 shrink-0">
-            <nav className="flex flex-col gap-1 bg-[#060d18]/80 border border-white/10 rounded-2xl p-3">
-              {navItems.map(({ href, label, icon: Icon }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
-                >
-                  <Icon size={15} />
-                  {label}
-                </Link>
-              ))}
-            </nav>
-          </aside>
-
-          {/* Mobile nav */}
-          <div className="md:hidden w-full mb-4">
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {navItems.map(({ href, label, icon: Icon }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-gray-400 hover:text-white bg-[#060d18]/80 border border-white/10 whitespace-nowrap transition-colors"
-                >
-                  <Icon size={14} />
-                  {label}
-                </Link>
-              ))}
-            </div>
-          </div>
-
+          <SubscriberSidebarNav />
           {/* Main content */}
           <main className="flex-1 min-w-0">{children}</main>
         </div>

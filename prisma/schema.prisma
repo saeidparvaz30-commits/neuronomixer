@@ -68,6 +68,7 @@ model User {
   bookmarks          Bookmark[]
   comments           Comment[]
   passwordResetTokens PasswordResetToken[]
+  notifications       Notification[]
   createdAt          DateTime         @default(now())
 }
 
@@ -131,6 +132,17 @@ model PasswordResetToken {
   userId    String
   token     String   @unique
   expires   DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  message   String
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 

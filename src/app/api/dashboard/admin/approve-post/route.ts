@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "postId required" }, { status: 400 });
   }
 
-  // Fetch post details before patching so we have author/category refs
+  // Fetch post details before patching
   const post = await client.fetch(
     `*[_id == $postId][0]{
       title,
@@ -23,7 +23,8 @@ export async function POST(req: NextRequest) {
       "authorRef": author._ref,
       "categoryRef": category._ref,
       "categorySlug": category->slug.current,
-      "authorName": author->name
+      "authorName": author->name,
+      "authorUserId": author->userId
     }`,
     { postId }
   );
@@ -33,6 +34,21 @@ export async function POST(req: NextRequest) {
     .set({ status: "approved", publishedAt: new Date().toISOString() })
     .commit();
 
+  // Notify the author (in-app + email)
+  if (post?.authorUserId) {
+    const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/blog/${post.categorySlug ?? ""}/${post.slug}`;
+    await prisma.notification.create({
+      data: {
+        userId: post.authorUserId,
+        type: "post_approved",
+        message: `Your post "${post.title}" has been approved and is now live!`,
+        link: postUrl,
+      },
+    }).catch(() => {});
+
+    notifyAuthorPostApproved(post.authorUserId, post.title, postUrl).catch(() => {});
+  }
+
   // Notify followers with emailNotifications enabled (fire-and-forget)
   if (post?.authorRef || post?.categoryRef) {
     notifyFollowers(post).catch((err) =>
@@ -41,6 +57,38 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ success: true });
+}
+
+async function notifyAuthorPostApproved(userId: string, postTitle: string, postUrl: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true, name: true },
+  });
+  if (!user?.email) return;
+
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: process.env.SMTP_SECURE === "true",
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  });
+
+  await transporter.sendMail({
+    from: `"NeuroNomixer" <${process.env.SMTP_USER}>`,
+    to: user.email,
+    subject: `Your post "${postTitle}" is now live!`,
+    text: `Hi ${user.name ?? "there"},\n\nGreat news! Your post "${postTitle}" has been approved and is now live on NeuroNomixer.\n\nRead it here: ${postUrl}\n\n— NeuroNomixer`,
+    html: `
+      <p>Hi ${user.name ?? "there"},</p>
+      <p>Great news! 🎉 Your post <strong>"${postTitle}"</strong> has been approved and is now live on NeuroNomixer.</p>
+      <p style="margin:24px 0">
+        <a href="${postUrl}" style="background:#1e5d8a;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
+          View Your Post
+        </a>
+      </p>
+      <p style="color:#888;font-size:0.85em">— NeuroNomixer Team</p>
+    `,
+  });
 }
 
 async function notifyFollowers(post: {
@@ -96,6 +144,6 @@ async function notifyFollowers(post: {
         <hr/>
         <p style="font-size:0.8em;color:#888;">You're receiving this because you follow this author or category on NeuroNomixer. <a href="${siteUrl}/dashboard/subscriber">Manage notifications</a>.</p>
       `,
-    }).catch(() => {/* skip per-recipient failures */});
+    }).catch(() => {});
   }
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 const db = prisma as any;
 
@@ -29,6 +30,11 @@ export async function POST(req: NextRequest) {
 
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const rl = checkRateLimit(`comments:${session.user.id}`, 10, 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Too many comments. Please slow down." }, { status: 429 });
+  }
 
   const { postSlug, body } = await req.json();
   if (!postSlug || !body?.trim())

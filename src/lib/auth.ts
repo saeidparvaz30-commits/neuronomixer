@@ -16,9 +16,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        captchaToken: { label: "Captcha Token", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
+
+        // Verify reCAPTCHA if secret key is configured
+        const secret = process.env.RECAPTCHA_SECRET_KEY;
+        if (secret && credentials.captchaToken) {
+          const captchaRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ secret, response: credentials.captchaToken as string }),
+          });
+          const captchaData = await captchaRes.json().catch(() => ({ success: false }));
+          if (!captchaData.success || (captchaData.score ?? 1) < 0.3) return null;
+        }
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email as string },
@@ -30,7 +43,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           user.password
         );
         if (!valid) return null;
-        if (user.suspended) return null; // Block suspended accounts
+        if (user.suspended) return null;
 
         return {
           id: user.id,

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { client } from "@/sanity/lib/client";
+import nodemailer from "nodemailer";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -31,7 +32,54 @@ export async function POST(req: NextRequest) {
         sanityAuthorId,
       },
     });
+
+    // Create in-app notification
+    await prisma.notification.create({
+      data: {
+        userId,
+        type: "author_approved",
+        message: "Your author application has been approved! You can now submit posts.",
+        link: "/dashboard/author",
+      },
+    }).catch(() => {});
+
+    // Send email notification (fire-and-forget)
+    notifyAuthorApproved(userId).catch(() => {});
   }
 
   return NextResponse.json({ success: true });
+}
+
+async function notifyAuthorApproved(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true, name: true },
+  });
+  if (!user?.email) return;
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com";
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: process.env.SMTP_SECURE === "true",
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  });
+
+  await transporter.sendMail({
+    from: `"NeuroNomixer" <${process.env.SMTP_USER}>`,
+    to: user.email,
+    subject: "Your author application has been approved!",
+    text: `Hi ${user.name ?? "there"},\n\nCongratulations! Your application to become an author on NeuroNomixer has been approved.\n\nYou can now log in and start submitting articles.\n\nVisit your dashboard: ${siteUrl}/dashboard/author\n\n— NeuroNomixer`,
+    html: `
+      <p>Hi ${user.name ?? "there"},</p>
+      <p>Congratulations! 🎉 Your application to become an author on NeuroNomixer has been <strong>approved</strong>.</p>
+      <p>You can now log in and start submitting articles for review.</p>
+      <p style="margin:24px 0">
+        <a href="${siteUrl}/dashboard/author" style="background:#1e5d8a;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">
+          Go to Author Dashboard
+        </a>
+      </p>
+      <p style="color:#888;font-size:0.85em">— NeuroNomixer Team</p>
+    `,
+  });
 }

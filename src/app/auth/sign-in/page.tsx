@@ -4,9 +4,11 @@ import { useState } from "react";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 export default function SignInPage() {
   const router = useRouter();
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -17,9 +19,15 @@ export default function SignInPage() {
     setError("");
     setLoading(true);
 
+    let captchaToken: string | undefined;
+    if (executeRecaptcha) {
+      captchaToken = await executeRecaptcha("signin").catch(() => undefined);
+    }
+
     const result = await signIn("credentials", {
       email,
       password,
+      captchaToken,
       redirect: false,
     });
 

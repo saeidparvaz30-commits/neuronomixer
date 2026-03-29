@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" className="shrink-0">
@@ -60,6 +61,7 @@ function SignUpCard({
   icon,
 }: CardProps) {
   const router = useRouter();
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -77,10 +79,15 @@ function SignUpCard({
 
     setLoading(true);
 
+    let captchaToken: string | undefined;
+    if (executeRecaptcha) {
+      captchaToken = await executeRecaptcha("signup").catch(() => undefined);
+    }
+
     const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, role }),
+      body: JSON.stringify({ email, password, role, captchaToken }),
     });
 
     const data = await res.json();

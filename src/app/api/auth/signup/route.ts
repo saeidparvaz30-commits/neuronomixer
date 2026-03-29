@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 async function sendVerificationEmail(userId: string, email: string) {
   // Remove any old token for this user+identifier
@@ -43,8 +44,31 @@ async function sendVerificationEmail(userId: string, email: string) {
   void userId; // stored for future use
 }
 
-export async function POST(req: Request) {
-  const { email, password, role } = await req.json();
+async function verifyCaptcha(token?: string): Promise<boolean> {
+  const secret = process.env.RECAPTCHA_SECRET_KEY;
+  if (!secret) return true; // Skip if not configured
+  if (!token) return false;
+
+  const res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ secret, response: token }),
+  });
+  const data = await res.json().catch(() => ({ success: false }));
+  return data.success === true && (data.score ?? 1) >= 0.3;
+}
+
+export async function POST(req: NextRequest) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const rl = checkRateLimit(`signup:${ip}`, 5, 15 * 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many signup attempts. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
+    );
+  }
+
+  const { email, password, role, captchaToken } = await req.json();
 
   if (!email || !password) {
     return NextResponse.json(
@@ -56,6 +80,14 @@ export async function POST(req: Request) {
     return NextResponse.json(
       { error: "Password must be at least 8 characters." },
       { status: 400 }
+    );
+  }
+
+  const captchaOk = await verifyCaptcha(captchaToken);
+  if (!captchaOk) {
+    return NextResponse.json(
+      { error: "Captcha verification failed. Please try again." },
+      { status: 403 }
     );
   }
 

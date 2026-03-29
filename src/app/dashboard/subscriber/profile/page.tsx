@@ -19,7 +19,7 @@ export default async function SubscriberProfilePage() {
       <h1 className="text-lg font-semibold text-white mb-6">Your Profile</h1>
       <ProfileForm
         name={user.name ?? ""}
-        bio={user.bio ?? ""}
+        shortBio={user.bio ?? ""}
         email={user.email ?? ""}
         image={user.image ?? null}
       />
