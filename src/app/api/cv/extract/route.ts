@@ -24,6 +24,7 @@ const SYSTEM_PROMPT = `You are a CV data extractor. Given raw text from a CV or 
   "linkedin": "",
   "github": "",
   "twitter": "",
+  "birthYear": "",
   "education": [
     { "school": "", "degree": "", "field": "", "from": "", "to": "", "description": "" }
   ],
@@ -35,6 +36,16 @@ const SYSTEM_PROMPT = `You are a CV data extractor. Given raw text from a CV or 
   ],
   "references": [
     { "name": "", "role": "", "company": "", "email": "" }
+  ],
+  "languages": [],
+  "projects": [
+    { "title": "", "description": "", "year": "" }
+  ],
+  "certifications": [
+    { "title": "", "issuer": "", "year": "" }
+  ],
+  "honors": [
+    { "title": "", "description": "" }
   ]
 }
 Rules:
@@ -42,6 +53,9 @@ Rules:
 - Set "current": true only if the role is clearly marked as ongoing/present.
 - "tagline" should be a short professional headline (e.g. "Senior Software Engineer | React & Node.js").
 - "bio" should be the summary/profile paragraph if present.
+- "birthYear" should be a 4-digit year string if the birth year is mentioned, otherwise "".
+- "languages" should be an array of language name strings (e.g. ["English", "French"]).
+- "skills[].level" should be one of "expert", "intermediate", "beginner", or "" if not clear.
 - Extract LinkedIn/GitHub/Twitter URLs or usernames into the respective fields.
 - Return ONLY the raw JSON — no markdown fences, no prose.`;
 
@@ -80,8 +94,9 @@ export async function POST(req: NextRequest) {
 
   try {
     if (file.type === "application/pdf") {
+      // Use lib path directly to avoid pdf-parse v1's test-fixture loader crashing in Next.js
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const pdfParse = require("pdf-parse") as (buf: Buffer) => Promise<{ text: string }>;
+      const pdfParse = require("pdf-parse/lib/pdf-parse.js") as (buf: Buffer) => Promise<{ text: string }>;
       const parsed = await pdfParse(buffer);
       rawText = parsed.text;
     } else if (
@@ -94,7 +109,8 @@ export async function POST(req: NextRequest) {
     } else {
       rawText = buffer.toString("utf-8");
     }
-  } catch {
+  } catch (err) {
+    console.error("[cv/extract] parse error:", err);
     return NextResponse.json({ error: "Failed to read file content." }, { status: 422 });
   }
 
@@ -128,7 +144,8 @@ export async function POST(req: NextRequest) {
     // Strip possible markdown fences
     const cleaned = content.text.replace(/^```[a-z]*\n?/, "").replace(/\n?```$/, "").trim();
     cvJson = JSON.parse(cleaned);
-  } catch {
+  } catch (err) {
+    console.error("[cv/extract] Claude error:", err);
     return NextResponse.json(
       { error: "AI extraction failed. Please try again or fill in the fields manually." },
       { status: 500 }

@@ -164,8 +164,14 @@ model AuthorCV {
   education  Json     @default("[]")
   experience Json     @default("[]")
   skills     Json     @default("[]")
-  references Json     @default("[]")
-  isPublic   Boolean  @default(false)
+  references     Json     @default("[]")
+  languages      Json     @default("[]")
+  projects       Json     @default("[]")
+  certifications Json     @default("[]")
+  honors         Json     @default("[]")
+  birthYear      String?
+  sectionVisibility Json     @default("{}")
+  isPublic       Boolean  @default(false)
   slug       String?  @unique
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

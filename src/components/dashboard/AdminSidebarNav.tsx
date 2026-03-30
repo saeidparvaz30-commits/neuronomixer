@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, FileText, BookOpen, PenSquare, Lightbulb, Tag, UserCircle, Bell, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, Users, FileText, BookOpen, PenSquare, Lightbulb, Tag, UserCircle, Bell, FileUser, type LucideIcon } from "lucide-react";
 
 const adminItems: { href: string; label: string; icon: LucideIcon; exact?: boolean }[] = [
   { href: "/dashboard/admin", label: "Overview", icon: LayoutDashboard, exact: true },
@@ -17,6 +17,7 @@ const writingItems: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/dashboard/admin/submit", label: "Submit Post", icon: PenSquare },
   { href: "/dashboard/admin/my-posts", label: "My Posts", icon: FileText },
   { href: "/dashboard/admin/suggest-category", label: "Suggest Category", icon: Lightbulb },
+  { href: "/dashboard/author/cv", label: "CV Builder", icon: FileUser },
 ];
 
 const accountItems: { href: string; label: string; icon: LucideIcon }[] = [

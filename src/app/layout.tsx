@@ -1,9 +1,7 @@
 import "../styles/globals.css";
 import { Inter } from "next/font/google";
-import Navbar from "@/components/appSkeleton/Navbar";
-import Footer from "@/components/appSkeleton/Footer";
 import { ThemeProvider } from "next-themes";
-import FramerMotionProvider from "@/components/FrameMotionProvider";
+import ConditionalChrome from "@/components/appSkeleton/ConditionalChrome";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
 import GoogleAnalyticsTracker from "@/components/appSkeleton/GoogleAnalyticsTracker";
@@ -60,11 +58,7 @@ export default function RootLayout({
 
         <NextAuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <Navbar />
-            <main className="min-h-screen pt-24">
-              <FramerMotionProvider>{children}</FramerMotionProvider>
-            </main>
-            <Footer />
+            <ConditionalChrome>{children}</ConditionalChrome>
             <GoogleAnalyticsTracker />
             <SpeedInsights />
           </ThemeProvider>

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -24,12 +25,12 @@ export async function PUT(req: NextRequest) {
 
   const {
     name, tagline, bio, location, email, phone, website,
-    linkedin, github, twitter, avatarUrl,
+    linkedin, github, twitter, avatarUrl, birthYear,
     education, experience, skills, references,
-    isPublic, slug,
+    languages, projects, certifications, honors,
+    isPublic, slug, sectionVisibility,
   } = body;
 
-  // Validate slug uniqueness (another user can't hold the same slug)
   if (slug) {
     const existing = await prisma.authorCV.findUnique({ where: { slug } });
     if (existing && existing.userId !== session.user.id) {
@@ -49,12 +50,18 @@ export async function PUT(req: NextRequest) {
     github: github ?? null,
     twitter: twitter ?? null,
     avatarUrl: avatarUrl ?? null,
+    birthYear: birthYear ?? null,
     education: education ?? [],
     experience: experience ?? [],
     skills: skills ?? [],
     references: references ?? [],
+    languages: languages ?? [],
+    projects: projects ?? [],
+    certifications: certifications ?? [],
+    honors: honors ?? [],
     isPublic: Boolean(isPublic),
     slug: slug?.trim() || null,
+    sectionVisibility: sectionVisibility ?? {},
   };
 
   const cv = await prisma.authorCV.upsert({
@@ -62,6 +69,9 @@ export async function PUT(req: NextRequest) {
     create: { userId: session.user.id, ...data },
     update: data,
   });
+
+  // Invalidate the public page so it reflects the latest save immediately
+  if (cv.slug) revalidatePath(`/cv/${cv.slug}`);
 
   return NextResponse.json({ cv });
 }
