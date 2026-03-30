@@ -174,9 +174,9 @@ function MonthField({ label, value, onChange }: { label: string; value: string; 
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function CVBuilderClient({ initialCV }: { initialCV: CVData | null }) {
+export default function CVBuilderClient({ initialCV, userImage }: { initialCV: CVData | null; userImage?: string | null }) {
   const [cv, setCv] = useState<CVData>(() => {
-    if (!initialCV) return empty;
+    if (!initialCV) return { ...empty, avatarUrl: userImage || "" };
     // Explicitly coerce every nullable string field to "" so React inputs are
     // always controlled (value={null} silently makes them uncontrolled).
     return {
@@ -190,7 +190,7 @@ export default function CVBuilderClient({ initialCV }: { initialCV: CVData | nul
       linkedin: initialCV.linkedin ?? "",
       github: initialCV.github ?? "",
       twitter: initialCV.twitter ?? "",
-      avatarUrl: initialCV.avatarUrl ?? "",
+      avatarUrl: initialCV.avatarUrl || userImage || "",
       birthYear: initialCV.birthYear ?? "",
       education: (initialCV.education as EducationEntry[]) ?? [],
       experience: normaliseExpDates((initialCV.experience as ExperienceEntry[]) ?? []),
@@ -458,6 +458,36 @@ export default function CVBuilderClient({ initialCV }: { initialCV: CVData | nul
       {/* ── Personal Info ──────────────────────────────────────────────────── */}
       <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 space-y-4">
         <SectionHeading icon={User} label="Personal Info" visible={sectionVisible("about")} onToggle={() => toggleSection("about")} />
+
+        {/* ── Avatar ──────────────────────────────────────────────────────── */}
+        <div className="flex items-start gap-4">
+          {/* Preview */}
+          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[var(--color-accent)]/30 shrink-0 flex items-center justify-center bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-primary)] text-black font-bold text-lg">
+            {cv.avatarUrl
+              ? <img src={cv.avatarUrl} alt="Avatar preview" className="w-full h-full object-cover" />
+              : (cv.name ? cv.name.trim().split(/\s+/).map((w) => w[0]).slice(0, 2).join("").toUpperCase() : "?")}
+          </div>
+          {/* Controls */}
+          <div className="flex-1 space-y-2">
+            {userImage && (
+              <button
+                type="button"
+                onClick={() => set("avatarUrl", userImage)}
+                className="flex items-center gap-2 text-xs text-[var(--color-accent)] hover:opacity-80 transition border border-[var(--color-accent)]/20 rounded-lg px-3 py-1.5 bg-[var(--color-accent)]/5"
+              >
+                <img src={userImage} alt="" className="w-4 h-4 rounded-full object-cover shrink-0" />
+                Use my profile photo
+              </button>
+            )}
+            <Field
+              label="Avatar URL"
+              value={cv.avatarUrl}
+              onChange={(v) => set("avatarUrl", v)}
+              placeholder="https://example.com/photo.jpg"
+            />
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Full Name" value={cv.name} onChange={(v) => set("name", v)} placeholder="Jane Smith" />
           <Field label="Tagline" value={cv.tagline} onChange={(v) => set("tagline", v)} placeholder="Senior Engineer · React & Node.js" />

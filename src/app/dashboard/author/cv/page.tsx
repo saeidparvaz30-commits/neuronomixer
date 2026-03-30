@@ -13,14 +13,15 @@ export default async function CVBuilderPage() {
     redirect("/auth/sign-in");
   }
 
-  const cv = await prisma.authorCV.findUnique({
-    where: { userId: session.user.id },
-  });
+  const [cv, user] = await Promise.all([
+    prisma.authorCV.findUnique({ where: { userId: session.user.id } }),
+    prisma.user.findUnique({ where: { id: session.user.id }, select: { image: true } }),
+  ]);
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      <CVBuilderClient initialCV={cv as any} />
+      <CVBuilderClient initialCV={cv as any} userImage={user?.image ?? null} />
     </div>
   );
 }
