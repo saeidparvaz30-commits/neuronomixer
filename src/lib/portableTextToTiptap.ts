@@ -45,7 +45,7 @@ type TiptapNode = Record<string, unknown>;
 
 function convertSpans(children: PTSpan[], markDefs: PTMarkDef[]): TiptapNode[] {
   return children
-    .filter((s) => s._type === "span")
+    .filter((s) => s._type === "span" && s.text !== "")
     .map((span) => {
       const marks: TiptapNode[] = (span.marks ?? [])
         .map((markKey): TiptapNode | null => {

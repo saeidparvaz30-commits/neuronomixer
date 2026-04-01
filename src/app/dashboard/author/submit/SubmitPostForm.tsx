@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useEditor, EditorContent, ReactNodeViewRenderer } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -89,10 +89,13 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
   const [videoUrl, setVideoUrl] = useState("");
 
   const editor = useEditor({
-    immediatelyRender: false,
-    // Do NOT pass initial content here — it causes a React hydration mismatch
-    // in Next.js (server renders empty, client would have content).
-    // Content is set via useEffect below after the editor mounts on the client.
+    // immediatelyRender:true creates the editor synchronously so the `content`
+    // option is reliably applied.  Safe here because EditPostFormLoader always
+    // wraps this component with dynamic({ssr:false}), guaranteeing client-only
+    // execution when initialData is present.  For the new-post form (no
+    // initialData) we fall back to false to avoid SSR/hydration warnings.
+    immediatelyRender: !!initialData?.tiptapJson,
+    content: initialData?.tiptapJson ?? undefined,
     extensions: [
       StarterKit,
       Link.configure({ openOnClick: false }),
@@ -107,14 +110,6 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
       },
     },
   });
-
-  // ── Set initial content client-side (avoids Next.js hydration mismatch) ──
-  useEffect(() => {
-    if (!editor || !initialData?.tiptapJson) return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    editor.commands.setContent(initialData.tiptapJson as any);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editor]);
 
   // ── Cover image ────────────────────────────────────────────────────────────
   async function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {

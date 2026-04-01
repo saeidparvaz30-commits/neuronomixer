@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { portableTextToTiptap } from "@/lib/portableTextToTiptap";
-import SubmitPostForm from "@/app/dashboard/author/submit/SubmitPostForm";
+import EditPostFormLoader from "./EditPostFormLoader";
 
 interface Category {
   _id: string;
@@ -101,7 +101,7 @@ export default async function EditPostPage({
           : "Continue editing your draft."}
       </p>
 
-      <SubmitPostForm categories={categories} initialData={initialData} />
+      <EditPostFormLoader categories={categories} initialData={initialData} />
     </div>
   );
 }
