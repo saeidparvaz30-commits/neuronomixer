@@ -243,7 +243,7 @@ Be direct and specific. Reference the actual content, not generic observations.`
               <p><code className="text-gray-400">description</code> — optional. Short summary shown in post listing cards.</p>
               <p><code className="text-gray-400">metaDescription</code> — optional. SEO meta description shown in Google search results (max 160 chars). Falls back to <code className="text-gray-400">description</code> if omitted.</p>
               <p><code className="text-gray-400">category</code> — required. Slug from <code className="text-gray-400">GET /api/v1/categories</code>.</p>
-              <p><code className="text-gray-400">mainImageUrl</code> — optional. Public URL for the article header image. Uploaded automatically to Sanity.</p>
+              <p><code className="text-gray-400">mainImageUrl</code> — optional. Header image URL. Pass a <code className="text-gray-400">cdn.sanity.io</code> URL to reference an already-uploaded Sanity asset (no re-upload). Pass any other public URL to upload it automatically.</p>
               <p><code className="text-gray-400">body</code> — required. Full article in markdown. Supported syntax:</p>
               <ul className="ml-3 space-y-1 text-gray-600">
                 <li><code className="text-gray-500"># / ## / ### / ####</code> — headings</li>
@@ -251,7 +251,7 @@ Be direct and specific. Reference the actual content, not generic observations.`
                 <li><code className="text-gray-500">- item</code> — bullet list</li>
                 <li><code className="text-gray-500">{"> quote"}</code> — blockquote</li>
                 <li><code className="text-gray-500">[link text](https://url)</code> — hyperlink</li>
-                <li><code className="text-gray-500">![alt text](https://image-url.jpg)</code> — image (uploaded to Sanity automatically)</li>
+                <li><code className="text-gray-500">![alt text](https://image-url.jpg)</code> — image (cdn.sanity.io URLs reuse existing asset; other URLs are uploaded automatically)</li>
                 <li><code className="text-gray-500">[VIDEO: caption](https://youtube.com/...)</code> — YouTube / Vimeo embed</li>
                 <li>Bare YouTube/Vimeo URL on its own line also embeds a video</li>
               </ul>

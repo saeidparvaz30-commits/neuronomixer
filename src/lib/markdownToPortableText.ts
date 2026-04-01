@@ -133,7 +133,9 @@ export async function markdownToPortableText(markdown: string): Promise<PTBlock[
     const imgMatch = trimmed.match(/^!\[([^\]]*)\]\((https?:\/\/[^\)]+)\)$/);
     if (imgMatch) {
       const [, alt, url] = imgMatch;
-      const ref = await uploadImageUrl(url);
+      // Reuse existing Sanity asset if URL is already from the CDN
+      const existingRef = sanityUrlToAssetId(url);
+      const ref = existingRef ?? await uploadImageUrl(url);
       if (ref) {
         blocks.push({
           _key: nanoid(8), _type: "image",
@@ -193,10 +195,38 @@ export async function markdownToPortableText(markdown: string): Promise<PTBlock[
   return blocks;
 }
 
-/** Upload a URL and return a Sanity image block, or null on failure */
+/**
+ * Convert a Sanity CDN image URL back to its asset _id.
+ * e.g. https://cdn.sanity.io/images/pz9ppas8/blog_posts/abc123-1920x1080.jpg
+ *      → image-abc123-1920x1080-jpg
+ */
+function sanityUrlToAssetId(url: string): string | null {
+  try {
+    const { hostname, pathname } = new URL(url);
+    if (hostname !== "cdn.sanity.io") return null;
+    // pathname: /images/{projectId}/{dataset}/{filename}
+    const filename = pathname.split("/").pop(); // e.g. abc123-1920x1080.jpg
+    if (!filename) return null;
+    const lastDot = filename.lastIndexOf(".");
+    if (lastDot === -1) return null;
+    const base = filename.slice(0, lastDot);  // abc123-1920x1080
+    const ext  = filename.slice(lastDot + 1); // jpg
+    return `image-${base}-${ext}`;
+  } catch {
+    return null;
+  }
+}
+
+/** Upload a URL and return a Sanity image block, or null on failure.
+ *  If the URL is already a Sanity CDN URL the asset reference is derived
+ *  directly — no re-upload needed. */
 export async function uploadMainImage(
   url: string
 ): Promise<{ _type: "image"; asset: { _type: "reference"; _ref: string }; alt: string } | null> {
+  const existingRef = sanityUrlToAssetId(url);
+  if (existingRef) {
+    return { _type: "image", asset: { _type: "reference", _ref: existingRef }, alt: "" };
+  }
   const ref = await uploadImageUrl(url);
   if (!ref) return null;
   return { _type: "image", asset: { _type: "reference", _ref: ref }, alt: "" };
