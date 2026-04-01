@@ -43,6 +43,7 @@ export async function GET(req: NextRequest) {
       body[]{
         ...,
         _type == "image" => { ..., "asset": asset->{ "url": url } },
+        _type == "video" => { ..., "fileUrl": file.asset->url }
       }
     }`,
     { authorId: user.sanityAuthorId, siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "" }
@@ -50,9 +51,28 @@ export async function GET(req: NextRequest) {
 
   const posts = raw.map((p: any) => {
     const { body, ...meta } = p;
+
+    // Flat manifest of all images and videos in the body
+    const media = (body ?? [])
+      .map((b: any) => {
+        if (b._type === "image") {
+          const url = b.asset?.url ?? null;
+          return url ? { type: "image" as const, url, alt: b.alt ?? null } : null;
+        }
+        if (b._type === "video") {
+          const url = b.url ?? b.fileUrl ?? null;
+          return url
+            ? { type: "video" as const, url, caption: b.caption ?? null, source: b.source ?? "external" }
+            : null;
+        }
+        return null;
+      })
+      .filter(Boolean);
+
     return {
       ...meta,
       bodyMarkdown: portableTextToMarkdown(body ?? []),
+      media,
     };
   });
 

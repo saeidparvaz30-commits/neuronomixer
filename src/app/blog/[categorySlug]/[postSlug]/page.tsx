@@ -59,6 +59,7 @@ export async function generateMetadata({
   const post = await client.fetch(
     `*[_type == "post" && slug.current == $slug][0]{
         title,
+        metaDescription,
         description,
         "bodyDesc": pt::text(body[0..1]),
         "mainImageUrl": mainImage.asset->url,
@@ -71,6 +72,7 @@ export async function generateMetadata({
 
   const title = post?.title || "NeuroNomixer Blog Post";
   const description =
+    post?.metaDescription ||
     post?.description ||
     post?.bodyDesc?.slice(0, 155) ||
     "Exploring AI, data, and analytics with NeuroNomixer.";

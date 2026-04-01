@@ -159,7 +159,9 @@ export default function ApiKeyClient({ existing, siteUrl }: Props) {
             </div>
             <CodeBlock code={`curl ${siteUrl}/api/v1/posts \\
   -H "Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}"`} />
-            <p className="text-xs text-gray-500">Returns each post with a <code className="text-gray-400">bodyMarkdown</code> field — the full article content as markdown, ready for Claude to read.</p>
+            <p className="text-xs text-gray-500">
+              Returns each post with a <code className="text-gray-400">bodyMarkdown</code> field (full article as markdown — images appear as <code className="text-gray-400">![alt](url)</code>, videos as <code className="text-gray-400">[VIDEO: caption](url)</code>) and a <code className="text-gray-400">media[]</code> array — a flat list of every image and video in the body, each with <code className="text-gray-400">type</code>, <code className="text-gray-400">url</code>, and <code className="text-gray-400">alt</code>&nbsp;/&nbsp;<code className="text-gray-400">caption</code>.
+            </p>
           </div>
 
           {/* Content review prompt */}
@@ -267,7 +269,7 @@ Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}
 
 ## Available Endpoints
 - GET  /api/v1/categories  → list available categories and their slugs
-- GET  /api/v1/posts       → list all your published/pending posts
+- GET  /api/v1/posts       → list all your published/pending posts (includes bodyMarkdown and media[])
 - POST /api/v1/posts       → submit a new article for admin review
 
 ## Submitting an Article

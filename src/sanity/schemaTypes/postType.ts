@@ -78,6 +78,14 @@ export const postType = defineType({
       description: "Brief summary shown in post lists (1–2 sentences).",
     }),
     defineField({
+      name: "metaDescription",
+      title: "Meta Description",
+      type: "string",
+      description: "SEO meta description for this post (recommended: 150–160 characters).",
+      validation: (Rule) =>
+        Rule.warning("Meta description should not exceed 160 characters.").max(160),
+    }),
+    defineField({
       name: "status",
       title: "Status",
       type: "string",

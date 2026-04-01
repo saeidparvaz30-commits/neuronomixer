@@ -14,7 +14,8 @@ type PTImage = {
 };
 type PTVideo = {
   _type: "video";
-  url?: string;
+  url?: string;       // external YouTube/Vimeo URL
+  fileUrl?: string;   // resolved URL for uploaded video files
   caption?: string;
 };
 type PTBlock = PTTextBlock | PTImage | PTVideo | { _type: string };
@@ -76,7 +77,8 @@ export function portableTextToMarkdown(blocks: PTBlock[]): string {
     } else if (block._type === "video") {
       const vid = block as PTVideo;
       const caption = vid.caption ? `VIDEO: ${vid.caption}` : "VIDEO";
-      lines.push(vid.url ? `[${caption}](${vid.url})` : `[${caption}]`);
+      const videoUrl = vid.url || vid.fileUrl || "";
+      lines.push(videoUrl ? `[${caption}](${videoUrl})` : `[${caption}]`);
     }
     // skip table and unknown block types
   }
