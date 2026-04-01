@@ -96,9 +96,10 @@ export async function POST(req: NextRequest) {
   let body: {
     title?: string;
     description?: string;
-    category?: string;    // category slug
-    body?: string;        // markdown
-    mainImageUrl?: string; // public image URL for the header image
+    metaDescription?: string; // SEO meta description (max 160 chars)
+    category?: string;        // category slug
+    body?: string;            // markdown
+    mainImageUrl?: string;    // public image URL for the header image
     publishedAt?: string;
   };
 
@@ -108,7 +109,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400, headers: CORS });
   }
 
-  const { title, description, category: categorySlug, body: markdown, mainImageUrl } = body;
+  const { title, description, metaDescription, category: categorySlug, body: markdown, mainImageUrl } = body;
 
   if (!title?.trim()) {
     return NextResponse.json({ error: "title is required" }, { status: 400, headers: CORS });
@@ -142,6 +143,7 @@ export async function POST(req: NextRequest) {
     _type: "post",
     title: title.trim(),
     description: description?.trim() ?? "",
+    ...(metaDescription?.trim() && { metaDescription: metaDescription.trim().slice(0, 160) }),
     slug: {
       _type: "slug",
       current: title

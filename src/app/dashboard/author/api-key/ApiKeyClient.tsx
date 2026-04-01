@@ -232,14 +232,16 @@ Be direct and specific. Reference the actual content, not generic observations.`
   -H "Content-Type: application/json" \\
   -d '{
     "title": "My Article Title",
-    "description": "A brief 1-2 sentence summary.",
+    "description": "A brief 1-2 sentence summary shown in post listings.",
+    "metaDescription": "SEO-optimised description for search engines (max 160 chars).",
     "category": "charting-your-data-journey",
     "mainImageUrl": "https://images.unsplash.com/photo-xxx?w=1200",
     "body": "## Introduction\\n\\nYour **markdown** content here.\\n\\n![Chart showing model accuracy](https://example.com/chart.png)\\n\\n[VIDEO: GPT-4 explained](https://youtube.com/watch?v=xxx)\\n\\nLearn more at [OpenAI](https://openai.com)."
   }'`} />
             <div className="text-xs text-gray-500 space-y-1.5 mt-2">
               <p><code className="text-gray-400">title</code> — required. Article headline.</p>
-              <p><code className="text-gray-400">description</code> — optional. Short summary shown in listings.</p>
+              <p><code className="text-gray-400">description</code> — optional. Short summary shown in post listing cards.</p>
+              <p><code className="text-gray-400">metaDescription</code> — optional. SEO meta description shown in Google search results (max 160 chars). Falls back to <code className="text-gray-400">description</code> if omitted.</p>
               <p><code className="text-gray-400">category</code> — required. Slug from <code className="text-gray-400">GET /api/v1/categories</code>.</p>
               <p><code className="text-gray-400">mainImageUrl</code> — optional. Public URL for the article header image. Uploaded automatically to Sanity.</p>
               <p><code className="text-gray-400">body</code> — required. Full article in markdown. Supported syntax:</p>
@@ -277,7 +279,8 @@ Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}
 POST /api/v1/posts with JSON body:
 {
   "title": "Article headline",
-  "description": "1–2 sentence summary shown in listings",
+  "description": "1–2 sentence summary shown in post listing cards",
+  "metaDescription": "SEO meta description for Google search results (max 160 chars)",
   "category": "slug-from-categories-endpoint",
   "mainImageUrl": "https://public-url-to-header-image.jpg",
   "body": "Full article in markdown (see syntax below)"
