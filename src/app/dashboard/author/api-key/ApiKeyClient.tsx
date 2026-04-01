@@ -168,29 +168,21 @@ export default function ApiKeyClient({ existing, siteUrl }: Props) {
           <div className="bg-[#060d18]/80 border border-[#3bb4a4]/20 rounded-2xl p-5 space-y-3">
             <h3 className="text-sm font-semibold text-[#3bb4a4]">Content Review &amp; Improvement Prompt</h3>
             <p className="text-xs text-gray-400">
-              Paste this into Claude with the browser tool enabled. Claude will fetch your posts directly via the API and produce a detailed review:
+              Paste this into Claude with the browser tool enabled. Claude navigates to a plain-text review page — no JS data extraction needed:
             </p>
             <CodeBlock code={`You are a senior content strategist and editor specialising in AI, data science, and risk analytics.
 
-Your task is to review all published articles by a NeuroNomixer author and provide a detailed review report.
+Your task is to review all published articles by a NeuroNomixer author and produce a detailed review report.
 
-## Step 1 — Fetch all posts
-Use your browser tool to fetch the following URL and retrieve every article including full body content:
+## Step 1 — Load all posts
+Use your browser tool to navigate to this URL (your API key is embedded):
 
-URL: ${siteUrl}/api/v1/posts
-Method: GET
-Headers:
-  Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}
+${siteUrl}/review?key=${visible ? apiKey : "YOUR_API_KEY"}
 
-Use your browser tool to run the following JavaScript fetch and read the response:
-
-fetch("${siteUrl}/api/v1/posts", { headers: { "Authorization": "Bearer ${visible ? apiKey : "YOUR_API_KEY"}" } })
-  .then(r => r.json()).then(data => console.log(JSON.stringify(data)));
-
-The response is JSON with a "posts" array — each post includes "bodyMarkdown" (full article text) and "media" (list of images and videos).
+This page renders every post as plain readable text — title, URL, status, description, body content, and media list. Use get_page_text (or equivalent) to read the full page. All posts are on a single page so one read is sufficient.
 
 ## Step 2 — Analyse each article
-For every post returned, evaluate:
+For every post, evaluate:
 1. **Clarity** — Is the writing clear, concise, and free of jargon overload?
 2. **Structure** — Does it have a strong intro, logical sections (## headings), and a conclusion?
 3. **Depth** — Is the topic covered thoroughly, or are key concepts left unexplained?
