@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useEditor, EditorContent, ReactNodeViewRenderer } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
@@ -35,6 +35,7 @@ export interface InitialData {
   title: string;
   categoryId: string;
   excerpt: string;
+  metaDescription: string;
   tiptapJson?: object;
   coverImageUrl: string | null;
   coverImageAssetId: string | null;
@@ -65,9 +66,10 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
   const ui = STATUS_CONFIG[statusKey] ?? STATUS_CONFIG.new;
 
   // ── Form state ────────────────────────────────────────────────────────────
-  const [title, setTitle]         = useState(initialData?.title ?? "");
-  const [categoryId, setCategoryId] = useState(initialData?.categoryId ?? "");
-  const [excerpt, setExcerpt]     = useState(initialData?.excerpt ?? "");
+  const [title, setTitle]             = useState(initialData?.title ?? "");
+  const [categoryId, setCategoryId]   = useState(initialData?.categoryId ?? "");
+  const [excerpt, setExcerpt]         = useState(initialData?.excerpt ?? "");
+  const [metaDescription, setMetaDescription] = useState(initialData?.metaDescription ?? "");
   const [loadingAction, setLoadingAction] = useState<"draft" | "submit" | null>(null);
   const [error, setError]         = useState("");
   const [successAction, setSuccessAction] = useState<"draft" | "submit" | null>(null);
@@ -88,7 +90,9 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
 
   const editor = useEditor({
     immediatelyRender: false,
-    content: initialData?.tiptapJson ?? undefined,
+    // Do NOT pass initial content here — it causes a React hydration mismatch
+    // in Next.js (server renders empty, client would have content).
+    // Content is set via useEffect below after the editor mounts on the client.
     extensions: [
       StarterKit,
       Link.configure({ openOnClick: false }),
@@ -103,6 +107,14 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
       },
     },
   });
+
+  // ── Set initial content client-side (avoids Next.js hydration mismatch) ──
+  useEffect(() => {
+    if (!editor || !initialData?.tiptapJson) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    editor.commands.setContent(initialData.tiptapJson as any);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor]);
 
   // ── Cover image ────────────────────────────────────────────────────────────
   async function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -179,6 +191,7 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
         title,
         categoryId,
         excerpt,
+        metaDescription: metaDescription.trim().slice(0, 160) || undefined,
         body: editor.getJSON(),
         coverImageAssetId: coverAssetId ?? null,
         action,
@@ -319,6 +332,23 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
           placeholder="A short description shown in post lists (optional)"
           className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/60"
         />
+      </div>
+
+      {/* ── Meta Description ─────────────────────────────────────────────── */}
+      <div>
+        <label className="block text-sm text-gray-300 mb-1">
+          Meta Description
+          <span className="ml-2 text-xs text-gray-500">(SEO — shown in Google search results, max 160 chars)</span>
+        </label>
+        <textarea
+          value={metaDescription}
+          onChange={(e) => setMetaDescription(e.target.value)}
+          rows={2}
+          maxLength={160}
+          placeholder="Concise description for search engines (optional, falls back to excerpt if omitted)"
+          className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/60"
+        />
+        <p className="text-xs text-gray-600 mt-0.5 text-right">{metaDescription.length}/160</p>
       </div>
 
       {/* ── Tiptap Editor ────────────────────────────────────────────────── */}

@@ -220,6 +220,21 @@ Be direct and specific. Reference the actual content, not generic observations.`
   -H "Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}"`} />
           </div>
 
+          {/* Upload image */}
+          <div className="bg-[#060d18]/80 border border-white/10 rounded-2xl p-5 space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-green-500/20 text-green-400 font-mono">POST</span>
+              <code className="text-sm text-white font-mono">/api/v1/upload</code>
+              <span className="text-xs text-gray-500 ml-1">— Upload an image, get a URL back</span>
+            </div>
+            <CodeBlock code={`curl -X POST ${siteUrl}/api/v1/upload \\
+  -H "Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}" \\
+  -F "file=@/path/to/image.jpg"`} />
+            <p className="text-xs text-gray-500">
+              Returns <code className="text-gray-400">{"{ url, assetId }"}</code>. Use the <code className="text-gray-400">url</code> in markdown body as <code className="text-gray-400">![alt](url)</code> to embed the image in a post.
+            </p>
+          </div>
+
           {/* Submit post */}
           <div className="bg-[#060d18]/80 border border-white/10 rounded-2xl p-5 space-y-3">
             <div className="flex items-center gap-2">
@@ -229,21 +244,27 @@ Be direct and specific. Reference the actual content, not generic observations.`
             </div>
             <CodeBlock code={`curl -X POST ${siteUrl}/api/v1/posts \\
   -H "Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "title": "My Article Title",
-    "description": "A brief 1-2 sentence summary shown in post listings.",
-    "metaDescription": "SEO-optimised description for search engines (max 160 chars).",
-    "category": "charting-your-data-journey",
-    "mainImageUrl": "https://images.unsplash.com/photo-xxx?w=1200",
-    "body": "## Introduction\\n\\nYour **markdown** content here.\\n\\n![Chart showing model accuracy](https://example.com/chart.png)\\n\\n[VIDEO: GPT-4 explained](https://youtube.com/watch?v=xxx)\\n\\nLearn more at [OpenAI](https://openai.com)."
-  }'`} />
+  -F "title=My Article Title" \\
+  -F "description=A brief 1-2 sentence summary shown in post listings." \\
+  -F "metaDescription=SEO-optimised description for search engines (max 160 chars)." \\
+  -F "category=charting-your-data-journey" \\
+  -F "mainImage=@/path/to/cover.jpg" \\
+  -F 'body=## Introduction
+
+Your **markdown** content here.
+
+![Chart showing model accuracy](https://cdn.sanity.io/images/...)
+
+[VIDEO: GPT-4 explained](https://youtube.com/watch?v=xxx)
+
+Learn more at [OpenAI](https://openai.com).'`} />
             <div className="text-xs text-gray-500 space-y-1.5 mt-2">
+              <p>Sent as <code className="text-gray-400">multipart/form-data</code> (use <code className="text-gray-400">-F</code> in curl, <code className="text-gray-400">FormData</code> in JS).</p>
               <p><code className="text-gray-400">title</code> — required. Article headline.</p>
               <p><code className="text-gray-400">description</code> — optional. Short summary shown in post listing cards.</p>
               <p><code className="text-gray-400">metaDescription</code> — optional. SEO meta description shown in Google search results (max 160 chars). Falls back to <code className="text-gray-400">description</code> if omitted.</p>
               <p><code className="text-gray-400">category</code> — required. Slug from <code className="text-gray-400">GET /api/v1/categories</code>.</p>
-              <p><code className="text-gray-400">mainImageUrl</code> — optional. Header image URL. Pass a <code className="text-gray-400">cdn.sanity.io</code> URL to reference an already-uploaded Sanity asset (no re-upload). Pass any other public URL to upload it automatically.</p>
+              <p><code className="text-gray-400">mainImage</code> — optional. Cover image file (PNG, JPG, WebP). Uploaded directly to Sanity.</p>
               <p><code className="text-gray-400">body</code> — required. Full article in markdown. Supported syntax:</p>
               <ul className="ml-3 space-y-1 text-gray-600">
                 <li><code className="text-gray-500"># / ## / ### / ####</code> — headings</li>
@@ -251,7 +272,7 @@ Be direct and specific. Reference the actual content, not generic observations.`
                 <li><code className="text-gray-500">- item</code> — bullet list</li>
                 <li><code className="text-gray-500">{"> quote"}</code> — blockquote</li>
                 <li><code className="text-gray-500">[link text](https://url)</code> — hyperlink</li>
-                <li><code className="text-gray-500">![alt text](https://image-url.jpg)</code> — image (cdn.sanity.io URLs reuse existing asset; other URLs are uploaded automatically)</li>
+                <li><code className="text-gray-500">![alt text](https://image-url.jpg)</code> — inline image (auto-uploaded to Sanity; use <code className="text-gray-500">POST /api/v1/upload</code> first to get a CDN URL)</li>
                 <li><code className="text-gray-500">[VIDEO: caption](https://youtube.com/...)</code> — YouTube / Vimeo embed</li>
                 <li>Bare YouTube/Vimeo URL on its own line also embeds a video</li>
               </ul>
@@ -273,18 +294,22 @@ Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}
 ## Available Endpoints
 - GET  /api/v1/categories  → list available categories and their slugs
 - GET  /api/v1/posts       → list all your published/pending posts (includes bodyMarkdown and media[])
-- POST /api/v1/posts       → submit a new article for admin review
+- POST /api/v1/upload      → upload an image file, returns { url, assetId }
+- POST /api/v1/posts       → submit a new article for admin review (multipart/form-data)
 
 ## Submitting an Article
-POST /api/v1/posts with JSON body:
-{
-  "title": "Article headline",
-  "description": "1–2 sentence summary shown in post listing cards",
-  "metaDescription": "SEO meta description for Google search results (max 160 chars)",
-  "category": "slug-from-categories-endpoint",
-  "mainImageUrl": "https://public-url-to-header-image.jpg",
-  "body": "Full article in markdown (see syntax below)"
-}
+POST /api/v1/posts as multipart/form-data fields:
+- title           (required) Article headline
+- description     (optional) 1–2 sentence summary shown in post listing cards
+- metaDescription (optional) SEO meta description for Google search results (max 160 chars)
+- category        (required) Slug from GET /api/v1/categories
+- mainImage       (optional) Cover image file (PNG/JPG/WebP) — upload the binary file directly
+- body            (required) Full article in markdown (see syntax below)
+
+## Uploading Images for the Body
+To embed an image in the article body:
+1. POST /api/v1/upload with the image file in a 'file' field
+2. Use the returned url in markdown: ![alt description](url)
 
 ## Markdown Syntax for body
 - Headings: # H1  ## H2  ### H3  #### H4
@@ -292,8 +317,8 @@ POST /api/v1/posts with JSON body:
 - Lists:    - bullet item
 - Quote:    > blockquote text
 - Link:     [link text](https://url.com)
-- Image:    ![alt description](https://public-image-url.jpg)
-            → auto-uploaded to Sanity, shows in article
+- Image:    ![alt description](https://cdn.sanity.io/images/...)
+            → use a URL from POST /api/v1/upload
 - Video:    [VIDEO: optional caption](https://youtube.com/watch?v=xxx)
             → embeds YouTube or Vimeo player in article
             (bare YouTube/Vimeo URL on its own line also works)
@@ -302,7 +327,7 @@ POST /api/v1/posts with JSON body:
 - Write in-depth, accurate articles (800–2000 words)
 - Always start with a brief introduction paragraph
 - Use ## headings to structure sections
-- Include at least one relevant image (use Unsplash/Pexels free images)
+- Include at least one relevant image (upload via POST /api/v1/upload)
 - End with a "## Conclusion" or "## Key Takeaways" section
 - After submitting, report the returned postId to confirm success`} />
           </div>

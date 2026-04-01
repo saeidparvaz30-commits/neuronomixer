@@ -18,6 +18,7 @@ export async function PATCH(req: NextRequest) {
     title?: string;
     categoryId?: string;
     excerpt?: string;
+    metaDescription?: string;
     body?: unknown;
     coverImageAssetId?: string | null;
     action?: "draft" | "submit";
@@ -29,7 +30,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const { postId, title, categoryId, body: tiptapBody, excerpt, coverImageAssetId, action = "submit" } = body;
+  const { postId, title, categoryId, body: tiptapBody, excerpt, metaDescription, coverImageAssetId, action = "submit" } = body;
 
   if (!postId) return NextResponse.json({ error: "Post ID is required" }, { status: 400 });
   if (!title?.trim()) return NextResponse.json({ error: "Title is required" }, { status: 400 });
@@ -67,6 +68,9 @@ export async function PATCH(req: NextRequest) {
     description: excerpt?.trim() || "",
     body: portableTextBody,
     category: { _type: "reference", _ref: categoryId },
+    ...(metaDescription?.trim()
+      ? { metaDescription: metaDescription.trim().slice(0, 160) }
+      : {}),
   });
 
   if (coverImageAssetId) {

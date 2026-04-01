@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { Plus } from "lucide-react";
@@ -12,13 +13,13 @@ interface Post {
   category?: { title: string };
 }
 
-async function getAuthorPosts(userId: string): Promise<Post[]> {
+async function getAuthorPosts(userId: string, sanityAuthorId: string | null): Promise<Post[]> {
   return client.fetch(
-    `*[_type == "post" && submittedBy == $userId] | order(_createdAt desc) {
+    `*[_type == "post" && (submittedBy == $userId ${sanityAuthorId ? "|| author._ref == $sanityAuthorId" : ""})] | order(_createdAt desc) {
       _id, title, status, _createdAt,
       category->{ title }
     }`,
-    { userId }
+    { userId, sanityAuthorId: sanityAuthorId ?? "" }
   );
 }
 
@@ -33,7 +34,12 @@ const statusStyle: Record<string, string> = {
 export default async function AuthorPostsPage() {
   const session = await auth();
   const userId = session?.user?.id ?? "";
-  const posts = await getAuthorPosts(userId);
+
+  const user = userId
+    ? await prisma.user.findUnique({ where: { id: userId }, select: { sanityAuthorId: true } })
+    : null;
+
+  const posts = await getAuthorPosts(userId, user?.sanityAuthorId ?? null);
 
   return (
     <div>

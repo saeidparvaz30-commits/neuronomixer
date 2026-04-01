@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateApiKey } from "@/lib/apiKeyAuth";
 import { client } from "@/sanity/lib/client";
-import { markdownToPortableText, uploadMainImage } from "@/lib/markdownToPortableText";
+import { markdownToPortableText } from "@/lib/markdownToPortableText";
 import { portableTextToMarkdown } from "@/lib/portableTextToMarkdown";
 
 const CORS = {
@@ -93,31 +93,28 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  let body: {
-    title?: string;
-    description?: string;
-    metaDescription?: string; // SEO meta description (max 160 chars)
-    category?: string;        // category slug
-    body?: string;            // markdown
-    mainImageUrl?: string;    // public image URL for the header image
-    publishedAt?: string;
-  };
-
+  let formData: FormData;
   try {
-    body = await req.json();
+    formData = await req.formData();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400, headers: CORS });
+    return NextResponse.json({ error: "Invalid form data. Send a multipart/form-data request." }, { status: 400, headers: CORS });
   }
 
-  const { title, description, metaDescription, category: categorySlug, body: markdown, mainImageUrl } = body;
+  const title       = (formData.get("title")           as string | null)?.trim() ?? "";
+  const description = (formData.get("description")     as string | null)?.trim() ?? "";
+  const metaDesc    = (formData.get("metaDescription") as string | null)?.trim() ?? "";
+  const categorySlug = (formData.get("category")       as string | null)?.trim() ?? "";
+  const markdown    = (formData.get("body")            as string | null)?.trim() ?? "";
+  const publishedAt = (formData.get("publishedAt")     as string | null)?.trim() ?? "";
+  const mainImageFile = formData.get("mainImage") as File | null;
 
-  if (!title?.trim()) {
+  if (!title) {
     return NextResponse.json({ error: "title is required" }, { status: 400, headers: CORS });
   }
-  if (!markdown?.trim()) {
+  if (!markdown) {
     return NextResponse.json({ error: "body (markdown) is required" }, { status: 400, headers: CORS });
   }
-  if (!categorySlug?.trim()) {
+  if (!categorySlug) {
     return NextResponse.json({ error: "category slug is required" }, { status: 400, headers: CORS });
   }
 
@@ -133,17 +130,29 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Run markdown conversion and optional image upload in parallel
+  // Upload cover image and convert markdown body in parallel
   const [portableBody, mainImageAsset] = await Promise.all([
     markdownToPortableText(markdown),
-    mainImageUrl ? uploadMainImage(mainImageUrl) : Promise.resolve(null),
+    (async () => {
+      if (!mainImageFile || mainImageFile.size === 0) return null;
+      try {
+        const buffer = Buffer.from(await mainImageFile.arrayBuffer());
+        const asset = await client.assets.upload("image", buffer, {
+          filename: mainImageFile.name,
+          contentType: mainImageFile.type,
+        });
+        return { _type: "image" as const, asset: { _type: "reference" as const, _ref: asset._id }, alt: "" };
+      } catch {
+        return null;
+      }
+    })(),
   ]);
 
   const doc = await client.create({
     _type: "post",
-    title: title.trim(),
-    description: description?.trim() ?? "",
-    ...(metaDescription?.trim() && { metaDescription: metaDescription.trim().slice(0, 160) }),
+    title,
+    description,
+    ...(metaDesc && { metaDescription: metaDesc.slice(0, 160) }),
     slug: {
       _type: "slug",
       current: title
@@ -158,7 +167,7 @@ export async function POST(req: NextRequest) {
     body: portableBody,
     status: "pending",
     submittedBy: user.userId,
-    publishedAt: body.publishedAt ?? new Date().toISOString(),
+    publishedAt: publishedAt || new Date().toISOString(),
   });
 
   return NextResponse.json(

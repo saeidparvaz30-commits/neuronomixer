@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
     title?: string;
     categoryId?: string;
     excerpt?: string;
+    metaDescription?: string;
     body?: unknown;
     coverImageAssetId?: string;
     action?: "draft" | "submit";
@@ -28,7 +29,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const { title, categoryId, excerpt, body: tiptapBody, coverImageAssetId, action = "submit" } = body;
+  const { title, categoryId, excerpt, metaDescription, body: tiptapBody, coverImageAssetId, action = "submit" } = body;
 
   if (!title?.trim()) {
     return NextResponse.json({ error: "Title is required" }, { status: 400 });
@@ -63,6 +64,7 @@ export async function POST(req: NextRequest) {
     status: action === "draft" ? "draft" : "pending",
     submittedBy: userId,
     description: excerpt?.trim() || undefined,
+    ...(metaDescription?.trim() ? { metaDescription: metaDescription.trim().slice(0, 160) } : {}),
     body: portableTextBody,
     category: { _type: "reference", _ref: categoryId },
   };

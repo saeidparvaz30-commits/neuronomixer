@@ -15,6 +15,7 @@ interface SanityPost {
   status: string;
   submittedBy: string;
   description?: string;
+  metaDescription?: string;
   category?: { _id: string };
   mainImage?: { asset?: { _id: string; url: string } };
   body?: unknown[];
@@ -23,7 +24,7 @@ interface SanityPost {
 async function getPost(postId: string): Promise<SanityPost | null> {
   return client.fetch(
     `*[_type == "post" && _id == $postId][0]{
-      _id, title, status, submittedBy, description,
+      _id, title, status, submittedBy, description, metaDescription,
       category->{ _id },
       mainImage{ asset->{ _id, url } },
       body[]{
@@ -71,6 +72,7 @@ export default async function EditPostPage({
     title: post.title ?? "",
     categoryId: post.category?._id ?? "",
     excerpt: post.description ?? "",
+    metaDescription: post.metaDescription ?? "",
     tiptapJson,
     coverImageUrl: post.mainImage?.asset?.url ?? null,
     coverImageAssetId: post.mainImage?.asset?._id ?? null,
