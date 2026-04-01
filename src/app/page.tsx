@@ -35,10 +35,45 @@ const query = `{
 
 export const revalidate = 60;
 
+const siteUrl = "https://www.neuronomixer.com";
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "NeuroNomixer",
+    url: siteUrl,
+    logo: { "@type": "ImageObject", url: `${siteUrl}/pictures/Logo.png` },
+    sameAs: [
+      "https://www.linkedin.com/company/neuronomixer",
+      "https://x.com/neuronomixer",
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    url: siteUrl,
+    name: "NeuroNomixer",
+    description: "Exploring the intersection of AI, data science, and risk analytics.",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: { "@type": "EntryPoint", urlTemplate: `${siteUrl}/blog?q={search_term_string}` },
+      "query-input": "required name=search_term_string",
+    },
+  },
+];
+
 export default async function Home() {
   const data = await client.fetch(query);
   return (
     <main className="min-h-screen">
+      {jsonLd.map((schema, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      ))}
       <HomePageClient posts={data.posts ?? []} categories={data.categories ?? []} />
     </main>
   );

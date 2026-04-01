@@ -13,6 +13,11 @@ type PostItem = {
   _createdAt?: string;
 };
 
+type AuthorItem = {
+  slug: string;
+  _updatedAt?: string;
+};
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = (
     process.env.NEXT_PUBLIC_SITE_URL || "https://neuronomixer.com"
@@ -22,6 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const data = await client.fetch<{
     categories: CategoryItem[];
     posts: PostItem[];
+    authors: AuthorItem[];
   }>(
     `{
       "categories": *[_type == "category" && defined(slug.current) && active == true]{
@@ -29,15 +35,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         _updatedAt
       },
       "posts": *[
-        _type == "post" && 
-        defined(slug.current) && 
-        defined(category->slug.current) && 
+        _type == "post" &&
+        defined(slug.current) &&
+        defined(category->slug.current) &&
         category->active == true
       ]{
         "slug": slug.current,
         "categorySlug": category->slug.current,
         _updatedAt,
         _createdAt
+      },
+      "authors": *[_type == "author" && applicationStatus == "approved" && defined(slug.current)]{
+        "slug": slug.current,
+        _updatedAt
       }
     }`
   );
@@ -95,5 +105,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...categoryRoutes, ...postRoutes];
+  const authorRoutes: MetadataRoute.Sitemap = (data?.authors || []).map((a) => ({
+    url: `${baseUrl}/authors/${a.slug}`,
+    lastModified: a._updatedAt ? new Date(a._updatedAt) : undefined,
+    changeFrequency: "monthly",
+    priority: 0.5,
+  }));
+
+  return [...staticRoutes, ...categoryRoutes, ...postRoutes, ...authorRoutes];
 }

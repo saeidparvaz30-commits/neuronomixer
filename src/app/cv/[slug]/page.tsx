@@ -3,6 +3,14 @@ import { notFound } from "next/navigation";
 import CVPublicView from "./CVPublicView";
 import type { Metadata } from "next";
 
+export async function generateStaticParams() {
+  const cvs = await prisma.authorCV.findMany({
+    where: { isPublic: true, slug: { not: null } },
+    select: { slug: true },
+  });
+  return cvs.map((cv) => ({ slug: cv.slug as string }));
+}
+
 interface Props {
   params: Promise<{ slug: string }>;
 }

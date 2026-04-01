@@ -1,8 +1,30 @@
+import type { Metadata } from "next";
 import { client } from "@/sanity/lib/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import AuthorCard, { Author } from "@/components/author/AuthorCard";
 import AuthorSignupForm from "@/components/author/AuthorSignupForm";
+
+export const metadata: Metadata = {
+  title: "Authors & Contributors — NeuroNomixer",
+  description:
+    "Meet the experts behind NeuroNomixer — AI researchers, data scientists, and risk analysts sharing their knowledge.",
+  alternates: { canonical: "https://www.neuronomixer.com/authors" },
+  openGraph: {
+    title: "Authors & Contributors — NeuroNomixer",
+    description:
+      "Meet the experts behind NeuroNomixer — AI researchers, data scientists, and risk analysts.",
+    url: "https://www.neuronomixer.com/authors",
+    siteName: "NeuroNomixer",
+    type: "website",
+    images: [{ url: "https://www.neuronomixer.com/pictures/Logo.png", alt: "NeuroNomixer" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Authors & Contributors — NeuroNomixer",
+    description: "Meet the experts behind NeuroNomixer.",
+  },
+};
 
 const query = `
   *[_type == "author" && applicationStatus == "approved"] | order(order asc) {

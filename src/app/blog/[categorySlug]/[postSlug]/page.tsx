@@ -39,6 +39,16 @@ const postQuery = `
                }
 }
 `;
+export async function generateStaticParams() {
+  const posts = await client.fetch<{ categorySlug: string; slug: string }[]>(
+    `*[_type == "post" && defined(slug.current) && defined(category->slug.current)]{
+      "categorySlug": category->slug.current,
+      "slug": slug.current
+    }`
+  );
+  return posts.map((p) => ({ categorySlug: p.categorySlug, postSlug: p.slug }));
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -49,18 +59,27 @@ export async function generateMetadata({
   const post = await client.fetch(
     `*[_type == "post" && slug.current == $slug][0]{
         title,
-        "description": pt::text(body[0..1])
+        description,
+        "bodyDesc": pt::text(body[0..1]),
+        "mainImageUrl": mainImage.asset->url,
+        "authorName": author->name,
+        publishedAt,
+        _updatedAt
       }`,
     { slug: postSlug }
   );
 
   const title = post?.title || "NeuroNomixer Blog Post";
   const description =
-    post?.description?.slice(0, 150) ||
+    post?.description ||
+    post?.bodyDesc?.slice(0, 155) ||
     "Exploring AI, data, and analytics with NeuroNomixer.";
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com";
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com").replace(/\/$/, "");
   const canonicalUrl = `${siteUrl}/blog/${categorySlug}/${postSlug}`;
+  const ogImage = post?.mainImageUrl
+    ? [{ url: post.mainImageUrl, width: 1200, height: 630, alt: title }]
+    : [{ url: `${siteUrl}/pictures/Logo.png`, alt: "NeuroNomixer" }];
 
   return {
     title,
@@ -74,11 +93,16 @@ export async function generateMetadata({
       url: canonicalUrl,
       siteName: "NeuroNomixer",
       type: "article",
+      images: ogImage,
+      ...(post?.publishedAt && { publishedTime: post.publishedAt }),
+      ...(post?._updatedAt && { modifiedTime: post._updatedAt }),
+      ...(post?.authorName && { authors: [post.authorName] }),
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: ogImage.map((i) => i.url),
     },
   };
 }
@@ -131,8 +155,39 @@ export default async function PostPage({
   const prevPost = siblings[currentIndex - 1];
   const nextPost = siblings[currentIndex + 1];
 
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com").replace(/\/$/, "");
+  const canonicalUrl = `${siteUrl}/blog/${categorySlug}/${postSlug}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.description ?? undefined,
+    url: canonicalUrl,
+    datePublished: post._createdAt,
+    ...(post.mainImage?.asset?.url && {
+      image: { "@type": "ImageObject", url: post.mainImage.asset.url },
+    }),
+    ...(post.author && {
+      author: {
+        "@type": "Person",
+        name: post.author.name,
+        ...(post.author.slug?.current && { url: `${siteUrl}/authors/${post.author.slug.current}` }),
+      },
+    }),
+    publisher: {
+      "@type": "Organization",
+      name: "NeuroNomixer",
+      logo: { "@type": "ImageObject", url: `${siteUrl}/pictures/Logo.png` },
+    },
+  };
+
   return (
     <main className="max-w-[1600px] mx-auto px-4 sm:px-6 py-12 flex flex-col lg:flex-row lg:items-start lg:gap-12 relative">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <ReadTracker
         postSlug={postSlug}
         postTitle={post.title}

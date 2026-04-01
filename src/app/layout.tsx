@@ -14,8 +14,21 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "NeuroNomixer",
+  metadataBase: new URL("https://www.neuronomixer.com"),
+  title: {
+    default: "NeuroNomixer",
+    template: "%s — NeuroNomixer",
+  },
   description: "Exploring the intersection of AI, data & risk analytics.",
+  openGraph: {
+    siteName: "NeuroNomixer",
+    type: "website" as const,
+    images: [{ url: "/pictures/Logo.png", alt: "NeuroNomixer" }],
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    site: "@neuronomixer",
+  },
   other: {
     "google-site-verification": "8t9gazi3NGDeyZ028wx9oXj5K-O6fuTIWaPVQ9E0q2I",
   },

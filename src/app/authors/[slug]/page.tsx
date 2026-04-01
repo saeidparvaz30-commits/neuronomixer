@@ -37,6 +37,13 @@ const postsQuery = `
   }
 `;
 
+export async function generateStaticParams() {
+  const authors = await client.fetch<{ slug: string }[]>(
+    `*[_type == "author" && applicationStatus == "approved" && defined(slug.current)]{ "slug": slug.current }`
+  );
+  return authors.map((a) => ({ slug: a.slug }));
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -45,9 +52,33 @@ export async function generateMetadata({
   const { slug } = await params;
   const author = await client.fetch(authorQuery, { slug });
   if (!author) return {};
+
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com").replace(/\/$/, "");
+  const canonicalUrl = `${siteUrl}/authors/${slug}`;
+  const title = `${author.name} — NeuroNomixer`;
+  const description = author.shortBio ?? `Articles and insights by ${author.name} on NeuroNomixer.`;
+  const ogImage = author.image?.asset?.url
+    ? [{ url: author.image.asset.url, width: 400, height: 400, alt: author.name }]
+    : [{ url: `${siteUrl}/pictures/Logo.png`, alt: "NeuroNomixer" }];
+
   return {
-    title: `${author.name} — NeuroNomixer`,
-    description: author.shortBio ?? `Articles by ${author.name} on NeuroNomixer.`,
+    title,
+    description,
+    alternates: { canonical: canonicalUrl },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      siteName: "NeuroNomixer",
+      type: "profile",
+      images: ogImage,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ogImage.map((i) => i.url),
+    },
   };
 }
 
@@ -95,8 +126,26 @@ export default async function AuthorProfilePage({
   type PortableTextChild = { text: string };
   type PortableTextBlock = { children?: PortableTextChild[] };
 
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com").replace(/\/$/, "");
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: author.name,
+    url: `${siteUrl}/authors/${slug}`,
+    description: author.shortBio ?? undefined,
+    ...(author.image?.asset?.url && { image: author.image.asset.url }),
+    ...(author.jobTitle && { jobTitle: author.jobTitle }),
+    ...(author.employer && { worksFor: { "@type": "Organization", name: author.employer } }),
+    ...(author.linkedIn && { sameAs: [author.linkedIn] }),
+  };
+
   return (
     <section className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Profile header */}
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-10">
         {author.image?.asset?.url ? (
