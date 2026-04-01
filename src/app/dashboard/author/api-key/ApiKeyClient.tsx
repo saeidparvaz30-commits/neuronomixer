@@ -168,17 +168,26 @@ export default function ApiKeyClient({ existing, siteUrl }: Props) {
           <div className="bg-[#060d18]/80 border border-[#3bb4a4]/20 rounded-2xl p-5 space-y-3">
             <h3 className="text-sm font-semibold text-[#3bb4a4]">Content Review &amp; Improvement Prompt</h3>
             <p className="text-xs text-gray-400">
-              Paste this into Claude (or any LLM) to analyse your existing articles and get actionable improvement suggestions:
+              Paste this into Claude with the browser tool enabled. Claude will fetch your posts directly via the API and produce a detailed review:
             </p>
             <CodeBlock code={`You are a senior content strategist and editor specialising in AI, data science, and risk analytics.
 
 Your task is to review all published articles by a NeuroNomixer author and provide a detailed review report.
 
 ## Step 1 — Fetch all posts
-Call the following API to retrieve every article including full body content:
+Use your browser tool to fetch the following URL and retrieve every article including full body content:
 
-GET ${siteUrl}/api/v1/posts
-Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}
+URL: ${siteUrl}/api/v1/posts
+Method: GET
+Headers:
+  Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}
+
+Use your browser tool to run the following JavaScript fetch and read the response:
+
+fetch("${siteUrl}/api/v1/posts", { headers: { "Authorization": "Bearer ${visible ? apiKey : "YOUR_API_KEY"}" } })
+  .then(r => r.json()).then(data => console.log(JSON.stringify(data)));
+
+The response is JSON with a "posts" array — each post includes "bodyMarkdown" (full article text) and "media" (list of images and videos).
 
 ## Step 2 — Analyse each article
 For every post returned, evaluate:
