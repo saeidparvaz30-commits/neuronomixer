@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   const isAuthorRequest = role === "AUTHOR";
 
   // Update Prisma user
-  await prisma.user.update({
+  const updatedUser = await prisma.user.update({
     where: { id: userId },
     data: {
       name: name.trim(),
@@ -48,28 +48,47 @@ export async function POST(req: NextRequest) {
       role: "SUBSCRIBER",
       authorStatus: isAuthorRequest ? "PENDING" : null,
     },
+    select: { sanityAuthorId: true },
   });
 
-  // If applying as author, create a Sanity author draft for admin review
+  // Update the Sanity author application with full profile info
   if (isAuthorRequest) {
-    try {
-      const slug = name
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, "");
+    const slug = name
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
 
-      await client.create({
-        _type: "author",
-        name: name.trim(),
-        slug: { _type: "slug", current: slug },
-        shortBio: bio?.trim(),
-        userId,
-        applicationStatus: "pending",
-        email: session.user.email ?? "",
-      });
+    try {
+      if (updatedUser.sanityAuthorId) {
+        // Patch the existing draft created at signup time
+        await client
+          .patch(updatedUser.sanityAuthorId)
+          .set({
+            name: name.trim(),
+            slug: { _type: "slug", current: slug },
+            shortBio: bio?.trim() ?? "",
+            userId,
+          })
+          .commit();
+      } else {
+        // Fallback for Google OAuth users (no draft created at signup)
+        const doc = await client.create({
+          _type: "author",
+          name: name.trim(),
+          slug: { _type: "slug", current: slug },
+          shortBio: bio?.trim(),
+          userId,
+          applicationStatus: "pending",
+          email: session.user.email ?? "",
+        });
+        await prisma.user.update({
+          where: { id: userId },
+          data: { sanityAuthorId: doc._id },
+        });
+      }
     } catch (err) {
-      console.error("Failed to create Sanity author draft:", err);
-      // Don't fail the whole request — admin can create manually
+      console.error("Failed to update Sanity author draft:", err);
+      // Don't fail the whole request — admin can update manually
     }
   }
 

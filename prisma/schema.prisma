@@ -70,6 +70,7 @@ model User {
   passwordResetTokens PasswordResetToken[]
   notifications       Notification[]
   cv                  AuthorCV?
+  apiKey              AuthorApiKey?
   createdAt          DateTime         @default(now())
 }
 
@@ -178,6 +179,15 @@ model AuthorCV {
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model PostView {
+  id       String   @id @default(cuid())
+  postSlug String
+  viewedAt DateTime @default(now())
+
+  @@index([postSlug])
+  @@index([viewedAt])
+}
+
 enum Role {
   ADMIN
   AUTHOR
@@ -188,4 +198,13 @@ enum AuthorStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+model AuthorApiKey {
+  id         String    @id @default(cuid())
+  userId     String    @unique
+  key        String    @unique
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

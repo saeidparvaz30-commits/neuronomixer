@@ -1,35 +1,46 @@
 import { client } from "@/sanity/lib/client";
-import AnimatedCategories from "@/components/Category/AnimatedCategories";
+import { prisma } from "@/lib/prisma";
+import BlogClient from "@/components/Blog/BlogClient";
 
-const query = `
-*[_type == "category" && active == true] | order(order asc) {
-  _id,
-  title,
-  slug,
-  description,
-  intuitive,
-  image {
-    asset->{ url }
+const query = `{
+  "categories": *[_type == "category" && active == true] | order(order asc) {
+    _id, title, slug, description, intuitive
   },
-  active
+  "posts": *[_type == "post" && status != "rejected" && status != "hidden" && status != "deletion_requested"] | order(featured desc, publishedAt desc) {
+    _id, title, slug, description, publishedAt, featured,
+    "bodyExcerpt": pt::text(body)[0...300],
+    "mainImage": mainImage.asset->url,
+    "category": category->{ _id, title, slug },
+    "author": author->{ _id, name, slug, "image": image.asset->url, jobTitle }
+  },
+  "authors": *[_type == "author" && applicationStatus == "approved"] | order(order asc) [0...6] {
+    _id, name, slug, "image": image.asset->url, jobTitle
+  }
 }`;
 
 export default async function BlogPage() {
-  // ✅ fetch all categories
-  const categories = await client.fetch(query);
-  if (!categories || categories.length === 0) {
-    return (
-      <main className="max-w-6xl mx-auto px-6 py-12">
-        <p className="text-center text-[var(--color-text-muted)]">
-          No categories found. Add some in Sanity Studio!
-        </p>
-      </main>
-    );
-  }
+  const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  const [data, viewCounts] = await Promise.all([
+    client.fetch(query),
+    prisma.postView.groupBy({
+      by: ["postSlug"],
+      where: { viewedAt: { gte: oneWeekAgo } },
+      _count: { postSlug: true },
+      orderBy: { _count: { postSlug: "desc" } },
+      take: 4,
+    }),
+  ]);
+
+  // Ordered list of trending slugs (most viewed first this week)
+  const trendingSlugOrder = viewCounts.map((v) => v.postSlug);
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-12">
-      <AnimatedCategories categories={categories} />
-    </main>
+    <BlogClient
+      categories={data.categories ?? []}
+      posts={data.posts ?? []}
+      authors={data.authors ?? []}
+      trendingSlugOrder={trendingSlugOrder}
+    />
   );
 }

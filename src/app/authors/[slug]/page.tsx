@@ -2,7 +2,7 @@ import { client } from "@/sanity/lib/client";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Linkedin, Github, Twitter, Globe, Mail } from "lucide-react";
+import { Linkedin, Github, Twitter, Globe, Mail, FileText } from "lucide-react";
 import AuthorFollowButton from "@/components/author/AuthorFollowButton";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -12,6 +12,7 @@ const authorQuery = `
     _id,
     name,
     slug,
+    userId,
     image { asset->{ url } },
     shortBio,
     longBio,
@@ -24,7 +25,7 @@ const authorQuery = `
 `;
 
 const postsQuery = `
-  *[_type == "post" && status == "approved" && author->slug.current == $slug]
+  *[_type == "post" && (status == "approved" || !defined(status)) && author->slug.current == $slug]
   | order(publishedAt desc) [0...20] {
     _id,
     title,
@@ -66,6 +67,16 @@ export default async function AuthorProfilePage({
 
   if (!author) notFound();
 
+  // Check for public CV
+  let cvSlug: string | null = null;
+  if (author.userId) {
+    const cv = await prisma.authorCV.findUnique({
+      where: { userId: author.userId },
+      select: { slug: true, isPublic: true },
+    });
+    if (cv?.isPublic && cv.slug) cvSlug = cv.slug;
+  }
+
   const session = await auth();
   let isFollowing = false;
   if (session?.user) {
@@ -89,13 +100,15 @@ export default async function AuthorProfilePage({
       {/* Profile header */}
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-10">
         {author.image?.asset?.url ? (
-          <Image
-            src={author.image.asset.url}
-            alt={author.name}
-            width={112}
-            height={112}
-            className="rounded-full object-cover shadow-md shrink-0"
-          />
+          <div className="relative w-28 h-28 rounded-full overflow-hidden shrink-0 shadow-md">
+            <Image
+              src={author.image.asset.url}
+              alt={author.name}
+              fill
+              sizes="112px"
+              className="object-cover"
+            />
+          </div>
         ) : (
           <div className="w-28 h-28 rounded-full bg-[var(--color-surface)] flex items-center justify-center text-[var(--color-accent)] text-2xl font-bold shrink-0">
             {author.name?.[0] ?? "A"}
@@ -146,11 +159,24 @@ export default async function AuthorProfilePage({
             )}
           </div>
 
-          <AuthorFollowButton
-            authorId={author._id}
-            isFollowing={isFollowing}
-            isLoggedIn={!!session?.user}
-          />
+          <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
+            <AuthorFollowButton
+              authorId={author._id}
+              isFollowing={isFollowing}
+              isLoggedIn={!!session?.user}
+            />
+            {cvSlug && (
+              <Link
+                href={`/cv/${cvSlug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg border border-[var(--color-accent)]/40 text-[var(--color-accent)] text-sm font-medium hover:bg-[var(--color-accent)]/10 transition-colors"
+              >
+                <FileText size={14} />
+                View CV
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 

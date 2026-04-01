@@ -19,6 +19,8 @@ interface PublishedPost {
   _id: string;
   title: string;
   status: string | null;
+  featured: boolean | null;
+  heroOrder: number | null;
   publishedAt: string | null;
   _updatedAt: string;
   author?: { name: string };
@@ -51,7 +53,7 @@ async function getDeletionRequests(): Promise<PendingPost[]> {
 async function getPublishedPosts(): Promise<PublishedPost[]> {
   return client.fetch(
     `*[_type == "post" && (status == "approved" || status == "hidden" || !defined(status))] | order(coalesce(publishedAt, _createdAt) desc) {
-      _id, title, status, publishedAt, _updatedAt,
+      _id, title, status, featured, heroOrder, publishedAt, _updatedAt,
       author->{ name },
       category->{ title }
     }`
@@ -141,6 +143,8 @@ export default async function AdminPostsPage() {
                     <th className="px-4 py-3">Category</th>
                     <th className="px-4 py-3">Published</th>
                     <th className="px-4 py-3">Last Updated</th>
+                    <th className="px-4 py-3 text-center">Blog Featured</th>
+                    <th className="px-4 py-3 text-center">Hero Featured</th>
                     <th className="px-4 py-3 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -155,6 +159,8 @@ export default async function AdminPostsPage() {
                       publishedAt={post.publishedAt ?? null}
                       updatedAt={post._updatedAt}
                       hidden={post.status === "hidden"}
+                      featured={post.featured ?? false}
+                      heroOrder={post.heroOrder ?? null}
                     />
                   ))}
                 </tbody>

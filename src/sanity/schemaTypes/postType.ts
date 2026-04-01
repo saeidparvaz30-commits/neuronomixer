@@ -30,6 +30,26 @@ export const postType = defineType({
       type: "number",
       description: "Lower numbers appear first within this category",
     }),
+    defineField({
+      name: "featured",
+      title: "Featured on Blog",
+      type: "boolean",
+      description: "Pin this post as the featured article at the top of the blog page.",
+      initialValue: false,
+    }),
+    defineField({
+      name: "heroOrder",
+      title: "Hero Slideshow Slot",
+      type: "number",
+      description: "Assign this post to homepage hero slot 1, 2, or 3. Clear to remove from slideshow.",
+      options: {
+        list: [
+          { title: "Slot 1", value: 1 },
+          { title: "Slot 2", value: 2 },
+          { title: "Slot 3", value: 3 },
+        ],
+      },
+    }),
 
     defineField({
       name: "author",

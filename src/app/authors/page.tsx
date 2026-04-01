@@ -9,6 +9,7 @@ const query = `
     _id,
     name,
     slug,
+    userId,
     image { asset->{ url } },
     shortBio,
     longBio,
@@ -28,7 +29,7 @@ export const revalidate = 60;
 export default async function AuthorsPage() {
   const session = await auth();
 
-  const authors: Author[] = await client.fetch(query);
+  const authors: (Author & { userId?: string })[] = await client.fetch(query);
 
   let followedIds = new Set<string>();
   if (session?.user) {
@@ -38,6 +39,18 @@ export default async function AuthorsPage() {
     });
     followedIds = new Set(follows.map((f) => f.sanityId));
   }
+
+  // Build userId → cvSlug map for authors with public CVs
+  const userIds = authors.map((a) => a.userId).filter(Boolean) as string[];
+  const publicCVs = userIds.length
+    ? await prisma.authorCV.findMany({
+        where: { userId: { in: userIds }, isPublic: true, slug: { not: null } },
+        select: { userId: true, slug: true },
+      })
+    : [];
+  const cvSlugByUserId = Object.fromEntries(
+    publicCVs.map((cv) => [cv.userId, cv.slug as string])
+  );
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-16">
@@ -69,6 +82,7 @@ export default async function AuthorsPage() {
             index={i}
             isFollowing={followedIds.has(author._id)}
             isLoggedIn={!!session?.user}
+            cvSlug={author.userId ? cvSlugByUserId[author.userId] : undefined}
           />
         ))}
       </div>

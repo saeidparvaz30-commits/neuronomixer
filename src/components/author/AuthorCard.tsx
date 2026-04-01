@@ -1,9 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Linkedin, Github, Twitter, Mail, Globe } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Linkedin, Github, Twitter, Mail, Globe, FileText } from "lucide-react";
 import AuthorFollowButton from "./AuthorFollowButton";
 
 type PortableTextChild = { text: string; _key?: string };
@@ -31,27 +32,55 @@ export default function AuthorCard({
   index,
   isFollowing = false,
   isLoggedIn = false,
+  cvSlug,
 }: {
   author: Author;
   index: number;
   isFollowing?: boolean;
   isLoggedIn?: boolean;
+  cvSlug?: string;
 }) {
+  const [hovered, setHovered] = useState(false);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.12, duration: 0.6, ease: "easeOut" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       className="
-        bg-[var(--background)] border border-[var(--color-accent)]/40
+        relative bg-[var(--background)] border border-[var(--color-accent)]/40
         rounded-2xl shadow-md
         p-5 sm:p-6 md:p-8
         w-full max-w-sm
         flex flex-col items-center text-center
         hover:border-[var(--color-accent)] hover:shadow-[0_0_10px_var(--color-accent)]
-        transition-all duration-300 mx-auto
+        transition-all duration-300 mx-auto overflow-hidden
       "
     >
+      {/* CV button — appears in top-right corner on hover */}
+      <AnimatePresence>
+        {cvSlug && hovered && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.85 }}
+            transition={{ duration: 0.18 }}
+            className="absolute top-3 right-3 z-10"
+          >
+            <Link
+              href={`/cv/${cvSlug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--color-accent)] text-[#0a0e1a] text-[12px] font-semibold hover:opacity-90 transition shadow-[0_2px_12px_rgba(212,175,55,0.35)]"
+            >
+              <FileText size={12} />
+              View CV
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {/* Author Image */}
       {author.image?.asset?.url ? (
         <div className="relative w-24 h-24 sm:w-28 sm:h-28 mb-4">

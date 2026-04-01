@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Trash2, Loader2, EyeOff, Eye } from "lucide-react";
+import { Trash2, Loader2, EyeOff, Eye, Star, X } from "lucide-react";
 
 interface Props {
   postId: string;
@@ -12,15 +12,19 @@ interface Props {
   updatedAt: string;
   category: string;
   hidden: boolean;
+  featured: boolean;
+  heroOrder: number | null;
 }
 
 export default function PublishedPostRow({
-  postId, title, authorName, publishedAt, updatedAt, category, hidden,
+  postId, title, authorName, publishedAt, updatedAt, category, hidden, featured, heroOrder,
 }: Props) {
   const router = useRouter();
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [hideLoading, setHideLoading] = useState(false);
+  const [featuredLoading, setFeaturedLoading] = useState(false);
+  const [heroLoading, setHeroLoading] = useState(false);
 
   async function handleDelete() {
     setDeleteLoading(true);
@@ -52,6 +56,34 @@ export default function PublishedPostRow({
     }
   }
 
+  async function toggleFeatured() {
+    setFeaturedLoading(true);
+    try {
+      await fetch("/api/dashboard/admin/toggle-featured", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ postId, featured: !featured }),
+      });
+      router.refresh();
+    } finally {
+      setFeaturedLoading(false);
+    }
+  }
+
+  async function setHeroOrder(slot: number | null) {
+    setHeroLoading(true);
+    try {
+      await fetch("/api/dashboard/admin/set-hero-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ postId, heroOrder: slot }),
+      });
+      router.refresh();
+    } finally {
+      setHeroLoading(false);
+    }
+  }
+
   const fmt = (d: string | null) =>
     d
       ? new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
@@ -61,7 +93,7 @@ export default function PublishedPostRow({
     <tr className={`hover:bg-white/5 transition-colors text-sm ${hidden ? "opacity-50" : ""}`}>
       <td className="px-4 py-3">
         <div className="flex items-center gap-2">
-          <span className={`font-medium line-clamp-1 ${hidden ? "text-gray-400" : "text-white"}`}>{title}</span>
+          <span title={title} className={`font-medium line-clamp-1 cursor-default ${hidden ? "text-gray-400" : "text-white"}`}>{title}</span>
           {hidden && (
             <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-500/20 text-gray-400 border border-gray-500/20">
               Hidden
@@ -73,6 +105,61 @@ export default function PublishedPostRow({
       <td className="px-4 py-3 text-gray-400 text-xs">{category}</td>
       <td className="px-4 py-3 text-gray-500 text-xs">{fmt(publishedAt)}</td>
       <td className="px-4 py-3 text-gray-500 text-xs">{fmt(updatedAt)}</td>
+
+      {/* Blog Featured */}
+      <td className="px-4 py-3 text-center">
+        <button
+          onClick={toggleFeatured}
+          disabled={featuredLoading}
+          title={featured ? "Unfeature post" : "Feature on blog"}
+          className={`inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors disabled:opacity-50 ${
+            featured
+              ? "bg-[var(--color-accent)]/15 text-[var(--color-accent)] hover:bg-[var(--color-accent)]/25"
+              : "bg-white/5 text-gray-500 hover:bg-[var(--color-accent)]/10 hover:text-[var(--color-accent)]"
+          }`}
+        >
+          {featuredLoading
+            ? <Loader2 size={13} className="animate-spin" />
+            : <Star size={13} fill={featured ? "currentColor" : "none"} />
+          }
+        </button>
+      </td>
+
+      {/* Hero Featured — slot buttons 1 / 2 / 3 + clear */}
+      <td className="px-4 py-3">
+        <div className="flex items-center justify-center gap-1">
+          {heroLoading ? (
+            <Loader2 size={13} className="animate-spin text-gray-500" />
+          ) : (
+            <>
+              {([1, 2, 3] as const).map((slot) => (
+                <button
+                  key={slot}
+                  onClick={() => setHeroOrder(heroOrder === slot ? null : slot)}
+                  title={heroOrder === slot ? `Remove from hero slot ${slot}` : `Set hero slot ${slot}`}
+                  className={`inline-flex items-center justify-center w-6 h-6 rounded text-xs font-bold transition-colors ${
+                    heroOrder === slot
+                      ? "bg-[var(--color-accent)] text-[#0a0e1a]"
+                      : "bg-white/5 text-gray-500 hover:bg-[var(--color-accent)]/20 hover:text-[var(--color-accent)]"
+                  }`}
+                >
+                  {slot}
+                </button>
+              ))}
+              {heroOrder != null && (
+                <button
+                  onClick={() => setHeroOrder(null)}
+                  title="Remove from hero slideshow"
+                  className="inline-flex items-center justify-center w-6 h-6 rounded text-xs transition-colors bg-white/5 text-gray-500 hover:bg-red-900/30 hover:text-red-400"
+                >
+                  <X size={10} />
+                </button>
+              )}
+            </>
+          )}
+        </div>
+      </td>
+
       <td className="px-4 py-3">
         <div className="flex items-center justify-end gap-2">
           {/* Hide / Show toggle */}

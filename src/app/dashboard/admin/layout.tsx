@@ -17,7 +17,7 @@ export default async function AdminLayout({
     <div className="min-h-screen bg-[var(--background)] flex pt-24">
       <AdminSidebarNav />
       {/* Main content */}
-      <main className="flex-1 px-6 py-8 max-w-5xl">{children}</main>
+      <main className="flex-1 px-6 py-8 min-w-0">{children}</main>
     </div>
   );
 }

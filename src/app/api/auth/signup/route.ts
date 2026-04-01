@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { client } from "@/sanity/lib/client";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
@@ -91,7 +92,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const validRole = role === "AUTHOR" ? "AUTHOR" : "SUBSCRIBER";
+  const isAuthor = role === "AUTHOR";
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
@@ -103,14 +104,45 @@ export async function POST(req: NextRequest) {
 
   const hashed = await bcrypt.hash(password, 12);
 
+  // Authors start as SUBSCRIBER + PENDING so they can't publish until approved
   const user = await prisma.user.create({
     data: {
       email,
       password: hashed,
-      role: validRole,
+      role: "SUBSCRIBER",
+      authorStatus: isAuthor ? "PENDING" : null,
       onboarded: false,
     },
   });
+
+  // Immediately create a Sanity author application so the admin can review it
+  if (isAuthor) {
+    try {
+      const emailSlug = email
+        .toLowerCase()
+        .replace(/@/g, "-at-")
+        .replace(/\./g, "-")
+        .replace(/[^a-z0-9-]/g, "")
+        .slice(0, 64);
+
+      const doc = await client.create({
+        _type: "author",
+        name: email, // placeholder — replaced when user completes profile
+        slug: { _type: "slug", current: emailSlug },
+        email,
+        userId: user.id,
+        applicationStatus: "pending",
+      });
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { sanityAuthorId: doc._id },
+      });
+    } catch (err) {
+      console.error("[signup] Failed to create author application:", err);
+      // authorStatus is already PENDING in Prisma — admin can create Sanity doc manually
+    }
+  }
 
   // Send verification email (fire-and-forget — don't block signup on SMTP failure)
   sendVerificationEmail(user.id, email).catch((err) =>

@@ -123,7 +123,7 @@ export default function Navbar() {
       transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
       className="fixed top-0 left-0 w-full z-50 pointer-events-none"
     >
-      <div className="max-w-7xl mx-auto px-4 pt-3 pointer-events-auto">
+      <div className="max-w-[1400px] mx-auto px-6 pt-3 pointer-events-auto">
 
         {/* ── Glassmorphism floating pill ── */}
         <div className="relative flex items-center justify-between px-4 py-2

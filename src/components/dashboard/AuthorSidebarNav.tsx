@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, PenSquare, FileText, Lightbulb, UserCircle, Bell, FileUser, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, PenSquare, FileText, Lightbulb, UserCircle, Bell, FileUser, KeyRound, type LucideIcon } from "lucide-react";
 
 const authorItems: { href: string; label: string; icon: LucideIcon; exact?: boolean }[] = [
   { href: "/dashboard/author", label: "Overview", icon: LayoutDashboard, exact: true },
@@ -11,6 +11,7 @@ const authorItems: { href: string; label: string; icon: LucideIcon; exact?: bool
   { href: "/dashboard/author/suggest-category", label: "Suggest Category", icon: Lightbulb },
   { href: "/dashboard/author/notifications", label: "Notifications", icon: Bell },
   { href: "/dashboard/author/cv", label: "CV Builder", icon: FileUser },
+  { href: "/dashboard/author/api-key", label: "API Access", icon: KeyRound },
 ];
 
 const accountItems: { href: string; label: string; icon: LucideIcon }[] = [
