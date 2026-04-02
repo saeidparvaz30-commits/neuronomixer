@@ -444,13 +444,19 @@ export default function BlogClient({
   posts,
   authors,
   trendingSlugOrder = [],
+  initialCat = null,
 }: {
   categories: CategoryMeta[];
   posts: BlogPost[];
   authors: AuthorMeta[];
   trendingSlugOrder?: string[];
+  initialCat?: string | null;
 }) {
-  const [selectedCat, setSelectedCat] = useState("_all");
+  const [selectedCat, setSelectedCat] = useState(() => {
+    if (!initialCat) return "_all";
+    const match = categories.find((c) => c.slug.current === initialCat);
+    return match?._id ?? "_all";
+  });
   const [searchQuery, setSearchQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [sort, setSort] = useState<"newest" | "oldest">("newest");

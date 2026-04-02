@@ -14,7 +14,7 @@ export default async function AdminSubmitPostPage() {
   const categories = await getCategories();
 
   return (
-    <div>
+    <div className="max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold text-white mb-2">Submit a Post</h1>
       <p className="text-sm text-gray-500 mb-6">
         Posts are reviewed before being published.

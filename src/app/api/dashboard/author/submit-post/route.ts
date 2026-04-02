@@ -48,7 +48,13 @@ export async function POST(req: NextRequest) {
   });
 
   // Convert Tiptap JSON → Portable Text
-  const portableTextBody = tiptapToPortableText(tiptapBody as Parameters<typeof tiptapToPortableText>[0]);
+  let portableTextBody: unknown[];
+  try {
+    portableTextBody = tiptapToPortableText(tiptapBody as Parameters<typeof tiptapToPortableText>[0]);
+  } catch (err) {
+    console.error("[submit-post] tiptapToPortableText error:", err);
+    return NextResponse.json({ error: "Failed to convert content. Please try again." }, { status: 500 });
+  }
 
   // Build slug from title
   const slug = title
@@ -80,8 +86,14 @@ export async function POST(req: NextRequest) {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const created = await client.create(doc as any);
+  let created: { _id: string };
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    created = await client.create(doc as any);
+  } catch (err) {
+    console.error("[submit-post] Sanity create error:", err);
+    return NextResponse.json({ error: "Failed to save to Sanity. Please try again." }, { status: 500 });
+  }
 
   return NextResponse.json({ success: true, postId: created._id });
 }

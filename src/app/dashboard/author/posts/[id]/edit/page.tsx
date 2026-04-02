@@ -87,7 +87,7 @@ export default async function EditPostPage({
   };
 
   return (
-    <div>
+    <div className="max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold text-white mb-1">
         {statusLabels[post.status] ?? "Edit Post"}
       </h1>

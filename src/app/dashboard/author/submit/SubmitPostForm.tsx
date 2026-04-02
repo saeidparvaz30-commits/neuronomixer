@@ -203,7 +203,13 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      let data: { error?: string; success?: boolean } = {};
+      try {
+        data = await res.json();
+      } catch {
+        setError("Server error — check browser console for details.");
+        return;
+      }
       if (!res.ok) {
         setError(data.error ?? "Something went wrong.");
         return;
@@ -211,8 +217,9 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
 
       setSuccessAction(action);
       setTimeout(() => router.push("/dashboard/author/posts"), 1500);
-    } catch {
-      setError("Failed to save. Please try again.");
+    } catch (err) {
+      console.error("[SubmitPostForm] save error:", err);
+      setError("Network error. Please check your connection and try again.");
     } finally {
       setLoadingAction(null);
     }

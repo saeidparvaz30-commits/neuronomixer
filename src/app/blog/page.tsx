@@ -29,7 +29,7 @@ const query = `{
   "categories": *[_type == "category" && active == true] | order(order asc) {
     _id, title, slug, description, intuitive
   },
-  "posts": *[_type == "post" && status != "rejected" && status != "hidden" && status != "deletion_requested"] | order(featured desc, publishedAt desc) {
+  "posts": *[_type == "post" && (status == "approved" || !defined(status))] | order(featured desc, publishedAt desc) {
     _id, title, slug, description, publishedAt, featured,
     "bodyExcerpt": pt::text(body)[0...300],
     "mainImage": mainImage.asset->url,
@@ -41,7 +41,12 @@ const query = `{
   }
 }`;
 
-export default async function BlogPage() {
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ cat?: string }>;
+}) {
+  const { cat } = await searchParams;
   const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   const [data, viewCounts] = await Promise.all([
@@ -60,10 +65,12 @@ export default async function BlogPage() {
 
   return (
     <BlogClient
+      key={cat ?? "_all"}
       categories={data.categories ?? []}
       posts={data.posts ?? []}
       authors={data.authors ?? []}
       trendingSlugOrder={trendingSlugOrder}
+      initialCat={cat ?? null}
     />
   );
 }

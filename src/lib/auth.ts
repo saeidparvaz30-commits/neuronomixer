@@ -24,13 +24,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Verify reCAPTCHA if secret key is configured
         const secret = process.env.RECAPTCHA_SECRET_KEY;
         if (secret && credentials.captchaToken) {
-          const captchaRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-            method: "POST",
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: new URLSearchParams({ secret, response: credentials.captchaToken as string }),
-          });
-          const captchaData = await captchaRes.json().catch(() => ({ success: false }));
-          if (!captchaData.success || (captchaData.score ?? 1) < 0.3) return null;
+          try {
+            const captchaRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: new URLSearchParams({ secret, response: credentials.captchaToken as string }),
+            });
+            const captchaData = await captchaRes.json();
+            // Only hard-block if Google explicitly flags it as a bot (score < 0.1).
+            // score < 0.3 was too aggressive — first-attempt submissions often score
+            // low because reCAPTCHA has had minimal time to observe user behaviour.
+            if (captchaData.success === true && (captchaData.score ?? 1) < 0.1) return null;
+          } catch {
+            // Network error reaching Google — let the login proceed; don't punish
+            // valid users for transient failures.
+          }
         }
 
         const user = await prisma.user.findUnique({
