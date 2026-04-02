@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /studio/
+Disallow: /dashboard/
+Disallow: /auth/
+
+Sitemap: https://www.neuronomixer.com/sitemap.xml

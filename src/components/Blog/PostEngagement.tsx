@@ -3,39 +3,44 @@
 import { useState, useEffect } from "react";
 import { Heart, Bookmark, Share2, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface Props {
   postSlug: string;
   postTitle: string;
   categorySlug: string;
-  isLoggedIn: boolean;
-  initialLiked: boolean;
-  initialLikeCount: number;
-  initialBookmarked: boolean;
 }
 
-export default function PostEngagement({
-  postSlug,
-  postTitle,
-  categorySlug,
-  isLoggedIn,
-  initialLiked,
-  initialLikeCount,
-  initialBookmarked,
-}: Props) {
+export default function PostEngagement({ postSlug, postTitle, categorySlug }: Props) {
   const router = useRouter();
-  const [liked, setLiked] = useState(initialLiked);
-  const [likeCount, setLikeCount] = useState(initialLikeCount);
-  const [bookmarked, setBookmarked] = useState(initialBookmarked);
+  const { data: session } = useSession();
+  const isLoggedIn = !!session?.user;
+
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [bookmarked, setBookmarked] = useState(false);
   const [likeLoading, setLikeLoading] = useState(false);
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    setLiked(initialLiked);
-    setLikeCount(initialLikeCount);
-    setBookmarked(initialBookmarked);
-  }, [initialLiked, initialLikeCount, initialBookmarked]);
+    fetch(`/api/posts/like?postSlug=${encodeURIComponent(postSlug)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data) {
+          setLikeCount(data.count);
+          setLiked(data.liked);
+        }
+      })
+      .catch(() => {});
+
+    fetch(`/api/posts/bookmark?postSlug=${encodeURIComponent(postSlug)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data) setBookmarked(data.bookmarked);
+      })
+      .catch(() => {});
+  }, [postSlug]);
 
   async function toggleLike() {
     if (!isLoggedIn) { router.push("/auth/sign-in"); return; }

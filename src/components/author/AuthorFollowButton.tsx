@@ -1,19 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { UserPlus, UserCheck } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 interface Props {
   authorId: string;
-  isFollowing: boolean;
-  isLoggedIn: boolean;
+  isFollowing?: boolean;
+  isLoggedIn?: boolean;
 }
 
-export default function AuthorFollowButton({ authorId, isFollowing: initialFollowing, isLoggedIn }: Props) {
+export default function AuthorFollowButton({ authorId, isFollowing: initialFollowing = false, isLoggedIn: isLoggedInProp }: Props) {
+  const { data: session, status } = useSession();
+  const isLoggedIn = status !== "loading" ? !!session?.user : (isLoggedInProp ?? false);
   const [following, setFollowing] = useState(initialFollowing);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (!session?.user) return;
+    fetch(`/api/dashboard/subscriber/follow?sanityId=${encodeURIComponent(authorId)}&type=author`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data && typeof data.following === "boolean") setFollowing(data.following);
+      })
+      .catch(() => {});
+  }, [authorId, session?.user]);
 
   async function toggle() {
     if (!isLoggedIn) {

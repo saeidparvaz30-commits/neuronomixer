@@ -3,6 +3,8 @@ import CategoryViewClient from "@/components/Category/CategoryViewClient";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
+export const revalidate = 3600;
+
 const query = `
 *[_type=="category" && slug.current == $slug][0]{
   _id,

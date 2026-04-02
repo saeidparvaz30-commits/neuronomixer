@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Send, Trash2, MessageSquare } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 interface CommentUser {
   name: string | null;
@@ -21,12 +22,13 @@ interface Comment {
 
 interface Props {
   postSlug: string;
-  isLoggedIn: boolean;
-  currentUserId?: string;
-  isAdmin?: boolean;
 }
 
-export default function CommentsSection({ postSlug, isLoggedIn, currentUserId, isAdmin }: Props) {
+export default function CommentsSection({ postSlug }: Props) {
+  const { data: session } = useSession();
+  const isLoggedIn = !!session?.user;
+  const currentUserId = session?.user?.id;
+  const isAdmin = (session?.user as any)?.role === "ADMIN";
   const [comments, setComments] = useState<Comment[]>([]);
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);

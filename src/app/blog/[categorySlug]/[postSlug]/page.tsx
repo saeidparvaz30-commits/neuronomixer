@@ -7,8 +7,8 @@ import ReadTracker from "@/components/Blog/ReadTracker";
 import PostEngagement from "@/components/Blog/PostEngagement";
 import CommentsSection from "@/components/Blog/CommentsSection";
 import AuthorFollowButton from "@/components/author/AuthorFollowButton";
-import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+
+export const revalidate = 3600;
 
 const postQuery = `
 {
@@ -116,35 +116,9 @@ export default async function PostPage({
 }) {
   const { postSlug, categorySlug } = await params;
 
-  const session = await auth();
-
-  // NOTE: like/bookmark require `npx prisma migrate dev --name p1-engagement` to be run first.
-  // Until then they degrade gracefully (0 likes, not bookmarked).
-  const db = prisma as any;
-
-  const [data, likeCount, userLike, userBookmark] = await Promise.all([
-    client.fetch(postQuery, { slug: postSlug, categorySlug }),
-    (db.like?.count({ where: { postSlug } }) ?? Promise.resolve(0)).catch(() => 0),
-    session?.user
-      ? (db.like?.findUnique({
-          where: { userId_postSlug: { userId: session.user.id, postSlug } },
-        }) ?? Promise.resolve(null)).catch(() => null)
-      : null,
-    session?.user
-      ? (db.bookmark?.findUnique({
-          where: { userId_postSlug: { userId: session.user.id, postSlug } },
-        }) ?? Promise.resolve(null)).catch(() => null)
-      : null,
-  ]);
-
+  const data = await client.fetch(postQuery, { slug: postSlug, categorySlug });
   const post = data?.post;
   const siblings = data?.siblings || [];
-
-  const isFollowingAuthor = session?.user && post?.author?._id
-    ? !!(await (prisma as any).follow.findUnique({
-        where: { userId_type_sanityId: { userId: session.user.id, type: "author", sanityId: post.author._id } },
-      }).catch(() => null))
-    : false;
 
   if (!post) {
     return <p className="text-center mt-20 text-lg">Post not found.</p>;
@@ -257,18 +231,9 @@ export default async function PostPage({
               postSlug={postSlug}
               postTitle={post.title}
               categorySlug={categorySlug}
-              isLoggedIn={!!session?.user}
-              initialLiked={!!userLike}
-              initialLikeCount={likeCount}
-              initialBookmarked={!!userBookmark}
             />
 
-            <CommentsSection
-              postSlug={postSlug}
-              isLoggedIn={!!session?.user}
-              currentUserId={session?.user?.id}
-              isAdmin={(session?.user as any)?.role === "ADMIN"}
-            />
+            <CommentsSection postSlug={postSlug} />
           </div>
         </div>
         <SubscribeBox />
@@ -325,11 +290,7 @@ export default async function PostPage({
                 </p>
               )}
 
-              <AuthorFollowButton
-                authorId={post.author._id}
-                isFollowing={isFollowingAuthor}
-                isLoggedIn={!!session?.user}
-              />
+              <AuthorFollowButton authorId={post.author._id} />
             </div>
           )}
 
