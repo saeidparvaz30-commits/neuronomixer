@@ -17,8 +17,9 @@ const writingItems: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/dashboard/admin/submit", label: "Submit Post", icon: PenSquare },
   { href: "/dashboard/admin/my-posts", label: "My Posts", icon: FileText },
   { href: "/dashboard/admin/suggest-category", label: "Suggest Category", icon: Lightbulb },
+  { href: "/dashboard/admin/notifications", label: "Notifications", icon: Bell },
   { href: "/dashboard/admin/cv", label: "CV Builder", icon: FileUser },
-  { href: "/dashboard/author/api-key", label: "API Access", icon: KeyRound },
+  { href: "/dashboard/admin/api-key", label: "API Access", icon: KeyRound },
 ];
 
 const accountItems: { href: string; label: string; icon: LucideIcon }[] = [
