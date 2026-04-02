@@ -100,6 +100,24 @@ function convertNode(node: TiptapNode): unknown[] {
     ];
   }
 
+  // Uploaded video file
+  if (node.type === "videoUpload") {
+    const assetId = node.attrs?.assetId as string | undefined;
+    if (!assetId) return [];
+    return [
+      {
+        _type: "video",
+        _key: nextKey(),
+        source: "file",
+        file: {
+          _type: "file",
+          asset: { _type: "reference", _ref: assetId },
+        },
+        caption: (node.attrs?.caption as string) || "",
+      },
+    ];
+  }
+
   const headingMap: Record<string, string> = {
     heading: `h${(node.attrs?.level as number) ?? 2}`,
   };

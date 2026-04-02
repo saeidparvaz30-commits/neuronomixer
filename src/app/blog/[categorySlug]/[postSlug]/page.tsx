@@ -21,6 +21,10 @@ const postQuery = `
         ...,
         asset->{ _id, url },
         alt
+      },
+      _type == "video" => {
+        ...,
+        file { asset->{ url } }
       }
     },
     _createdAt,

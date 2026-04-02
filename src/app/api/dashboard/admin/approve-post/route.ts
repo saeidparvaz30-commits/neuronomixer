@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const { postId } = await req.json();
+  const { postId, scheduledAt } = await req.json();
   if (!postId) {
     return NextResponse.json({ error: "postId required" }, { status: 400 });
   }
@@ -29,6 +29,31 @@ export async function POST(req: NextRequest) {
     { postId }
   );
 
+  // If a future scheduledAt is provided, mark as scheduled rather than live
+  const scheduleDate = scheduledAt ? new Date(scheduledAt) : null;
+  const isScheduled = scheduleDate && scheduleDate > new Date();
+
+  if (isScheduled) {
+    await client
+      .patch(postId)
+      .set({ status: "scheduled", publishedAt: scheduleDate.toISOString() })
+      .commit();
+
+    // Notify author that post is approved and scheduled
+    if (post?.authorUserId) {
+      await prisma.notification.create({
+        data: {
+          userId: post.authorUserId,
+          type: "post_approved",
+          message: `Your post "${post.title}" has been approved and is scheduled to publish on ${scheduleDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}.`,
+        },
+      }).catch(() => {});
+    }
+
+    return NextResponse.json({ success: true, scheduled: true });
+  }
+
+  // Publish immediately
   await client
     .patch(postId)
     .set({ status: "approved", publishedAt: new Date().toISOString() })
@@ -56,7 +81,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true, scheduled: false });
 }
 
 async function notifyAuthorPostApproved(userId: string, postTitle: string, postUrl: string) {

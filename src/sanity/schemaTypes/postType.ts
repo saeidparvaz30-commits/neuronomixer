@@ -93,6 +93,7 @@ export const postType = defineType({
         list: [
           { title: "Draft", value: "draft" },
           { title: "Pending Review", value: "pending" },
+          { title: "Scheduled", value: "scheduled" },
           { title: "Approved", value: "approved" },
           { title: "Rejected", value: "rejected" },
           { title: "Hidden", value: "hidden" },

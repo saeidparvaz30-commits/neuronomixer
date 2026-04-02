@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Calendar, X } from "lucide-react";
 import Image from "next/image";
 import RichText from "@/components/Blog/RichText";
 
@@ -21,11 +21,35 @@ export default function PostReviewRow({ post }: { post: PendingPost }) {
   const router = useRouter();
   const [loading, setLoading] = useState<"approve" | "reject" | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [showScheduler, setShowScheduler] = useState(false);
+  const [scheduledAt, setScheduledAt] = useState("");
 
-  async function handleAction(action: "approve" | "reject") {
-    setLoading(action);
+  // min date = tomorrow (no point scheduling for today if we publish immediately)
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().slice(0, 16);
+
+  async function handleApprove() {
+    setLoading("approve");
     try {
-      await fetch(`/api/dashboard/admin/${action}-post`, {
+      await fetch("/api/dashboard/admin/approve-post", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          postId: post._id,
+          scheduledAt: scheduledAt || undefined,
+        }),
+      });
+      router.refresh();
+    } finally {
+      setLoading(null);
+    }
+  }
+
+  async function handleReject() {
+    setLoading("reject");
+    try {
+      await fetch("/api/dashboard/admin/reject-post", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ postId: post._id }),
@@ -41,6 +65,8 @@ export default function PostReviewRow({ post }: { post: PendingPost }) {
     month: "short",
     day: "numeric",
   });
+
+  const isScheduled = !!scheduledAt;
 
   return (
     <div className="bg-[#060d18]/80 border border-white/10 rounded-2xl overflow-hidden">
@@ -61,7 +87,7 @@ export default function PostReviewRow({ post }: { post: PendingPost }) {
           </div>
         </div>
 
-        <div className="flex gap-2 shrink-0">
+        <div className="flex gap-2 shrink-0 flex-wrap">
           <button
             onClick={() => setExpanded((v) => !v)}
             className="flex items-center gap-1 px-3 py-2 text-sm font-medium bg-white/5 hover:bg-white/10 text-gray-300 rounded-lg transition-colors border border-white/10"
@@ -70,14 +96,27 @@ export default function PostReviewRow({ post }: { post: PendingPost }) {
             {expanded ? "Hide" : "Preview"}
           </button>
           <button
-            onClick={() => handleAction("approve")}
+            onClick={() => setShowScheduler((v) => !v)}
+            className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors border ${
+              isScheduled
+                ? "bg-blue-600/20 text-blue-400 border-blue-500/40"
+                : "bg-white/5 hover:bg-white/10 text-gray-300 border-white/10"
+            }`}
+          >
+            <Calendar size={14} />
+            {isScheduled
+              ? new Date(scheduledAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+              : "Schedule"}
+          </button>
+          <button
+            onClick={handleApprove}
             disabled={!!loading}
             className="px-4 py-2 text-sm font-medium bg-green-600 hover:bg-green-500 text-white rounded-lg transition-colors disabled:opacity-50"
           >
-            {loading === "approve" ? "..." : "Approve"}
+            {loading === "approve" ? "..." : isScheduled ? "Approve & Schedule" : "Approve Now"}
           </button>
           <button
-            onClick={() => handleAction("reject")}
+            onClick={handleReject}
             disabled={!!loading}
             className="px-4 py-2 text-sm font-medium bg-red-700 hover:bg-red-600 text-white rounded-lg transition-colors disabled:opacity-50"
           >
@@ -85,6 +124,36 @@ export default function PostReviewRow({ post }: { post: PendingPost }) {
           </button>
         </div>
       </div>
+
+      {/* Schedule picker panel */}
+      {showScheduler && (
+        <div className="border-t border-white/10 bg-[#0a1628] px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex-1">
+            <p className="text-sm font-medium text-white mb-1">Publish date & time</p>
+            <p className="text-xs text-gray-500">
+              Leave empty to publish immediately when you click Approve. Set a future date to schedule.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <input
+              type="datetime-local"
+              value={scheduledAt}
+              min={minDate}
+              onChange={(e) => setScheduledAt(e.target.value)}
+              className="px-3 py-2 rounded-lg border border-white/15 bg-[#060d18] text-white text-sm focus:outline-none focus:border-[var(--color-accent)]/60"
+            />
+            {scheduledAt && (
+              <button
+                onClick={() => setScheduledAt("")}
+                className="p-1.5 rounded-lg text-gray-500 hover:text-white hover:bg-white/10 transition-colors"
+                title="Clear date"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Expandable preview */}
       {expanded && (

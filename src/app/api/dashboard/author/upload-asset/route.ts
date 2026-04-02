@@ -22,10 +22,11 @@ export async function POST(req: NextRequest) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const asset = await client.assets.upload("image", buffer, {
+  const assetType = file.type.startsWith("video/") ? "file" : "image";
+  const asset = await client.assets.upload(assetType, buffer, {
     filename: file.name,
     contentType: file.type,
   });
 
-  return NextResponse.json({ _id: asset._id, url: asset.url });
+  return NextResponse.json({ _id: asset._id, url: asset.url, isVideo: assetType === "file" });
 }

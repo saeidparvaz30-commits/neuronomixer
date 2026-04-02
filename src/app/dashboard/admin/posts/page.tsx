@@ -2,6 +2,7 @@ import { client } from "@/sanity/lib/client";
 import PostReviewRow from "./PostReviewRow";
 import DeletionRequestRow from "./DeletionRequestRow";
 import PublishedPostRow from "./PublishedPostRow";
+import ScheduledPostRow from "./ScheduledPostRow";
 
 interface PendingPost {
   _id: string;
@@ -23,6 +24,14 @@ interface PublishedPost {
   heroOrder: number | null;
   publishedAt: string | null;
   _updatedAt: string;
+  author?: { name: string };
+  category?: { title: string };
+}
+
+interface ScheduledPost {
+  _id: string;
+  title: string;
+  publishedAt: string;
   author?: { name: string };
   category?: { title: string };
 }
@@ -50,6 +59,16 @@ async function getDeletionRequests(): Promise<PendingPost[]> {
   );
 }
 
+async function getScheduledPosts(): Promise<ScheduledPost[]> {
+  return client.fetch(
+    `*[_type == "post" && status == "scheduled"] | order(publishedAt asc) {
+      _id, title, publishedAt,
+      author->{ name },
+      category->{ title }
+    }`
+  );
+}
+
 async function getPublishedPosts(): Promise<PublishedPost[]> {
   return client.fetch(
     `*[_type == "post" && (status == "approved" || status == "hidden" || !defined(status))] | order(coalesce(publishedAt, _createdAt) desc) {
@@ -61,9 +80,10 @@ async function getPublishedPosts(): Promise<PublishedPost[]> {
 }
 
 export default async function AdminPostsPage() {
-  const [pendingPosts, deletionPosts, publishedPosts] = await Promise.all([
+  const [pendingPosts, deletionPosts, scheduledPosts, publishedPosts] = await Promise.all([
     getPendingPosts(),
     getDeletionRequests(),
+    getScheduledPosts(),
     getPublishedPosts(),
   ]);
 
@@ -93,6 +113,46 @@ export default async function AdminPostsPage() {
           </div>
         )}
       </div>
+
+      {/* ── Scheduled Posts ────────────────────────────────────────────────── */}
+      {scheduledPosts.length > 0 && (
+        <div>
+          <h2 className="text-xl font-bold text-white mb-1">
+            Scheduled
+            <span className="ml-3 text-sm font-normal text-blue-400">
+              {scheduledPosts.length} queued
+            </span>
+          </h2>
+          <p className="text-sm text-gray-500 mb-4">
+            These posts are approved and will go live automatically on their scheduled date.
+          </p>
+          <div className="bg-[#060d18]/80 border border-white/10 rounded-2xl overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-white/10 text-left text-gray-500 text-xs uppercase tracking-wider">
+                  <th className="px-4 py-3">Title</th>
+                  <th className="px-4 py-3">Author</th>
+                  <th className="px-4 py-3">Category</th>
+                  <th className="px-4 py-3">Publishes At</th>
+                  <th className="px-4 py-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {scheduledPosts.map((post) => (
+                  <ScheduledPostRow
+                    key={post._id}
+                    postId={post._id}
+                    title={post.title}
+                    authorName={post.author?.name ?? "—"}
+                    category={post.category?.title ?? "—"}
+                    publishedAt={post.publishedAt}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* ── Deletion Requests ───────────────────────────────────────────────── */}
       {deletionPosts.length > 0 && (
