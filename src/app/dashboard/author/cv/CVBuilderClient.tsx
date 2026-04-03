@@ -1,11 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import {
   Upload, Save, Plus, X, ExternalLink, Loader2, CheckCircle,
   AlertCircle, Globe, Linkedin, Github, Twitter, GraduationCap,
   Briefcase, Sparkles, User, BookOpen, Users, Eye, EyeOff,
-  FolderOpen, Award, Star, Languages, GripVertical,
+  FolderOpen, Award, Star, Languages, GripVertical, Palette,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -935,6 +936,17 @@ export default function CVBuilderClient({ initialCV, userImage }: { initialCV: C
             <AlertCircle size={13} /> {saveError}
           </div>
         )}
+
+        <div className="pt-2 border-t border-white/10">
+          <Link href="/dashboard/author/cv/designer">
+            <button className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-white/5 border border-[var(--color-accent)]/30 text-[var(--color-accent)] text-sm font-medium hover:bg-[var(--color-accent)]/10 transition">
+              <Palette size={14} /> Design PDF
+            </button>
+          </Link>
+          <p className="text-[10px] text-gray-600 text-center mt-1.5 leading-snug">
+            AI-designed, downloadable PDF
+          </p>
+        </div>
       </div>
     </div>
   );

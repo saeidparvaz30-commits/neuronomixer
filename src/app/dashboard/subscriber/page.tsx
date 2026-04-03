@@ -30,7 +30,7 @@ async function getFollowedPosts(userId: string): Promise<Post[]> {
     .join(" || ");
 
   return client.fetch(
-    `*[_type == "post" && status == "approved" && (${conditions})] | order(publishedAt desc) [0...30] {
+    `*[_type == "post" && (status == "approved" || (status == "scheduled" && publishedAt <= now())) && (${conditions})] | order(publishedAt desc) [0...30] {
       _id, title, slug, publishedAt, description,
       author->{ name },
       category->{ title, slug }
