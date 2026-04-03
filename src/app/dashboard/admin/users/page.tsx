@@ -13,6 +13,7 @@ export default async function AdminUsersPage() {
       suspended: true,
       authorStatus: true,
       createdAt: true,
+      cv: { select: { designGenerationsUsed: true } },
     },
   });
 
@@ -29,13 +30,14 @@ export default async function AdminUsersPage() {
                 <th className="px-4 py-3">Email</th>
                 <th className="px-4 py-3">Role</th>
                 <th className="px-4 py-3">VIP</th>
+                <th className="px-4 py-3">CV Designs</th>
                 <th className="px-4 py-3">Joined</th>
                 <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
               {users.map((user) => (
-                <UserRow key={user.id} user={user} />
+                <UserRow key={user.id} user={{ ...user, designGenerationsUsed: user.cv?.designGenerationsUsed ?? null }} />
               ))}
             </tbody>
           </table>

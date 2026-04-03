@@ -84,6 +84,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.vip = dbUser.vip;
           token.onboarded = dbUser.onboarded;
           token.suspended = dbUser.suspended;
+          token.picture = dbUser.image ?? token.picture;
         }
       }
       return token;
@@ -94,6 +95,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         (session.user as any).role = token.role;
         (session.user as any).vip = token.vip;
         (session.user as any).onboarded = token.onboarded;
+        if (token.picture) session.user.image = token.picture as string;
       }
       return session;
     },

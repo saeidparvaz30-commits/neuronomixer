@@ -29,7 +29,7 @@ const query = `{
   "categories": *[_type == "category" && active == true] | order(order asc) {
     _id, title, slug, description, intuitive
   },
-  "posts": *[_type == "post" && (status == "approved" || !defined(status))] | order(featured desc, publishedAt desc) {
+  "posts": *[_type == "post" && (status == "approved" || !defined(status) || (status == "scheduled" && publishedAt <= now()))] | order(featured desc, publishedAt desc) {
     _id, title, slug, description, publishedAt, featured,
     "bodyExcerpt": pt::text(body)[0...300],
     "mainImage": mainImage.asset->url,

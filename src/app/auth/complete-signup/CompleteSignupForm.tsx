@@ -25,6 +25,8 @@ export default function CompleteSignupForm({ userEmail, userName, roleHint }: Pr
   const [name, setName] = useState(userName);
   const [bio, setBio] = useState("");
   const [motivation, setMotivation] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [employer, setEmployer] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -37,7 +39,7 @@ export default function CompleteSignupForm({ userEmail, userName, roleHint }: Pr
       const res = await fetch("/api/auth/complete-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ role, name, bio, motivation }),
+        body: JSON.stringify({ role, name, bio, motivation, jobTitle, employer }),
       });
 
       const data = await res.json();
@@ -143,6 +145,32 @@ export default function CompleteSignupForm({ userEmail, userName, roleHint }: Pr
           className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/60"
         />
       </div>
+
+      {/* Job title + employer — authors only */}
+      {role === "AUTHOR" && (
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Job Title</label>
+            <input
+              type="text"
+              value={jobTitle}
+              onChange={(e) => setJobTitle(e.target.value)}
+              placeholder="e.g. Data Scientist"
+              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/60"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-300 mb-1">Employer / Organisation</label>
+            <input
+              type="text"
+              value={employer}
+              onChange={(e) => setEmployer(e.target.value)}
+              placeholder="e.g. OpenAI"
+              className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]/60"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Motivation — authors only */}
       {role === "AUTHOR" && (

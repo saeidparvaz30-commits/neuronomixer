@@ -17,6 +17,7 @@ export default function ScheduledPostRow({ postId, title, authorName, category, 
   const [loading, setLoading] = useState<"post_now" | "send_back" | "reschedule" | null>(null);
   const [showReschedule, setShowReschedule] = useState(false);
   const [newDate, setNewDate] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -24,8 +25,9 @@ export default function ScheduledPostRow({ postId, title, authorName, category, 
 
   async function handleAction(action: "post_now" | "send_back" | "reschedule") {
     setLoading(action);
+    setError(null);
     try {
-      await fetch("/api/dashboard/admin/scheduled-post-action", {
+      const res = await fetch("/api/dashboard/admin/scheduled-post-action", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -34,7 +36,14 @@ export default function ScheduledPostRow({ postId, title, authorName, category, 
           ...(action === "reschedule" ? { scheduledAt: newDate } : {}),
         }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error ?? `Request failed (${res.status})`);
+        return;
+      }
       router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Network error");
     } finally {
       setLoading(null);
     }
@@ -93,6 +102,15 @@ export default function ScheduledPostRow({ postId, title, authorName, category, 
           </div>
         </td>
       </tr>
+
+      {/* Error row */}
+      {error && (
+        <tr className="bg-red-950/30">
+          <td colSpan={5} className="px-4 py-2 text-xs text-red-400">
+            Error: {error}
+          </td>
+        </tr>
+      )}
 
       {/* Reschedule panel (spans full row) */}
       {showReschedule && (

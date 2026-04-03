@@ -12,14 +12,14 @@ export async function POST(req: NextRequest) {
 
   const userId = session.user.id;
 
-  let body: { role?: string; name?: string; bio?: string; motivation?: string };
+  let body: { role?: string; name?: string; bio?: string; motivation?: string; jobTitle?: string; employer?: string };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const { role, name, bio, motivation } = body;
+  const { role, name, bio, motivation, jobTitle, employer } = body;
 
   if (!name?.trim()) {
     return NextResponse.json({ error: "Name is required" }, { status: 400 });
@@ -68,6 +68,8 @@ export async function POST(req: NextRequest) {
             slug: { _type: "slug", current: slug },
             shortBio: bio?.trim() ?? "",
             userId,
+            ...(jobTitle?.trim() ? { jobTitle: jobTitle.trim() } : {}),
+            ...(employer?.trim() ? { employer: employer.trim() } : {}),
           })
           .commit();
       } else {
@@ -80,6 +82,8 @@ export async function POST(req: NextRequest) {
           userId,
           applicationStatus: "pending",
           email: session.user.email ?? "",
+          ...(jobTitle?.trim() ? { jobTitle: jobTitle.trim() } : {}),
+          ...(employer?.trim() ? { employer: employer.trim() } : {}),
         });
         await prisma.user.update({
           where: { id: userId },

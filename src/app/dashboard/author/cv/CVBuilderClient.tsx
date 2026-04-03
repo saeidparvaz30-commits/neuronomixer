@@ -1,11 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Link from "next/link";
 import {
   Upload, Save, Plus, X, ExternalLink, Loader2, CheckCircle,
   AlertCircle, Globe, Linkedin, Github, Twitter, GraduationCap,
   Briefcase, Sparkles, User, BookOpen, Users, Eye, EyeOff,
-  FolderOpen, Award, Star, Languages, GripVertical,
+  FolderOpen, Award, Star, Languages, GripVertical, Palette,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -206,6 +207,7 @@ export default function CVBuilderClient({ initialCV, userImage }: { initialCV: C
     };
   });
 
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -222,13 +224,47 @@ export default function CVBuilderClient({ initialCV, userImage }: { initialCV: C
     setCv((prev) => ({ ...prev, [key]: val }));
   }
 
-  // ── File extract ────────────────────────────────────────────────────────────
+  // ── File queue ───────────────────────────────────────────────────────────────
 
-  async function handleFile(file: File) {
+  const ACCEPTED_TYPES = [
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "text/plain",
+    "image/jpeg", "image/png", "image/gif", "image/webp",
+  ];
+
+  function addFiles(incoming: FileList | File[]) {
+    const arr = Array.from(incoming).filter((f) => ACCEPTED_TYPES.includes(f.type));
+    if (!arr.length) return;
+    setPendingFiles((prev) => {
+      const existing = new Set(prev.map((f) => f.name + f.size));
+      return [...prev, ...arr.filter((f) => !existing.has(f.name + f.size))];
+    });
+  }
+
+  function removeFile(idx: number) {
+    setPendingFiles((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  function onFileInput(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files) addFiles(e.target.files);
+    if (fileRef.current) fileRef.current.value = "";
+  }
+
+  function onDrop(e: React.DragEvent) {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files) addFiles(e.dataTransfer.files);
+  }
+
+  async function runExtraction() {
+    if (!pendingFiles.length || uploading) return;
     setUploadError("");
     setUploading(true);
     const fd = new FormData();
-    fd.append("file", file);
+    for (const f of pendingFiles) fd.append("files", f);
     try {
       const res = await fetch("/api/cv/extract", { method: "POST", body: fd });
       const data = await res.json();
@@ -256,24 +292,13 @@ export default function CVBuilderClient({ initialCV, userImage }: { initialCV: C
         certifications: (draft.certifications as CertificationEntry[])?.length ? draft.certifications as CertificationEntry[] : prev.certifications,
         honors: (draft.honors as HonorEntry[])?.length ? draft.honors as HonorEntry[] : prev.honors,
       }));
+      // Files are processed — clear the queue
+      setPendingFiles([]);
     } catch {
       setUploadError("Network error. Please try again.");
     } finally {
       setUploading(false);
-      if (fileRef.current) fileRef.current.value = "";
     }
-  }
-
-  function onFileInput(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) handleFile(file);
-  }
-
-  function onDrop(e: React.DragEvent) {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) handleFile(file);
   }
 
   // ── Save ────────────────────────────────────────────────────────────────────
@@ -423,8 +448,10 @@ export default function CVBuilderClient({ initialCV, userImage }: { initialCV: C
       </div>
 
       {/* ── Upload ─────────────────────────────────────────────────────────── */}
-      <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+      <section className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 space-y-4">
         <SectionHeading icon={Sparkles} label="Import from Document" />
+
+        {/* Drop zone */}
         <div
           onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
           onDragLeave={() => setIsDragging(false)}
@@ -436,22 +463,83 @@ export default function CVBuilderClient({ initialCV, userImage }: { initialCV: C
               : "border-white/15 hover:border-white/30 hover:bg-white/5"
           }`}
         >
-          <input ref={fileRef} type="file" accept=".pdf,.docx,.txt" className="hidden" onChange={onFileInput} />
-          {uploading ? (
-            <div className="flex flex-col items-center gap-3 text-[var(--color-accent)]">
-              <Loader2 size={32} className="animate-spin" />
-              <p className="text-sm font-medium">Extracting with AI…</p>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center gap-3 text-gray-400">
-              <Upload size={28} />
-              <p className="text-sm"><span className="text-white font-medium">Click to upload</span> or drag & drop</p>
-              <p className="text-xs text-gray-500">PDF, DOCX, or TXT — max 5 MB</p>
-            </div>
-          )}
+          <input
+            ref={fileRef}
+            type="file"
+            multiple
+            accept=".pdf,.docx,.doc,.xls,.xlsx,.txt,.jpg,.jpeg,.png,.gif,.webp"
+            className="hidden"
+            onChange={onFileInput}
+          />
+          <div className="flex flex-col items-center gap-3 text-gray-400">
+            <Upload size={28} />
+            <p className="text-sm">
+              <span className="text-white font-medium">Click to upload</span> or drag & drop
+            </p>
+            <p className="text-xs text-gray-500">
+              PDF, Word, Excel, TXT, or Images (JPG, PNG, WEBP) — up to 30 files, 10 MB each
+            </p>
+          </div>
         </div>
+
+        {/* File queue */}
+        {pendingFiles.length > 0 && (
+          <ul className="space-y-2">
+            {pendingFiles.map((f, i) => {
+              const isImage = f.type.startsWith("image/");
+              const isPdf = f.type === "application/pdf";
+              const isExcel = f.type.includes("spreadsheet") || f.type.includes("excel");
+              const isWord = f.type.includes("wordprocessing") || f.type.includes("msword");
+              const icon = isImage ? "🖼️" : isPdf ? "📄" : isExcel ? "📊" : isWord ? "📝" : "📃";
+              const sizeKb = (f.size / 1024).toFixed(0);
+              return (
+                <li
+                  key={i}
+                  className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-lg px-4 py-2.5"
+                >
+                  <span className="text-base shrink-0">{icon}</span>
+                  <span className="flex-1 text-sm text-white truncate">{f.name}</span>
+                  <span className="text-xs text-gray-500 shrink-0">{sizeKb} KB</span>
+                  <button
+                    type="button"
+                    onClick={() => removeFile(i)}
+                    disabled={uploading}
+                    className="shrink-0 text-gray-500 hover:text-red-400 transition disabled:opacity-40"
+                    aria-label="Remove file"
+                  >
+                    <X size={15} />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+
+        {/* Run button */}
+        <div className="space-y-1.5">
+          <button
+            type="button"
+            onClick={runExtraction}
+            disabled={!pendingFiles.length || uploading}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all
+              bg-[var(--color-accent)] text-[#0f172a]
+              hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {uploading ? (
+              <><Loader2 size={15} className="animate-spin" /> Analysing with AI…</>
+            ) : (
+              <><Sparkles size={15} /> Run CV Builder</>
+            )}
+          </button>
+          <p className="text-xs text-gray-500">
+            Upload all your files first, then click <span className="text-gray-300">Run CV Builder</span> to extract and auto-fill the form. Your files are never stored.
+          </p>
+        </div>
+
         {uploadError && (
-          <p className="mt-3 text-sm text-red-400 flex items-center gap-2"><AlertCircle size={13} /> {uploadError}</p>
+          <p className="text-sm text-red-400 flex items-center gap-2">
+            <AlertCircle size={13} /> {uploadError}
+          </p>
         )}
       </section>
 
@@ -848,6 +936,17 @@ export default function CVBuilderClient({ initialCV, userImage }: { initialCV: C
             <AlertCircle size={13} /> {saveError}
           </div>
         )}
+
+        <div className="pt-2 border-t border-white/10">
+          <Link href="/dashboard/author/cv/designer">
+            <button className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-white/5 border border-[var(--color-accent)]/30 text-[var(--color-accent)] text-sm font-medium hover:bg-[var(--color-accent)]/10 transition">
+              <Palette size={14} /> Design PDF
+            </button>
+          </Link>
+          <p className="text-[10px] text-gray-600 text-center mt-1.5 leading-snug">
+            AI-designed, downloadable PDF
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -2,7 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Check, ChevronDown, Loader2, Trash2, Ban, CheckCircle } from "lucide-react";
+import { Check, ChevronDown, Loader2, Trash2, Ban, CheckCircle, Palette } from "lucide-react";
+
+const CV_LIMIT = 3;
 
 interface UserData {
   id: string;
@@ -13,6 +15,7 @@ interface UserData {
   suspended: boolean;
   authorStatus: "PENDING" | "APPROVED" | "REJECTED" | null;
   createdAt: Date;
+  designGenerationsUsed: number | null;
 }
 
 type Role = "ADMIN" | "AUTHOR" | "SUBSCRIBER";
@@ -36,6 +39,12 @@ export default function UserRow({ user }: { user: UserData }) {
   const [confirming, setConfirming]           = useState(false);
   const [showDropdown, setShowDropdown]       = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // CV designs usage
+  const [cvUsed, setCvUsed] = useState<number>(user.designGenerationsUsed ?? 0);
+  const [cvInput, setCvInput] = useState<string>(String(Math.max(0, CV_LIMIT - (user.designGenerationsUsed ?? 0))));
+  const [cvEditing, setCvEditing] = useState(false);
+  const [cvLoading, setCvLoading] = useState(false);
 
   useEffect(() => {
     if (!showDropdown) return;
@@ -109,6 +118,25 @@ export default function UserRow({ user }: { user: UserData }) {
     }
   }
 
+  async function saveCvDesigns() {
+    const remaining = Math.max(0, parseInt(cvInput, 10) || 0);
+    const generationsUsed = Math.max(0, CV_LIMIT - remaining);
+    setCvLoading(true);
+    try {
+      await fetch("/api/dashboard/admin/set-cv-designs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user.id, generationsUsed }),
+      });
+      setCvUsed(generationsUsed);
+      setCvEditing(false);
+    } finally {
+      setCvLoading(false);
+    }
+  }
+
+  const cvRemaining = Math.max(0, CV_LIMIT - cvUsed);
+
   return (
     <tr className={`text-gray-300 hover:bg-white/5 transition-colors ${user.suspended ? "opacity-60" : ""}`}>
       <td className="px-4 py-3 font-medium text-white">
@@ -158,6 +186,50 @@ export default function UserRow({ user }: { user: UserData }) {
           <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-500/20 text-yellow-300">VIP</span>
         ) : (
           <span className="text-gray-600 text-xs">—</span>
+        )}
+      </td>
+
+      {/* CV Designs */}
+      <td className="px-4 py-3">
+        {user.designGenerationsUsed === null ? (
+          <span className="text-gray-600 text-xs">No CV</span>
+        ) : cvEditing ? (
+          <div className="flex items-center gap-1.5">
+            <input
+              type="number"
+              min={0}
+              max={99}
+              value={cvInput}
+              onChange={(e) => setCvInput(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") saveCvDesigns(); if (e.key === "Escape") setCvEditing(false); }}
+              autoFocus
+              className="w-14 bg-white/5 border border-[var(--color-accent)]/40 rounded-lg px-2 py-1 text-xs text-white text-center focus:outline-none"
+            />
+            <button
+              onClick={saveCvDesigns}
+              disabled={cvLoading}
+              className="text-xs px-2 py-1 rounded-lg bg-[var(--color-accent)] text-black font-medium disabled:opacity-50"
+            >
+              {cvLoading ? <Loader2 size={10} className="animate-spin" /> : "Set"}
+            </button>
+            <button
+              onClick={() => setCvEditing(false)}
+              className="text-xs px-2 py-1 rounded-lg border border-white/10 text-gray-400 hover:text-white"
+            >
+              ✕
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => { setCvInput(String(cvRemaining)); setCvEditing(true); }}
+            className="flex items-center gap-1.5 group"
+            title="Click to set CV design uses remaining"
+          >
+            <Palette size={11} className="text-gray-500 group-hover:text-[var(--color-accent)] transition-colors" />
+            <span className={`text-xs font-medium ${cvRemaining === 0 ? "text-red-400" : cvRemaining <= 1 ? "text-yellow-400" : "text-gray-300"}`}>
+              {cvRemaining} left
+            </span>
+          </button>
         )}
       </td>
 

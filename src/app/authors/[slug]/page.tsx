@@ -25,7 +25,7 @@ const authorQuery = `
 `;
 
 const postsQuery = `
-  *[_type == "post" && (status == "approved" || !defined(status)) && author->slug.current == $slug]
+  *[_type == "post" && (status == "approved" || !defined(status) || (status == "scheduled" && publishedAt <= now())) && author->slug.current == $slug]
   | order(publishedAt desc) [0...20] {
     _id,
     title,

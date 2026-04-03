@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, FileText, BookOpen, PenSquare, Lightbulb, Tag, UserCircle, Bell, FileUser, KeyRound, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, Users, FileText, BookOpen, PenSquare, Lightbulb, Tag, UserCircle, Bell, FileUser, KeyRound, Rss, Clock, Bookmark, Settings, type LucideIcon } from "lucide-react";
 
 const adminItems: { href: string; label: string; icon: LucideIcon; exact?: boolean }[] = [
   { href: "/dashboard/admin", label: "Overview", icon: LayoutDashboard, exact: true },
@@ -17,9 +17,16 @@ const writingItems: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/dashboard/admin/submit", label: "Submit Post", icon: PenSquare },
   { href: "/dashboard/admin/my-posts", label: "My Posts", icon: FileText },
   { href: "/dashboard/admin/suggest-category", label: "Suggest Category", icon: Lightbulb },
-  { href: "/dashboard/admin/notifications", label: "Notifications", icon: Bell },
   { href: "/dashboard/admin/cv", label: "CV Builder", icon: FileUser },
   { href: "/dashboard/admin/api-key", label: "API Access", icon: KeyRound },
+];
+
+const readerItems: { href: string; label: string; icon: LucideIcon; exact?: boolean }[] = [
+  { href: "/dashboard/subscriber", label: "My Feed", icon: Rss, exact: true },
+  { href: "/dashboard/subscriber/history", label: "Reading History", icon: Clock },
+  { href: "/dashboard/subscriber/following", label: "Following", icon: Users },
+  { href: "/dashboard/subscriber/bookmarks", label: "Saved Posts", icon: Bookmark },
+  { href: "/dashboard/subscriber/settings", label: "Settings", icon: Settings },
 ];
 
 const accountItems: { href: string; label: string; icon: LucideIcon }[] = [
@@ -55,6 +62,16 @@ export default function AdminSidebarNav() {
       </p>
       {writingItems.map(({ href, label, icon: Icon }) => (
         <Link key={href} href={href} className={linkClass(href)}>
+          <Icon size={16} />
+          {label}
+        </Link>
+      ))}
+
+      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mt-6 mb-3">
+        Reader
+      </p>
+      {readerItems.map(({ href, label, icon: Icon, exact }) => (
+        <Link key={href} href={href} className={linkClass(href, exact)}>
           <Icon size={16} />
           {label}
         </Link>
