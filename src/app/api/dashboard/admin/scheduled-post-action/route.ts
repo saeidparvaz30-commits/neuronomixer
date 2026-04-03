@@ -44,7 +44,15 @@ export async function POST(req: NextRequest) {
   // ── Post Now ────────────────────────────────────────────────────────────────
   if (action === "post_now") {
     const publishedAt = new Date().toISOString();
-    await client.patch(postId).set({ status: "approved", publishedAt }).commit();
+    try {
+      await client.patch(postId).set({ status: "approved", publishedAt }).commit();
+    } catch (err) {
+      console.error("[scheduled-post-action] Sanity patch failed:", err);
+      return NextResponse.json(
+        { error: err instanceof Error ? err.message : "Sanity write failed" },
+        { status: 500 }
+      );
+    }
 
     if (post?.authorUserId) {
       const postUrl = `${siteUrl}/blog/${post.categorySlug}/${post.slug}`;
@@ -69,11 +77,19 @@ export async function POST(req: NextRequest) {
 
   // ── Send Back for Review ────────────────────────────────────────────────────
   if (action === "send_back") {
-    await client
-      .patch(postId)
-      .set({ status: "pending" })
-      .unset(["publishedAt"])
-      .commit();
+    try {
+      await client
+        .patch(postId)
+        .set({ status: "pending" })
+        .unset(["publishedAt"])
+        .commit();
+    } catch (err) {
+      console.error("[scheduled-post-action] Sanity patch failed:", err);
+      return NextResponse.json(
+        { error: err instanceof Error ? err.message : "Sanity write failed" },
+        { status: 500 }
+      );
+    }
 
     if (post?.authorUserId) {
       await prisma.notification.create({
@@ -98,10 +114,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "scheduledAt must be a future date" }, { status: 400 });
     }
 
-    await client
-      .patch(postId)
-      .set({ status: "scheduled", publishedAt: newDate.toISOString() })
-      .commit();
+    try {
+      await client
+        .patch(postId)
+        .set({ status: "scheduled", publishedAt: newDate.toISOString() })
+        .commit();
+    } catch (err) {
+      console.error("[scheduled-post-action] Sanity patch failed:", err);
+      return NextResponse.json(
+        { error: err instanceof Error ? err.message : "Sanity write failed" },
+        { status: 500 }
+      );
+    }
 
     if (post?.authorUserId) {
       await prisma.notification.create({
