@@ -21,15 +21,22 @@ export const metadata: Metadata = {
 };
 
 const query = `{
-  "posts": *[_type == "post" && status != "rejected" && status != "hidden" && status != "deletion_requested"] | order(featured desc, publishedAt desc) [0...9] {
+  "heroPosts": *[_type == "post" && status == "approved" && heroOrder in [1, 2, 3]] | order(heroOrder asc) {
     _id, title, slug, description, publishedAt, featured, heroOrder,
     "mainImage": mainImage.asset->url,
     "category": category->{ _id, title, slug },
     "author": author->{ _id, name, slug, "image": image.asset->url, jobTitle }
   },
-  "categories": *[_type == "category" && active == true] | order(order asc) [0...3] {
+  "latestPosts": *[_type == "post" && status == "approved"] | order(publishedAt desc) [0...6] {
+    _id, title, slug, description, publishedAt, featured, heroOrder,
+    "mainImage": mainImage.asset->url,
+    "category": category->{ _id, title, slug },
+    "author": author->{ _id, name, slug, "image": image.asset->url, jobTitle }
+  },
+  "categories": *[_type == "category" && active == true && count(*[_type == "post" && status == "approved" && references(^._id)]) > 0] | order(order asc) [0...3] {
     _id, title, slug, description,
-    "image": image.asset->url
+    "image": image.asset->url,
+    "postCount": count(*[_type == "post" && status == "approved" && references(^._id)])
   }
 }`;
 
@@ -74,7 +81,11 @@ export default async function Home() {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       ))}
-      <HomePageClient posts={data.posts ?? []} categories={data.categories ?? []} />
+      <HomePageClient
+        heroPosts={data.heroPosts ?? []}
+        latestPosts={data.latestPosts ?? []}
+        categories={data.categories ?? []}
+      />
     </main>
   );
 }
