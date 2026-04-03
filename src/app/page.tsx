@@ -27,7 +27,7 @@ const query = `{
     "category": category->{ _id, title, slug },
     "author": author->{ _id, name, slug, "image": image.asset->url, jobTitle }
   },
-  "latestPosts": *[_type == "post" && (status == "approved" || (status == "scheduled" && publishedAt <= now()))] | order(publishedAt desc) [0...6] {
+  "latestPosts": *[_type == "post" && (status == "approved" || (status == "scheduled" && publishedAt <= now())) && !defined(heroOrder)] | order(publishedAt desc) [0...6] {
     _id, title, slug, description, publishedAt, featured, heroOrder,
     "mainImage": mainImage.asset->url,
     "category": category->{ _id, title, slug },
