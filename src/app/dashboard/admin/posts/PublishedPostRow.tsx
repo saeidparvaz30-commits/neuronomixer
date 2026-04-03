@@ -73,11 +73,16 @@ export default function PublishedPostRow({
   async function setHeroOrder(slot: number | null) {
     setHeroLoading(true);
     try {
-      await fetch("/api/dashboard/admin/set-hero-order", {
+      const res = await fetch("/api/dashboard/admin/set-hero-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ postId, heroOrder: slot }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        console.error("[setHeroOrder] failed:", res.status, data);
+        return;
+      }
       router.refresh();
     } finally {
       setHeroLoading(false);
