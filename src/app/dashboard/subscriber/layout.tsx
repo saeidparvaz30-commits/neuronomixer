@@ -2,6 +2,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import SubscriberSidebarNav from "@/components/dashboard/SubscriberSidebarNav";
+import AuthorSidebarNav from "@/components/dashboard/AuthorSidebarNav";
+import AdminSidebarNav from "@/components/dashboard/AdminSidebarNav";
 
 export default async function SubscriberLayout({
   children,
@@ -11,10 +13,31 @@ export default async function SubscriberLayout({
   const session = await auth();
   if (!session?.user?.id) redirect("/auth/sign-in");
 
+  const role = (session.user as any)?.role as string | undefined;
+
   const dbUser = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: { name: true },
   });
+
+  // Admins and authors keep their full sidebar when browsing subscriber pages
+  if (role === "ADMIN") {
+    return (
+      <div className="min-h-screen bg-[var(--background)] flex pt-24">
+        <AdminSidebarNav />
+        <main className="flex-1 px-6 py-8 min-w-0">{children}</main>
+      </div>
+    );
+  }
+
+  if (role === "AUTHOR") {
+    return (
+      <div className="min-h-screen bg-[var(--background)] flex pt-24">
+        <AuthorSidebarNav />
+        <main className="flex-1 px-6 py-8 min-w-0">{children}</main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[var(--background)] pt-24">
@@ -29,7 +52,6 @@ export default async function SubscriberLayout({
 
         <div className="flex gap-6 items-start">
           <SubscriberSidebarNav />
-          {/* Main content */}
           <main className="flex-1 min-w-0">{children}</main>
         </div>
       </div>

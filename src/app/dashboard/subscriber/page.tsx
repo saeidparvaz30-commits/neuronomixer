@@ -44,16 +44,21 @@ export default async function SubscriberFeedPage() {
   if (!session?.user) redirect("/auth/sign-in");
 
   const userId = session.user.id;
+  const role = (session.user as any)?.role as string | undefined;
   const [posts, follows, dbUser] = await Promise.all([
     getFollowedPosts(userId),
     prisma.follow.findMany({ where: { userId } }),
     prisma.user.findUnique({ where: { id: userId }, select: { authorStatus: true } }),
   ]);
 
+  const isAlreadyAuthorOrAdmin = role === "AUTHOR" || role === "ADMIN";
+
   return (
     <div className="flex flex-col gap-6">
-      {/* Apply as Author CTA */}
-      <AuthorApplicationModal initialStatus={dbUser?.authorStatus ?? null} />
+      {/* Apply as Author CTA — hidden for existing authors/admins */}
+      {!isAlreadyAuthorOrAdmin && (
+        <AuthorApplicationModal initialStatus={dbUser?.authorStatus ?? null} />
+      )}
 
       <div>
       <div className="flex items-center gap-2 mb-6">

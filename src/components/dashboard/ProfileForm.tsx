@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { Camera, Loader2, Check } from "lucide-react";
 
@@ -38,6 +39,7 @@ export default function ProfileForm({
   contactEmail: initialContactEmail = "",
 }: Props) {
   const router = useRouter();
+  const { update: updateSession } = useSession();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(initialName);
@@ -103,6 +105,8 @@ export default function ProfileForm({
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "Failed to save"); return; }
       setSaved(true);
+      // Refresh JWT so session.user.image updates in the navbar immediately
+      await updateSession();
       router.refresh();
       setTimeout(() => setSaved(false), 3000);
     } finally {

@@ -1,13 +1,20 @@
+export const dynamic = "force-dynamic";
+
 import { client } from "@/sanity/lib/client";
+import { prisma } from "@/lib/prisma";
 import AuthorApplicationRow from "./AuthorApplicationRow";
 import ApprovedAuthorRow from "./ApprovedAuthorRow";
 
-interface SanityAuthor {
+export interface SanityAuthor {
   _id: string;
   name: string;
   email?: string;
   shortBio?: string;
   userId?: string;
+  appliedAt?: string;
+  motivation?: string;
+  jobTitle?: string;
+  employer?: string;
 }
 
 interface ApprovedAuthor {
@@ -18,11 +25,27 @@ interface ApprovedAuthor {
 }
 
 async function getPendingAuthors(): Promise<SanityAuthor[]> {
-  return client.fetch(
+  const authors = await client.fetch<SanityAuthor[]>(
     `*[_type == "author" && applicationStatus == "pending"] | order(_createdAt asc) {
-      _id, name, email, shortBio, userId
+      _id, name, email, shortBio, userId, jobTitle, employer, "appliedAt": _createdAt
     }`
   );
+
+  // Enrich with motivation from Prisma
+  const userIds = authors.map((a) => a.userId).filter(Boolean) as string[];
+  if (userIds.length > 0) {
+    const users = await prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: { id: true, motivation: true },
+    });
+    const motivationMap = Object.fromEntries(users.map((u) => [u.id, u.motivation]));
+    return authors.map((a) => ({
+      ...a,
+      motivation: a.userId ? (motivationMap[a.userId] ?? undefined) : undefined,
+    }));
+  }
+
+  return authors;
 }
 
 async function getApprovedAuthors(): Promise<ApprovedAuthor[]> {

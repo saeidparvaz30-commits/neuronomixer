@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, PenSquare, FileText, Lightbulb, UserCircle, Bell, FileUser, KeyRound, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, PenSquare, FileText, Lightbulb, UserCircle, Bell, FileUser, KeyRound, Rss, Clock, Users, Bookmark, Settings, type LucideIcon } from "lucide-react";
 
 const authorItems: { href: string; label: string; icon: LucideIcon; exact?: boolean }[] = [
   { href: "/dashboard/author", label: "Overview", icon: LayoutDashboard, exact: true },
@@ -12,6 +12,14 @@ const authorItems: { href: string; label: string; icon: LucideIcon; exact?: bool
   { href: "/dashboard/author/notifications", label: "Notifications", icon: Bell },
   { href: "/dashboard/author/cv", label: "CV Builder", icon: FileUser },
   { href: "/dashboard/author/api-key", label: "API Access", icon: KeyRound },
+];
+
+const readerItems: { href: string; label: string; icon: LucideIcon; exact?: boolean }[] = [
+  { href: "/dashboard/subscriber", label: "My Feed", icon: Rss, exact: true },
+  { href: "/dashboard/subscriber/history", label: "Reading History", icon: Clock },
+  { href: "/dashboard/subscriber/following", label: "Following", icon: Users },
+  { href: "/dashboard/subscriber/bookmarks", label: "Saved Posts", icon: Bookmark },
+  { href: "/dashboard/subscriber/settings", label: "Settings", icon: Settings },
 ];
 
 const accountItems: { href: string; label: string; icon: LucideIcon }[] = [
@@ -36,6 +44,16 @@ export default function AuthorSidebarNav() {
         Author
       </p>
       {authorItems.map(({ href, label, icon: Icon, exact }) => (
+        <Link key={href} href={href} className={linkClass(href, exact)}>
+          <Icon size={16} />
+          {label}
+        </Link>
+      ))}
+
+      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mt-6 mb-3">
+        Reader
+      </p>
+      {readerItems.map(({ href, label, icon: Icon, exact }) => (
         <Link key={href} href={href} className={linkClass(href, exact)}>
           <Icon size={16} />
           {label}

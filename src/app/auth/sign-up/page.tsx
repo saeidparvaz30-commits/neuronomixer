@@ -81,7 +81,12 @@ function SignUpCard({
 
     let captchaToken: string | undefined;
     if (executeRecaptcha) {
-      captchaToken = await executeRecaptcha("signup").catch(() => undefined);
+      captchaToken = await executeRecaptcha("signup").catch((err) => {
+        console.error("[reCAPTCHA] executeRecaptcha failed:", err);
+        return undefined;
+      });
+    } else {
+      console.warn("[reCAPTCHA] executeRecaptcha not available — provider not mounted?");
     }
 
     const res = await fetch("/api/auth/signup", {

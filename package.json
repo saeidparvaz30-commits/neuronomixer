@@ -45,7 +45,8 @@
     "react-google-recaptcha-v3": "^1.11.0",
     "react-type-animation": "^3.2.0",
     "sanity": "^4.10.2",
-    "styled-components": "^6.1.19"
+    "styled-components": "^6.1.19",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

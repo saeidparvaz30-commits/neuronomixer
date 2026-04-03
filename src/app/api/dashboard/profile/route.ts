@@ -44,6 +44,14 @@ export async function POST(req: NextRequest) {
     select: { sanityAuthorId: true },
   });
 
+  // Keep CV avatarUrl in sync with the profile photo
+  if (imageUrl) {
+    await (prisma as any).authorCV.updateMany({
+      where: { userId: session.user.id },
+      data: { avatarUrl: imageUrl },
+    });
+  }
+
   // Sync all author fields to Sanity
   if (updated.sanityAuthorId) {
     // Convert plain text longBio back to portable text blocks

@@ -154,7 +154,7 @@ export default function SignInPage() {
           {/* Google OAuth */}
           <button
             onClick={() =>
-              signIn("google", { callbackUrl: "/dashboard/subscriber" })
+              signIn("google", { callbackUrl: "/dashboard" })
             }
             className="
               flex items-center justify-center gap-3
