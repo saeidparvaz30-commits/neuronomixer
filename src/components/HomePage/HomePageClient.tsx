@@ -33,6 +33,7 @@ type Category = {
   slug: { current: string };
   description?: string;
   image?: string;
+  postCount?: number;
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -510,37 +511,20 @@ function SectionHeader({
 // ─── Main export ──────────────────────────────────────────────────────────────
 
 export default function HomePageClient({
-  posts,
+  heroPosts,
+  latestPosts,
   categories,
 }: {
-  posts: Post[];
+  heroPosts: Post[];
+  latestPosts: Post[];
   categories: Category[];
 }) {
-  // Hero slideshow: posts with heroOrder 1/2/3, sorted by slot
-  const slidePosts = useMemo(
-    () =>
-      posts
-        .filter((p) => p.heroOrder != null && [1, 2, 3].includes(p.heroOrder!))
-        .sort((a, b) => (a.heroOrder ?? 9) - (b.heroOrder ?? 9)),
-    [posts],
+  // Deduplicate: remove hero posts from latest list
+  const heroIds = useMemo(() => new Set(heroPosts.map((p) => p._id)), [heroPosts]);
+  const visibleLatest = useMemo(
+    () => latestPosts.filter((p) => !heroIds.has(p._id)).slice(0, 3),
+    [latestPosts, heroIds],
   );
-
-  const slideIds = new Set(slidePosts.map((p) => p._id));
-
-  // Latest: first 3 non-hero posts
-  const latestPosts = useMemo(
-    () => posts.filter((p) => !slideIds.has(p._id)).slice(0, 3),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [posts, slidePosts],
-  );
-
-  const catCountMap = useMemo(() => {
-    const m: Record<string, number> = {};
-    posts.forEach((p) => {
-      if (p.category?._id) m[p.category._id] = (m[p.category._id] ?? 0) + 1;
-    });
-    return m;
-  }, [posts]);
 
   return (
     <>
@@ -594,14 +578,14 @@ export default function HomePageClient({
             </motion.div>
 
             {/* Right: slideshow */}
-            {slidePosts.length > 0 && (
+            {heroPosts.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.65, delay: 0.15 }}
                 className="flex justify-center lg:justify-end pb-10"
               >
-                <HeroSlideshow posts={slidePosts} />
+                <HeroSlideshow posts={heroPosts} />
               </motion.div>
             )}
           </div>
@@ -626,7 +610,7 @@ export default function HomePageClient({
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                 >
                   <Link
-                    href={`/blog/${cat.slug.current}`}
+                    href={`/blog?cat=${cat.slug.current}`}
                     className="group relative block rounded-2xl overflow-hidden border border-[#1e293b] hover:border-[#d4af37]/30 hover:-translate-y-[3px] transition-all duration-300"
                     style={{ height: 200 }}
                   >
@@ -647,8 +631,8 @@ export default function HomePageClient({
                       }}
                     >
                       <p className="text-[11px] font-semibold uppercase tracking-[1px] text-[#d4af37] mb-1.5">
-                        {catCountMap[cat._id] ?? 0} article
-                        {(catCountMap[cat._id] ?? 0) !== 1 ? "s" : ""}
+                        {cat.postCount ?? 0} article
+                        {(cat.postCount ?? 0) !== 1 ? "s" : ""}
                       </p>
                       <h3 className="text-[20px] font-bold text-white mb-1.5">
                         {cat.title}
@@ -667,7 +651,7 @@ export default function HomePageClient({
         )}
 
         {/* ── Latest Articles ──────────────────────────────────────────── */}
-        {latestPosts.length > 0 && (
+        {visibleLatest.length > 0 && (
           <section className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 pb-20">
             <SectionHeader
               title="Latest Articles"
@@ -676,7 +660,7 @@ export default function HomePageClient({
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {latestPosts.map((post, i) => (
+              {visibleLatest.map((post, i) => (
                 <motion.div
                   key={post._id}
                   initial={{ opacity: 0, y: 16 }}
