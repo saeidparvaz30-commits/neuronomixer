@@ -4,6 +4,8 @@ import DeletionRequestRow from "./DeletionRequestRow";
 import PublishedPostRow from "./PublishedPostRow";
 import ScheduledPostRow from "./ScheduledPostRow";
 
+export const dynamic = "force-dynamic";
+
 interface PendingPost {
   _id: string;
   title: string;
