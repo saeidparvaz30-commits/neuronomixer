@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 const query = `{
-  "heroPosts": *[_type == "post" && status == "approved" && heroOrder in [1, 2, 3]] | order(heroOrder asc) {
+  "heroPosts": *[_type == "post" && status == "approved" && defined(heroOrder)] | order(heroOrder asc) {
     _id, title, slug, description, publishedAt, featured, heroOrder,
     "mainImage": mainImage.asset->url,
     "category": category->{ _id, title, slug },
@@ -40,7 +40,7 @@ const query = `{
   }
 }`;
 
-export const revalidate = 60;
+export const revalidate = 30;
 
 const siteUrl = "https://www.neuronomixer.com";
 
