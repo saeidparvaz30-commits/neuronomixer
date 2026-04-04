@@ -15,21 +15,34 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  let body: { title?: string; description?: string };
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
-  }
+  const formData = await req.formData();
+  const title = (formData.get("title") as string | null)?.trim();
+  const description = (formData.get("description") as string | null)?.trim();
+  const imageFile = formData.get("image") as File | null;
 
-  const { title, description } = body;
-  if (!title?.trim()) return NextResponse.json({ error: "Title required" }, { status: 400 });
+  if (!title) return NextResponse.json({ error: "Title required" }, { status: 400 });
+
+  // Upload image to Sanity asset store if provided
+  let imageField: object | undefined;
+  if (imageFile && imageFile.size > 0) {
+    const arrayBuffer = await imageFile.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const asset = await client.assets.upload("image", buffer, {
+      filename: imageFile.name,
+      contentType: imageFile.type || "image/jpeg",
+    });
+    imageField = {
+      _type: "image",
+      asset: { _type: "reference", _ref: asset._id },
+    };
+  }
 
   const doc = {
     _type: "category",
-    title: title.trim(),
-    slug: { _type: "slug", current: slugify(title.trim()) },
-    ...(description?.trim() ? { description: description.trim() } : {}),
+    title,
+    slug: { _type: "slug", current: slugify(title) },
+    ...(description ? { description } : {}),
+    ...(imageField ? { image: imageField } : {}),
     active: true,
   };
 

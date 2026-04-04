@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Check, ChevronDown, Loader2, Trash2, Ban, CheckCircle, Palette } from "lucide-react";
 
-const CV_LIMIT = 3;
+const CV_LIMIT = 1;
 
 interface UserData {
   id: string;
@@ -119,8 +119,9 @@ export default function UserRow({ user }: { user: UserData }) {
   }
 
   async function saveCvDesigns() {
-    const remaining = Math.max(0, parseInt(cvInput, 10) || 0);
-    const generationsUsed = Math.max(0, CV_LIMIT - remaining);
+    const remaining = parseInt(cvInput, 10) || 0;
+    // Allow negative generationsUsed to represent "bonus" credits beyond CV_LIMIT
+    const generationsUsed = CV_LIMIT - remaining;
     setCvLoading(true);
     try {
       await fetch("/api/dashboard/admin/set-cv-designs", {

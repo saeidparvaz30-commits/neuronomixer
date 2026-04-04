@@ -1,32 +1,61 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Loader2 } from "lucide-react";
+import { Plus, Loader2, ImagePlus, X } from "lucide-react";
 
 export default function NewCategoryForm() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] ?? null;
+    setImageFile(file);
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+    } else {
+      setImagePreview(null);
+    }
+  }
+
+  function clearImage() {
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  function reset() {
+    setTitle("");
+    setDescription("");
+    clearImage();
+    setError("");
+    setOpen(false);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
+      const formData = new FormData();
+      formData.append("title", title);
+      if (description.trim()) formData.append("description", description);
+      if (imageFile) formData.append("image", imageFile);
+
       const res = await fetch("/api/dashboard/admin/create-category", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description }),
+        body: formData,
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error ?? "Failed"); return; }
-      setTitle("");
-      setDescription("");
-      setOpen(false);
+      reset();
       router.refresh();
     } finally {
       setLoading(false);
@@ -76,6 +105,40 @@ export default function NewCategoryForm() {
         </div>
       </div>
 
+      {/* Cover image */}
+      <div>
+        <label className="block text-xs text-gray-400 mb-1">Cover Image</label>
+        {imagePreview ? (
+          <div className="relative w-full h-32 rounded-xl overflow-hidden border border-white/10 group">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+            <button
+              type="button"
+              onClick={clearImage}
+              className="absolute top-2 right-2 p-1 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
+            >
+              <X size={13} />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="w-full h-24 flex flex-col items-center justify-center gap-1.5 border border-dashed border-white/15 rounded-xl text-gray-500 hover:border-[var(--color-accent)]/40 hover:text-gray-400 transition-colors"
+          >
+            <ImagePlus size={18} />
+            <span className="text-xs">Click to upload cover image</span>
+          </button>
+        )}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="hidden"
+        />
+      </div>
+
       {error && <p className="text-xs text-red-400">{error}</p>}
 
       <div className="flex gap-2">
@@ -89,7 +152,7 @@ export default function NewCategoryForm() {
         </button>
         <button
           type="button"
-          onClick={() => { setOpen(false); setError(""); }}
+          onClick={reset}
           className="px-4 py-2 text-sm text-gray-400 hover:text-white bg-white/5 border border-white/10 rounded-xl transition-colors"
         >
           Cancel

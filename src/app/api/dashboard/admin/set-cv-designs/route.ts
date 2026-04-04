@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { userId, generationsUsed } = await req.json();
-  if (!userId || typeof generationsUsed !== "number" || generationsUsed < 0) {
+  if (!userId || typeof generationsUsed !== "number") {
     return NextResponse.json({ error: "userId and valid generationsUsed required" }, { status: 400 });
   }
 

@@ -147,30 +147,51 @@ function parseDesignResponse(text: string): { styleName: string; description: st
   return { styleName, description, html };
 }
 
+type PhotoInfo = { dataUri: string; base64: string; mediaType: "image/jpeg" | "image/png" | "image/gif" | "image/webp" };
+
+const PHOTO_PLACEHOLDER = "PROFILE_PHOTO_SRC_PLACEHOLDER";
+
 async function generateOneDesign(
   anthropic: Anthropic,
   cvData: object,
   styleDirective: string,
   contextMessage: string,
-  photoDataUri?: string
+  photo?: PhotoInfo
 ): Promise<{ styleName: string; description: string; html: string }> {
-  const photoInstruction = photoDataUri
-    ? `\n\nPROFILE PHOTO: The user wants their profile picture included. Embed it using this exact data URI as the <img src> value (do not truncate it): ${photoDataUri}\nPlace the photo prominently in the CV header or sidebar — circular or rounded-square crop preferred. Use CSS to style it (e.g. border-radius: 50% or 8px, width: 22mm, height: 22mm).`
+  // Photo is passed as a vision content block (not embedded base64 text) to avoid
+  // consuming 10k–30k text tokens for the raw base64 string.
+  // We use a placeholder src that gets replaced with the real data URI after generation.
+  const photoInstruction = photo
+    ? `\n\nPROFILE PHOTO: The user's profile photo is attached as an image in this message. Include it in the CV. Use the exact string "${PHOTO_PLACEHOLDER}" as the <img> src attribute — do not change it. Style: 22mm × 22mm, border-radius: 50% or 8px, placed in the header or sidebar.`
     : "";
 
   const userMessage = `Here is the CV data:\n${JSON.stringify(cvData, null, 2)}\n\n${contextMessage}${photoInstruction}\n\nDesign style for this specific design:\n${styleDirective}`;
 
+  const content: Anthropic.MessageParam["content"] = photo
+    ? [
+        { type: "text", text: userMessage },
+        { type: "image", source: { type: "base64", media_type: photo.mediaType, data: photo.base64 } },
+      ]
+    : userMessage;
+
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 8000,
+    max_tokens: 5000,
     system: SYSTEM_PROMPT,
-    messages: [{ role: "user", content: userMessage }],
+    messages: [{ role: "user", content }],
   });
 
   const first = message.content[0];
   if (first.type !== "text") throw new Error("Unexpected response type");
 
-  return parseDesignResponse(first.text);
+  const result = parseDesignResponse(first.text);
+
+  // Replace placeholder with the actual data URI
+  if (photo) {
+    result.html = result.html.replaceAll(PHOTO_PLACEHOLDER, photo.dataUri);
+  }
+
+  return result;
 }
 
 export async function POST(req: NextRequest) {
@@ -187,9 +208,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No CV found. Please build your CV first." }, { status: 404 });
   }
 
-  if (cv.designGenerationsUsed >= 3) {
+  if (cv.designGenerationsUsed >= 1) {
     return NextResponse.json(
-      { error: "limit_reached", message: "You've used all 3 design generations. Please contact us for more." },
+      { error: "limit_reached", message: "You've used your design generation. Please contact us for more." },
       { status: 429 }
     );
   }
@@ -240,16 +261,20 @@ export async function POST(req: NextRequest) {
 - Additional Notes: ${p.additionalNotes || "None"}`;
   }
 
-  // Fetch profile photo and convert to base64 data URI if requested
-  let photoDataUri: string | undefined;
+  // Fetch profile photo — kept as separate base64 + dataUri so we can pass it
+  // as a vision content block (not embedded in text) to avoid huge token counts.
+  let photo: PhotoInfo | undefined;
   if (body.includePhoto && cv.avatarUrl) {
     try {
       const imgRes = await fetch(cv.avatarUrl);
       if (imgRes.ok) {
-        const contentType = imgRes.headers.get("content-type") ?? "image/jpeg";
+        const rawType = imgRes.headers.get("content-type") ?? "image/jpeg";
+        const mediaType = (["image/jpeg", "image/png", "image/gif", "image/webp"].includes(rawType)
+          ? rawType
+          : "image/jpeg") as PhotoInfo["mediaType"];
         const arrayBuffer = await imgRes.arrayBuffer();
         const base64 = Buffer.from(arrayBuffer).toString("base64");
-        photoDataUri = `data:${contentType};base64,${base64}`;
+        photo = { dataUri: `data:${mediaType};base64,${base64}`, base64, mediaType };
       }
     } catch (err) {
       console.warn("[cv/design] Could not fetch avatar, proceeding without photo:", err);
@@ -259,19 +284,22 @@ export async function POST(req: NextRequest) {
   let designs: { styleName: string; description: string; html: string }[];
 
   try {
-    const anthropic = new Anthropic({ apiKey });
+    // maxRetries: 0 — fail immediately on rate limits instead of retrying for minutes
+    const anthropic = new Anthropic({ apiKey, maxRetries: 0 });
 
-    // Run 3 calls in parallel — one per design style
-    designs = await Promise.all(
-      STYLE_DIRECTIVES.map((directive) =>
-        generateOneDesign(anthropic, filteredCV, directive, contextMessage, photoDataUri)
-      )
-    );
+    // Sequential calls to stay within the 30k input tokens/minute rate limit
+    designs = [];
+    for (const directive of STYLE_DIRECTIVES) {
+      designs.push(
+        await generateOneDesign(anthropic, filteredCV, directive, contextMessage, photo)
+      );
+    }
   } catch (err) {
     console.error("[cv/design] Claude error:", err);
+    const isRateLimit = err instanceof Error && err.message.includes("rate_limit");
     return NextResponse.json(
-      { error: "Design generation failed. Please try again." },
-      { status: 500 }
+      { error: isRateLimit ? "Rate limit reached. Please wait a minute and try again." : "Design generation failed. Please try again." },
+      { status: isRateLimit ? 429 : 500 }
     );
   }
 
@@ -294,6 +322,6 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     designs,
-    generationsRemaining: 3 - newCount,
+    generationsRemaining: 1 - newCount,
   });
 }
