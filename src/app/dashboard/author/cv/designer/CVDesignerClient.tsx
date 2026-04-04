@@ -98,12 +98,13 @@ interface Design {
 interface Props {
   generationsUsed: number;
   avatarUrl: string | null;
+  savedDesigns: { html: string; styleName: string; description?: string }[] | null;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function CVDesignerClient({ generationsUsed: initialUsed, avatarUrl }: Props) {
-  const [step, setStep] = useState<Step>("select");
+export default function CVDesignerClient({ generationsUsed: initialUsed, avatarUrl, savedDesigns }: Props) {
+  const [step, setStep] = useState<Step>(savedDesigns && savedDesigns.length > 0 ? "preview" : "select");
   const [generationsUsed, setGenerationsUsed] = useState(initialUsed);
 
   // Job description path
@@ -126,9 +127,9 @@ export default function CVDesignerClient({ generationsUsed: initialUsed, avatarU
   // Profile picture option
   const [includePhoto, setIncludePhoto] = useState(false);
 
-  // Results
-  const [designs, setDesigns] = useState<Design[]>([]);
-  const [tweakedHtml, setTweakedHtml] = useState<string[]>([]);
+  // Results — pre-populate from saved designs if available
+  const [designs, setDesigns] = useState<Design[]>(savedDesigns ?? []);
+  const [tweakedHtml, setTweakedHtml] = useState<string[]>(savedDesigns?.map((d) => d.html) ?? []);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState("#1a365d");
   const [selectedFont, setSelectedFont] = useState(FONT_OPTIONS[0].value);
@@ -139,8 +140,8 @@ export default function CVDesignerClient({ generationsUsed: initialUsed, avatarU
 
   const printIframeRef = useRef<HTMLIFrameElement>(null);
 
-  const remaining = 3 - generationsUsed;
-  const limitReached = generationsUsed >= 3;
+  const remaining = 1 - generationsUsed;
+  const limitReached = generationsUsed >= 1;
 
   // ─── Helpers ──────────────────────────────────────────────────────────────
 
@@ -708,7 +709,7 @@ export default function CVDesignerClient({ generationsUsed: initialUsed, avatarU
           </div>
           <div className="text-center">
             <p className="font-semibold text-white text-lg">Designing your CVs…</p>
-            <p className="text-sm text-gray-400 mt-1">Claude is creating three distinct designs. This takes 30–60 seconds.</p>
+            <p className="text-sm text-gray-400 mt-1">This may take a moment. Please don't close this page.</p>
           </div>
           <div className="flex gap-1.5 mt-2">
             {[0, 1, 2].map((i) => (

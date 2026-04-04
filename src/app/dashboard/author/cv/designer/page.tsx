@@ -15,11 +15,17 @@ export default async function CVDesignerPage() {
   const cv = await prisma.authorCV.findUnique({ where: { userId: session.user.id } });
   if (!cv) redirect("/dashboard/author/cv");
 
+  // Load the most recent saved designs so the user doesn't have to regenerate
+  const history = Array.isArray(cv.designHistory) ? cv.designHistory : [];
+  const lastEntry = history.length > 0 ? (history[history.length - 1] as { designs: { html: string; styleName: string; description?: string }[] }) : null;
+  const savedDesigns = lastEntry?.designs ?? null;
+
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
       <CVDesignerClient
         generationsUsed={cv.designGenerationsUsed ?? 0}
         avatarUrl={cv.avatarUrl ?? null}
+        savedDesigns={savedDesigns}
       />
     </div>
   );
