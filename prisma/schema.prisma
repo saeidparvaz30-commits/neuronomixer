@@ -71,6 +71,7 @@ model User {
   notifications       Notification[]
   cv                  AuthorCV?
   apiKey              AuthorApiKey?
+  guideCompletions    GuideCompletion[]
   createdAt          DateTime         @default(now())
 }
 
@@ -210,4 +211,17 @@ model AuthorApiKey {
   createdAt  DateTime  @default(now())
   lastUsedAt DateTime?
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model GuideCompletion {
+  id          String   @id @default(cuid())
+  userId      String
+  guideSlug   String
+  score       Int      @default(0)
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, guideSlug])
+  @@index([userId])
+  @@index([guideSlug])
 }
