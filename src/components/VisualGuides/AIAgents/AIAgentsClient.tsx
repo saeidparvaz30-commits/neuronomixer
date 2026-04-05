@@ -1,0 +1,375 @@
+"use client";
+
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence, useInView } from "framer-motion";
+import { useSession } from "next-auth/react";
+
+const LOOP_PHASES = [
+  { id: "perceive", label: "PERCEIVE", desc: "Read input (text, files, web)",       color: "#3bb4a4", angle: 270 },
+  { id: "think",   label: "THINK",    desc: "Plan next action via LLM reasoning",   color: "#ec4899", angle: 0   },
+  { id: "act",     label: "ACT",      desc: "Use tools (search, code, APIs)",       color: "#f97316", angle: 90  },
+  { id: "observe", label: "OBSERVE",  desc: "See results, update state",            color: "#a855f7", angle: 180 },
+];
+
+type TPhase = "THOUGHT" | "ACTION" | "OBSERVATION" | "ANSWER";
+const PC: Record<TPhase, string> = { THOUGHT: "#3b82f6", ACTION: "#ec4899", OBSERVATION: "#3bb4a4", ANSWER: "#d4af37" };
+
+const TRACE: { phase: TPhase; text: string }[] = [
+  { phase: "THOUGHT",     text: "I need to search for Paris hotels." },
+  { phase: "ACTION",      text: 'web_search("Paris hotels under $100")' },
+  { phase: "OBSERVATION", text: "Found 15 results: Ibis Paris (€89), Hotel du Louvre (€95)..." },
+  { phase: "THOUGHT",     text: "Ibis Paris at €89 is cheapest. Let me get more details." },
+  { phase: "ACTION",      text: 'web_search("Ibis Paris address rating")' },
+  { phase: "OBSERVATION", text: "4 stars, 8.2 rating, 15 Rue du Théâtre, Paris 15th." },
+  { phase: "THOUGHT",     text: "I have enough info to answer." },
+  { phase: "ANSWER",      text: "Ibis Paris at €89/night (4★, 8.2 rating) is the cheapest option." },
+];
+
+const TOOLS = [
+  { name: "Web Search",       desc: "Searches the live internet",              input: 'web_search("Paris weather")',             output: "18°C, partly cloudy in Paris." },
+  { name: "Code Interpreter", desc: "Runs Python in a sandbox",                input: "execute_python('print(2**10)')",           output: "1024" },
+  { name: "File System",      desc: "Reads and writes files",                  input: "read_file('report.txt')",                  output: "Q3 revenue increased 14%..." },
+  { name: "Calculator",       desc: "Precise arithmetic",                      input: "calculate('1234.56 * 7.89 / 100')",        output: "97.41..." },
+  { name: "RAG Retrieval",    desc: "Searches private knowledge base",         input: 'rag_search("refund policy")',              output: "Digital goods non-refundable if downloaded." },
+  { name: "API Caller",       desc: "Integrates with external services",       input: 'api_call("GET /weather?city=Paris")',      output: '{"temp":18,"condition":"cloudy"}' },
+];
+
+const RISKS = [
+  { title: "Infinite Loops",      desc: "Agent keeps searching without a stopping condition, burning tokens indefinitely.", color: "#ef4444" },
+  { title: "Tool Misuse",         desc: "Selecting the wrong tool — e.g. web search when precise arithmetic is needed.", color: "#f97316" },
+  { title: "Compounding Errors",  desc: "A small mistake in step 2 gets passed through all subsequent steps.", color: "#a855f7" },
+];
+
+function polarPos(angleDeg: number, r: number) {
+  const rad = (angleDeg - 90) * (Math.PI / 180);
+  return { x: 50 + r * Math.cos(rad), y: 50 + r * Math.sin(rad) };
+}
+
+export default function AIAgentsClient() {
+  const { data: session } = useSession();
+
+  const [loopRunning, setLoopRunning]     = useState(false);
+  const [activePhase, setActivePhase]     = useState(-1);
+  const [loopViewed, setLoopViewed]       = useState(false);
+  const loopRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const [traceStep, setTraceStep]         = useState(0);
+  const [traceAuto, setTraceAuto]         = useState(false);
+  const traceAllDone                      = traceStep >= TRACE.length;
+
+  const [activeTool, setActiveTool]       = useState<number | null>(null);
+
+  const multiRef    = useRef<HTMLDivElement>(null);
+  const multiInView = useInView(multiRef, { once: true, margin: "-60px" });
+
+  const completionFired = useRef(false);
+  const allComplete = loopViewed && traceAllDone;
+
+  useEffect(() => {
+    if (allComplete && !completionFired.current && session?.user) {
+      completionFired.current = true;
+      fetch("/api/visual-guides/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ guideSlug: "ai-agents", score: 100 }),
+      }).catch(() => {});
+    }
+  }, [allComplete, session?.user]);
+
+  const startLoop = useCallback(() => {
+    if (loopRunning) return;
+    setLoopRunning(true); setActivePhase(0);
+    let idx = 0;
+    loopRef.current = setInterval(() => { idx = (idx + 1) % 4; setActivePhase(idx); }, 1200);
+    setTimeout(() => {
+      if (loopRef.current) clearInterval(loopRef.current);
+      setLoopRunning(false); setLoopViewed(true);
+    }, 1200 * 4 * 2 + 200);
+  }, [loopRunning]);
+
+  useEffect(() => () => { if (loopRef.current) clearInterval(loopRef.current); }, []);
+
+  useEffect(() => {
+    if (!traceAuto || traceAllDone) { setTraceAuto(false); return; }
+    const id = setInterval(() => setTraceStep(s => { if (s >= TRACE.length) { setTraceAuto(false); return s; } return s + 1; }), 1000);
+    return () => clearInterval(id);
+  }, [traceAuto, traceAllDone]);
+
+  const progress = [{ label: "Agent loop", done: loopViewed }, { label: "ReAct trace", done: traceAllDone }];
+
+  return (
+    <div className="min-h-screen pb-20">
+      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
+          <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
+          <span className="text-white/20">/</span>
+          <span className="text-[#ec4899]">Applied AI</span>
+          <span className="text-white/20">/</span>
+          <span className="text-white">AI Agents: Autonomy in Action</span>
+        </nav>
+
+        {/* Hero */}
+        <section className="mb-10">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[#ec4899]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#ec4899]">Applied AI</span>
+            <span className="w-6 h-px bg-[#ec4899]" />
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
+            AI Agents: <span className="text-[#ec4899]">Autonomy in Action</span>
+          </h1>
+          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
+            An AI agent is an LLM equipped with tools — it perceives, reasons, acts, and observes in a continuous loop to autonomously complete multi-step tasks.
+          </p>
+        </section>
+
+        {/* Progress */}
+        <div className="flex items-center gap-3 mb-3 flex-wrap">
+          {progress.map(({ label, done }) => (
+            <div key={label} className="flex items-center gap-1.5">
+              <motion.div className="w-2 h-2 rounded-full" animate={{ backgroundColor: done ? "#ec4899" : "#1e293b" }} transition={{ duration: 0.4 }} />
+              <span className={`text-[11px] transition-colors ${done ? "text-white" : "text-[#475569]"}`}>{label}</span>
+            </div>
+          ))}
+          {!session?.user && <p className="text-[11px] text-[#475569] ml-auto">Sign in to save progress</p>}
+          <AnimatePresence>
+            {allComplete && (
+              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="ml-auto text-[11px] font-semibold text-[#ec4899] flex items-center gap-1">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                Guide complete!
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </div>
+        <div className="h-1 rounded-full bg-[#1e293b] mb-10 overflow-hidden">
+          <motion.div className="h-full rounded-full bg-[#ec4899]" animate={{ width: `${(progress.filter(p => p.done).length / progress.length) * 100}%` }} transition={{ duration: 0.5 }} />
+        </div>
+
+        {/* ── S1: Agent Loop ── */}
+        <section className="mb-14">
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 1 — The Agent Loop</h2>
+          <p className="text-[12px] text-[#94a3b8] mb-6">An agent repeats four steps until its goal is reached. Press Start to animate the cycle.</p>
+          <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
+            <div className="relative mx-auto" style={{ width: "min(320px,100%)", aspectRatio: "1" }}>
+              <svg viewBox="0 0 100 100" className="w-full h-full">
+                {LOOP_PHASES.map((p, i) => {
+                  const next = LOOP_PHASES[(i + 1) % 4];
+                  const f = polarPos(p.angle, 33), t = polarPos(next.angle, 33);
+                  return <motion.line key={p.id} x1={f.x} y1={f.y} x2={t.x} y2={t.y} strokeWidth="0.8" strokeDasharray="2 1.5"
+                    animate={{ stroke: activePhase === i ? p.color : "#1e293b", opacity: activePhase === i ? 1 : 0.4 }} transition={{ duration: 0.3 }} />;
+                })}
+                <text x="50" y="47" textAnchor="middle" style={{ fill: "#94a3b8", fontSize: "3.5px", fontWeight: 600 }}>Goal:</text>
+                <text x="50" y="52" textAnchor="middle" style={{ fill: "white", fontSize: "3px", fontWeight: 700 }}>Book a flight to Tokyo</text>
+              </svg>
+              {LOOP_PHASES.map((p, i) => {
+                const pos = polarPos(p.angle, 33);
+                const on = activePhase === i;
+                return (
+                  <motion.div key={p.id} className="absolute flex flex-col items-center"
+                    style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%,-50%)" }}
+                    animate={{ scale: on ? 1.12 : 1 }} transition={{ duration: 0.25 }}>
+                    <motion.div className="px-2.5 py-1.5 rounded-xl text-[10px] font-bold border-2 whitespace-nowrap"
+                      animate={{ borderColor: on ? p.color : "#334155", background: on ? `${p.color}20` : "#0f172a", color: on ? p.color : "#94a3b8", boxShadow: on ? `0 0 10px ${p.color}50` : "none" }}
+                      transition={{ duration: 0.3 }}>{p.label}</motion.div>
+                    <AnimatePresence>
+                      {on && <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                        className="text-[9px] text-center mt-1 max-w-[80px] leading-tight" style={{ color: p.color }}>{p.desc}</motion.p>}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
+            </div>
+            <div className="mt-5 text-center">
+              <button onClick={startLoop} disabled={loopRunning}
+                className="px-6 py-2.5 rounded-xl text-[13px] font-semibold bg-[#ec4899] text-white hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">
+                {loopRunning ? "Running..." : loopViewed ? "▶ Replay" : "▶ Start"}
+              </button>
+              {loopViewed && !loopRunning && (
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[11px] text-[#3bb4a4] mt-2">The loop runs until the agent decides the goal is achieved.</motion.p>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* ── S2: ReAct Trace ── */}
+        <section className="mb-14">
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 2 — ReAct Trace Simulation</h2>
+          <p className="text-[12px] text-[#94a3b8] mb-1">Goal: <span className="text-white font-semibold">Find the cheapest hotel in Paris under $100</span></p>
+          <p className="text-[12px] text-[#94a3b8] mb-5">ReAct = Reasoning + Acting interleaved. Step through each agent move.</p>
+          <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5 sm:p-6">
+            {traceStep > 0 ? (
+              <div className="space-y-2 mb-4 max-h-[260px] overflow-y-auto pr-1">
+                {TRACE.slice(0, traceStep).map((s, i) => (
+                  <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.25 }}
+                    className="rounded-xl border p-3" style={{ borderColor: `${PC[s.phase]}30`, background: `${PC[s.phase]}08` }}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                        style={{ background: `${PC[s.phase]}20`, color: PC[s.phase] }}>{s.phase}</span>
+                      <span className="text-[10px] text-[#475569]">Step {i + 1}</span>
+                    </div>
+                    <p className={`text-[12px] leading-relaxed ${s.phase === "ACTION" ? "font-mono" : ""}`}
+                      style={{ color: s.phase === "ANSWER" ? "#d4af37" : "white" }}>{s.text}</p>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-xl border border-[#1e293b] bg-[#0a0f1e] p-5 mb-4 text-center">
+                <p className="text-[12px] text-[#475569]">Press Next Step or Auto-Play to begin the trace.</p>
+              </div>
+            )}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex-1 h-1 rounded-full bg-[#1e293b] overflow-hidden">
+                <motion.div className="h-full rounded-full bg-[#ec4899]" animate={{ width: `${(traceStep / TRACE.length) * 100}%` }} transition={{ duration: 0.4 }} />
+              </div>
+              <span className="text-[11px] text-[#475569] shrink-0">{traceStep}/{TRACE.length}</span>
+            </div>
+            <div className="flex items-center gap-3 flex-wrap">
+              <button onClick={() => setTraceStep(s => Math.min(s + 1, TRACE.length))} disabled={traceAllDone || traceAuto}
+                className="px-4 py-2 rounded-xl text-[12px] font-semibold border border-[#1e293b] text-white hover:border-[#ec4899] hover:text-[#ec4899] transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                ▶ Next Step
+              </button>
+              <button onClick={() => setTraceAuto(true)} disabled={traceAllDone || traceAuto}
+                className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-[#3bb4a4] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed">
+                {traceAuto ? "Playing..." : "Auto-Play"}
+              </button>
+              <button onClick={() => { setTraceStep(0); setTraceAuto(false); }}
+                className="px-4 py-2 rounded-xl text-[12px] font-semibold border border-[#334155] text-[#94a3b8] hover:border-[#475569] hover:text-white transition-all">
+                ↺ Reset
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* ── S3: Tool Palette ── */}
+        <section className="mb-14">
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 3 — Tool Palette</h2>
+          <p className="text-[12px] text-[#94a3b8] mb-6">Agents gain capabilities through tools. Click a card to see an example exchange.</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {TOOLS.map((tool, i) => (
+              <motion.button key={tool.name} onClick={() => setActiveTool(activeTool === i ? null : i)}
+                className="rounded-2xl border text-left p-4 transition-all"
+                style={{ borderColor: activeTool === i ? "#ec4899" : "#1e293b", background: activeTool === i ? "#ec489910" : "#0f172a" }}
+                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <p className="text-[12px] font-bold text-white mb-0.5" style={{ color: activeTool === i ? "#ec4899" : "white" }}>{tool.name}</p>
+                <p className="text-[10px] text-[#94a3b8] leading-snug">{tool.desc}</p>
+              </motion.button>
+            ))}
+          </div>
+          <AnimatePresence>
+            {activeTool !== null && (
+              <motion.div key={activeTool} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
+                className="mt-4 rounded-2xl border border-[#ec4899]/30 bg-[#ec489908] p-5">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#ec4899] mb-3">{TOOLS[activeTool].name} — Example</p>
+                <div className="space-y-2">
+                  <div className="rounded-xl bg-[#0a0f1e] border border-[#1e293b] p-3">
+                    <span className="text-[10px] font-bold text-[#475569] block mb-1">INPUT</span>
+                    <code className="text-[11px] text-[#3bb4a4] font-mono">{TOOLS[activeTool].input}</code>
+                  </div>
+                  <div className="rounded-xl bg-[#0a0f1e] border border-[#1e293b] p-3">
+                    <span className="text-[10px] font-bold text-[#475569] block mb-1">OUTPUT</span>
+                    <p className="text-[11px] text-white font-mono">{TOOLS[activeTool].output}</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </section>
+
+        {/* ── S4: Multi-Agent ── */}
+        <section className="mb-14">
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 4 — Multi-Agent System</h2>
+          <p className="text-[12px] text-[#94a3b8] mb-6">Complex tasks get broken into parallel subtasks, each handled by a specialist agent.</p>
+          <div ref={multiRef} className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 sm:p-8">
+            <div className="flex flex-col items-center gap-6">
+              <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={multiInView ? { opacity: 1, scale: 1 } : {}} transition={{ duration: 0.4 }}
+                className="px-6 py-3 rounded-2xl border-2 border-[#ec4899] bg-[#ec489920] text-center">
+                <p className="text-[11px] font-bold text-[#ec4899] uppercase tracking-wider mb-0.5">Orchestrator</p>
+                <p className="text-[13px] font-bold text-white">Agent</p>
+              </motion.div>
+              <div className="flex items-start justify-center gap-4 sm:gap-10 w-full">
+                {[{ label: "Research Agent", color: "#3bb4a4", delay: 0.15 }, { label: "Code Agent", color: "#3b82f6", delay: 0.3 }, { label: "Writing Agent", color: "#d4af37", delay: 0.45 }].map((a) => (
+                  <div key={a.label} className="flex flex-col items-center gap-2 flex-1 max-w-[140px]">
+                    <motion.div initial={{ scaleY: 0, opacity: 0 }} animate={multiInView ? { scaleY: 1, opacity: 1 } : {}}
+                      transition={{ delay: a.delay, duration: 0.35 }} style={{ originY: 0 }}
+                      className="w-px h-8 bg-gradient-to-b from-[#ec4899] to-[#334155]" />
+                    <motion.div initial={{ opacity: 0, y: 8 }} animate={multiInView ? { opacity: 1, y: 0 } : {}}
+                      transition={{ delay: a.delay + 0.2, duration: 0.35 }}
+                      className="px-3 py-2.5 rounded-xl border text-center w-full"
+                      style={{ borderColor: `${a.color}50`, background: `${a.color}10` }}>
+                      <p className="text-[11px] font-bold" style={{ color: a.color }}>{a.label}</p>
+                    </motion.div>
+                    <motion.p initial={{ opacity: 0 }} animate={multiInView ? { opacity: 1 } : {}}
+                      transition={{ delay: a.delay + 0.35 }} className="text-[9px] text-[#475569] text-center leading-tight">
+                      task ↓ / result ↑
+                    </motion.p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <p className="text-[11px] text-[#475569] text-center mt-6 italic">Arrow labels: task delegation + result return</p>
+          </div>
+        </section>
+
+        {/* ── S5: Risks ── */}
+        <section className="mb-12">
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 5 — Risks &amp; Limitations</h2>
+          <p className="text-[12px] text-[#94a3b8] mb-6">Autonomy introduces failure modes that don&apos;t exist in single-shot LLM calls.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {RISKS.map((r) => (
+              <div key={r.title} className="rounded-2xl border bg-[#0f172a] p-5" style={{ borderColor: `${r.color}30` }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-3" style={{ background: `${r.color}15` }}>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke={r.color} strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                  </svg>
+                </div>
+                <p className="text-[13px] font-bold text-white mb-1.5">{r.title}</p>
+                <p className="text-[11px] text-[#94a3b8] leading-relaxed">{r.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Gold insight */}
+        <div className="rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-6 mb-12">
+          <div className="flex items-start gap-3">
+            <span className="text-[#d4af37] text-xl mt-0.5">💡</span>
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#d4af37] mb-2">Key Insight</p>
+              <p className="text-[13px] text-white leading-relaxed">
+                AutoGPT (2023) showed agents could autonomously complete complex tasks — but also highlighted key challenges: they get stuck in loops, make irreversible mistakes, and need human oversight checkpoints.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Summary card */}
+        <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 mb-10 flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8] mb-1">Up Next</p>
+            <p className="text-[15px] font-bold text-white">Model Evaluation</p>
+            <p className="text-[12px] text-[#94a3b8] mt-1">Learn how to measure whether your model actually works.</p>
+          </div>
+          <Link href="/visual-guides/model-evaluation"
+            className="px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-[#ec4899] text-white hover:opacity-90 transition-opacity whitespace-nowrap">
+            Next Guide →
+          </Link>
+        </div>
+
+        {/* Nav */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+          <Link href="/visual-guides/prompt-engineering"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+            ← Prompt Engineering
+          </Link>
+          <Link href="/visual-guides/model-evaluation"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+            Model Evaluation →
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
