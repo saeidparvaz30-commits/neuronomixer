@@ -1,11 +1,6 @@
 import { MetadataRoute } from "next";
 import { client } from "@/sanity/lib/client";
 
-type CategoryItem = {
-  slug: string;
-  _updatedAt?: string;
-};
-
 type PostItem = {
   slug: string;
   categorySlug: string;
@@ -25,15 +20,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Fetch dynamic slugs for categories and posts from Sanity
   const data = await client.fetch<{
-    categories: CategoryItem[];
     posts: PostItem[];
     authors: AuthorItem[];
   }>(
     `{
-      "categories": *[_type == "category" && defined(slug.current) && active == true]{
-        "slug": slug.current,
-        _updatedAt
-      },
       "posts": *[
         _type == "post" &&
         defined(slug.current) &&
@@ -85,15 +75,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  const categoryRoutes: MetadataRoute.Sitemap = (data?.categories || []).map(
-    (c) => ({
-      url: `${baseUrl}/blog/${c.slug}`,
-      lastModified: c._updatedAt ? new Date(c._updatedAt) : undefined,
-      changeFrequency: "weekly",
-      priority: 0.6,
-    })
-  );
-
   const postRoutes: MetadataRoute.Sitemap = (data?.posts || []).map((p) => ({
     url: `${baseUrl}/blog/${p.categorySlug}/${p.slug}`,
     lastModified: p._updatedAt
@@ -112,5 +93,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  return [...staticRoutes, ...categoryRoutes, ...postRoutes, ...authorRoutes];
+  return [...staticRoutes, ...postRoutes, ...authorRoutes];
 }
