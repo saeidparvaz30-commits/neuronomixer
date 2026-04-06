@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,6 +15,8 @@ const postQuery = `
   *[_type == "post" && slug.current == $slug][0]{
     _id,
     title,
+    description,
+    metaDescription,
     mainImage{asset->{url, altText}},
     body[]{
       ...,
@@ -28,6 +31,7 @@ const postQuery = `
       }
     },
     _createdAt,
+    _updatedAt,
     "category": category->{title, slug},
     "author": author->{_id, name, slug, image{asset->{url}}, shortBio, jobTitle, employer, education}
   }
@@ -99,6 +103,10 @@ export async function generateMetadata({
       description,
       images: ogImage.map((i) => i.url),
     },
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 
@@ -112,7 +120,7 @@ export default async function PostPage({
   const post = await client.fetch(postQuery, { slug: postSlug });
 
   if (!post) {
-    return <p className="text-center mt-20 text-lg">Post not found.</p>;
+    notFound();
   }
 
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com").replace(/\/$/, "");
@@ -125,6 +133,7 @@ export default async function PostPage({
     description: post.description ?? undefined,
     url: canonicalUrl,
     datePublished: post._createdAt,
+    dateModified: post._updatedAt ?? post._createdAt,
     ...(post.mainImage?.asset?.url && {
       image: { "@type": "ImageObject", url: post.mainImage.asset.url },
     }),
