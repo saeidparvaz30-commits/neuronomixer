@@ -176,6 +176,29 @@ function convertNode(node: TiptapNode): unknown[] {
     });
   }
 
+  // Table
+  if (node.type === "table") {
+    return [
+      {
+        _type: "table",
+        _key: nextKey(),
+        rows: (node.content ?? []).map((row) => ({
+          _type: "tableRow",
+          _key: nextKey(),
+          cells: (row.content ?? []).map((cell) =>
+            (cell.content ?? [])
+              .map((p) =>
+                (p.content ?? [])
+                  .map((t) => (t.type === "text" ? (t.text ?? "") : ""))
+                  .join("")
+              )
+              .join("\n")
+          ),
+        })),
+      },
+    ];
+  }
+
   // Recurse for doc and other container nodes
   return (node.content ?? []).flatMap(convertNode);
 }

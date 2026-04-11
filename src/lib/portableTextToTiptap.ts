@@ -110,6 +110,23 @@ export function portableTextToTiptap(
       continue;
     }
 
+    // ── Table ─────────────────────────────────────────────────────────────
+    if (node._type === "table") {
+      const rows = (node.rows as Array<{ cells?: string[] }> | undefined) ?? [];
+      content.push({
+        type: "table",
+        content: rows.map((row, ri) => ({
+          type: "tableRow",
+          content: (row.cells ?? []).map((cell: string) => ({
+            type: ri === 0 ? "tableHeader" : "tableCell",
+            content: [{ type: "paragraph", content: cell ? [{ type: "text", text: cell }] : [] }],
+          })),
+        })),
+      });
+      i++;
+      continue;
+    }
+
     // ── Text block ────────────────────────────────────────────────────────
     if (node._type === "block") {
       const block = node as PTBlock;
