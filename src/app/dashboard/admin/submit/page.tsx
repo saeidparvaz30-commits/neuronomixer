@@ -17,9 +17,9 @@ export default async function AdminSubmitPostPage() {
     <div className="max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold text-white mb-2">Submit a Post</h1>
       <p className="text-sm text-gray-500 mb-6">
-        Posts are reviewed before being published.
+        Posts are reviewed by an admin before being published.
       </p>
-      <SubmitPostForm categories={categories} />
+      <SubmitPostForm categories={categories} redirectTo="/dashboard/admin/my-posts" />
     </div>
   );
 }
