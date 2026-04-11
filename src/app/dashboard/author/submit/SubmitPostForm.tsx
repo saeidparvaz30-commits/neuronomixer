@@ -9,7 +9,8 @@ import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import BaseImage from "@tiptap/extension-image";
 import Youtube from "@tiptap/extension-youtube";
-import { ImageIcon, Video, X, Upload, Loader2, AlertTriangle, Film } from "lucide-react";
+import { Table, TableRow, TableHeader, TableCell } from "@tiptap/extension-table";
+import { ImageIcon, Video, X, Upload, Loader2, AlertTriangle, Film, Table2 } from "lucide-react";
 import { ImageNodeView } from "./ImageNodeView";
 import { VideoNodeView } from "./VideoNodeView";
 
@@ -74,6 +75,7 @@ export interface InitialData {
 interface Props {
   categories: Category[];
   initialData?: InitialData;
+  redirectTo?: string;
 }
 
 interface AltPending {
@@ -101,7 +103,7 @@ const STATUS_CONFIG: Record<
 
 // ── Component ──────────────────────────────────────────────────────────────────
 
-export default function SubmitPostForm({ categories, initialData }: Props) {
+export default function SubmitPostForm({ categories, initialData, redirectTo = "/dashboard/author/posts" }: Props) {
   const router = useRouter();
   const isEditMode = !!initialData?.postId;
   const statusKey = initialData?.currentStatus ?? "new";
@@ -143,6 +145,9 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
   // Stable ref so ProseMirror's handleDrop always calls the latest handleInsertFile
   const handleDropFileRef = useRef<(file: File, type: "image" | "video") => void>(() => {});
 
+  // Stable ref so ProseMirror's handlePaste always calls the latest paste handler
+  const handlePasteRef = useRef<(event: ClipboardEvent) => boolean>(() => false);
+
   // ── Editor ──────────────────────────────────────────────────────────────────
   const editor = useEditor({
     immediatelyRender: !!initialData?.tiptapJson,
@@ -154,12 +159,17 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
       SanityImage.configure({ allowBase64: false }),
       VideoUpload,
       Youtube.configure({ controls: true, nocookie: true }),
+      Table.configure({ resizable: false }),
+      TableRow,
+      TableHeader,
+      TableCell,
     ],
     editorProps: {
       attributes: {
         class:
           "prose prose-invert max-w-none min-h-[400px] px-4 py-3 focus:outline-none text-gray-200 text-sm leading-relaxed",
       },
+      handlePaste: (_view, event) => handlePasteRef.current(event),
       handleDrop: (_view, event, _slice, _moved) => {
         const files = event.dataTransfer?.files;
         if (!files?.length) return false;
@@ -269,6 +279,31 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
     setAltPending(null);
   }
 
+  // ── Table paste helpers ─────────────────────────────────────────────────────
+  function insertTableFromRows(rows: string[][]) {
+    if (!editor || !rows.length) return;
+    const [headerRow, ...bodyRows] = rows;
+    editor.chain().focus().insertContent({
+      type: "table",
+      content: [
+        {
+          type: "tableRow",
+          content: headerRow.map((cell) => ({
+            type: "tableHeader",
+            content: [{ type: "paragraph", content: [{ type: "text", text: cell }] }],
+          })),
+        },
+        ...bodyRows.map((row) => ({
+          type: "tableRow",
+          content: row.map((cell) => ({
+            type: "tableCell",
+            content: [{ type: "paragraph", content: [{ type: "text", text: cell }] }],
+          })),
+        })),
+      ],
+    }).run();
+  }
+
   // ── Body image / video pickers ──────────────────────────────────────────────
   function handleBodyImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -339,7 +374,7 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
       }
 
       setSuccessAction(action);
-      setTimeout(() => router.push("/dashboard/author/posts"), 1500);
+      setTimeout(() => router.push(redirectTo), 1500);
     } catch (err) {
       console.error("[SubmitPostForm] save error:", err);
       setError("Network error. Please check your connection and try again.");
@@ -348,8 +383,40 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
     }
   }
 
-  // Keep handleDropFileRef current on every render
+  // Keep refs current on every render
   handleDropFileRef.current = handleInsertFile;
+  handlePasteRef.current = (event: ClipboardEvent) => {
+    const text = event.clipboardData?.getData("text/plain") ?? "";
+    const html = event.clipboardData?.getData("text/html") ?? "";
+
+    // HTML table (Excel copy, Word table) — let Tiptap handle natively
+    if (html.includes("<table")) return false;
+
+    const lines = text.trim().split("\n").filter((l) => l.trim() !== "");
+    if (!lines.length) return false;
+
+    // Markdown table: every line starts and ends with |
+    const isMarkdown = lines.every(
+      (l) => l.trim().startsWith("|") && l.trim().endsWith("|")
+    );
+    if (isMarkdown) {
+      const rows = lines
+        .filter((l) => !/^\s*\|[\s\-:|]+\|\s*$/.test(l)) // skip separator rows
+        .map((l) =>
+          l.trim().slice(1, -1).split("|").map((c) => c.trim())
+        );
+      if (rows.length) { insertTableFromRows(rows); return true; }
+    }
+
+    // TSV (tab-separated) — Excel plain-text fallback
+    if (lines.some((l) => l.includes("\t"))) {
+      const rows = lines.map((l) => l.split("\t"));
+      insertTableFromRows(rows);
+      return true;
+    }
+
+    return false;
+  };
 
   // ── Success state ────────────────────────────────────────────────────────────
   if (successAction) {
@@ -424,6 +491,24 @@ export default function SubmitPostForm({ categories, initialData }: Props) {
           className={`flex items-center gap-1 ${toolbarBtn(showVideoInput)} ${compact ? "justify-center" : ""}`}>
           <Video size={11} />
           {!compact && "YouTube"}
+        </button>
+        {/* Insert table */}
+        <button type="button" title="Insert table (or paste from Excel/Word/Markdown)"
+          onClick={() =>
+            editor?.chain().focus().insertContent({
+              type: "table",
+              content: Array.from({ length: 3 }, (_, r) => ({
+                type: "tableRow",
+                content: Array.from({ length: 3 }, () => ({
+                  type: r === 0 ? "tableHeader" : "tableCell",
+                  content: [{ type: "paragraph", content: [] }],
+                })),
+              })),
+            }).run()
+          }
+          className={`flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded transition-colors text-gray-400 hover:text-white hover:bg-white/10 ${compact ? "justify-center" : ""}`}>
+          <Table2 size={11} />
+          {!compact && "Table"}
         </button>
       </>
     );
