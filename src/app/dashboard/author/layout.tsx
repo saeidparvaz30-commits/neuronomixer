@@ -10,7 +10,10 @@ export default async function AuthorLayout({
   const session = await auth();
   const role = (session?.user as any)?.role;
 
-  if (role !== "AUTHOR" && role !== "ADMIN") {
+  if (role === "ADMIN") {
+    redirect("/dashboard/admin");
+  }
+  if (role !== "AUTHOR") {
     redirect("/auth/sign-in");
   }
 
