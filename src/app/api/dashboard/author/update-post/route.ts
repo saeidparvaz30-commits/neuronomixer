@@ -36,6 +36,9 @@ export async function PATCH(req: NextRequest) {
   if (!title?.trim()) return NextResponse.json({ error: "Title is required" }, { status: 400 });
   if (!categoryId) return NextResponse.json({ error: "Category is required" }, { status: 400 });
   if (!tiptapBody) return NextResponse.json({ error: "Content is required" }, { status: 400 });
+  if (action === "submit" && !coverImageAssetId) {
+    return NextResponse.json({ error: "A header image is required to submit for review." }, { status: 400 });
+  }
 
   // Verify ownership — only the submitter (or admin) can edit
   const existing = await client.fetch<{ _id: string; submittedBy: string } | null>(
