@@ -43,6 +43,9 @@ export async function POST(req: NextRequest) {
   if (action === "submit" && !coverImageAssetId) {
     return NextResponse.json({ error: "A header image is required to submit for review." }, { status: 400 });
   }
+  if (action === "submit" && !metaDescription?.trim()) {
+    return NextResponse.json({ error: "A meta description is required to submit for review." }, { status: 400 });
+  }
 
   // Look up the Sanity author linked to this user
   const user = await prisma.user.findUnique({
