@@ -39,6 +39,9 @@ export async function PATCH(req: NextRequest) {
   if (action === "submit" && !coverImageAssetId) {
     return NextResponse.json({ error: "A header image is required to submit for review." }, { status: 400 });
   }
+  if (action === "submit" && !metaDescription?.trim()) {
+    return NextResponse.json({ error: "A meta description is required to submit for review." }, { status: 400 });
+  }
 
   // Verify ownership — only the submitter (or admin) can edit
   const existing = await client.fetch<{ _id: string; submittedBy: string } | null>(
