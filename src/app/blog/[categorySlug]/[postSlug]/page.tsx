@@ -1,4 +1,5 @@
 import { client } from "@/sanity/lib/client";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import SubscribeBox from "@/components/appSkeleton/SubscribeBox";
@@ -11,7 +12,7 @@ import AuthorFollowButton from "@/components/author/AuthorFollowButton";
 export const revalidate = 3600;
 
 const postQuery = `
-  *[_type == "post" && slug.current == $slug][0]{
+  *[_type == "post" && slug.current == $slug && status == "approved"][0]{
     _id,
     title,
     mainImage{asset->{url, altText}},
@@ -34,7 +35,7 @@ const postQuery = `
 `;
 export async function generateStaticParams() {
   const posts = await client.fetch<{ categorySlug: string; slug: string }[]>(
-    `*[_type == "post" && defined(slug.current) && defined(category->slug.current)]{
+    `*[_type == "post" && status == "approved" && defined(slug.current) && defined(category->slug.current)]{
       "categorySlug": category->slug.current,
       "slug": slug.current
     }`
@@ -111,9 +112,7 @@ export default async function PostPage({
 
   const post = await client.fetch(postQuery, { slug: postSlug });
 
-  if (!post) {
-    return <p className="text-center mt-20 text-lg">Post not found.</p>;
-  }
+  if (!post) notFound();
 
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com").replace(/\/$/, "");
   const canonicalUrl = `${siteUrl}/blog/${categorySlug}/${postSlug}`;
