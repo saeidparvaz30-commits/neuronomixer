@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { client } from "@/sanity/lib/client";
+import { revalidatePath } from "next/cache";
 
 // Admin permanently deletes a post (any status, including deletion_requested).
 export async function POST(req: NextRequest) {
@@ -19,7 +20,20 @@ export async function POST(req: NextRequest) {
   const { postId } = body;
   if (!postId) return NextResponse.json({ error: "Post ID required" }, { status: 400 });
 
+  // Fetch slugs before deletion so we can revalidate the specific cached path
+  const postInfo = await client.fetch<{ categorySlug: string; slug: string } | null>(
+    `*[_id == $postId][0]{ "categorySlug": category->slug.current, "slug": slug.current }`,
+    { postId }
+  );
+
   await client.delete(postId);
+
+  // Purge ISR cache for the deleted post and affected listing pages
+  if (postInfo?.categorySlug && postInfo?.slug) {
+    revalidatePath(`/blog/${postInfo.categorySlug}/${postInfo.slug}`);
+  }
+  revalidatePath("/");
+  revalidatePath("/blog");
 
   return NextResponse.json({ success: true });
 }
