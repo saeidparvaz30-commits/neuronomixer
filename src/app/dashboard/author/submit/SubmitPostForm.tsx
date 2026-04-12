@@ -337,6 +337,8 @@ export default function SubmitPostForm({ categories, initialData, redirectTo = "
     if (!editor || editor.isEmpty) return setError("Post content cannot be empty.");
     if (coverUploading)
       return setError("Please wait for the cover image to finish uploading.");
+    if (action === "submit" && !coverAssetId)
+      return setError("A header image is required before submitting for review.");
 
     setLoadingAction(action);
     try {
