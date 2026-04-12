@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { notFound } from "next/navigation";
 import Image from "next/image";
