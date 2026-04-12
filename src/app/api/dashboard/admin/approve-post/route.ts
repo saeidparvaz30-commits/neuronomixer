@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { client } from "@/sanity/lib/client";
 import { prisma } from "@/lib/prisma";
 import nodemailer from "nodemailer";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -58,6 +59,13 @@ export async function POST(req: NextRequest) {
     .patch(postId)
     .set({ status: "approved", publishedAt: new Date().toISOString() })
     .commit();
+
+  // Purge ISR cache so the post page renders live immediately
+  if (post?.categorySlug && post?.slug) {
+    revalidatePath(`/blog/${post.categorySlug}/${post.slug}`);
+  }
+  revalidatePath("/");
+  revalidatePath("/blog");
 
   // Notify the author (in-app + email)
   if (post?.authorUserId) {
