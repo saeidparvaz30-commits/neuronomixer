@@ -339,6 +339,8 @@ export default function SubmitPostForm({ categories, initialData, redirectTo = "
       return setError("Please wait for the cover image to finish uploading.");
     if (action === "submit" && !coverAssetId)
       return setError("A header image is required before submitting for review.");
+    if (action === "submit" && !metaDescription.trim())
+      return setError("A meta description is required before submitting for review.");
 
     setLoadingAction(action);
     try {
@@ -627,7 +629,7 @@ export default function SubmitPostForm({ categories, initialData, redirectTo = "
 
       {/* ── Cover Image ─────────────────────────────────────────────────────── */}
       <div>
-        <label className="block text-sm text-gray-300 mb-1">Cover Image</label>
+        <label className="block text-sm text-gray-300 mb-1">Cover Image <span className="text-red-400">*</span></label>
         {coverPreview ? (
           <div className="relative rounded-xl overflow-hidden h-48 bg-black">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -706,7 +708,7 @@ export default function SubmitPostForm({ categories, initialData, redirectTo = "
       {/* ── Meta Description ────────────────────────────────────────────────── */}
       <div>
         <label className="block text-sm text-gray-300 mb-1">
-          Meta Description
+          Meta Description <span className="text-red-400">*</span>
           <span className="ml-2 text-xs text-gray-500">(SEO — shown in Google search results, max 160 chars)</span>
         </label>
         <textarea
