@@ -12,11 +12,13 @@ export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [unverified, setUnverified] = useState(false);
   const [loading, setLoading] = useState(false);
 
   async function handleCredentials(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setUnverified(false);
     setLoading(true);
 
     let captchaToken: string | undefined;
@@ -34,6 +36,18 @@ export default function SignInPage() {
     setLoading(false);
 
     if (result?.error) {
+      // Check whether the failure is specifically because email isn't verified
+      try {
+        const check = await fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
+        const data = await check.json();
+        if (data.verified === false) {
+          setUnverified(true);
+          setLoading(false);
+          return;
+        }
+      } catch {
+        // Network error — fall through to generic message
+      }
       setError("Invalid email or password.");
     } else {
       const session = await getSession();
@@ -119,6 +133,18 @@ export default function SignInPage() {
                 Forgot password?
               </a>
             </div>
+
+            {unverified && (
+              <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-300 text-center space-y-1.5">
+                <p>Please verify your email before signing in.</p>
+                <a
+                  href={`/auth/verify-email?pending=1&email=${encodeURIComponent(email)}`}
+                  className="underline hover:text-yellow-200 transition"
+                >
+                  Resend verification email →
+                </a>
+              </div>
+            )}
 
             {error && (
               <p className="text-red-400 text-sm text-center">{error}</p>

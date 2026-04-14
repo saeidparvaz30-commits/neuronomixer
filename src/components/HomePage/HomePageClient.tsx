@@ -4,7 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useSession } from "next-auth/react";
+import SignUpModal from "@/components/appSkeleton/SignUpModal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -389,90 +390,60 @@ function PostCard({ post }: { post: Post }) {
 // ─── Newsletter ───────────────────────────────────────────────────────────────
 
 function NewsletterSection() {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { executeRecaptcha } = useGoogleReCaptcha();
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-    try {
-      if (!executeRecaptcha) {
-        setMessage("Captcha not ready. Please try again.");
-        return;
-      }
-      const token = await executeRecaptcha("subscribe_form");
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, token }),
-      });
-      const data = await res.json();
-      setMessage(data.message ?? "");
-      if (data.success) setEmail("");
-    } catch {
-      setMessage("Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { data: session, status } = useSession();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const isLoggedIn = status === "authenticated" && !!session;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="rounded-2xl p-10 md:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 border"
-      style={{
-        background:
-          "linear-gradient(135deg, rgba(212,175,55,0.06), rgba(30,93,138,0.08))",
-        borderColor: "rgba(212,175,55,0.15)",
-      }}
-    >
-      <div className="flex-1">
-        <h2 className="text-[24px] font-bold text-white mb-2">
-          Stay in the loop
-        </h2>
-        <p className="text-[14px] text-[#94a3b8] leading-relaxed max-w-[400px]">
-          Get new posts, insights, and project highlights delivered to your
-          inbox. No spam, unsubscribe anytime.
-        </p>
-      </div>
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col sm:flex-row gap-2.5 shrink-0 w-full md:w-auto"
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="rounded-2xl p-10 md:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 border"
+        style={{
+          background: "linear-gradient(135deg, rgba(212,175,55,0.06), rgba(30,93,138,0.08))",
+          borderColor: "rgba(212,175,55,0.15)",
+        }}
       >
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@email.com"
-          className="px-[18px] py-3 rounded-xl border border-[#1e293b] bg-[#0a0e1a] text-white text-[14px] outline-none transition focus:border-[#d4af37] w-full sm:w-[260px] placeholder-[#475569]"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="px-6 py-3 rounded-xl bg-[#d4af37] text-[#0a0e1a] text-[14px] font-semibold hover:opacity-90 disabled:opacity-60 transition whitespace-nowrap"
-        >
-          {loading ? "..." : "Subscribe"}
-        </button>
-        {message && (
-          <p
-            className={`text-[12px] self-center sm:absolute sm:mt-14 ${
-              message.toLowerCase().includes("success")
-                ? "text-green-400"
-                : "text-[#94a3b8]"
-            }`}
-          >
-            {message}
+        <div className="flex-1">
+          <h2 className="text-[24px] font-bold text-white mb-2">
+            Stay in the loop
+          </h2>
+          <p className="text-[14px] text-[#94a3b8] leading-relaxed max-w-[400px]">
+            {isLoggedIn
+              ? "You're already part of the NeuroNomixer community. Head to your dashboard to manage your feed."
+              : "Join the community to get curated insights, follow your favourite authors, and personalise your reading feed."}
           </p>
+        </div>
+
+        {isLoggedIn ? (
+          <Link
+            href="/dashboard"
+            className="px-8 py-3 rounded-xl bg-[#d4af37] text-[#0a0e1a] text-[14px] font-semibold hover:opacity-90 transition whitespace-nowrap shrink-0"
+          >
+            Go to Dashboard
+          </Link>
+        ) : (
+          <div className="flex flex-col items-start sm:items-center gap-2 shrink-0 w-full md:w-auto">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="w-full sm:w-auto px-8 py-3 rounded-xl bg-[#d4af37] text-[#0a0e1a] text-[14px] font-semibold hover:opacity-90 transition whitespace-nowrap"
+            >
+              Create a Free Account
+            </button>
+            <p className="text-[12px] text-[#475569]">
+              Already have an account?{" "}
+              <Link href="/auth/sign-in" className="text-[#d4af37]/80 hover:text-[#d4af37]">
+                Sign in
+              </Link>
+            </p>
+          </div>
         )}
-      </form>
-    </motion.div>
+      </motion.div>
+      <SignUpModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   );
 }
 

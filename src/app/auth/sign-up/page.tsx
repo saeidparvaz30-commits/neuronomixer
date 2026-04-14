@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn } from "next-auth/react"; // still used for Google OAuth button
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -103,20 +103,9 @@ function SignUpCard({
       return;
     }
 
-    // Auto sign in after account creation
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-
     setLoading(false);
-
-    if (result?.error) {
-      setError("Account created but sign-in failed. Try signing in manually.");
-    } else {
-      router.push(`/auth/complete-signup?role=${role}`);
-    }
+    // Redirect to "check your inbox" page — sign-in is blocked until email is verified
+    router.push(`/auth/verify-email?pending=1&email=${encodeURIComponent(email)}`);
   }
 
   return (

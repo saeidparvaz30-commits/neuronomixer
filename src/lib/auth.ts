@@ -51,6 +51,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           user.password
         );
         if (!valid) return null;
+        if (!user.emailVerified) return null;
         if (user.suspended) return null;
 
         return {

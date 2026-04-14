@@ -56,7 +56,7 @@ model User {
   bio            String?       @db.Text
   motivation     String?       @db.Text
   onboarded          Boolean          @default(false)
-  emailNotifications Boolean          @default(false)
+  emailNotifications Boolean          @default(true)
   suspended          Boolean          @default(false)
   authorStatus       AuthorStatus?
   sanityAuthorId     String?
