@@ -18,6 +18,8 @@ const typeIcon: Record<string, string> = {
   author_rejected: "❌",
   post_approved: "🎉",
   post_rejected: "📝",
+  post_review: "🔄",
+  new_post: "📰",
 };
 
 export default function NotificationsPageContent() {

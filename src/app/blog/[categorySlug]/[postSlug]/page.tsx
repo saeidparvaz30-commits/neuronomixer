@@ -2,7 +2,6 @@ import { client } from "@/sanity/lib/client";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import SubscribeBox from "@/components/appSkeleton/SubscribeBox";
 import RichText from "@/components/Blog/RichText";
 import ReadTracker from "@/components/Blog/ReadTracker";
 import PostEngagement from "@/components/Blog/PostEngagement";
@@ -15,8 +14,6 @@ const postQuery = `
   *[_type == "post" && slug.current == $slug && status == "approved"][0]{
     _id,
     title,
-    description,
-    metaDescription,
     mainImage{asset->{url, altText}},
     body[]{
       ...,
@@ -31,7 +28,6 @@ const postQuery = `
       }
     },
     _createdAt,
-    _updatedAt,
     "category": category->{title, slug},
     "author": author->{_id, name, slug, image{asset->{url}}, shortBio, jobTitle, employer, education}
   }
@@ -103,10 +99,6 @@ export async function generateMetadata({
       description,
       images: ogImage.map((i) => i.url),
     },
-    robots: {
-      index: true,
-      follow: true,
-    },
   };
 }
 
@@ -131,7 +123,6 @@ export default async function PostPage({
     description: post.description ?? undefined,
     url: canonicalUrl,
     datePublished: post._createdAt,
-    dateModified: post._updatedAt ?? post._createdAt,
     ...(post.mainImage?.asset?.url && {
       image: { "@type": "ImageObject", url: post.mainImage.asset.url },
     }),
@@ -225,7 +216,6 @@ export default async function PostPage({
 
           <CommentsSection postSlug={postSlug} />
         </div>
-        <SubscribeBox />
       </div>
 
       {/* ===== Right Column: Author sidebar ===== */}

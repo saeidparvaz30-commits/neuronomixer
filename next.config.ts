@@ -1,14 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async redirects() {
-    return [
-      {
-        source: "/blog/data-learning-path/data-the-red-cells-of-our-digital-world-veins",
-        destination: "/blog/data-learning-path/data-the-red-cells-of-our-digital-worlds-veins",
-        permanent: true,
-      },
-    ];
-  },
+  // nodemailer uses native Node.js modules (net, tls, dns) that must not be
+  // bundled by webpack/turbopack — mark it as external so Next.js leaves it alone.
+  serverExternalPackages: ["nodemailer"],
   eslint: { ignoreDuringBuilds: true },
   typescript: {
     // ✅ Don't block production builds on type errors
