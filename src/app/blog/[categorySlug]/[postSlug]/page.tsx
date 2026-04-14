@@ -2,7 +2,6 @@ import { client } from "@/sanity/lib/client";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import SubscribeBox from "@/components/appSkeleton/SubscribeBox";
 import RichText from "@/components/Blog/RichText";
 import ReadTracker from "@/components/Blog/ReadTracker";
 import PostEngagement from "@/components/Blog/PostEngagement";
@@ -217,7 +216,6 @@ export default async function PostPage({
 
           <CommentsSection postSlug={postSlug} />
         </div>
-        <SubscribeBox />
       </div>
 
       {/* ===== Right Column: Author sidebar ===== */}

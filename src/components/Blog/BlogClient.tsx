@@ -4,8 +4,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
-import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { useSession } from "next-auth/react";
 import Fuse from "fuse.js";
+import SignUpModal from "@/components/appSkeleton/SignUpModal";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -361,79 +362,56 @@ function SidebarCard({ title, children }: { title: string; children: React.React
 // ─── Sidebar subscribe ────────────────────────────────────────────────────────
 
 function SidebarSubscribe() {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { executeRecaptcha } = useGoogleReCaptcha();
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
-    try {
-      if (!executeRecaptcha) {
-        setMessage("Captcha not ready. Please try again.");
-        return;
-      }
-      const token = await executeRecaptcha("subscribe_form");
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, token }),
-      });
-      const data = await res.json();
-      setMessage(data.message);
-      if (data.success) setEmail("");
-    } catch {
-      setMessage("Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { data: session, status } = useSession();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const isLoggedIn = status === "authenticated" && !!session;
 
   return (
-    <div
-      className="rounded-xl p-5 border"
-      style={{
-        background: "linear-gradient(135deg, rgba(212,175,55,0.08), rgba(30,93,138,0.08))",
-        borderColor: "rgba(212,175,55,0.15)",
-      }}
-    >
-      <h4 className="text-[11px] font-semibold uppercase tracking-widest text-[#475569] mb-2">
-        Stay in the loop
-      </h4>
-      <p className="text-[12px] text-[#94a3b8] mb-3 leading-relaxed">
-        Get new posts delivered to your inbox. No spam, unsubscribe anytime.
-      </p>
-      <form onSubmit={handleSubmit}>
-        <div className="flex gap-2">
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@email.com"
-            className="flex-1 min-w-0 px-3 py-2 rounded-lg border border-[#1e293b] bg-[#0a0e1a] text-white text-[12px] outline-none transition placeholder-[#475569]"
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-3.5 py-2 rounded-lg bg-[#d4af37] text-[#0a0e1a] text-[12px] font-semibold hover:opacity-90 disabled:opacity-60 transition whitespace-nowrap"
-          >
-            {loading ? "…" : "Join"}
-          </button>
-        </div>
-        {message && (
-          <p
-            className={`mt-2 text-[11px] ${
-              message.toLowerCase().includes("success") ? "text-green-400" : "text-red-400"
-            }`}
-          >
-            {message}
-          </p>
+    <>
+      <div
+        className="rounded-xl p-5 border"
+        style={{
+          background: "linear-gradient(135deg, rgba(212,175,55,0.08), rgba(30,93,138,0.08))",
+          borderColor: "rgba(212,175,55,0.15)",
+        }}
+      >
+        <h4 className="text-[11px] font-semibold uppercase tracking-widest text-[#475569] mb-2">
+          Stay in the loop
+        </h4>
+        {isLoggedIn ? (
+          <>
+            <p className="text-[12px] text-[#94a3b8] mb-3 leading-relaxed">
+              You&apos;re already part of the community.
+            </p>
+            <Link
+              href="/dashboard"
+              className="block w-full text-center px-3.5 py-2 rounded-lg bg-[#d4af37] text-[#0a0e1a] text-[12px] font-semibold hover:opacity-90 transition"
+            >
+              Go to Dashboard
+            </Link>
+          </>
+        ) : (
+          <>
+            <p className="text-[12px] text-[#94a3b8] mb-3 leading-relaxed">
+              Create a free account to personalise your feed and follow your favourite authors.
+            </p>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="w-full px-3.5 py-2 rounded-lg bg-[#d4af37] text-[#0a0e1a] text-[12px] font-semibold hover:opacity-90 transition"
+            >
+              Create Free Account
+            </button>
+            <p className="mt-2 text-[11px] text-[#475569] text-center">
+              Already have an account?{" "}
+              <Link href="/auth/sign-in" className="text-[#d4af37]/80 hover:text-[#d4af37]">
+                Sign in
+              </Link>
+            </p>
+          </>
         )}
-      </form>
-    </div>
+      </div>
+      <SignUpModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   );
 }
 

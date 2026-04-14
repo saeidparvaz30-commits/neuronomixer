@@ -68,9 +68,7 @@ export async function POST(req: NextRequest) {
       notifyAuthor(post.authorUserId, post.title, postUrl).catch(() => {});
     }
 
-    if (post?.authorRef || post?.categoryRef) {
-      notifyFollowers(post, siteUrl).catch(() => {});
-    }
+    notifyAllUsers(post, postUrl, siteUrl).catch(() => {});
 
     return NextResponse.json({ success: true });
   }
@@ -141,6 +139,16 @@ export async function POST(req: NextRequest) {
   }
 }
 
+function makeTransporter() {
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: process.env.SMTP_SECURE === "true",
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    tls: { rejectUnauthorized: false },
+  });
+}
+
 async function notifyAuthor(userId: string, postTitle: string, postUrl: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -148,14 +156,7 @@ async function notifyAuthor(userId: string, postTitle: string, postUrl: string) 
   });
   if (!user?.email) return;
 
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: process.env.SMTP_SECURE === "true",
-    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-  });
-
-  await transporter.sendMail({
+  await makeTransporter().sendMail({
     from: `"NeuroNomixer" <${process.env.SMTP_USER}>`,
     to: user.email,
     subject: `Your post "${postTitle}" is now live!`,
@@ -171,52 +172,48 @@ async function notifyAuthor(userId: string, postTitle: string, postUrl: string) 
   });
 }
 
-async function notifyFollowers(
-  post: { authorRef?: string; categoryRef?: string; title: string; authorName?: string; slug?: string; categorySlug?: string },
+async function notifyAllUsers(
+  post: { title: string; authorName?: string },
+  postUrl: string,
   siteUrl: string
 ) {
-  const orClauses = [
-    post.authorRef ? { type: "author", sanityId: post.authorRef } : null,
-    post.categoryRef ? { type: "category", sanityId: post.categoryRef } : null,
-  ].filter(Boolean) as { type: string; sanityId: string }[];
-
-  const follows = await prisma.follow.findMany({
-    where: { OR: orClauses },
-    include: { user: { select: { email: true, name: true, emailNotifications: true } } },
+  const users = await prisma.user.findMany({
+    where: {
+      emailNotifications: true,
+      email: { not: null },
+      emailVerified: { not: null },
+    },
+    select: { id: true, email: true, name: true },
   });
 
-  const recipientsMap = new Map<string, string>();
-  for (const f of follows) {
-    if (f.user.emailNotifications && f.user.email) {
-      recipientsMap.set(f.user.email, f.user.name ?? "Reader");
-    }
-  }
-  if (recipientsMap.size === 0) return;
+  if (users.length === 0) return;
 
-  const postUrl = `${siteUrl}/blog/${post.categorySlug}/${post.slug}`;
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: process.env.SMTP_SECURE === "true",
-    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  await prisma.notification.createMany({
+    data: users.map((u) => ({
+      userId: u.id,
+      type: "new_post",
+      message: `New post: "${post.title}"`,
+      link: postUrl,
+    })),
+    skipDuplicates: true,
   });
 
-  for (const [email, name] of recipientsMap) {
+  const transporter = makeTransporter();
+  for (const user of users) {
+    if (!user.email) continue;
+    const name = user.name ?? "Reader";
     await transporter.sendMail({
       from: `"NeuroNomixer" <${process.env.SMTP_USER}>`,
-      to: email,
+      to: user.email,
       subject: `New post: ${post.title}`,
       text: `Hi ${name},\n\n${post.authorName ?? "An author"} just published "${post.title}".\n\nRead it here: ${postUrl}\n\n— NeuroNomixer`,
       html: `
         <p>Hi ${name},</p>
         <p><strong>${post.authorName ?? "An author"}</strong> just published a new article:</p>
         <p><a href="${postUrl}" style="font-size:1.1em;font-weight:bold;">${post.title}</a></p>
-        <p><a href="${postUrl}">Read the article →</a></p>
+        <p style="margin:16px 0"><a href="${postUrl}" style="background:#1e5d8a;color:#fff;padding:10px 22px;border-radius:8px;text-decoration:none;font-weight:600;">Read the article →</a></p>
         <hr/>
-        <p style="font-size:0.8em;color:#888;">
-          You're receiving this because you follow this author or category on NeuroNomixer.
-          <a href="${siteUrl}/dashboard/subscriber">Manage notifications</a>.
-        </p>
+        <p style="font-size:0.8em;color:#888;">You're receiving this as a NeuroNomixer member. <a href="${siteUrl}/dashboard/subscriber">Manage notifications</a>.</p>
       `,
     }).catch(() => {});
   }

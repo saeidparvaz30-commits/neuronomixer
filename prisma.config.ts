@@ -18,4 +18,7 @@ export default defineConfig({
     // DIRECT_URL: non-pooled connection required for migrations (Supabase port 5432)
     adapter: () => new PrismaPg({ connectionString: directUrl }),
   },
+  migrations: {
+    seed: "tsx prisma/seed-guides.ts",
+  },
 });

@@ -4,27 +4,93 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
-import { DistType, DISTRIBUTIONS, computeHistogram } from "./types";
-import DistributionSelector from "./DistributionSelector";
-import HistogramChart from "./HistogramChart";
-import StatsPanel from "./StatsPanel";
+import {
+  DistributionType,
+  DataDistributionsState,
+  INITIAL_STATE,
+  DIST_LABELS,
+  getTheoreticalBins,
+  getEmpiricalBins,
+  getDistStats,
+} from "./types";
+import DistributionSelector, { DIST_COLORS } from "./DistributionSelector";
+import ParameterSliders from "./ParameterSliders";
+import InteractiveHistogram from "./InteractiveHistogram";
+import StatAnnotations from "./StatAnnotations";
+import SampleSimulator from "./SampleSimulator";
+import OverlayToggle from "./OverlayToggle";
 
-const DIST_ORDER: DistType[] = ["normal", "uniform", "skewed-right", "skewed-left", "bimodal"];
-const SAMPLE_SIZES = [50, 200, 1000];
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function getParams(state: DataDistributionsState, dist: DistributionType) {
+  switch (dist) {
+    case "normal":      return state.normalParams;
+    case "uniform":     return state.uniformParams;
+    case "exponential": return state.exponentialParams;
+    case "poisson":     return state.poissonParams;
+  }
+}
+
+function getOverlayParams(state: DataDistributionsState, dist: DistributionType) {
+  switch (dist) {
+    case "normal":      return state.overlayNormalParams;
+    case "uniform":     return state.overlayUniformParams;
+    case "exponential": return state.overlayExponentialParams;
+    case "poisson":     return state.overlayPoissonParams;
+  }
+}
+
+const OVERLAY_COLOR = "#d4af37";
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function DataDistributionsClient() {
   const { data: session } = useSession();
-  const [distType, setDistType]   = useState<DistType>("normal");
-  const [sampleSize, setSampleSize] = useState(200);
-  const [binCount, setBinCount]   = useState(20);
-  const [showMean, setShowMean]   = useState(true);
-  const [showMedian, setShowMedian] = useState(true);
-  const [showStd, setShowStd]     = useState(false);
-  const [explored, setExplored]   = useState<Set<DistType>>(new Set(["normal"]));
-  const [changedSampleSize, setChangedSampleSize] = useState(false);
   const completionFired = useRef(false);
 
-  const allComplete = explored.size >= 4 && changedSampleSize;
+  const [state, setState] = useState<DataDistributionsState>(() => ({
+    ...INITIAL_STATE,
+    exploredDistributions: new Set<DistributionType>(["normal"]),
+  }));
+
+  // ── Derived ────────────────────────────────────────────────────────────────
+
+  const { selectedDistribution: dist } = state;
+  const color = DIST_COLORS[dist];
+  const params = getParams(state, dist);
+
+  const theoreticalBins = useMemo(
+    () => getTheoreticalBins(dist, params),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dist, JSON.stringify(params)]
+  );
+
+  const empiricalBins = useMemo(
+    () =>
+      state.sampleData.length > 0
+        ? getEmpiricalBins(state.sampleData, dist, params)
+        : undefined,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state.sampleData, dist, JSON.stringify(params)]
+  );
+
+  const overlayBins = useMemo(
+    () =>
+      state.showOverlay
+        ? getTheoreticalBins(state.overlayDistribution, getOverlayParams(state, state.overlayDistribution))
+        : undefined,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [state.showOverlay, state.overlayDistribution, JSON.stringify(getOverlayParams(state, state.overlayDistribution))]
+  );
+
+  const distStats = useMemo(() => getDistStats(dist, params), [dist, params]);
+
+  // ── Completion ─────────────────────────────────────────────────────────────
+
+  const allComplete =
+    state.exploredDistributions.size === 4 &&
+    state.adjustedParameters &&
+    state.drewSamples;
 
   useEffect(() => {
     if (allComplete && !completionFired.current && session?.user) {
@@ -37,28 +103,42 @@ export default function DataDistributionsClient() {
     }
   }, [allComplete, session?.user]);
 
-  const data = useMemo(
-    () => DISTRIBUTIONS[distType].generate(sampleSize),
-    [distType, sampleSize]
-  );
+  // ── Handlers ───────────────────────────────────────────────────────────────
 
-  const bins = useMemo(() => computeHistogram(data, binCount), [data, binCount]);
-  const meta = DISTRIBUTIONS[distType];
-
-  function handleDistChange(d: DistType) {
-    setDistType(d);
-    setExplored(prev => new Set([...prev, d]));
+  function handleDistChange(d: DistributionType) {
+    setState(prev => ({
+      ...prev,
+      selectedDistribution: d,
+      sampleData: [],
+      empiricalVisible: false,
+      exploredDistributions: new Set([...prev.exploredDistributions, d]),
+    }));
   }
 
-  function handleSampleSize(n: number) {
-    setSampleSize(n);
-    setChangedSampleSize(true);
+  function handleParamChange(updater: (prev: DataDistributionsState) => DataDistributionsState) {
+    setState(prev => ({ ...updater(prev), adjustedParameters: true, sampleData: [], empiricalVisible: false }));
   }
+
+  function handleSamplesDrawn(data: number[]) {
+    setState(prev => ({ ...prev, sampleData: data, empiricalVisible: true, drewSamples: true }));
+  }
+
+  function handleSampleSizeChange(n: number) {
+    setState(prev => ({ ...prev, sampleSize: n, sampleData: [], empiricalVisible: false }));
+  }
+
+  // ── Progress ───────────────────────────────────────────────────────────────
 
   const progress = [
-    { label: `Distributions seen: ${explored.size}/4`, done: explored.size >= 4 },
-    { label: "Sample size changed", done: changedSampleSize },
+    {
+      label: `Distributions explored: ${state.exploredDistributions.size}/4`,
+      done: state.exploredDistributions.size >= 4,
+    },
+    { label: "Parameters adjusted", done: state.adjustedParameters },
+    { label: "Random samples drawn", done: state.drewSamples },
   ];
+
+  // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <div className="min-h-screen pb-20">
@@ -74,19 +154,20 @@ export default function DataDistributionsClient() {
         {/* Hero */}
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[var(--color-accent)]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
-              Statistics
+            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+              DATA &amp; ANALYSIS
             </span>
-            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="w-6 h-px bg-[#d4af37]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Data Distributions:{" "}
-            <span className="text-[var(--color-accent)]">Shape Matters</span>
+            <span className="text-[#d4af37]">Shape, Spread &amp; Skew</span>
           </h1>
-          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[620px]">
-            Before running statistics, understand your data&apos;s shape. Normal, uniform, skewed, bimodal — the distribution
-            determines which tests apply, how to interpret mean vs. median, and where outliers hide.
+          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
+            Most real-world data doesn&apos;t fall from the sky in perfect bell curves. Explore Normal,
+            Uniform, Exponential, and Poisson distributions. Adjust parameters and watch the shape
+            change in real time.
           </p>
         </section>
 
@@ -94,13 +175,19 @@ export default function DataDistributionsClient() {
         <div className="flex items-center gap-3 mb-8 flex-wrap">
           {progress.map(({ label, done }) => (
             <div key={label} className="flex items-center gap-1.5">
-              <div className={`w-2 h-2 rounded-full transition-colors ${done ? "bg-[#3bb4a4]" : "bg-[#1e293b]"}`} />
+              <div
+                className="w-2 h-2 rounded-full transition-colors"
+                style={{ background: done ? "#3bb4a4" : "#1e293b" }}
+              />
               <span className={`text-[11px] ${done ? "text-white" : "text-[#475569]"}`}>{label}</span>
             </div>
           ))}
           {!session?.user && (
             <p className="text-[11px] text-[#475569] ml-auto">
-              <Link href="/auth/sign-in" className="underline underline-offset-2 hover:text-[#94a3b8]">Sign in</Link>{" "}to track progress
+              <Link href="/auth/sign-in" className="underline underline-offset-2 hover:text-[#94a3b8]">
+                Sign in
+              </Link>{" "}
+              to track progress
             </p>
           )}
           <AnimatePresence>
@@ -119,129 +206,148 @@ export default function DataDistributionsClient() {
           </AnimatePresence>
         </div>
 
-        {/* Controls */}
-        <div className="flex flex-wrap items-center gap-4 mb-6">
-          <DistributionSelector current={distType} onChange={handleDistChange} />
-          <div className="flex items-center gap-2 ml-auto">
-            <span className="text-[11px] text-[#475569]">N =</span>
-            {SAMPLE_SIZES.map(n => (
-              <button
-                key={n}
-                onClick={() => handleSampleSize(n)}
-                className="px-3 py-1 rounded-lg text-[11px] font-semibold border transition-colors"
-                style={{
-                  borderColor: sampleSize === n ? "#d4af37" : "#1e293b",
-                  color: sampleSize === n ? "#d4af37" : "#475569",
-                }}
-              >
-                {n}
-              </button>
-            ))}
-          </div>
+        {/* Distribution selector */}
+        <div className="mb-6">
+          <DistributionSelector current={dist} onChange={handleDistChange} label="Select distribution" />
         </div>
 
-        {/* Main layout */}
+        {/* Main content grid */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
-          <div className="space-y-4">
-            {/* Histogram */}
+
+          {/* Left column */}
+          <div className="space-y-5">
+
+            {/* Histogram card */}
             <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
-              <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                <AnimatePresence mode="wait">
-                  <motion.h2
-                    key={distType}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0 }}
-                    className="text-[14px] font-bold"
-                    style={{ color: meta.color }}
-                  >
-                    {meta.label} Distribution — n={sampleSize}
-                  </motion.h2>
-                </AnimatePresence>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-[#475569]">Bins:</span>
-                  <input
-                    type="range" min={5} max={50} value={binCount}
-                    onChange={e => setBinCount(Number(e.target.value))}
-                    className="w-24" style={{ accentColor: meta.color }}
-                  />
-                  <span className="text-[10px] text-[#d4af37] font-mono">{binCount}</span>
-                </div>
-              </div>
-              <HistogramChart
-                bins={bins}
-                color={meta.color}
-                showMean={showMean}
-                showMedian={showMedian}
-                showStd={showStd}
-                data={data}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={dist}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
+                    <h2 className="text-[14px] font-bold" style={{ color }}>
+                      {DIST_LABELS[dist]} Distribution
+                    </h2>
+                    <span className="text-[10px] font-mono text-[#475569]">{distStats.formula}</span>
+                  </div>
+                  <p className="text-[11px] text-[#475569] mb-4">Theoretical probability density</p>
+                </motion.div>
+              </AnimatePresence>
+
+              <InteractiveHistogram
+                bins={theoreticalBins}
+                empiricalBins={empiricalBins}
+                sampleSize={state.sampleData.length > 0 ? state.sampleData.length : undefined}
+                color={color}
+                overlayBins={overlayBins}
+                overlayColor={OVERLAY_COLOR}
+                distributionName={DIST_LABELS[dist]}
+                showEmpirical={state.empiricalVisible}
               />
             </div>
 
-            {/* Description */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={distType}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2 }}
-                className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5"
-              >
-                <p className="text-[13px] text-[#94a3b8] leading-relaxed mb-4">{meta.description}</p>
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { label: "Mean vs Median", value: meta.mean },
-                    { label: "Median location", value: meta.median },
-                    { label: "Mode", value: meta.mode },
-                  ].map(({ label, value }) => (
-                    <div key={label} className="rounded-lg border border-[#1e293b] p-2.5">
-                      <p className="text-[9px] text-[#475569] uppercase tracking-wide mb-1">{label}</p>
-                      <p className="text-[11px] text-white font-semibold">{value}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-3 rounded-lg p-2.5" style={{ background: meta.color + "0d", border: `1px solid ${meta.color}20` }}>
-                  <p className="text-[10px] font-semibold uppercase tracking-[1px] mb-1" style={{ color: meta.color }}>
-                    Real-World Examples
-                  </p>
-                  <p className="text-[11px] text-[#94a3b8]">{meta.realWorld}</p>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+            {/* Parameter sliders */}
+            <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
+              <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-4">
+                Parameters
+              </p>
+              <ParameterSliders
+                dist={dist}
+                color={color}
+                normalParams={state.normalParams}
+                uniformParams={state.uniformParams}
+                exponentialParams={state.exponentialParams}
+                poissonParams={state.poissonParams}
+                onNormal={p => handleParamChange(prev => ({ ...prev, normalParams: p }))}
+                onUniform={p => handleParamChange(prev => ({ ...prev, uniformParams: p }))}
+                onExponential={p => handleParamChange(prev => ({ ...prev, exponentialParams: p }))}
+                onPoisson={p => handleParamChange(prev => ({ ...prev, poissonParams: p }))}
+              />
+            </div>
 
-          {/* Right panel */}
-          <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
-            <StatsPanel
-              data={data}
-              color={meta.color}
-              showMean={showMean}
-              showMedian={showMedian}
-              showStd={showStd}
-              onToggleMean={() => setShowMean(v => !v)}
-              onToggleMedian={() => setShowMedian(v => !v)}
-              onToggleStd={() => setShowStd(v => !v)}
+            {/* Sample simulator */}
+            <SampleSimulator
+              dist={dist}
+              params={params}
+              currentSampleSize={state.sampleSize}
+              onSampleSizeChange={handleSampleSizeChange}
+              onSamplesDrawn={handleSamplesDrawn}
+              empiricalVisible={state.empiricalVisible}
+              drewSamples={state.drewSamples}
             />
 
-            {/* Distribution comparison note */}
-            <div className="mt-4 pt-4 border-t border-white/[0.06]">
+            {/* Compare overlay toggle */}
+            <OverlayToggle
+              showOverlay={state.showOverlay}
+              overlayDistribution={state.overlayDistribution}
+              overlayNormalParams={state.overlayNormalParams}
+              overlayUniformParams={state.overlayUniformParams}
+              overlayExponentialParams={state.overlayExponentialParams}
+              overlayPoissonParams={state.overlayPoissonParams}
+              onToggle={v => setState(prev => ({ ...prev, showOverlay: v }))}
+              onOverlayDistChange={d =>
+                setState(prev => ({ ...prev, overlayDistribution: d }))
+              }
+              onOverlayNormal={p =>
+                setState(prev => ({ ...prev, overlayNormalParams: p }))
+              }
+              onOverlayUniform={p =>
+                setState(prev => ({ ...prev, overlayUniformParams: p }))
+              }
+              onOverlayExponential={p =>
+                setState(prev => ({ ...prev, overlayExponentialParams: p }))
+              }
+              onOverlayPoisson={p =>
+                setState(prev => ({ ...prev, overlayPoissonParams: p }))
+              }
+              overlayColor={OVERLAY_COLOR}
+            />
+          </div>
+
+          {/* Right panel — stats */}
+          <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5 self-start">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${dist}-${JSON.stringify(params)}`}
+                initial={{ opacity: 0, x: 8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <StatAnnotations stats={distStats} color={color} />
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Explored tracker */}
+            <div className="mt-5 pt-4 border-t border-white/[0.06]">
               <p className="text-[10px] font-semibold uppercase tracking-[1px] text-[#475569] mb-2">
-                Explored
+                Distributions explored
               </p>
-              <div className="flex flex-wrap gap-1.5">
-                {DIST_ORDER.map(d => (
-                  <div
-                    key={d}
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{
-                      background: explored.has(d) ? DISTRIBUTIONS[d].color : "#1e293b",
-                    }}
-                    title={DISTRIBUTIONS[d].label}
-                  />
-                ))}
+              <div className="space-y-1.5">
+                {(["normal", "uniform", "exponential", "poisson"] as DistributionType[]).map(d => {
+                  const explored = state.exploredDistributions.has(d);
+                  return (
+                    <div key={d} className="flex items-center gap-2">
+                      <div
+                        className="w-2 h-2 rounded-full flex-shrink-0 transition-colors"
+                        style={{ background: explored ? DIST_COLORS[d] : "#1e293b" }}
+                      />
+                      <span
+                        className="text-[10px] transition-colors"
+                        style={{ color: explored ? "#f1f5f9" : "#334155" }}
+                      >
+                        {DIST_LABELS[d]}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
-              <p className="text-[9px] text-[#334155] mt-1.5">Try all 5 distributions + change sample size to complete this guide</p>
+              <p className="text-[9px] text-[#334155] mt-2">
+                Explore all 4, adjust sliders &amp; draw samples to complete
+              </p>
             </div>
           </div>
         </div>
@@ -249,16 +355,16 @@ export default function DataDistributionsClient() {
         {/* Footer nav */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
-            href="/visual-guides/dimensionality-reduction"
+            href="/visual-guides/percentiles-quartiles-box-plots"
             className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
           >
-            ← Previous Guide
+            ← Percentiles &amp; Box Plots
           </Link>
           <Link
-            href="/visual-guides"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            href="/visual-guides/visualizing-data-charts"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
-            All Guides →
+            Visualizing Data →
           </Link>
         </div>
       </div>

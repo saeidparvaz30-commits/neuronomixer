@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, FileText, BookOpen, PenSquare, Lightbulb, Tag, UserCircle, Bell, FileUser, KeyRound, Rss, Clock, Bookmark, Settings, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, Users, FileText, BookOpen, PenSquare, Lightbulb, Tag, UserCircle, Bell, FileUser, KeyRound, Rss, Clock, Bookmark, Settings, GraduationCap, type LucideIcon } from "lucide-react";
 
 const adminItems: { href: string; label: string; icon: LucideIcon; exact?: boolean }[] = [
   { href: "/dashboard/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { href: "/dashboard/admin/authors", label: "Authors", icon: Users },
   { href: "/dashboard/admin/posts", label: "Posts", icon: FileText },
   { href: "/dashboard/admin/categories", label: "Categories", icon: Tag },
+  { href: "/dashboard/admin/visual-guides", label: "Visual Guides", icon: GraduationCap },
   { href: "/dashboard/admin/users", label: "All Users", icon: BookOpen },
   { href: "/dashboard/admin/notifications", label: "Notifications", icon: Bell },
 ];

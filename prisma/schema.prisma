@@ -56,7 +56,7 @@ model User {
   bio            String?       @db.Text
   motivation     String?       @db.Text
   onboarded          Boolean          @default(false)
-  emailNotifications Boolean          @default(false)
+  emailNotifications Boolean          @default(true)
   suspended          Boolean          @default(false)
   authorStatus       AuthorStatus?
   sanityAuthorId     String?
@@ -224,4 +224,68 @@ model GuideCompletion {
   @@unique([userId, guideSlug])
   @@index([userId])
   @@index([guideSlug])
+}
+
+// ── Visual Guides curriculum ──────────────────────────────────────────────
+
+enum GuideVisibility {
+  DRAFT
+  PUBLISHED
+  HIDDEN
+}
+
+model GuideCategory {
+  id          String          @id @default(cuid())
+  slug        String          @unique
+  name        String
+  description String?         @db.Text
+  color       String
+  order       Int
+  visibility  GuideVisibility @default(DRAFT)
+  units       GuideUnit[]
+  guides      VisualGuide[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([order])
+}
+
+model GuideUnit {
+  id         String          @id @default(cuid())
+  slug       String          @unique
+  name       String
+  order      Int
+  categoryId String
+  visibility GuideVisibility @default(DRAFT)
+  category   GuideCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  guides     VisualGuide[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@unique([categoryId, order])
+  @@index([categoryId])
+}
+
+model VisualGuide {
+  id              String          @id @default(cuid())
+  slug            String          @unique
+  title           String
+  description     String          @db.Text
+  interactiveType String
+  audience        String          @default("Everyone")
+  order           Int
+  visibility      GuideVisibility @default(DRAFT)
+  implemented     Boolean         @default(false)
+  categoryId      String
+  unitId          String?
+  nextGuideSlug   String?
+  category        GuideCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  unit            GuideUnit?      @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@unique([categoryId, order])
+  @@index([categoryId])
+  @@index([unitId])
+  @@index([visibility])
 }

@@ -1,137 +1,170 @@
+// ── Result types ──────────────────────────────────────────────────────────────
+
+export type ExperimentResult = "reject" | "fail-to-reject";
+
+export interface ConfusionMatrixCounts {
+  truePositives: number;
+  falsePositives: number;
+  falseNegatives: number;
+  trueNegatives: number;
+}
+
+export interface TestingState {
+  effectSize: number;
+  sampleSize: number;
+  alpha: number;
+  currentResult: ExperimentResult | null;
+  lastTStat: number | null;
+  lastPValue: number | null;
+  confusionMatrix: ConfusionMatrixCounts;
+  isRunning: boolean;
+  experimentsCompleted: number;
+  scenariosExplored: Set<string>;
+}
+
+export const INITIAL_STATE: TestingState = {
+  effectSize: 0.5,
+  sampleSize: 50,
+  alpha: 0.05,
+  currentResult: null,
+  lastTStat: null,
+  lastPValue: null,
+  confusionMatrix: { truePositives: 0, falsePositives: 0, falseNegatives: 0, trueNegatives: 0 },
+  isRunning: false,
+  experimentsCompleted: 0,
+  scenariosExplored: new Set<string>(),
+};
+
 // ── Math helpers ──────────────────────────────────────────────────────────────
-export function gaussRand(): number {
+
+export function gaussianRandom(mu: number, sd: number): number {
   let u = 0, v = 0;
   while (u === 0) u = Math.random();
   while (v === 0) v = Math.random();
-  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v) * sd + mu;
 }
 
 export function mean(arr: number[]): number {
+  if (arr.length === 0) return 0;
   return arr.reduce((a, b) => a + b, 0) / arr.length;
 }
 
 export function stdDev(arr: number[]): number {
+  if (arr.length < 2) return 0;
   const m = mean(arr);
   return Math.sqrt(arr.reduce((a, b) => a + (b - m) ** 2, 0) / (arr.length - 1));
 }
 
-// Welch's t-test (unequal variances)
-export function computeTStat(a: number[], b: number[]): number {
-  const ma = mean(a), mb = mean(b);
-  const sa = stdDev(a), sb = stdDev(b);
-  const na = a.length, nb = b.length;
-  const se = Math.sqrt(sa ** 2 / na + sb ** 2 / nb);
-  return se === 0 ? 0 : (ma - mb) / se;
-}
+// ── t-distribution CDF (Abramowitz & Stegun / Lentz continued fraction) ──────
 
-// lgamma for p-value
 function lgamma(x: number): number {
-  const c = [76.18009172947146, -86.50532032941677, 24.01409824083091,
-    -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
-  let y = x, tmp = x + 5.5;
-  tmp -= (x + 0.5) * Math.log(tmp);
+  const c = [
+    76.18009172947146, -86.50532032941677, 24.01409824083091,
+    -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5,
+  ];
+  let y = x;
+  const tmp = x + 5.5 - (x + 0.5) * Math.log(x + 5.5);
   let ser = 1.000000000190015;
   for (let j = 0; j < 6; j++) ser += c[j] / ++y;
   return -tmp + Math.log(2.5066282746310005 * ser / x);
 }
 
-function betacf(a: number, b: number, x: number): number {
-  const MAXIT = 100, EPS = 3e-7;
-  const qab = a + b, qap = a + 1, qam = a - 1;
-  let c = 1, d = 1 - qab * x / qap;
-  if (Math.abs(d) < 1e-30) d = 1e-30;
-  d = 1 / d; let h = d;
-  for (let m = 1; m <= MAXIT; m++) {
-    const m2 = 2 * m;
-    let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
-    d = 1 + aa * d; if (Math.abs(d) < 1e-30) d = 1e-30;
-    c = 1 + aa / c; if (Math.abs(c) < 1e-30) c = 1e-30;
-    d = 1 / d; h *= d * c;
-    aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
-    d = 1 + aa * d; if (Math.abs(d) < 1e-30) d = 1e-30;
-    c = 1 + aa / c; if (Math.abs(c) < 1e-30) c = 1e-30;
-    d = 1 / d; const delta = d * c; h *= delta;
-    if (Math.abs(delta - 1) < EPS) break;
-  }
-  return h;
-}
-
-function betai(a: number, b: number, x: number): number {
-  if (x < 0 || x > 1) return 0;
-  if (x === 0 || x === 1) return x;
+function incompleteBeta(x: number, a: number, b: number): number {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
   const lbeta = lgamma(a) + lgamma(b) - lgamma(a + b);
   const front = Math.exp(Math.log(x) * a + Math.log(1 - x) * b - lbeta) / a;
-  if (x < (a + 1) / (a + b + 2)) return front * betacf(a, b, x);
-  return 1 - (Math.exp(Math.log(1 - x) * b + Math.log(x) * a - lbeta) / b) * betacf(b, a, 1 - x);
-}
-
-// Welch–Satterthwaite degrees of freedom
-function welchDf(a: number[], b: number[]): number {
-  const sa = stdDev(a), sb = stdDev(b), na = a.length, nb = b.length;
-  const va = sa ** 2 / na, vb = sb ** 2 / nb;
-  return (va + vb) ** 2 / (va ** 2 / (na - 1) + vb ** 2 / (nb - 1));
-}
-
-export function computePValue(a: number[], b: number[]): number {
-  const t = Math.abs(computeTStat(a, b));
-  const df = welchDf(a, b);
-  const x = df / (df + t * t);
-  return betai(df / 2, 0.5, x); // two-tailed
-}
-
-// ── Sample generation ─────────────────────────────────────────────────────────
-export interface GroupConfig {
-  n: number;
-  mean: number;
-  std: number;
-}
-
-export function generateGroup(cfg: GroupConfig): number[] {
-  return Array.from({ length: cfg.n }, () => cfg.mean + gaussRand() * cfg.std);
-}
-
-// ── Simulation ────────────────────────────────────────────────────────────────
-export interface SimResult {
-  pValue: number;
-  rejected: boolean;
-}
-
-export function runSimulation(
-  controlCfg: GroupConfig,
-  treatmentCfg: GroupConfig,
-  alpha: number,
-  runs: number
-): SimResult[] {
-  return Array.from({ length: runs }, () => {
-    const ctrl = generateGroup(controlCfg);
-    const treat = generateGroup(treatmentCfg);
-    const p = computePValue(ctrl, treat);
-    return { pValue: p, rejected: p < alpha };
-  });
-}
-
-// Null hypothesis: same mean
-export function runNullSimulation(
-  n: number,
-  std: number,
-  alpha: number,
-  runs: number
-): SimResult[] {
-  return Array.from({ length: runs }, () => {
-    const ctrl = generateGroup({ n, mean: 0, std });
-    const treat = generateGroup({ n, mean: 0, std });
-    const p = computePValue(ctrl, treat);
-    return { pValue: p, rejected: p < alpha };
-  });
-}
-
-export function computeHistogram(values: number[], bins: number): { x: number; count: number }[] {
-  const min = Math.min(...values), max = Math.max(...values);
-  const w = (max - min) / bins || 1;
-  const counts = Array.from({ length: bins }, () => 0);
-  for (const v of values) {
-    const i = Math.min(Math.floor((v - min) / w), bins - 1);
-    counts[i]++;
+  // Lentz continued fraction
+  let f = 1, C = 1;
+  let D = 1 - (a + b) * x / (a + 1);
+  if (Math.abs(D) < 1e-30) D = 1e-30;
+  D = 1 / D;
+  f = D;
+  for (let m = 1; m <= 200; m++) {
+    let num = (m * (b - m) * x) / ((a + 2 * m - 1) * (a + 2 * m));
+    D = 1 + num * D;
+    if (Math.abs(D) < 1e-30) D = 1e-30;
+    D = 1 / D;
+    C = 1 + num / C;
+    if (Math.abs(C) < 1e-30) C = 1e-30;
+    f *= C * D;
+    num = (-(a + m) * (a + b + m) * x) / ((a + 2 * m) * (a + 2 * m + 1));
+    D = 1 + num * D;
+    if (Math.abs(D) < 1e-30) D = 1e-30;
+    D = 1 / D;
+    C = 1 + num / C;
+    if (Math.abs(C) < 1e-30) C = 1e-30;
+    f *= C * D;
+    if (Math.abs(C * D - 1) < 1e-10) break;
   }
-  return counts.map((count, i) => ({ x: min + (i + 0.5) * w, count }));
+  return front * f;
+}
+
+function tCDF(t: number, df: number): number {
+  const x = df / (df + t * t);
+  const ib = incompleteBeta(x, df / 2, 0.5);
+  return 1 - 0.5 * ib;
+}
+
+// ── t-test ────────────────────────────────────────────────────────────────────
+
+export function runTTest(groupA: number[], groupB: number[]): { tStat: number; pValue: number } {
+  const mA = mean(groupA), mB = mean(groupB);
+  const sA = stdDev(groupA), sB = stdDev(groupB);
+  const nA = groupA.length, nB = groupB.length;
+  const se = Math.sqrt(sA ** 2 / nA + sB ** 2 / nB);
+  const tStat = se === 0 ? 0 : (mA - mB) / se;
+  const df = Math.max(2 * nA - 2, 1);
+  const abst = Math.abs(tStat);
+  const pValue = 2 * (1 - tCDF(abst, df));
+  return { tStat, pValue: Math.max(0, Math.min(1, pValue)) };
+}
+
+// ── Experiment runner ─────────────────────────────────────────────────────────
+
+export function runExperiment(
+  effectSize: number,
+  n: number,
+  alpha: number
+): ExperimentResult {
+  const groupA = Array.from({ length: n }, () => gaussianRandom(0, 1));
+  const groupB = Array.from({ length: n }, () => gaussianRandom(effectSize, 1));
+  const { pValue } = runTTest(groupA, groupB);
+  return pValue < alpha ? "reject" : "fail-to-reject";
+}
+
+export function runExperimentFull(
+  effectSize: number,
+  n: number,
+  alpha: number
+): { result: ExperimentResult; tStat: number; pValue: number; groupA: number[]; groupB: number[] } {
+  const groupA = Array.from({ length: n }, () => gaussianRandom(0, 1));
+  const groupB = Array.from({ length: n }, () => gaussianRandom(effectSize, 1));
+  const { tStat, pValue } = runTTest(groupA, groupB);
+  return {
+    result: pValue < alpha ? "reject" : "fail-to-reject",
+    tStat,
+    pValue: Math.max(0, Math.min(1, pValue)),
+    groupA,
+    groupB,
+  };
+}
+
+// ── Confusion matrix updater ──────────────────────────────────────────────────
+
+export function updateConfusionMatrix(
+  result: ExperimentResult,
+  effectSize: number,
+  matrix: ConfusionMatrixCounts
+): ConfusionMatrixCounts {
+  const hasEffect = effectSize > 0;
+  if (result === "reject" && hasEffect) {
+    return { ...matrix, truePositives: matrix.truePositives + 1 };
+  } else if (result === "reject" && !hasEffect) {
+    return { ...matrix, falsePositives: matrix.falsePositives + 1 };
+  } else if (result === "fail-to-reject" && hasEffect) {
+    return { ...matrix, falseNegatives: matrix.falseNegatives + 1 };
+  } else {
+    return { ...matrix, trueNegatives: matrix.trueNegatives + 1 };
+  }
 }

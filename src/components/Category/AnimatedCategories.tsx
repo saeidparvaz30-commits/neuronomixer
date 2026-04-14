@@ -3,7 +3,6 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import CategoryCard from "./CategoryCard";
-import SubscribeBox from "@/components/appSkeleton/SubscribeBox";
 
 export type Category = {
   _id: string;
@@ -67,9 +66,6 @@ export default function AnimatedCategories({
             </motion.div>
           ))}
 
-          <div className="mt-20">
-            <SubscribeBox />
-          </div>
         </>
       )}
 

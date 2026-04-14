@@ -1,34 +1,66 @@
 export type TestType = "one-tailed" | "two-tailed";
 
+export interface SimulationState {
+  effectSize: number;
+  sampleSize: number;
+  alpha: number;
+  testType: TestType;
+  groupA: number[];
+  groupB: number[];
+  tStatistic: number | null;
+  pValue: number | null;
+  permutationResults: number[];
+  significantPermutations: number;
+  experimentsRun: number;
+  permutationCount: number;
+}
+
+export const INITIAL_STATE: SimulationState = {
+  effectSize: 0.5,
+  sampleSize: 30,
+  alpha: 0.05,
+  testType: "two-tailed",
+  groupA: [],
+  groupB: [],
+  tStatistic: null,
+  pValue: null,
+  permutationResults: [],
+  significantPermutations: 0,
+  experimentsRun: 0,
+  permutationCount: 0,
+};
+
 // ── Gaussian random (Box-Muller) ─────────────────────────────────────────────
-export function gaussRand(mu = 0, sigma = 1): number {
+export function gaussianRandom(mean: number, sd: number): number {
   let u = 0, v = 0;
   while (u === 0) u = Math.random();
   while (v === 0) v = Math.random();
-  return mu + sigma * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  return mean + sd * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
 }
 
+// ── Basic statistics ─────────────────────────────────────────────────────────
 export function mean(arr: number[]): number {
+  if (arr.length === 0) return 0;
   return arr.reduce((a, b) => a + b, 0) / arr.length;
 }
 
 export function stdDev(arr: number[]): number {
+  if (arr.length < 2) return 0;
   const m = mean(arr);
-  const n = arr.length;
-  return Math.sqrt(arr.reduce((a, v) => a + (v - m) ** 2, 0) / (n - 1));
+  return Math.sqrt(arr.reduce((a, v) => a + (v - m) ** 2, 0) / (arr.length - 1));
 }
 
-// ── Unpaired t-statistic ─────────────────────────────────────────────────────
-export function computeTStat(a: number[], b: number[]): number {
-  const ma = mean(a), mb = mean(b);
-  const sa = stdDev(a), sb = stdDev(b);
-  const n = a.length;
+// ── Unpaired t-statistic (pooled SD) ─────────────────────────────────────────
+export function computeTStatistic(groupA: number[], groupB: number[]): number {
+  const ma = mean(groupA), mb = mean(groupB);
+  const sa = stdDev(groupA), sb = stdDev(groupB);
+  const n = groupA.length;
   const pooled = Math.sqrt(((n - 1) * sa ** 2 + (n - 1) * sb ** 2) / (2 * n - 2));
   if (pooled === 0) return 0;
   return (ma - mb) / (pooled * Math.sqrt(2 / n));
 }
 
-// ── t-distribution (lgamma + betai + betacf) ─────────────────────────────────
+// ── t-distribution CDF (lgamma + incomplete beta via Lentz continued fraction)
 function lgamma(x: number): number {
   const c = [76.18009172947146, -86.50532032941677, 24.01409824083091,
     -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5];
@@ -39,39 +71,33 @@ function lgamma(x: number): number {
   return -tmp + Math.log(2.5066282746310005 * ser / x);
 }
 
-function betacf(a: number, b: number, x: number): number {
-  const MAXIT = 200, EPS = 3e-7, FPMIN = 1e-30;
-  const qab = a + b, qap = a + 1, qam = a - 1;
-  let c = 1, d = 1 - qab * x / qap;
-  if (Math.abs(d) < FPMIN) d = FPMIN;
-  d = 1 / d; let h = d;
-  for (let m = 1; m <= MAXIT; m++) {
-    const m2 = 2 * m;
-    let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
-    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN; d = 1 / d;
-    c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
-    h *= d * c;
-    aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
-    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN; d = 1 / d;
-    c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
-    const del = d * c; h *= del;
-    if (Math.abs(del - 1) < EPS) break;
-  }
-  return h;
-}
-
-function betai(a: number, b: number, x: number): number {
+function incompleteBeta(x: number, a: number, b: number): number {
   if (x <= 0) return 0;
   if (x >= 1) return 1;
-  const bt = Math.exp(lgamma(a + b) - lgamma(a) - lgamma(b) + a * Math.log(x) + b * Math.log(1 - x));
-  if (x < (a + 1) / (a + b + 2)) return bt * betacf(a, b, x) / a;
-  return 1 - bt * betacf(b, a, 1 - x) / b;
+  const lbeta = lgamma(a) + lgamma(b) - lgamma(a + b);
+  const front = Math.exp(Math.log(x) * a + Math.log(1 - x) * b - lbeta) / a;
+  let f = 1, C = 1;
+  let D = 1 - (a + b) * x / (a + 1);
+  if (Math.abs(D) < 1e-30) D = 1e-30;
+  D = 1 / D;
+  f = D;
+  for (let m = 1; m <= 200; m++) {
+    let num = m * (b - m) * x / ((a + 2 * m - 1) * (a + 2 * m));
+    D = 1 + num * D; if (Math.abs(D) < 1e-30) D = 1e-30; D = 1 / D;
+    C = 1 + num / C; if (Math.abs(C) < 1e-30) C = 1e-30;
+    f *= C * D;
+    num = -(a + m) * (a + b + m) * x / ((a + 2 * m) * (a + 2 * m + 1));
+    D = 1 + num * D; if (Math.abs(D) < 1e-30) D = 1e-30; D = 1 / D;
+    C = 1 + num / C; if (Math.abs(C) < 1e-30) C = 1e-30;
+    f *= C * D;
+    if (Math.abs(C * D - 1) < 1e-10) break;
+  }
+  return front * f;
 }
 
 export function tCDF(t: number, df: number): number {
   const x = df / (df + t * t);
-  const ib = betai(df / 2, 0.5, x);
-  return t >= 0 ? 1 - ib / 2 : ib / 2;
+  return 1 - 0.5 * incompleteBeta(x, df / 2, 0.5);
 }
 
 export function tPDF(t: number, df: number): number {
@@ -84,29 +110,44 @@ export function computePValue(tStat: number, df: number, testType: TestType): nu
   return testType === "two-tailed" ? Math.min(2 * p, 1) : p;
 }
 
+// Critical value (binary search)
+export function criticalValue(alpha: number, df: number, testType: TestType): number {
+  const targetP = testType === "two-tailed" ? alpha / 2 : alpha;
+  let lo = 0, hi = 10;
+  for (let i = 0; i < 60; i++) {
+    const mid = (lo + hi) / 2;
+    if (1 - tCDF(mid, df) < targetP) hi = mid; else lo = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+// ── Fisher-Yates shuffle ─────────────────────────────────────────────────────
+export function shuffleArray<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ── Permutation test: shuffle combined, re-split, compute t-stat ─────────────
+export function runPermutation(groupA: number[], groupB: number[]): number {
+  const combined = shuffleArray([...groupA, ...groupB]);
+  const n = groupA.length;
+  return computeTStatistic(combined.slice(0, n), combined.slice(n));
+}
+
+// ── gaussRand alias (backward compat) ────────────────────────────────────────
+export const gaussRand = gaussianRandom;
+
+// ── Legacy helpers used by existing PValuesClient ────────────────────────────
 export function generateGroups(effectSize: number, n: number): [number[], number[]] {
-  const a = Array.from({ length: n }, () => gaussRand(100, 15));
-  const b = Array.from({ length: n }, () => gaussRand(100 + effectSize * 10, 15));
+  const a = Array.from({ length: n }, () => gaussianRandom(100, 15));
+  const b = Array.from({ length: n }, () => gaussianRandom(100 + effectSize * 10, 15));
   return [a, b];
 }
 
-export function runPermutation(a: number[], b: number[]): number {
-  const combined = [...a, ...b];
-  const n = a.length;
-  for (let i = combined.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [combined[i], combined[j]] = [combined[j], combined[i]];
-  }
-  return computeTStat(combined.slice(0, n), combined.slice(n));
-}
-
-// Critical value for a given alpha and df (two-tailed)
-export function criticalValue(alpha: number, df: number): number {
-  // Binary search for t such that 2*(1-tCDF(t,df)) = alpha
-  let lo = 0, hi = 10;
-  for (let i = 0; i < 50; i++) {
-    const mid = (lo + hi) / 2;
-    if (2 * (1 - tCDF(mid, df)) < alpha) hi = mid; else lo = mid;
-  }
-  return (lo + hi) / 2;
+export function computeTStat(a: number[], b: number[]): number {
+  return computeTStatistic(a, b);
 }
