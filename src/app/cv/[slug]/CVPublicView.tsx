@@ -690,56 +690,56 @@ function WaveTimeline({
         <div style={{ position: "relative", paddingLeft: 32, margin: "8px 0 24px" }}>
           <div style={{
             position: "absolute", left: 10, top: 0, bottom: 0, width: 3,
-            background: "linear-gradient(to bottom, #d4af3700, #d4af37 8%, #d4af37)",
+            background: "linear-gradient(to bottom, #d4af37, #d4af37 92%, #d4af3700)",
             borderRadius: 2, boxShadow: "0 0 8px rgba(212,175,55,0.3)",
           }} />
-
-          {/* Born */}
-          <div style={{ position: "relative", marginBottom: 28 }}>
-            <div style={{ position: "absolute", left: -27, top: 4, width: 12, height: 12, borderRadius: "50%", background: "#d4af37", boxShadow: "0 0 8px rgba(212,175,55,0.5)", border: "2px solid #0a0e1a", zIndex: 2 }} />
-            <div style={{ fontSize: 11, fontFamily: "monospace", color: "#64748b", marginBottom: 2 }}>{BIRTH_YEAR}</div>
-            <div style={{ fontSize: 14, fontWeight: 600, color: "#d4af37" }}>Born</div>
-          </div>
-
-          {mEduItems.length > 0 && (
-            <>
-              <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 14, marginTop: 8, paddingLeft: 4, color: "#7c3aed" }}>Education</div>
-              {mEduItems.map((item) => (
-                <div key={item.id} style={{ position: "relative", marginBottom: 28, cursor: "pointer" }} onClick={() => toggleM(item.id)}>
-                  <div style={{ position: "absolute", left: -27, top: 4, width: 12, height: 12, borderRadius: "50%", background: item.color, boxShadow: `0 0 6px ${item.color}66`, border: "2px solid #0a0e1a", zIndex: 2 }} />
-                  <div style={{ fontSize: 11, fontFamily: "monospace", color: "#64748b", marginBottom: 2 }}>{item.date}</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "#f8fafc" }}>{item.title}</div>
-                  <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 1 }}>{item.sub}</div>
-                  {mExpanded.has(item.id) && item.desc && (
-                    <div style={{ fontSize: 12, color: "#cbd5e1", marginTop: 6, lineHeight: 1.5 }}>{item.desc}</div>
-                  )}
-                </div>
-              ))}
-            </>
-          )}
-
-          {mCarItems.length > 0 && (
-            <>
-              <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 14, marginTop: 8, paddingLeft: 4, color: "#3bb4a4" }}>Career</div>
-              {mCarItems.map((item) => (
-                <div key={item.id} style={{ position: "relative", marginBottom: 28, cursor: "pointer" }} onClick={() => toggleM(item.id)}>
-                  <div style={{ position: "absolute", left: -27, top: 4, width: 12, height: 12, borderRadius: "50%", background: item.color, boxShadow: `0 0 6px ${item.color}66`, border: "2px solid #0a0e1a", zIndex: 2 }} />
-                  <div style={{ fontSize: 11, fontFamily: "monospace", color: "#64748b", marginBottom: 2 }}>{item.date}</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "#f8fafc" }}>{item.title}</div>
-                  <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 1 }}>{item.sub}</div>
-                  {mExpanded.has(item.id) && item.desc && (
-                    <div style={{ fontSize: 12, color: "#cbd5e1", marginTop: 6, lineHeight: 1.5 }}>{item.desc}</div>
-                  )}
-                </div>
-              ))}
-            </>
-          )}
 
           {/* Now */}
           <div style={{ position: "relative", marginBottom: 28 }}>
             <div style={{ position: "absolute", left: -27, top: 4, width: 12, height: 12, borderRadius: "50%", background: "#d4af37", boxShadow: "0 0 8px rgba(212,175,55,0.5)", border: "2px solid #0a0e1a", zIndex: 2 }} />
             <div style={{ fontSize: 11, fontFamily: "monospace", color: "#64748b", marginBottom: 2 }}>{NOW_YEAR}</div>
             <div style={{ fontSize: 14, fontWeight: 600, color: "#d4af37" }}>Now</div>
+          </div>
+
+          {mCarItems.length > 0 && (
+            <>
+              <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 14, marginTop: 8, paddingLeft: 4, color: "#3bb4a4" }}>Career</div>
+              {[...mCarItems].reverse().map((item) => (
+                <div key={item.id} style={{ position: "relative", marginBottom: 28, cursor: "pointer" }} onClick={() => toggleM(item.id)}>
+                  <div style={{ position: "absolute", left: -27, top: 4, width: 12, height: 12, borderRadius: "50%", background: item.color, boxShadow: `0 0 6px ${item.color}66`, border: "2px solid #0a0e1a", zIndex: 2 }} />
+                  <div style={{ fontSize: 11, fontFamily: "monospace", color: "#64748b", marginBottom: 2 }}>{item.date}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "#f8fafc" }}>{item.title}</div>
+                  <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 1 }}>{item.sub}</div>
+                  {mExpanded.has(item.id) && item.desc && (
+                    <div style={{ fontSize: 12, color: "#cbd5e1", marginTop: 6, lineHeight: 1.5 }}>{item.desc}</div>
+                  )}
+                </div>
+              ))}
+            </>
+          )}
+
+          {mEduItems.length > 0 && (
+            <>
+              <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 14, marginTop: 8, paddingLeft: 4, color: "#7c3aed" }}>Education</div>
+              {[...mEduItems].reverse().map((item) => (
+                <div key={item.id} style={{ position: "relative", marginBottom: 28, cursor: "pointer" }} onClick={() => toggleM(item.id)}>
+                  <div style={{ position: "absolute", left: -27, top: 4, width: 12, height: 12, borderRadius: "50%", background: item.color, boxShadow: `0 0 6px ${item.color}66`, border: "2px solid #0a0e1a", zIndex: 2 }} />
+                  <div style={{ fontSize: 11, fontFamily: "monospace", color: "#64748b", marginBottom: 2 }}>{item.date}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "#f8fafc" }}>{item.title}</div>
+                  <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 1 }}>{item.sub}</div>
+                  {mExpanded.has(item.id) && item.desc && (
+                    <div style={{ fontSize: 12, color: "#cbd5e1", marginTop: 6, lineHeight: 1.5 }}>{item.desc}</div>
+                  )}
+                </div>
+              ))}
+            </>
+          )}
+
+          {/* Born */}
+          <div style={{ position: "relative", marginBottom: 28 }}>
+            <div style={{ position: "absolute", left: -27, top: 4, width: 12, height: 12, borderRadius: "50%", background: "#d4af37", boxShadow: "0 0 8px rgba(212,175,55,0.5)", border: "2px solid #0a0e1a", zIndex: 2 }} />
+            <div style={{ fontSize: 11, fontFamily: "monospace", color: "#64748b", marginBottom: 2 }}>{BIRTH_YEAR}</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#d4af37" }}>Born</div>
           </div>
         </div>
       </div>
