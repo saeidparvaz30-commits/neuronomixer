@@ -413,7 +413,9 @@ export default function SubmitPostForm({ categories, initialData, redirectTo = "
     }
 
     // TSV (tab-separated) — Excel plain-text fallback
-    if (lines.some((l) => l.includes("\t"))) {
+    // Guard: Word bullet lists paste as "•\tText" (bullet + tab) — not a table
+    const isWordBulletList = lines.some((l) => /^[\u2022\u2023\u2043•\-*]\t/.test(l));
+    if (!isWordBulletList && lines.some((l) => l.includes("\t"))) {
       const rows = lines.map((l) => l.split("\t"));
       insertTableFromRows(rows);
       return true;
