@@ -647,17 +647,21 @@ function WaveTimeline({
     });
   }
 
-  const mEduItems = education.map((e, i) => ({
-    id: `edu-${i}`, date: formatMonthYear(e.from),
-    title: [e.degree, e.field].filter(Boolean).join(" · ") || "Degree",
-    sub: e.school, desc: e.description,
-    color: i % 2 === 0 ? "#7c3aed" : "#a855f7",
-  }));
-  const mCarItems = experience.map((e, i) => ({
-    id: `car-${i}`, date: formatMonthYear(e.from),
-    title: e.title, sub: e.company, desc: e.description,
-    color: ["#1e5d8a", "#2477a8", "#3bb4a4"][i % 3],
-  }));
+  const mCarItems = [...experience]
+    .sort((a, b) => (parseDecimalYear(b.from) ?? 0) - (parseDecimalYear(a.from) ?? 0))
+    .map((e, i) => ({
+      id: `car-${i}`, date: formatMonthYear(e.from),
+      title: e.title, sub: e.company, desc: e.description,
+      color: ["#1e5d8a", "#2477a8", "#3bb4a4"][i % 3],
+    }));
+  const mEduItems = [...education]
+    .sort((a, b) => (parseDecimalYear(b.from) ?? 0) - (parseDecimalYear(a.from) ?? 0))
+    .map((e, i) => ({
+      id: `edu-${i}`, date: formatMonthYear(e.from),
+      title: [e.degree, e.field].filter(Boolean).join(" · ") || "Degree",
+      sub: e.school, desc: e.description,
+      color: i % 2 === 0 ? "#7c3aed" : "#a855f7",
+    }));
 
   return (
     <>
@@ -704,7 +708,7 @@ function WaveTimeline({
           {mCarItems.length > 0 && (
             <>
               <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 14, marginTop: 8, paddingLeft: 4, color: "#3bb4a4" }}>Career</div>
-              {[...mCarItems].reverse().map((item) => (
+              {mCarItems.map((item) => (
                 <div key={item.id} style={{ position: "relative", marginBottom: 28, cursor: "pointer" }} onClick={() => toggleM(item.id)}>
                   <div style={{ position: "absolute", left: -27, top: 4, width: 12, height: 12, borderRadius: "50%", background: item.color, boxShadow: `0 0 6px ${item.color}66`, border: "2px solid #0a0e1a", zIndex: 2 }} />
                   <div style={{ fontSize: 11, fontFamily: "monospace", color: "#64748b", marginBottom: 2 }}>{item.date}</div>
@@ -721,7 +725,7 @@ function WaveTimeline({
           {mEduItems.length > 0 && (
             <>
               <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: 14, marginTop: 8, paddingLeft: 4, color: "#7c3aed" }}>Education</div>
-              {[...mEduItems].reverse().map((item) => (
+              {mEduItems.map((item) => (
                 <div key={item.id} style={{ position: "relative", marginBottom: 28, cursor: "pointer" }} onClick={() => toggleM(item.id)}>
                   <div style={{ position: "absolute", left: -27, top: 4, width: 12, height: 12, borderRadius: "50%", background: item.color, boxShadow: `0 0 6px ${item.color}66`, border: "2px solid #0a0e1a", zIndex: 2 }} />
                   <div style={{ fontSize: 11, fontFamily: "monospace", color: "#64748b", marginBottom: 2 }}>{item.date}</div>
