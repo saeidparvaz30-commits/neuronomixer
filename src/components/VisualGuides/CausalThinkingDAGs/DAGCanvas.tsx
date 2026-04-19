@@ -1,0 +1,227 @@
+"use client";
+
+import React from "react";
+import { DAG, DAGNode, DAGEdge } from "./types";
+
+const NODE_R = 30; // radius of each node circle
+
+interface DAGCanvasProps {
+  dag: DAG;
+  controlled: Set<string>;
+  width?: number;
+  height?: number;
+  onNodeClick?: (nodeId: string) => void;
+}
+
+function getCenter(node: DAGNode) {
+  return { cx: node.x, cy: node.y };
+}
+
+/** Compute a point on the border of a circle (radius r) toward another point */
+function borderPoint(from: { cx: number; cy: number }, to: { cx: number; cy: number }, r: number) {
+  const dx = to.cx - from.cx;
+  const dy = to.cy - from.cy;
+  const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+  return {
+    x: from.cx + (dx / dist) * (dist - r),
+    y: from.cy + (dy / dist) * (dist - r),
+  };
+}
+
+function startPoint(from: { cx: number; cy: number }, to: { cx: number; cy: number }, r: number) {
+  const dx = to.cx - from.cx;
+  const dy = to.cy - from.cy;
+  const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+  return {
+    x: from.cx + (dx / dist) * r,
+    y: from.cy + (dy / dist) * r,
+  };
+}
+
+function EdgeArrow({
+  edge,
+  nodes,
+  controlled,
+}: {
+  edge: DAGEdge;
+  nodes: DAGNode[];
+  controlled: Set<string>;
+}) {
+  const sourceNode = nodes.find((n) => n.id === edge.source);
+  const targetNode = nodes.find((n) => n.id === edge.target);
+  if (!sourceNode || !targetNode) return null;
+
+  const from = getCenter(sourceNode);
+  const to = getCenter(targetNode);
+
+  const start = startPoint(from, to, NODE_R + 2);
+  const end = borderPoint(from, to, NODE_R + 8); // extra for arrowhead
+
+  const isSourceControlled = controlled.has(edge.source);
+  const isTargetControlled = controlled.has(edge.target);
+  const isBlocked = isSourceControlled || isTargetControlled;
+
+  const strokeColor = isBlocked ? "#334155" : edge.spurious ? "#d4af37" : "#94a3b8";
+  const markerId = edge.spurious ? "arrow-spurious" : "arrow-normal";
+
+  return (
+    <line
+      x1={start.x}
+      y1={start.y}
+      x2={end.x}
+      y2={end.y}
+      stroke={strokeColor}
+      strokeWidth={isBlocked ? 1 : 2}
+      strokeDasharray={edge.spurious ? "6 3" : undefined}
+      markerEnd={`url(#${markerId})`}
+      opacity={isBlocked ? 0.3 : 1}
+      style={{ transition: "all 0.3s ease" }}
+    />
+  );
+}
+
+function NodeCircle({
+  node,
+  isControlled,
+  onClick,
+}: {
+  node: DAGNode;
+  isControlled: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <g
+      onClick={onClick}
+      style={{ cursor: onClick ? "pointer" : "default" }}
+    >
+      {/* Glow ring when controlled */}
+      {isControlled && (
+        <circle
+          cx={node.x}
+          cy={node.y}
+          r={NODE_R + 6}
+          fill="none"
+          stroke="#3bb4a4"
+          strokeWidth={2}
+          strokeDasharray="4 3"
+          opacity={0.6}
+        />
+      )}
+      {/* Node fill */}
+      <circle
+        cx={node.x}
+        cy={node.y}
+        r={NODE_R}
+        fill={isControlled ? "#1e293b" : node.color}
+        stroke={isControlled ? "#3bb4a4" : node.color}
+        strokeWidth={isControlled ? 2 : 1.5}
+        opacity={isControlled ? 0.7 : 1}
+        style={{ transition: "all 0.3s ease" }}
+      />
+      {/* Label — split on spaces to wrap */}
+      {node.label.split(" ").map((word, i, arr) => (
+        <text
+          key={i}
+          x={node.x}
+          y={node.y + (i - (arr.length - 1) / 2) * 13}
+          textAnchor="middle"
+          dominantBaseline="middle"
+          fontSize={arr.length > 1 ? "9" : "10"}
+          fontWeight="600"
+          fill={isControlled ? "#3bb4a4" : "#ffffff"}
+          style={{ pointerEvents: "none", transition: "fill 0.3s ease" }}
+        >
+          {word}
+        </text>
+      ))}
+      {/* "Controlled" badge */}
+      {isControlled && (
+        <>
+          <rect
+            x={node.x - 24}
+            y={node.y + NODE_R + 4}
+            width={48}
+            height={14}
+            rx={4}
+            fill="#0f3d35"
+            stroke="#3bb4a4"
+            strokeWidth={0.5}
+          />
+          <text
+            x={node.x}
+            y={node.y + NODE_R + 11}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            fontSize="7"
+            fill="#3bb4a4"
+            fontWeight="700"
+            style={{ pointerEvents: "none" }}
+          >
+            CONTROLLED
+          </text>
+        </>
+      )}
+    </g>
+  );
+}
+
+export default function DAGCanvas({
+  dag,
+  controlled,
+  width = 480,
+  height = 300,
+  onNodeClick,
+}: DAGCanvasProps) {
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      className="w-full"
+      style={{ maxHeight: height }}
+    >
+      <defs>
+        {/* Normal arrowhead */}
+        <marker
+          id="arrow-normal"
+          markerWidth="10"
+          markerHeight="7"
+          refX="9"
+          refY="3.5"
+          orient="auto"
+        >
+          <polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8" />
+        </marker>
+        {/* Spurious arrowhead */}
+        <marker
+          id="arrow-spurious"
+          markerWidth="10"
+          markerHeight="7"
+          refX="9"
+          refY="3.5"
+          orient="auto"
+        >
+          <polygon points="0 0, 10 3.5, 0 7" fill="#d4af37" />
+        </marker>
+      </defs>
+
+      {/* Edges */}
+      {dag.edges.map((edge) => (
+        <EdgeArrow
+          key={edge.id}
+          edge={edge}
+          nodes={dag.nodes}
+          controlled={controlled}
+        />
+      ))}
+
+      {/* Nodes */}
+      {dag.nodes.map((node) => (
+        <NodeCircle
+          key={node.id}
+          node={node}
+          isControlled={controlled.has(node.id)}
+          onClick={onNodeClick ? () => onNodeClick(node.id) : undefined}
+        />
+      ))}
+    </svg>
+  );
+}
