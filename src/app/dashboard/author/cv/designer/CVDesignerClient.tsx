@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import {
   Palette, FileText, Sliders, ArrowLeft, Loader2, Download,
@@ -128,7 +128,9 @@ export default function CVDesignerClient({ generationsUsed: initialUsed, avatarU
   const [includePhoto, setIncludePhoto] = useState(false);
 
   // Results — pre-populate from saved designs if available
-  const [designs, setDesigns] = useState<Design[]>(savedDesigns ?? []);
+  const [designs, setDesigns] = useState<Design[]>(
+    savedDesigns?.map((d) => ({ ...d, description: d.description ?? "" })) ?? []
+  );
   const [tweakedHtml, setTweakedHtml] = useState<string[]>(savedDesigns?.map((d) => d.html) ?? []);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState("#1a365d");
@@ -139,6 +141,11 @@ export default function CVDesignerClient({ generationsUsed: initialUsed, avatarU
   const [error, setError] = useState("");
 
   const printIframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    console.log("[CVDesignerClient] mounted", { step, generationsUsed, savedDesigns });
+    return () => console.log("[CVDesignerClient] unmounted");
+  }, []);
 
   const remaining = 1 - generationsUsed;
   const limitReached = generationsUsed >= 1;
