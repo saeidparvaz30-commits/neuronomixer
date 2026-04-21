@@ -175,7 +175,7 @@ function MonthField({ label, value, onChange }: { label: string; value: string; 
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function CVBuilderClient({ initialCV, userImage }: { initialCV: CVData | null; userImage?: string | null }) {
+export default function CVBuilderClient({ initialCV, userImage, designerHref = "/dashboard/author/cv/designer" }: { initialCV: CVData | null; userImage?: string | null; designerHref?: string }) {
   const [cv, setCv] = useState<CVData>(() => {
     if (!initialCV) return { ...empty, avatarUrl: userImage || "" };
     // Explicitly coerce every nullable string field to "" so React inputs are
@@ -938,7 +938,7 @@ export default function CVBuilderClient({ initialCV, userImage }: { initialCV: C
         )}
 
         <div className="pt-2 border-t border-white/10">
-          <Link href="/dashboard/author/cv/designer">
+          <Link href={designerHref}>
             <button className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-white/5 border border-[var(--color-accent)]/30 text-[var(--color-accent)] text-sm font-medium hover:bg-[var(--color-accent)]/10 transition">
               <Palette size={14} /> Design PDF
             </button>

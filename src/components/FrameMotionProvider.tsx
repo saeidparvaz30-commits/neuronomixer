@@ -10,7 +10,7 @@ export default function FramerMotionProvider({
   const pathname = usePathname();
   return (
     <LayoutGroup id="blog">
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="sync" initial={false}>
         <motion.div
           key={pathname}
           initial={{ opacity: 0 }}

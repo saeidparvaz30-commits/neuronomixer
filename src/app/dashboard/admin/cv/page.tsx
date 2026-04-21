@@ -21,7 +21,7 @@ export default async function AdminCVBuilderPage() {
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      <CVBuilderClient initialCV={cv as any} userImage={user?.image ?? null} />
+      <CVBuilderClient initialCV={cv as any} userImage={user?.image ?? null} designerHref="/dashboard/admin/cv/designer" />
     </div>
   );
 }
