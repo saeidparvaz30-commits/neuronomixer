@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
   await prisma.user.update({
     where: { id: record.userId },
-    data: { password: hashed },
+    data: { password: hashed, tokenVersion: { increment: 1 } },
   });
 
   // Invalidate the token

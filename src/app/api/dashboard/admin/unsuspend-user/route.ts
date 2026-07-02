@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
 
   await (prisma as any).user.update({
     where: { id: userId },
-    data: { suspended: false },
+    data: { suspended: false, tokenVersion: { increment: 1 } },
   });
 
   return NextResponse.json({ success: true });

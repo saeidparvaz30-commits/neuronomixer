@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   }
 
   // When upgrading to AUTHOR, also mark authorStatus as APPROVED
-  const data: Record<string, unknown> = { role };
+  const data: Record<string, unknown> = { role, tokenVersion: { increment: 1 } };
   if (role === "AUTHOR") data.authorStatus = "APPROVED";
   if (role === "SUBSCRIBER") data.authorStatus = null;
 
