@@ -208,7 +208,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No CV found. Please build your CV first." }, { status: 404 });
   }
 
-  if (cv.designGenerationsUsed >= 1) {
+  // Atomically claim the single generation slot BEFORE any expensive Claude call.
+  // updateMany with a conditional where compiles to one UPDATE ... WHERE, so
+  // concurrent requests cannot all pass the gate (closes the TOCTOU race, S2).
+  const claim = await prisma.authorCV.updateMany({
+    where: { userId, designGenerationsUsed: { lt: 1 } },
+    data: { designGenerationsUsed: { increment: 1 } },
+  });
+  if (claim.count === 0) {
     return NextResponse.json(
       { error: "limit_reached", message: "You've used your design generation. Please contact us for more." },
       { status: 429 }
@@ -296,6 +303,10 @@ export async function POST(req: NextRequest) {
     }
   } catch (err) {
     console.error("[cv/design] Claude error:", err);
+    // Release the slot claimed above, since generation failed (S2).
+    await prisma.authorCV
+      .update({ where: { userId }, data: { designGenerationsUsed: { decrement: 1 } } })
+      .catch(() => {});
     const isRateLimit = err instanceof Error && err.message.includes("rate_limit");
     return NextResponse.json(
       { error: isRateLimit ? "Rate limit reached. Please wait a minute and try again." : "Design generation failed. Please try again." },
@@ -315,7 +326,7 @@ export async function POST(req: NextRequest) {
   await prisma.authorCV.update({
     where: { userId },
     data: {
-      designGenerationsUsed: { increment: 1 },
+      // designGenerationsUsed already incremented by the atomic claim above (S2).
       designHistory: [...currentHistory, historyEntry],
     },
   });
