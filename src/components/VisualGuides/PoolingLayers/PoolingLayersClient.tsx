@@ -11,6 +11,7 @@ import PoolingControls from "./PoolingControls";
 import PoolingVisualizer from "./PoolingVisualizer";
 import SideBySideComparison from "./SideBySideComparison";
 import WhyPoolingMatters from "./WhyPoolingMatters";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function PoolingLayersClient() {
   const { data: session } = useSession();
@@ -50,6 +51,7 @@ export default function PoolingLayersClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="pooling-layers" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

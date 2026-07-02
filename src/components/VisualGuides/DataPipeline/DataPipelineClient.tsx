@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { StageId, PIPELINE_STAGES } from "./types";
 import PipelineFlow from "./PipelineFlow";
 import DataTable from "./DataTable";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function DataPipelineClient() {
   const { data: session } = useSession();
@@ -40,6 +41,7 @@ export default function DataPipelineClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allStagesSeen} guideSlug="data-pipeline" score={6} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -205,10 +207,10 @@ export default function DataPipelineClient() {
             ← Previous Guide
           </Link>
           <Link
-            href="/visual-guides"
+            href="/visual-guides/what-is-ml"
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
-            All Guides →
+            Next: What Is Machine Learning? The Big Picture →
           </Link>
         </div>
       </div>

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   ICE_CREAM_DATA,
   fitSimpleRegression,
@@ -79,6 +80,7 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
 
   return (
     <div className="relative w-full">
+      <GuideCompletion isComplete={allComplete} guideSlug="multiple-regression-confounding" score={7} />
       <svg
         viewBox={`0 0 ${W} ${H}`}
         width="100%"

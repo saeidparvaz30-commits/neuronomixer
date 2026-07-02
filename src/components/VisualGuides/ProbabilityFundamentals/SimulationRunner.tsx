@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useRef, useCallback } from "react";
-import { type CompoundEvent, type SimState, simulateTrial, DEFAULT_SIM } from "./types";
+import React, { useRef, useCallback, useState } from "react";
+import { type CompoundEvent, type SimState, type TrialResult, simulateTrial, simulateTrialDetailed, DEFAULT_SIM } from "./types";
 import TrialCounter from "./TrialCounter";
+import TrialVisualizer from "./TrialVisualizer";
 
 // ── Convergence chart ─────────────────────────────────────────────────────────
 
@@ -138,6 +139,8 @@ export default function SimulationRunner({
 }: SimulationRunnerProps) {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const totalTrialsRef = useRef<number>(1000);
+  const [snapshot, setSnapshot] = useState<TrialResult | null>(null);
+  const [snapshotKey, setSnapshotKey] = useState(0);
 
   const stopInterval = useCallback(() => {
     if (intervalRef.current !== null) {
@@ -157,6 +160,8 @@ export default function SimulationRunner({
     let matchCount = 0;
     const history: number[] = [];
 
+    setSnapshot(null);
+
     onSimUpdate({
       isRunning: true,
       trialCount: 0,
@@ -173,14 +178,29 @@ export default function SimulationRunner({
       const remaining = total - trialCount;
       const batch = Math.min(CHUNK, remaining);
 
+      let newSnapshot: TrialResult | null = null;
+
       for (let i = 0; i < batch; i++) {
         trialCount += 1;
-        if (simulateTrial(event)) matchCount += 1;
+
+        // Every 100th trial: use detailed version for both stats and snapshot
+        if (trialCount % 100 === 0) {
+          const detailed = simulateTrialDetailed(event);
+          if (detailed.hit) matchCount += 1;
+          newSnapshot = detailed;
+        } else {
+          if (simulateTrial(event)) matchCount += 1;
+        }
 
         // Sample every 50 trials
         if (trialCount % 50 === 0) {
           history.push(matchCount / trialCount);
         }
+      }
+
+      if (newSnapshot) {
+        setSnapshot(newSnapshot);
+        setSnapshotKey((k) => k + 1);
       }
 
       const experimental = trialCount > 0 ? matchCount / trialCount : 0;
@@ -255,6 +275,11 @@ export default function SimulationRunner({
             Completed: {sim.trialCount.toLocaleString()} / {total.toLocaleString()}
           </p>
         </div>
+      )}
+
+      {/* Live trial visualizer — shown every 100 trials while running */}
+      {sim.isRunning && snapshot && (
+        <TrialVisualizer key={snapshotKey} result={snapshot} />
       )}
 
       {/* Trial counter */}

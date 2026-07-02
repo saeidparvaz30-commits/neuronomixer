@@ -10,6 +10,7 @@ import CardDeck from "./CardDeck";
 import ScaleBucket from "./ScaleBucket";
 import FeedbackPanel from "./FeedbackPanel";
 import ScaleExplainer from "./ScaleExplainer";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const SCALES: Scale[] = ["nominal", "ordinal", "interval", "ratio"];
 
@@ -118,6 +119,7 @@ export default function TypesOfDataClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="types-of-data-measurement-scales" score={5} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

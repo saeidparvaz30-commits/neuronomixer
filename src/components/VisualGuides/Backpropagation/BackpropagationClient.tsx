@@ -9,6 +9,7 @@ import { Step, STEP_CONTENTS } from "./types";
 import NetworkVisualization from "./NetworkVisualization";
 import StepControlPanel from "./StepControlPanel";
 import ExplanationPanel from "./ExplanationPanel";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const TOTAL_STEPS = 8;
 const AUTO_PLAY_INTERVAL = 2500;
@@ -85,6 +86,7 @@ export default function BackpropagationClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="backpropagation" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -276,10 +278,10 @@ export default function BackpropagationClient() {
             All Guides
           </Link>
           <Link
-            href="/visual-guides"
+            href="/visual-guides/cnns"
             className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
           >
-            <span>All Guides</span>
+            <span>Next: CNNs: See What Filters See</span>
             <span>→</span>
           </Link>
         </div>

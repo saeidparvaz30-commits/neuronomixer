@@ -10,6 +10,7 @@ import ZScoreCalculator from "./ZScoreCalculator";
 import ComparisonTool from "./ComparisonTool";
 import EmpiricalRuleDisplay from "./EmpiricalRuleDisplay";
 import AreaCalculator from "./AreaCalculator";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Default markers moved tracking ───────────────────────────────────────────
 const DEFAULT_X1 = INITIAL_STATE.markerX1;
@@ -85,6 +86,7 @@ export default function NormalDistributionZScoresClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="normal-distribution-z-scores" score={6} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -133,7 +134,8 @@ const COMPARISON_ROWS = [
 
 export default function RLHFClient() {
   const { data: session } = useSession();
-  const completionFired = useRef(false);
+  const [isComplete, setIsComplete] = useState(false);
+  
 
   const [expandedPhase, setExpandedPhase] = useState<PhaseId | null>(null);
   const [phasesViewed, setPhasesViewed] = useState<Set<PhaseId>>(new Set());
@@ -163,6 +165,7 @@ export default function RLHFClient() {
       !completionFired.current
     ) {
       completionFired.current = true;
+      setIsComplete(true);
       if (session?.user) {
         fetch("/api/visual-guides/complete", {
           method: "POST",
@@ -202,6 +205,7 @@ export default function RLHFClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="rlhf" score={100} />
       <div className="max-w-[860px] mx-auto px-5 sm:px-8 py-8">
 
         {/* Breadcrumb */}

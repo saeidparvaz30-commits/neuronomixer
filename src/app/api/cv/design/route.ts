@@ -157,7 +157,7 @@ async function generateOneDesign(
   styleDirective: string,
   contextMessage: string,
   photo?: PhotoInfo
-): Promise<{ styleName: string; description: string; html: string }> {
+): Promise<{ styleName: string; description: string; html: string; inputTokens: number; outputTokens: number }> {
   // Photo is passed as a vision content block (not embedded base64 text) to avoid
   // consuming 10k–30k text tokens for the raw base64 string.
   // We use a placeholder src that gets replaced with the real data URI after generation.
@@ -191,7 +191,11 @@ async function generateOneDesign(
     result.html = result.html.replaceAll(PHOTO_PLACEHOLDER, photo.dataUri);
   }
 
-  return result;
+  return {
+    ...result,
+    inputTokens: message.usage.input_tokens,
+    outputTokens: message.usage.output_tokens,
+  };
 }
 
 export async function POST(req: NextRequest) {
@@ -281,7 +285,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  let designs: { styleName: string; description: string; html: string }[];
+  let designs: { styleName: string; description: string; html: string; inputTokens: number; outputTokens: number }[];
 
   try {
     // maxRetries: 0 — fail immediately on rate limits instead of retrying for minutes
@@ -318,6 +322,18 @@ export async function POST(req: NextRequest) {
       designGenerationsUsed: { increment: 1 },
       designHistory: [...currentHistory, historyEntry],
     },
+  });
+
+  // Log token usage — one row per Claude call (3 per generation)
+  await prisma.tokenUsage.createMany({
+    data: designs.map((d) => ({
+      userId,
+      activity: "cv-design",
+      model: "claude-sonnet-4-6",
+      inputTokens: d.inputTokens,
+      outputTokens: d.outputTokens,
+      totalTokens: d.inputTokens + d.outputTokens,
+    })),
   });
 
   return NextResponse.json({

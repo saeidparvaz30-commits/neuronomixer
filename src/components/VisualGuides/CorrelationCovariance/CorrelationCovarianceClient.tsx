@@ -11,6 +11,7 @@ import React, {
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   DataPoint,
   CorrelationStats,
@@ -283,6 +284,7 @@ function AnscombeQuartet({ onViewed }: { onViewed: () => void }) {
 
   return (
     <div>
+      <GuideCompletion isComplete={allComplete} guideSlug="correlation-covariance" score={8} />
       {/* Summary stats banner */}
       <div className="rounded-2xl border border-[#1e293b] bg-[#1e293b]/40 p-4 mb-5 text-center">
         <p className="text-[13px] text-[#94a3b8]">All four datasets have:</p>

@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Data ───────────────────────────────────────────────────────────────────────
 type Sentence = { label: string; tokens: string[]; matrix: number[][] };
@@ -180,6 +181,7 @@ export default function SelfAttentionClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="self-attention" score={100} />
       <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-8">
 
         {/* Breadcrumb */}

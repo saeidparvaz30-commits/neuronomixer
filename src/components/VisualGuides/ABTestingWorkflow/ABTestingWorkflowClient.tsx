@@ -16,6 +16,7 @@ import Phase1Design from "./Phase1Design";
 import Phase2Randomize from "./Phase2Randomize";
 import Phase3Collect from "./Phase3Collect";
 import Phase4Analyze from "./Phase4Analyze";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 type PhaseNum = 1 | 2 | 3 | 4;
 
@@ -135,6 +136,7 @@ export default function ABTestingWorkflowClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="ab-testing-workflow" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

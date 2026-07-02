@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const STEPS = [
   { id: "documents", label: "Documents", icon: "📄", color: "#3bb4a4", group: "ingest", desc: "Your knowledge base: PDFs, wikis, internal docs — any unstructured text." },
@@ -118,6 +119,7 @@ export default function RAGExplainedClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="rag-explained" score={100} />
       <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

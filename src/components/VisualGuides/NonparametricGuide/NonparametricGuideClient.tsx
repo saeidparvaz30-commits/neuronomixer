@@ -17,6 +17,7 @@ import AssumptionChecker from "./AssumptionChecker";
 import ComparisonPanel from "./ComparisonPanel";
 import DecisionHelper from "./DecisionHelper";
 import ResultsComparison from "./ResultsComparison";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 type TabId = "mann-whitney" | "wilcoxon" | "kruskal-wallis" | "sign-test";
 
@@ -107,6 +108,7 @@ export default function NonparametricGuideClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="nonparametric-tests" score={7} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

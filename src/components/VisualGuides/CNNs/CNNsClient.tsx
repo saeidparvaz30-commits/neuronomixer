@@ -14,6 +14,7 @@ import ConvolutionVisualizer from "./ConvolutionVisualizer";
 import FeatureMapDisplay from "./FeatureMapDisplay";
 import LayerHierarchy from "./LayerHierarchy";
 import SampleImageSelector from "./SampleImageSelector";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function CNNsClient() {
   const { data: session } = useSession();
@@ -59,6 +60,7 @@ export default function CNNsClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="cnns" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -243,10 +245,10 @@ export default function CNNsClient() {
             All Guides
           </Link>
           <Link
-            href="/visual-guides"
+            href="/visual-guides/pooling-layers"
             className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
           >
-            <span>All Guides</span>
+            <span>Next: Pooling Layers: Shrinking Without Losing</span>
             <span>→</span>
           </Link>
         </div>

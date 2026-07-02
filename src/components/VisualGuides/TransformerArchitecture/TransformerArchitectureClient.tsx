@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 type BlockId = "token-embedding" | "positional-encoding" | "mha" | "add-norm-1" | "ffn" | "add-norm-2" | "output-projection" | "softmax";
 

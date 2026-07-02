@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const SCENARIOS = [
   { id: "book-rec", title: "Book recommendation chatbot",
@@ -80,6 +81,7 @@ export default function AISafetyClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="ai-safety" score={100} />
       <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -298,8 +300,8 @@ export default function AISafetyClient() {
           <Link href="/visual-guides/rlhf" className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
             ← RLHF
           </Link>
-          <Link href="/visual-guides" className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            All Guides →
+          <Link href="/visual-guides/ai-model-decision-guide" className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+            Next: Which AI Model Should I Use? →
           </Link>
         </div>
 

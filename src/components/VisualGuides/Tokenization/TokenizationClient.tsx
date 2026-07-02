@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Tokenizer ──────────────────────────────────────────────────────────────
 
@@ -171,7 +172,8 @@ export default function TokenizationClient() {
   const [inputText, setInputText] = useState(DEFAULT_TEXT);
   const [tokens, setTokens] = useState<string[]>(() => tokenize(DEFAULT_TEXT));
   const [bpeStep, setBpeStep] = useState(0);
-  const completionFired = useRef(false);
+  const [isComplete, setIsComplete] = useState(false);
+  
   const hasTyped = useRef(false);
   const hasFinishedBpe = useRef(false);
 
@@ -201,6 +203,7 @@ export default function TokenizationClient() {
     if (completionFired.current) return;
     if (hasTyped.current && hasFinishedBpe.current) {
       completionFired.current = true;
+      setIsComplete(true);
       if (session?.user) {
         fetch("/api/visual-guides/complete", {
           method: "POST",
@@ -221,6 +224,7 @@ export default function TokenizationClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="tokenization" score={100} />
       <div className="max-w-[860px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

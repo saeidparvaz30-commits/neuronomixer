@@ -13,6 +13,7 @@ import DataPointsVisualization from "./DataPointsVisualization";
 import PercentileFinderTool from "./PercentileFinderTool";
 import ZScoreOverlay from "./ZScoreOverlay";
 import DescriptiveStats from "./DescriptiveStats";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Step navigation labels ────────────────────────────────────────────────────
 const NEXT_LABELS: Record<StepType, string> = {
@@ -136,6 +137,7 @@ export default function PercentilesQuartilesBoxPlotsClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="percentiles-quartiles-box-plots" score={10} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

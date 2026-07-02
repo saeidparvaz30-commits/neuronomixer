@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 type PatternId = "zero-shot" | "few-shot" | "cot" | "role" | "output-format" | "self-consistency";
 
@@ -123,6 +124,7 @@ export default function PromptEngineeringClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="prompt-engineering" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

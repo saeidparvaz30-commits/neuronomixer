@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   PASS_FAIL_DATA,
   LOGISTIC_INTERCEPT,
@@ -441,6 +442,7 @@ function CalibrationPlot({ b0, b1 }: { b0: number; b1: number }) {
 function ProgressDots({ steps }: { steps: { label: string; done: boolean }[] }) {
   return (
     <div className="flex flex-wrap items-center gap-3 mb-8">
+      <GuideCompletion isComplete={allComplete} guideSlug="logistic-regression" score={8} />
       {steps.map(({ label, done }) => (
         <div key={label} className="flex items-center gap-1.5">
           <motion.div

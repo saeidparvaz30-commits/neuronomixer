@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -283,7 +284,8 @@ export default function ChunkingStrategiesClient() {
   const [overlapSize, setOverlapSize] = useState(20);
   const [overlapPct, setOverlapPct] = useState(15);
 
-  const completionFired = useRef(false);
+  const [isComplete, setIsComplete] = useState(false);
+  
   const triedStrategies = useRef<Set<Strategy>>(new Set(["fixed"]));
   const movedSlider = useRef(false);
 
@@ -325,6 +327,7 @@ export default function ChunkingStrategiesClient() {
     if (completionFired.current) return;
     if (triedStrategies.current.size >= 3 && movedSlider.current) {
       completionFired.current = true;
+      setIsComplete(true);
       if (session?.user) {
         fetch("/api/visual-guides/complete", {
           method: "POST",
@@ -352,6 +355,7 @@ export default function ChunkingStrategiesClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="chunking-strategies" score={100} />
       <div className="max-w-[860px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

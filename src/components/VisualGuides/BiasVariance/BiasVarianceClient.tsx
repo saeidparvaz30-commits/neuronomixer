@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 function gaussRand() {
   let u = 0, v = 0;
@@ -102,6 +103,7 @@ function QuadrantDiagram({ bias, variance }: { bias: number; variance: number })
 
   return (
     <div className="grid grid-cols-2 gap-1.5">
+      <GuideCompletion isComplete={allComplete} guideSlug="bias-variance" score={6} />
       {quadrants.map((q, i) => (
         <motion.div
           key={q.pos}

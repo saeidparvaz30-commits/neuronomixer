@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 const BASE_LOGITS = [
@@ -56,6 +57,7 @@ function lcgSample(probs: number[], seed: number) {
 function Bar({ token, pct, color, dim }: { token: string; pct: number; color: string; dim?: boolean }) {
   return (
     <div className="flex items-center gap-3">
+      <GuideCompletion isComplete={allDone} guideSlug="temperature-topk" score={100} />
       <span className={`text-[11px] font-mono w-14 text-right ${dim ? "text-[#334155]" : "text-[#94a3b8]"}`}>{token}</span>
       <div className="flex-1 h-5 bg-[#1e293b] rounded-full overflow-hidden">
         <motion.div className="h-full rounded-full" style={{ backgroundColor: dim ? "#1e293b" : color }}

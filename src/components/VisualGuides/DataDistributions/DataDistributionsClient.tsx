@@ -19,6 +19,7 @@ import InteractiveHistogram from "./InteractiveHistogram";
 import StatAnnotations from "./StatAnnotations";
 import SampleSimulator from "./SampleSimulator";
 import OverlayToggle from "./OverlayToggle";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -142,6 +143,7 @@ export default function DataDistributionsClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="data-distributions" score={5} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

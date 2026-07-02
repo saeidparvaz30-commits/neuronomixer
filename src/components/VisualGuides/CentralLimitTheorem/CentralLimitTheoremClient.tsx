@@ -17,6 +17,7 @@ import SimulationControls from "./SimulationControls";
 import SamplingVisualization from "./SamplingVisualization";
 import ComparisonView from "./ComparisonView";
 import SummaryMetrics from "./SummaryMetrics";
+import GuideCelebration from "@/components/VisualGuides/GuideCelebration";
 
 // ── Initial data ──────────────────────────────────────────────────────────────
 
@@ -131,6 +132,7 @@ export default function CentralLimitTheoremClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCelebration show={isComplete} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

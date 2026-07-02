@@ -10,6 +10,7 @@ import StatisticsPanel from "./StatisticsPanel";
 import { computeAllStats } from "./utils";
 import { DEFAULT_DATA_POINTS } from "./types";
 import type { DataPoint } from "./types";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Deep-clone helper ─────────────────────────────────────────────────────────
 function clonePoints(pts: DataPoint[]): DataPoint[] {
@@ -145,6 +146,7 @@ export default function DescriptiveStatisticsClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="descriptive-statistics" score={5} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

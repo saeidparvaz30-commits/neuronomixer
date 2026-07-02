@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 
 export const runtime = "nodejs";
@@ -218,6 +219,18 @@ export async function POST(req: NextRequest) {
 
     const cleaned = first.text.replace(/^```[a-z]*\n?/, "").replace(/\n?```$/, "").trim();
     cvJson = JSON.parse(cleaned);
+
+    // Log token usage (fire-and-forget — don't block the response)
+    prisma.tokenUsage.create({
+      data: {
+        userId: session.user.id!,
+        activity: "cv-extract",
+        model: "claude-haiku-4-5-20251001",
+        inputTokens: message.usage.input_tokens,
+        outputTokens: message.usage.output_tokens,
+        totalTokens: message.usage.input_tokens + message.usage.output_tokens,
+      },
+    }).catch((err) => console.error("[cv/extract] token log error:", err));
   } catch (err) {
     console.error("[cv/extract] Claude error:", err);
     return NextResponse.json(

@@ -8,6 +8,7 @@ import { StageId, StageState, STAGE_CONFIGS, initialStages } from "./types";
 import PipelineStage from "./PipelineStage";
 import PipelineConnector from "./PipelineConnector";
 import SummaryCard from "./SummaryCard";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 type Particle = { id: number; x: number; y: number; color: string; dx: number; dy: number };
 function makeParticles(): Particle[] {
@@ -88,6 +89,7 @@ export default function HowDatasetsAreBuiltClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="how-datasets-are-built" score={5} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Hero */}

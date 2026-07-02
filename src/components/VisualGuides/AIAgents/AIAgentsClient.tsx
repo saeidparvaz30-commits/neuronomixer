@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const LOOP_PHASES = [
   { id: "perceive", label: "PERCEIVE", desc: "Read input (text, files, web)",       color: "#3bb4a4", angle: 270 },
@@ -100,6 +101,7 @@ export default function AIAgentsClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="ai-agents" score={100} />
       <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

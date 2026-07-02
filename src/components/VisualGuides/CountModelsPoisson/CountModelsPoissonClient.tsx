@@ -588,10 +588,10 @@ export default function CountModelsPoissonClient() {
           ← Logistic Regression
         </Link>
         <Link
-          href="/visual-guides"
+          href="/visual-guides/ab-testing-workflow"
           className="text-sm px-4 py-2 rounded-lg bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/30 hover:bg-[var(--color-accent)]/20 transition-colors"
         >
-          All Guides →
+          Next: A/B Testing: The Complete Workflow →
         </Link>
       </div>
     </div>

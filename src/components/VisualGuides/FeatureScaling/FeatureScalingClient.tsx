@@ -10,6 +10,7 @@ import ScatterPlot        from "./ScatterPlot";
 import FormulaPanel       from "./FormulaPanel";
 import DistanceCalculator from "./DistanceCalculator";
 import MethodExplainer    from "./MethodExplainer";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function FeatureScalingClient() {
   const { data: session } = useSession();
@@ -68,6 +69,7 @@ export default function FeatureScalingClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="feature-scaling" score={4} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -205,9 +207,9 @@ export default function FeatureScalingClient() {
             className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
             ← Previous Guide
           </Link>
-          <Link href="/visual-guides"
+          <Link href="/visual-guides/outlier-detection"
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            All Guides →
+            Next: Outlier Detection: Spot the Odd One Out →
           </Link>
         </div>
       </div>

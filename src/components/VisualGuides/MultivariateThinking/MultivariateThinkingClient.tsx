@@ -9,6 +9,7 @@ import PCAVisualizer from "./PCAVisualizer";
 import FeatureScalingDemo from "./FeatureScalingDemo";
 import DistanceMeasures from "./DistanceMeasures";
 import ClusteringPreview from "./ClusteringPreview";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function MultivariateThinkingClient() {
   const { data: session } = useSession();
@@ -61,6 +62,7 @@ export default function MultivariateThinkingClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="multivariate-thinking" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Hero */}

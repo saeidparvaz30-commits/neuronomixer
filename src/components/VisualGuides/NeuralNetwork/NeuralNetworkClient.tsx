@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useMemo, useCallback } from "react"
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Network architecture ────────────────────────────────────────────────────────
 type ActivationId = "relu" | "sigmoid" | "tanh" | "linear";
@@ -165,6 +166,7 @@ export default function NeuralNetworkClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="neural-network" score={8} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -407,8 +409,8 @@ export default function NeuralNetworkClient() {
             <span>←</span><span>ROC Curves</span>
           </Link>
           <Link href="/visual-guides" className="text-sm text-[#94a3b8] hover:text-white transition-colors">All Guides</Link>
-          <Link href="/visual-guides" className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors">
-            <span>All Guides</span><span>→</span>
+          <Link href="/visual-guides/activation-functions" className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors">
+            <span>Next: Activation Functions: ReLU, Sigmoid & Friends</span><span>→</span>
           </Link>
         </div>
       </div>

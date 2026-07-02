@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Point { id: number; x: number; y: number; cluster: number | null }
@@ -143,6 +144,7 @@ function Scatter({
 function ElbowChart({ elbowData, currentK }: { elbowData: { k: number; inertia: number }[]; currentK: number }) {
   if (elbowData.length === 0) return (
     <div className="text-center py-6 text-[#334155] text-[11px]">
+      <GuideCompletion isComplete={allComplete} guideSlug="k-means" score={6} />
       Run the algorithm with different K values to build the elbow curve
     </div>
   );

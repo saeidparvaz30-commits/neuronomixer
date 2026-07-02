@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -14,6 +14,7 @@ import BayesianAnimation from "./BayesianAnimation";
 import InteractiveBlocks from "./InteractiveBlocks";
 import PosteriorResult from "./PosteriorResult";
 import ComparisonView from "./ComparisonView";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function BayesTheoremClient() {
   const { data: session } = useSession();
@@ -21,38 +22,20 @@ export default function BayesTheoremClient() {
 
   const [state, setState] = useState<BayesState>(initialBayesState);
 
-  // Auto-play animation: step through 1→2→3 when controls change
-  const animTimeouts = useRef<ReturnType<typeof setTimeout>[]>([]);
+  // Computed task flags
+  const allSlidersTouched =
+    state.slidersTouched.baseRate &&
+    state.slidersTouched.sensitivity &&
+    state.slidersTouched.specificity;
+  const allStepsVisited =
+    state.stepsVisited[1] && state.stepsVisited[2] && state.stepsVisited[3];
 
-  const triggerAnimation = useCallback(() => {
-    // Clear any pending animation timeouts
-    animTimeouts.current.forEach(clearTimeout);
-    animTimeouts.current = [];
-
-    setState((prev) => ({ ...prev, animationStep: 1, animationCompleted: false }));
-
-    const t1 = setTimeout(() => {
-      setState((prev) => ({ ...prev, animationStep: 2 }));
-    }, 900);
-    const t2 = setTimeout(() => {
-      setState((prev) => ({ ...prev, animationStep: 3, animationCompleted: true }));
-    }, 1900);
-
-    animTimeouts.current = [t1, t2];
-  }, []);
-
-  // Trigger animation on mount
-  useEffect(() => {
-    triggerAnimation();
-    return () => {
-      animTimeouts.current.forEach(clearTimeout);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Completion check
+  // Completion requires all four tasks
   const isComplete =
-    state.sliderAdjustments >= 5 && state.animationCompleted;
+    state.intuitionApplied &&
+    state.actualsRevealed &&
+    allSlidersTouched &&
+    allStepsVisited;
 
   useEffect(() => {
     if (isComplete && !completionFired.current && session?.user) {
@@ -76,12 +59,29 @@ export default function BayesTheoremClient() {
       sensitivity: cfg.sensitivity,
       specificity: cfg.specificity,
       posterior,
+      intuitionApplied: false,
+      actualsRevealed: false,
+      slidersTouched: { baseRate: false, sensitivity: false, specificity: false },
+      animationStep: 1,
+      stepsVisited: { 1: false, 2: false, 3: false },
     }));
-    triggerAnimation();
   }
 
   function handleIntuitionChange(v: number) {
     setState((prev) => ({ ...prev, intuition: v }));
+  }
+
+  function handleApplyIntuition() {
+    setState((prev) => ({ ...prev, intuitionApplied: true }));
+  }
+
+  function handleRevealActuals() {
+    setState((prev) => ({
+      ...prev,
+      actualsRevealed: true,
+      // Step 1 is the default visible step after reveal — count as visited.
+      stepsVisited: { ...prev.stepsVisited, 1: true },
+    }));
   }
 
   function handleBaseRateChange(v: number) {
@@ -90,9 +90,8 @@ export default function BayesTheoremClient() {
       ...prev,
       baseRate: v,
       posterior,
-      sliderAdjustments: prev.sliderAdjustments + 1,
+      slidersTouched: { ...prev.slidersTouched, baseRate: true },
     }));
-    triggerAnimation();
   }
 
   function handleSensitivityChange(v: number) {
@@ -101,9 +100,8 @@ export default function BayesTheoremClient() {
       ...prev,
       sensitivity: v,
       posterior,
-      sliderAdjustments: prev.sliderAdjustments + 1,
+      slidersTouched: { ...prev.slidersTouched, sensitivity: true },
     }));
-    triggerAnimation();
   }
 
   function handleSpecificityChange(v: number) {
@@ -112,21 +110,21 @@ export default function BayesTheoremClient() {
       ...prev,
       specificity: v,
       posterior,
-      sliderAdjustments: prev.sliderAdjustments + 1,
+      slidersTouched: { ...prev.slidersTouched, specificity: true },
     }));
-    triggerAnimation();
   }
 
   function handleAnimationStepComplete(step: 1 | 2 | 3) {
     setState((prev) => ({
       ...prev,
       animationStep: step,
-      animationCompleted: step === 3 ? true : prev.animationCompleted,
+      stepsVisited: { ...prev.stepsVisited, [step]: true },
     }));
   }
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="bayes-theorem" score={7} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -158,35 +156,35 @@ export default function BayesTheoremClient() {
         </section>
 
         {/* Progress tracker */}
-        <div className="flex items-center gap-3 mb-8 flex-wrap">
-          <div className="flex items-center gap-1.5">
-            <div
-              className={`w-2 h-2 rounded-full transition-colors ${
-                state.sliderAdjustments >= 5 ? "bg-[#3bb4a4]" : "bg-[#1e293b]"
-              }`}
-            />
-            <span
-              className={`text-[11px] ${
-                state.sliderAdjustments >= 5 ? "text-white" : "text-[#475569]"
-              }`}
-            >
-              Sliders adjusted: {state.sliderAdjustments}/5
-            </span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div
-              className={`w-2 h-2 rounded-full transition-colors ${
-                state.animationCompleted ? "bg-[#3bb4a4]" : "bg-[#1e293b]"
-              }`}
-            />
-            <span
-              className={`text-[11px] ${
-                state.animationCompleted ? "text-white" : "text-[#475569]"
-              }`}
-            >
-              Animation viewed
-            </span>
-          </div>
+        <div className="flex items-center gap-4 mb-8 flex-wrap">
+          {(() => {
+            const slidersCount =
+              (state.slidersTouched.baseRate ? 1 : 0) +
+              (state.slidersTouched.sensitivity ? 1 : 0) +
+              (state.slidersTouched.specificity ? 1 : 0);
+            const stepsCount =
+              (state.stepsVisited[1] ? 1 : 0) +
+              (state.stepsVisited[2] ? 1 : 0) +
+              (state.stepsVisited[3] ? 1 : 0);
+            const tasks = [
+              { done: state.intuitionApplied, label: "Guess applied" },
+              { done: state.actualsRevealed, label: "Actuals revealed" },
+              { done: allSlidersTouched, label: `Sliders explored: ${slidersCount}/3` },
+              { done: allStepsVisited, label: `Steps viewed: ${stepsCount}/3` },
+            ];
+            return tasks.map((t) => (
+              <div key={t.label} className="flex items-center gap-1.5">
+                <div
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    t.done ? "bg-[#3bb4a4]" : "bg-[#1e293b]"
+                  }`}
+                />
+                <span className={`text-[11px] ${t.done ? "text-white" : "text-[#475569]"}`}>
+                  {t.label}
+                </span>
+              </div>
+            ));
+          })()}
           {!session?.user && (
             <p className="text-[11px] text-[#475569] ml-auto">
               <Link href="/auth/sign-in" className="underline underline-offset-2 hover:text-[#94a3b8]">
@@ -224,53 +222,80 @@ export default function BayesTheoremClient() {
             state={state}
             onScenarioChange={handleScenarioChange}
             onIntuitionChange={handleIntuitionChange}
+            onApplyIntuition={handleApplyIntuition}
           />
 
-          {/* Row 2: Prior + Likelihood side by side */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <PriorPanel
-              baseRate={state.baseRate}
-              onBaseRateChange={handleBaseRateChange}
-            />
-            <LikelihoodPanel
-              sensitivity={state.sensitivity}
-              specificity={state.specificity}
-              onSensitivityChange={handleSensitivityChange}
-              onSpecificityChange={handleSpecificityChange}
-            />
-          </div>
+          {/* Reveal gate: hide everything below until the user clicks "Show Actuals" */}
+          {!state.actualsRevealed ? (
+            <div className="rounded-2xl border border-dashed border-[#1e293b] bg-[#0f172a] p-8 sm:p-12 flex flex-col items-center text-center space-y-4">
+              <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569]">
+                Ready to see the math?
+              </p>
+              <h3 className="text-[18px] sm:text-[20px] font-bold text-white max-w-[520px]">
+                Reveal the Bayesian breakdown and compare it with your guess.
+              </h3>
+              <p className="text-[12px] text-[#94a3b8] max-w-[480px]">
+                {state.intuitionApplied
+                  ? "Your guess is locked in. Click below to reveal the actual posterior probability and walk through the math."
+                  : "Lock in your guess above first, then reveal the actual posterior probability."}
+              </p>
+              <button
+                onClick={handleRevealActuals}
+                disabled={!state.intuitionApplied}
+                className="mt-2 px-8 py-3.5 rounded-xl text-[15px] font-bold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Show Actuals →
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Row 2: Prior + Likelihood side by side */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <PriorPanel
+                  baseRate={state.baseRate}
+                  onBaseRateChange={handleBaseRateChange}
+                />
+                <LikelihoodPanel
+                  sensitivity={state.sensitivity}
+                  specificity={state.specificity}
+                  onSensitivityChange={handleSensitivityChange}
+                  onSpecificityChange={handleSpecificityChange}
+                />
+              </div>
 
-          {/* Row 3: Bayesian Animation (full width — the centerpiece) */}
-          <BayesianAnimation
-            baseRate={state.baseRate}
-            sensitivity={state.sensitivity}
-            specificity={state.specificity}
-            animationStep={state.animationStep}
-            onStepComplete={handleAnimationStepComplete}
-          />
+              {/* Row 3: Bayesian Animation (full width — the centerpiece) */}
+              <BayesianAnimation
+                baseRate={state.baseRate}
+                sensitivity={state.sensitivity}
+                specificity={state.specificity}
+                animationStep={state.animationStep}
+                onStepComplete={handleAnimationStepComplete}
+              />
 
-          {/* Row 4: Interactive Blocks + Posterior Result side by side */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <InteractiveBlocks
-              posterior={state.posterior}
-              baseRate={state.baseRate}
-              sensitivity={state.sensitivity}
-              specificity={state.specificity}
-            />
-            <PosteriorResult
-              posterior={state.posterior}
-              baseRate={state.baseRate}
-              sensitivity={state.sensitivity}
-              specificity={state.specificity}
-              scenario={state.scenario}
-            />
-          </div>
+              {/* Row 4: Interactive Blocks + Posterior Result side by side */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <InteractiveBlocks
+                  posterior={state.posterior}
+                  baseRate={state.baseRate}
+                  sensitivity={state.sensitivity}
+                  specificity={state.specificity}
+                />
+                <PosteriorResult
+                  posterior={state.posterior}
+                  baseRate={state.baseRate}
+                  sensitivity={state.sensitivity}
+                  specificity={state.specificity}
+                  scenario={state.scenario}
+                />
+              </div>
 
-          {/* Row 5: Comparison View */}
-          <ComparisonView
-            intuition={state.intuition}
-            posterior={state.posterior}
-          />
+              {/* Row 5: Comparison View */}
+              <ComparisonView
+                intuition={state.intuition}
+                posterior={state.posterior}
+              />
+            </>
+          )}
         </div>
 
         {/* Footer nav */}

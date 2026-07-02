@@ -5,13 +5,15 @@ export type ScenarioType = "medical" | "spam" | "fairness";
 export interface BayesState {
   scenario: ScenarioType;
   intuition: number; // 0-100
+  intuitionApplied: boolean; // user clicked "Apply Guess"
+  actualsRevealed: boolean; // user clicked "Show Actuals"
   baseRate: number; // 0.001 to 0.1
   sensitivity: number; // 0.5 to 1.0
   specificity: number; // 0.5 to 1.0
   posterior: number; // computed
-  sliderAdjustments: number; // count of any slider change
+  slidersTouched: { baseRate: boolean; sensitivity: boolean; specificity: boolean };
   animationStep: 1 | 2 | 3;
-  animationCompleted: boolean;
+  stepsVisited: { 1: boolean; 2: boolean; 3: boolean };
 }
 
 export interface ScenarioConfig {
@@ -24,6 +26,8 @@ export interface ScenarioConfig {
   conditionName: string;
   testName: string;
   positiveLabel: string;
+  guessQuestion: string;
+  guessSubtext: string;
 }
 
 export function computePosterior(
@@ -49,6 +53,8 @@ export const SCENARIO_CONFIGS: Record<ScenarioType, ScenarioConfig> = {
     conditionName: "Has Disease",
     testName: "Tests Positive",
     positiveLabel: "POSITIVE",
+    guessQuestion: "If the test is positive, what's the probability the person actually has the disease?",
+    guessSubtext: "P(Has Disease | Test Positive)",
   },
   spam: {
     id: "spam",
@@ -61,6 +67,8 @@ export const SCENARIO_CONFIGS: Record<ScenarioType, ScenarioConfig> = {
     conditionName: "Is Spam",
     testName: "Flagged as Spam",
     positiveLabel: "FLAGGED",
+    guessQuestion: "If an email is flagged, what's the probability it's actually spam?",
+    guessSubtext: "P(Is Spam | Flagged)",
   },
   fairness: {
     id: "fairness",
@@ -73,12 +81,16 @@ export const SCENARIO_CONFIGS: Record<ScenarioType, ScenarioConfig> = {
     conditionName: "Biased Coin",
     testName: "7+ Heads in 10 flips",
     positiveLabel: "7 HEADS",
+    guessQuestion: "If you observe 7+ heads in 10 flips, what's the probability the coin is biased?",
+    guessSubtext: "P(Biased | 7+ Heads)",
   },
 };
 
 export const initialBayesState: BayesState = {
   scenario: "medical",
-  intuition: 95,
+  intuition: 50,
+  intuitionApplied: false,
+  actualsRevealed: false,
   baseRate: SCENARIO_CONFIGS.medical.baseRate,
   sensitivity: SCENARIO_CONFIGS.medical.sensitivity,
   specificity: SCENARIO_CONFIGS.medical.specificity,
@@ -87,7 +99,7 @@ export const initialBayesState: BayesState = {
     SCENARIO_CONFIGS.medical.sensitivity,
     SCENARIO_CONFIGS.medical.specificity
   ),
-  sliderAdjustments: 0,
+  slidersTouched: { baseRate: false, sensitivity: false, specificity: false },
   animationStep: 1,
-  animationCompleted: false,
+  stepsVisited: { 1: false, 2: false, 3: false },
 };

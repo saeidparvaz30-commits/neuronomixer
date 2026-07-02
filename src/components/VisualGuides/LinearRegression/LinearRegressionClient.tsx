@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { Point, computeRegression, generateInitialPoints, DATASETS, generateDataset } from "./types";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Scatter with draggable points ─────────────────────────────────────────────
 function RegressionScatter({
@@ -242,6 +243,7 @@ export default function LinearRegressionClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="linear-regression" score={8} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">

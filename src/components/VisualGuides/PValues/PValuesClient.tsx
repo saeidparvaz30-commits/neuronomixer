@@ -14,6 +14,7 @@ import DistributionCurve from "./DistributionCurve";
 import TestTypeToggle from "./TestTypeToggle";
 import PermutationCounter from "./PermutationCounter";
 import MetricsPanel from "./MetricsPanel";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function PValuesClient() {
   const { data: session } = useSession();
@@ -73,6 +74,7 @@ export default function PValuesClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="p-values" score={8} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

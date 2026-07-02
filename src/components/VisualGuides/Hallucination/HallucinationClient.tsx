@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 type Seg = { text: string; wrong: boolean; explanation?: string };
 const EXAMPLES: { id: number; type: string; segments: Seg[] }[] = [
@@ -53,6 +54,7 @@ const LLM_DOTS = [{ cx: 80, cy: 80 }, { cx: 85, cy: 60 }, { cx: 90, cy: 72 }, { 
 function RiskBar({ value, color }: { value: number; color: string }) {
   return (
     <div>
+      <GuideCompletion isComplete={allComplete} guideSlug="hallucination" score={100} />
       <div className="flex justify-between mb-1">
         <span className="text-[10px] text-[#94a3b8]">Hallucination risk</span>
         <span className="text-[10px] font-semibold" style={{ color }}>{value}%</span>

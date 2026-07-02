@@ -15,6 +15,7 @@ import ExperimentPanel from "./ExperimentPanel";
 import IntervalVisualization from "./IntervalVisualization";
 import IntervalExpander from "./IntervalExpander";
 import StatsPanel from "./StatsPanel";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function ConfidenceIntervalsClient() {
   const { data: session } = useSession();
@@ -88,6 +89,7 @@ export default function ConfidenceIntervalsClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="confidence-intervals" score={8} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

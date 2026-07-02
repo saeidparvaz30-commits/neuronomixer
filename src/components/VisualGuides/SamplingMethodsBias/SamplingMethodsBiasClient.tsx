@@ -19,6 +19,7 @@ import DrawSampleButton from "./DrawSampleButton";
 import ResultsComparison from "./ResultsComparison";
 import RepeatDrawsVisualization from "./RepeatDrawsVisualization";
 import BiasGallery from "./BiasGallery";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Initial state ─────────────────────────────────────────────────────────────
 
@@ -178,6 +179,7 @@ export default function SamplingMethodsBiasClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="sampling-methods-bias" score={7} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

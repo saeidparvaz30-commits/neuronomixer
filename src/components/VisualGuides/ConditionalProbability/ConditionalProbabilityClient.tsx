@@ -18,6 +18,7 @@ import SampleSpaceAnimator from "./SampleSpaceAnimator";
 import ConditionalProbabilityCalculator from "./ConditionalProbabilityCalculator";
 import IndependenceChecker from "./IndependenceChecker";
 import ExplanationPanel from "./ExplanationPanel";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Scenario data ─────────────────────────────────────────────────────────────
 
@@ -217,18 +218,25 @@ const SCENARIOS: Record<ScenarioType, ScenarioConfig> = {
 
 function nodeToFilter(nodeId: string, scenario: ScenarioType): GridFilter {
   if (scenario === "medical_testing") {
+    if (nodeId === "disease") return "disease_people";
+    if (nodeId === "no_disease") return "healthy_people";
     if (nodeId === "d_pos") return "disease_and_positive";
-    if (nodeId === "nd_pos" || nodeId === "d_neg" || nodeId === "nd_neg") return "test_positive";
-    if (nodeId === "disease") return "test_positive";
-    if (nodeId === "no_disease") return "test_positive";
+    if (nodeId === "d_neg") return "disease_and_negative";
+    if (nodeId === "nd_pos") return "healthy_and_positive";
+    if (nodeId === "nd_neg") return "healthy_and_negative";
   }
   if (scenario === "marbles") {
+    // marbles use MarbleBagView driven by selectedNodeId — filter is unused
     if (nodeId === "r1" || nodeId === "rr" || nodeId === "rb") return "red_first";
     if (nodeId === "b1" || nodeId === "br" || nodeId === "bb") return "blue_first";
   }
   if (scenario === "manufacturing") {
+    if (nodeId === "fa") return "factory_a_items";
+    if (nodeId === "fb") return "factory_b_items";
     if (nodeId === "fa_d") return "factory_a_defective";
-    if (nodeId === "fb_d" || nodeId === "fa" || nodeId === "fb") return "defective";
+    if (nodeId === "fa_ok") return "factory_a_ok_items";
+    if (nodeId === "fb_d") return "factory_b_defective";
+    if (nodeId === "fb_ok") return "factory_b_ok_items";
   }
   return "all";
 }
@@ -312,7 +320,7 @@ export default function ConditionalProbabilityClient() {
       done: state.scenariosViewed.size === 3,
     },
     {
-      label: `Space filtered: ${state.sampleSpaceFiltered}/2`,
+      label: `Space filtered: ${Math.min(state.sampleSpaceFiltered, 2)}/2`,
       done: state.sampleSpaceFiltered >= 2,
     },
     {
@@ -327,6 +335,7 @@ export default function ConditionalProbabilityClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="conditional-probability" score={11} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -423,7 +432,7 @@ export default function ConditionalProbabilityClient() {
             transition={{ duration: 0.3 }}
             className="grid grid-cols-1 lg:grid-cols-2 gap-6"
           >
-            {/* Left column: Tree + Calculator */}
+            {/* Left column: Tree + Calculator + Explanation */}
             <div className="space-y-6">
               {/* Scenario description */}
               <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-4">
@@ -452,9 +461,15 @@ export default function ConditionalProbabilityClient() {
                 scenario={currentScenario}
                 selectedNodeId={state.selectedNodeId}
               />
+
+              {/* Explanation panel */}
+              <ExplanationPanel
+                scenario={state.scenario}
+                selectedNodeId={state.selectedNodeId}
+              />
             </div>
 
-            {/* Right column: Sample space + Explanation + Independence */}
+            {/* Right column: Sample space + Independence */}
             <div className="space-y-6">
               {/* Sample space animator */}
               <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
@@ -466,14 +481,9 @@ export default function ConditionalProbabilityClient() {
                   gridSide={currentScenario.gridSide}
                   filter={state.gridFilter}
                   scenario={state.scenario}
+                  selectedNodeId={state.selectedNodeId}
                 />
               </div>
-
-              {/* Explanation panel */}
-              <ExplanationPanel
-                scenario={state.scenario}
-                selectedNodeId={state.selectedNodeId}
-              />
 
               {/* Independence checker */}
               <IndependenceChecker

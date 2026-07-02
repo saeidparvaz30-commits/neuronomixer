@@ -19,6 +19,7 @@ import ExpectedValueCalculator from "./ExpectedValueCalculator";
 import SimulationRunner from "./SimulationRunner";
 import SpinnerVisualizer from "./SpinnerVisualizer";
 import LotteryEVBreakdown from "./LotteryEVBreakdown";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Unique-id helper ──────────────────────────────────────────────────────────
 
@@ -121,6 +122,7 @@ export default function RandomVariablesExpectedValueClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="random-variables-expected-value" score={7} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -318,10 +320,10 @@ export default function RandomVariablesExpectedValueClient() {
             ← Bayes Theorem
           </Link>
           <Link
-            href="/visual-guides"
+            href="/visual-guides/probability-distributions"
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
-            All Visual Guides →
+            Next: Probability Distributions →
           </Link>
         </div>
       </div>

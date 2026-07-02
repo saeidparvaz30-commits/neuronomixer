@@ -21,47 +21,57 @@ export default function SignInPage() {
     setUnverified(false);
     setLoading(true);
 
-    let captchaToken: string | undefined;
-    if (executeRecaptcha) {
-      captchaToken = await executeRecaptcha("signin").catch(() => undefined);
-    }
-
-    const result = await signIn("credentials", {
-      email,
-      password,
-      captchaToken,
-      redirect: false,
-    });
-
-    setLoading(false);
-
-    if (result?.error) {
-      // Check whether the failure is specifically because email isn't verified
-      try {
-        const check = await fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
-        const data = await check.json();
-        if (data.verified === false) {
-          setUnverified(true);
-          setLoading(false);
-          return;
+    try {
+      let captchaToken: string | undefined;
+      if (executeRecaptcha) {
+        try {
+          captchaToken = await executeRecaptcha("signin");
+        } catch {
+          // reCAPTCHA not ready yet; proceed without token
         }
-      } catch {
-        // Network error — fall through to generic message
       }
-      setError("Invalid email or password.");
-    } else {
-      const session = await getSession();
-      const role = (session?.user as any)?.role;
-      const onboarded = (session?.user as any)?.onboarded;
-      if (!onboarded) {
-        router.push("/auth/complete-signup");
-      } else if (role === "ADMIN") {
-        router.push("/dashboard/admin");
-      } else if (role === "AUTHOR") {
-        router.push("/dashboard/author");
+
+      const result = await signIn("credentials", {
+        email,
+        password,
+        captchaToken,
+        redirect: false,
+      });
+
+      setLoading(false);
+
+      if (result?.error) {
+        // Check whether the failure is specifically because email isn't verified
+        try {
+          const check = await fetch(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
+          const data = await check.json();
+          if (data.verified === false) {
+            setUnverified(true);
+            setLoading(false);
+            return;
+          }
+        } catch {
+          // Network error — fall through to generic message
+        }
+        setError("Invalid email or password.");
       } else {
-        router.push("/dashboard/subscriber");
+        const session = await getSession();
+        const role = (session?.user as any)?.role;
+        const onboarded = (session?.user as any)?.onboarded;
+        if (!onboarded) {
+          router.push("/auth/complete-signup");
+        } else if (role === "ADMIN") {
+          router.push("/dashboard/admin");
+        } else if (role === "AUTHOR") {
+          router.push("/dashboard/author");
+        } else {
+          router.push("/dashboard/subscriber");
+        }
       }
+    } catch (err) {
+      console.error("[sign-in] Unexpected error:", err);
+      setError("Something went wrong. Please try again.");
+      setLoading(false);
     }
   }
 

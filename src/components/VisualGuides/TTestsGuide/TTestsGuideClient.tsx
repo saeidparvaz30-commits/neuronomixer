@@ -9,6 +9,7 @@ import OneSampleScenario from "./OneSampleScenario";
 import IndependentSampleScenario from "./IndependentSampleScenario";
 import PairedSampleScenario from "./PairedSampleScenario";
 import ProportionTestSection from "./ProportionTestSection";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Tab config ─────────────────────────────────────────────────────────────────
 const TABS: { id: ScenarioId; label: string; short: string }[] = [
@@ -71,6 +72,7 @@ export default function TTestsGuideClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="t-tests-proportion-tests" score={8} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

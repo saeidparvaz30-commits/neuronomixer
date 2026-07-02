@@ -18,6 +18,7 @@ import TestResults from "./TestResults";
 import ConfusionMatrix from "./ConfusionMatrix";
 import ResultsTracker from "./ResultsTracker";
 import PowerAnalysis from "./PowerAnalysis";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 function computePowerString(state: TestingState): string {
   const { truePositives: tp, falseNegatives: fn } = state.confusionMatrix;
@@ -182,6 +183,7 @@ export default function HypothesisTestingClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="hypothesis-testing" score={9} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

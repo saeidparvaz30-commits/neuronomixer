@@ -10,6 +10,7 @@ import MethodSelector from "./MethodSelector";
 import ParameterSliders from "./ParameterSliders";
 import ExplanationPanel from "./ExplanationPanel";
 import DimensionInfo from "./DimensionInfo";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const DEFAULT_PARAMS: Record<MethodType, Record<string, number>> = {
   pca:  { components: 2 },
@@ -61,6 +62,7 @@ export default function DimensionalityReductionClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="dimensionality-reduction" score={6} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -163,10 +165,10 @@ export default function DimensionalityReductionClient() {
             ← Previous Guide
           </Link>
           <Link
-            href="/visual-guides"
+            href="/visual-guides/data-distributions-applied"
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
-            All Guides →
+            Next: Data Distributions in Context →
           </Link>
         </div>
       </div>

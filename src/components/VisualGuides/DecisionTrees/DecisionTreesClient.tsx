@@ -4,6 +4,7 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   DataPoint, TreeNode, Split,
   computeGini, predictLabel, splitPoints, computeAccuracy, buildNode, predict,
@@ -149,6 +150,7 @@ function TreeDiagram({ root }: { root: TreeNode | null }) {
   if (!root) {
     return (
       <div className="text-center py-10 text-[#334155] text-[13px]">
+      <GuideCompletion isComplete={allComplete} guideSlug="decision-trees" score={8} />
         Click on the scatter plot to add splits
       </div>
     );
@@ -499,9 +501,9 @@ export default function DecisionTreesClient() {
             className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
             ← Previous Guide
           </Link>
-          <Link href="/visual-guides"
+          <Link href="/visual-guides/k-means"
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            All Guides →
+            Next: K-Means Clustering Step by Step →
           </Link>
         </div>
       </div>

@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useMemo, useCallback } from "react"
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface TrainPt { id: number; x: number; y: number; cls: 0 | 1 }
@@ -257,6 +258,7 @@ export default function KNNClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="knn" score={6} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
         <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
           <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>

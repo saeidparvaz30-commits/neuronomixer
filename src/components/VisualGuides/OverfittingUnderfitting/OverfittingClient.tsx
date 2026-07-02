@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Polynomial regression ─────────────────────────────────────────────────────
 interface Pt { x: number; y: number }
@@ -155,6 +156,7 @@ export default function OverfittingClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="overfitting-underfitting" score={8} />
       <div className="max-w-[1300px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

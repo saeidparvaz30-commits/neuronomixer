@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Data ───────────────────────────────────────────────────────────────────
 
@@ -230,6 +231,7 @@ export default function EmbeddingsClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="embeddings" score={100} />
       <div className="max-w-[900px] mx-auto px-5 sm:px-8 py-8">
 
         {/* Breadcrumb */}

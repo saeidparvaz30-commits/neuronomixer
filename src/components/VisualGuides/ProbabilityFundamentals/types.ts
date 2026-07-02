@@ -118,6 +118,19 @@ export function calcTheoretical(
   return pA + pB - pA * pB;
 }
 
+// ── Detailed trial result (for live visualizer) ──────────────────────────────
+
+export interface TrialResult {
+  hit: boolean;
+  typeA: EventType;
+  rawA: string;
+  hitA: boolean;
+  operator: Operator;
+  typeB?: EventType;
+  rawB?: string;
+  hitB?: boolean;
+}
+
 // ── Simulation helpers ───────────────────────────────────────────────────────
 
 /** Simulate whether a single EventType/outcome pair occurred. */
@@ -171,6 +184,76 @@ export function simulateTrial(event: CompoundEvent): boolean {
   if (operator === "AND") return aHit && bHit;
   // OR
   return aHit || bHit;
+}
+
+/** Like checkSingleEvent but also returns the human-readable sampled label. */
+function checkSingleEventDetailed(
+  type: EventType,
+  outcome: string,
+): { hit: boolean; label: string } {
+  if (type === "coin_flip") {
+    const label = Math.random() < 0.5 ? "Heads" : "Tails";
+    return { hit: label === outcome, label };
+  }
+
+  if (type === "die_roll") {
+    const n = Math.floor(Math.random() * 6) + 1;
+    const label = String(n);
+    let hit: boolean;
+    if (outcome === "Even number") hit = n % 2 === 0;
+    else if (outcome === "Odd number") hit = n % 2 !== 0;
+    else if (outcome === "> 3") hit = n > 3;
+    else hit = label === outcome;
+    return { hit, label };
+  }
+
+  // card_draw
+  const RANKS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+  const SUIT_SYMBOLS = ["♥", "♠", "♦", "♣"];
+  const card = Math.floor(Math.random() * 52);
+  const suitIndex = Math.floor(card / 13);
+  const rank = card % 13;
+  const isRed = suitIndex === 0 || suitIndex === 2;
+  const label = `${RANKS[rank]}${SUIT_SYMBOLS[suitIndex]}`;
+
+  let hit: boolean;
+  if (outcome === "Heart") hit = suitIndex === 0;
+  else if (outcome === "Spade") hit = suitIndex === 1;
+  else if (outcome === "Diamond") hit = suitIndex === 2;
+  else if (outcome === "Club") hit = suitIndex === 3;
+  else if (outcome === "Red card") hit = isRed;
+  else if (outcome === "Black card") hit = !isRed;
+  else if (outcome === "Face card") hit = rank >= 10 && rank <= 12;
+  else if (outcome === "Ace") hit = rank === 0;
+  else hit = false;
+
+  return { hit, label };
+}
+
+/** Simulate a single trial and return full detail for the live visualizer. */
+export function simulateTrialDetailed(event: CompoundEvent): TrialResult {
+  const { firstType, firstOutcome, operator, secondType, secondOutcome } = event;
+  const a = checkSingleEventDetailed(firstType, firstOutcome);
+
+  if (operator === "none") {
+    return { hit: a.hit, typeA: firstType, rawA: a.label, hitA: a.hit, operator };
+  }
+  if (operator === "NOT") {
+    return { hit: !a.hit, typeA: firstType, rawA: a.label, hitA: a.hit, operator };
+  }
+
+  const b =
+    secondType && secondOutcome
+      ? checkSingleEventDetailed(secondType, secondOutcome)
+      : { hit: false, label: "?" };
+
+  const hit = operator === "AND" ? a.hit && b.hit : a.hit || b.hit;
+  return {
+    hit,
+    typeA: firstType, rawA: a.label, hitA: a.hit,
+    operator,
+    typeB: secondType ?? undefined, rawB: b.label, hitB: b.hit,
+  };
 }
 
 // ── Default state ────────────────────────────────────────────────────────────

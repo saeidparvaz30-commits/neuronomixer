@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import type { Scenario, FramingType, ScenarioInfo, WhatIsStatisticsState } from "./types";
 import { initialState } from "./types";
 import ScenarioCard from "./ScenarioCard";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Scenario data ─────────────────────────────────────────────────────────────
 
@@ -166,6 +167,7 @@ export default function WhatIsStatisticsClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="what-is-statistics" score={5} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

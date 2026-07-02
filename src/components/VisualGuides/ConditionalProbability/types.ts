@@ -95,12 +95,25 @@ export interface GridSquare {
 /** Which subset of squares to keep visible after a tree-node click */
 export type GridFilter =
   | "all"
-  | "test_positive"           // medical: both disease_positive + healthy_positive
-  | "disease_and_positive"    // medical: disease_positive only
-  | "red_first"               // marbles: red squares only (first draw = red)
-  | "blue_first"              // marbles: blue squares only (first draw = blue)
-  | "defective"               // manufacturing: both factories, defective only
-  | "factory_a_defective";    // manufacturing: factory A defective only
+  // medical
+  | "disease_people"          // disease group (both test outcomes)
+  | "healthy_people"          // healthy group (both test outcomes)
+  | "test_positive"           // everyone who tests positive (disease + healthy)
+  | "disease_and_positive"    // disease AND test+
+  | "disease_and_negative"    // disease AND test-
+  | "healthy_and_positive"    // healthy AND test+ (false positives)
+  | "healthy_and_negative"    // healthy AND test- (true negatives)
+  // marbles (handled by MarbleBagView — filters unused)
+  | "red_first"
+  | "blue_first"
+  // manufacturing
+  | "factory_a_items"         // all factory A items (defect + ok)
+  | "factory_b_items"         // all factory B items (defect + ok)
+  | "defective"               // all defective items
+  | "factory_a_defective"     // factory A defective only
+  | "factory_a_ok_items"      // factory A ok only
+  | "factory_b_defective"     // factory B defective only
+  | "factory_b_ok_items";     // factory B ok only
 
 // ── Node path highlight ───────────────────────────────────────────────────────
 

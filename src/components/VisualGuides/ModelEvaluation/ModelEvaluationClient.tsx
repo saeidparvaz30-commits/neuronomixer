@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Metric helpers ─────────────────────────────────────────────────────────────
 
@@ -145,6 +146,7 @@ function MetricBar({
   const display = format ? format(value) : value.toFixed(2);
   return (
     <div className="space-y-1">
+      <GuideCompletion isComplete={allComplete} guideSlug="model-evaluation" score={100} />
       <div className="flex items-center justify-between text-[12px]">
         <span className="text-[#94a3b8] font-medium">{label}</span>
         <span className="font-bold" style={{ color }}>

@@ -9,6 +9,7 @@ import { BucketId, DataItemDef, ItemState } from "./types";
 import DataItem from "./DataItem";
 import CategoryBucket from "./CategoryBucket";
 import SummaryCard from "./SummaryCard";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Data ───────────────────────────────────────────────────────────────────
 

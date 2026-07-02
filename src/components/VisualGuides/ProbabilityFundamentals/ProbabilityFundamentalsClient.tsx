@@ -16,6 +16,7 @@ import {
 } from "./types";
 import EventSandbox from "./EventSandbox";
 import VennDiagramVisualizer from "./VennDiagramVisualizer";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -142,6 +143,7 @@ export default function ProbabilityFundamentalsClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="probability-fundamentals" score={12} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

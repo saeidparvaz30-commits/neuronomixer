@@ -17,6 +17,7 @@ import DrawSampleButton from "./DrawSampleButton";
 import SampleMeanPlotter from "./SampleMeanPlotter";
 import StandardErrorVisualizer from "./StandardErrorVisualizer";
 import EstimatorPropertiesPanel from "./EstimatorPropertiesPanel";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const POP_MEAN = 100;
 const POP_SD = 20;
@@ -142,6 +143,7 @@ export default function StandardErrorPointEstimatesClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="standard-error-point-estimates" score={6} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

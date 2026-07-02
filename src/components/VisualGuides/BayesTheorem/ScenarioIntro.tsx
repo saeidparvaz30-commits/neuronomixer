@@ -8,12 +8,14 @@ interface ScenarioIntroProps {
   state: BayesState;
   onScenarioChange: (s: ScenarioType) => void;
   onIntuitionChange: (v: number) => void;
+  onApplyIntuition: () => void;
 }
 
 export default function ScenarioIntro({
   state,
   onScenarioChange,
   onIntuitionChange,
+  onApplyIntuition,
 }: ScenarioIntroProps) {
   const sc = SCENARIO_CONFIGS[state.scenario];
 
@@ -80,12 +82,22 @@ export default function ScenarioIntro({
       </div>
 
       {/* Intuition slider */}
-      <div className="space-y-2 pt-1">
-        <div className="flex justify-between items-center">
-          <p className="text-[11px] text-[#94a3b8]">
-            Before we calculate, what&apos;s your intuitive guess?
+      <div className="space-y-3 pt-1 rounded-xl border border-[#1e293b] bg-[#1e293b]/20 p-4">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-1">
+            Your intuitive guess
           </p>
-          <span className="text-[13px] font-mono font-bold text-white">
+          <p className="text-[14px] text-white leading-snug">
+            {sc.guessQuestion}
+          </p>
+          <p className="text-[11px] font-mono text-[#8b5cf6] mt-1">
+            {sc.guessSubtext}
+          </p>
+        </div>
+
+        <div className="flex justify-between items-center">
+          <span className="text-[11px] text-[#94a3b8]">Drag the slider to your gut estimate</span>
+          <span className="text-[16px] font-mono font-black text-white">
             {state.intuition}%
           </span>
         </div>
@@ -96,13 +108,32 @@ export default function ScenarioIntro({
           step={1}
           value={state.intuition}
           onChange={(e) => onIntuitionChange(Number(e.target.value))}
-          className="w-full"
+          disabled={state.intuitionApplied}
+          className="w-full disabled:opacity-60 disabled:cursor-not-allowed"
           style={{ accentColor: "#8b5cf6" }}
         />
         <div className="flex justify-between text-[9px] text-[#334155]">
           <span>0%</span>
           <span className="text-[#8b5cf6] font-semibold">Your guess: {state.intuition}%</span>
           <span>100%</span>
+        </div>
+
+        <div className="pt-1">
+          {state.intuitionApplied ? (
+            <div className="flex items-center justify-center gap-2 text-[12px] font-semibold text-[#3bb4a4] bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 rounded-lg py-2.5">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              Guess locked at {state.intuition}%
+            </div>
+          ) : (
+            <button
+              onClick={onApplyIntuition}
+              className="w-full px-4 py-2.5 rounded-lg text-[13px] font-bold bg-[#8b5cf6] text-white hover:bg-[#7c3aed] transition-colors"
+            >
+              Apply Guess
+            </button>
+          )}
         </div>
       </div>
     </div>

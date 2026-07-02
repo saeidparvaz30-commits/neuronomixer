@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const PRED_ROUNDS = [
   { prefix: "The cat sat on the", choices: ["mat", "moon", "car"], correct: "mat" },
@@ -123,6 +124,7 @@ export default function WhatIsLLMClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="what-is-llm" score={100} />
       <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

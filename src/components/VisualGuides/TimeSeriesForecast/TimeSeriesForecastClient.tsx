@@ -10,6 +10,7 @@ import DecompositionViewer from "./DecompositionViewer";
 import SmoothingControls from "./SmoothingControls";
 import ForecastPlot from "./ForecastPlot";
 import TemporalLeakageWarning from "./TemporalLeakageWarning";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Deterministic LCG ─────────────────────────────────────────────────────────
 
@@ -351,6 +352,7 @@ export default function TimeSeriesForecastClient() {
 
   return (
     <div className="min-h-screen pb-24">
+      <GuideCompletion isComplete={isComplete} guideSlug="time-series-forecasting" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
         {/* Hero */}
         <section className="mb-8">

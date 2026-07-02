@@ -11,6 +11,7 @@ import GeneratorOutput from "./GeneratorOutput";
 import TrainingChart from "./TrainingChart";
 import TrainingControls from "./TrainingControls";
 import ProblemExplorer from "./ProblemExplorer";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function GANsClient() {
   const { data: session } = useSession();
@@ -101,6 +102,7 @@ export default function GANsClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="gans" score={100} />
       <div className="max-w-[1300px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -288,10 +290,10 @@ export default function GANsClient() {
             All Guides
           </Link>
           <Link
-            href="/visual-guides"
+            href="/visual-guides/what-is-llm"
             className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
           >
-            <span>Next Guides</span>
+            <span>Next: What Is a Large Language Model?</span>
             <span>→</span>
           </Link>
         </div>

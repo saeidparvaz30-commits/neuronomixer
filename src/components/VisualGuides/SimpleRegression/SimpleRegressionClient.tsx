@@ -10,6 +10,7 @@ import React, {
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   DataPoint,
   OLSFit,
@@ -595,6 +596,7 @@ function QQPlot({ fit }: { fit: OLSFit }) {
 function ProgressDot({ done, label }: { done: boolean; label: string }) {
   return (
     <div className="flex items-center gap-1.5">
+      <GuideCompletion isComplete={allComplete} guideSlug="simple-linear-regression" score={8} />
       <div
         className={`w-2 h-2 rounded-full transition-colors duration-300 ${
           done ? "bg-[#3bb4a4]" : "bg-[#1e293b]"

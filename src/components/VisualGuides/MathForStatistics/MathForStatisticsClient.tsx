@@ -12,6 +12,7 @@ import SummationVisualizer from "./SummationVisualizer";
 import WeightedAverageBuilder from "./WeightedAverageBuilder";
 import SlopeVisualizer from "./SlopeVisualizer";
 import VennDiagramBuilder from "./VennDiagramBuilder";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const TOOL_LABELS: Record<ToolType, string> = {
   growth: "Compound vs Simple Growth",
@@ -60,6 +61,7 @@ export default function MathForStatisticsClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="math-for-statistics" score={5} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

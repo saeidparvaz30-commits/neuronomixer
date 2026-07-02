@@ -13,6 +13,7 @@ import {
 import DistributionGallery from "./DistributionGallery";
 import DistributionPanel from "./DistributionPanel";
 import ComparisonMode from "./ComparisonMode";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Build initial params from defaults ────────────────────────────────────────
 function buildInitialParams(): Record<DistributionType, Record<string, number>> {
@@ -94,6 +95,7 @@ export default function ProbabilityDistributionsClient() {
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={tasksCompleted} guideSlug="probability-distributions" score={8} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -245,10 +247,10 @@ export default function ProbabilityDistributionsClient() {
             ← Bayes&apos; Theorem
           </Link>
           <Link
-            href="/visual-guides"
+            href="/visual-guides/normal-distribution-z-scores"
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
-            All Guides →
+            Next: The Normal Distribution & Z-Scores →
           </Link>
         </div>
       </div>

@@ -8,6 +8,7 @@ import type { BiasType } from "./types";
 import { CASE_STUDIES } from "./types";
 import CaseStudyNavigation from "./CaseStudyNavigation";
 import CaseStudyCard from "./CaseStudyCard";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function SourcesOfBiasClient() {
   const { data: session } = useSession();
@@ -51,6 +52,7 @@ export default function SourcesOfBiasClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="sources-of-bias" score={5} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -171,10 +173,10 @@ export default function SourcesOfBiasClient() {
             ← Previous: Types of Data
           </Link>
           <Link
-            href="/visual-guides"
+            href="/visual-guides/math-for-statistics"
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
-            All Guides →
+            Next: Math for Statistics: The Visual Toolkit →
           </Link>
         </div>
       </div>

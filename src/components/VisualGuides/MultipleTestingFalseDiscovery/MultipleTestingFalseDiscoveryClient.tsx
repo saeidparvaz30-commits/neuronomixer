@@ -20,6 +20,7 @@ import FalseDiscoveryVisualization from "./FalseDiscoveryVisualization";
 import MultipleComparisonCorrectionPanel from "./MultipleComparisonCorrectionPanel";
 import CorrectionComparison from "./CorrectionComparison";
 import AssumptionChecklistPanel from "./AssumptionChecklistPanel";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Initial state ──────────────────────────────────────────────────────────────
 
@@ -184,6 +185,7 @@ export default function MultipleTestingFalseDiscoveryClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="multiple-testing-false-discovery" score={7} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

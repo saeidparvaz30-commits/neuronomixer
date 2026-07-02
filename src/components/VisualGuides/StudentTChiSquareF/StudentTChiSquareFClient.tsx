@@ -8,6 +8,7 @@ import { INITIAL_STATE, StudentTChiSquareFState, ActiveDistribution } from "./ty
 import DistributionComparison from "./DistributionComparison";
 import TConvergenceVisualizer from "./TConvergenceVisualizer";
 import UseCaseExplainer from "./UseCaseExplainer";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Tab config ────────────────────────────────────────────────────────────────
 
@@ -171,6 +172,7 @@ export default function StudentTChiSquareFClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="student-t-chi-square-f" score={5} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

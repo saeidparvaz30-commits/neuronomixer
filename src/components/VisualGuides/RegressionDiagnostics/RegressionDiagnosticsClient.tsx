@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   DiagPoint, ModelState, DatasetSpec,
   DATASETS, fitOLS, computeDiagnostics, computeRSquared,
@@ -85,6 +86,7 @@ function ResidualsVsFitted({ points, modelState }: ResidualsPlotProps) {
 
   return (
     <div>
+      <GuideCompletion isComplete={allComplete} guideSlug="regression-diagnostics" score={7} />
       <svg width="100%" viewBox={`0 0 ${PLOT_W} ${PLOT_H}`} className="block">
         <PlotAxes xMin={xMin} xMax={xMax} yMin={yMin} yMax={yMax} xLabel="Fitted Values" yLabel="Residuals" />
         {/* y=0 reference line */}

@@ -13,6 +13,7 @@ import TrainingCurveChart from "./TrainingCurveChart";
 import DeadNeuronDetector from "./DeadNeuronDetector";
 import ComparisonTable from "./ComparisonTable";
 import SummaryCard from "./SummaryCard";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Function properties data ───────────────────────────────────────────────────
 const FUNCTION_PROPERTIES: Record<FunctionId, FunctionProperties> = {
@@ -144,6 +145,7 @@ export default function ActivationFunctionsClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="activation-functions" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -287,10 +289,10 @@ export default function ActivationFunctionsClient() {
             All Guides
           </Link>
           <Link
-            href="/visual-guides"
+            href="/visual-guides/backpropagation"
             className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
           >
-            <span>All Guides</span>
+            <span>Next: Backpropagation: How Networks Learn</span>
             <span>&#8594;</span>
           </Link>
         </div>

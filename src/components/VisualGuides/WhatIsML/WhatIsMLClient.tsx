@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type ScenarioId = "spam" | "image" | "price";
@@ -102,6 +103,7 @@ const SCENARIOS: Scenario[] = [
 function FlowDiagram({ type, steps, color }: { type: "rules" | "ml"; steps: string[]; color: string }) {
   return (
     <div className="space-y-2">
+      <GuideCompletion isComplete={allComplete} guideSlug="what-is-ml" score={6} />
       {steps.map((step, i) => (
         <motion.div
           key={i}

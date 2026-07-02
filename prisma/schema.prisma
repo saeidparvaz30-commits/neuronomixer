@@ -72,6 +72,7 @@ model User {
   cv                  AuthorCV?
   apiKey              AuthorApiKey?
   guideCompletions    GuideCompletion[]
+  tokenUsages         TokenUsage[]
   createdAt          DateTime         @default(now())
 }
 
@@ -211,6 +212,22 @@ model AuthorApiKey {
   createdAt  DateTime  @default(now())
   lastUsedAt DateTime?
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model TokenUsage {
+  id           String   @id @default(cuid())
+  userId       String
+  activity     String
+  model        String
+  inputTokens  Int
+  outputTokens Int
+  totalTokens  Int
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([activity])
+  @@index([createdAt])
 }
 
 model GuideCompletion {

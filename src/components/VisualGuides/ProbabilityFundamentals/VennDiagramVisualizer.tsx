@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { type VennMode } from "./types";
 
 // ── Fixed scenario: A = die even (2,4,6), B = die > 3 (4,5,6)
@@ -70,14 +70,37 @@ export default function VennDiagramVisualizer({
   onModeChange,
   onRegionClick,
 }: VennDiagramVisualizerProps) {
-  const highlighted = highlightedRegions(vennMode);
+  // Which single region card is currently selected (null = show mode-based highlight)
+  const [activeRegion, setActiveRegion] = useState<Region["id"] | null>(null);
 
-  // Count highlighted outcomes
-  const highlightedCount = REGIONS.filter((r) => highlighted.has(r.id)).reduce(
-    (sum, r) => sum + r.count,
-    0,
-  );
+  function handleModeChange(m: VennMode) {
+    setActiveRegion(null); // clear card selection when switching mode
+    onModeChange(m);
+  }
+
+  function handleRegionClick(id: Region["id"]) {
+    // Toggle: clicking the active card deselects it
+    setActiveRegion((prev) => (prev === id ? null : id));
+    onRegionClick(id); // still tracks for exploration progress
+  }
+
+  // SVG highlight: active card overrides mode-based highlight
+  const highlighted = activeRegion
+    ? new Set<Region["id"]>([activeRegion])
+    : highlightedRegions(vennMode);
+
+  const highlightedRegionData = activeRegion
+    ? REGIONS.filter((r) => r.id === activeRegion)
+    : REGIONS.filter((r) => highlighted.has(r.id));
+
+  const highlightedCount = highlightedRegionData.reduce((sum, r) => sum + r.count, 0);
   const highlightedP = (highlightedCount / 6).toFixed(3);
+
+  const highlightLabel = activeRegion
+    ? REGIONS.find((r) => r.id === activeRegion)?.label ?? ""
+    : vennMode === "NOT"
+    ? "NOT A (everything outside A)"
+    : `A ${vennMode} B`;
 
   return (
     <div className="space-y-5">
@@ -95,9 +118,9 @@ export default function VennDiagramVisualizer({
         {(["AND", "OR", "NOT"] as VennMode[]).map((m) => (
           <button
             key={m}
-            onClick={() => onModeChange(m)}
+            onClick={() => handleModeChange(m)}
             className={`px-4 py-1.5 text-[12px] rounded-lg font-semibold transition-colors ${
-              vennMode === m
+              vennMode === m && !activeRegion
                 ? "bg-[#d4af37] text-[#0a0e1a]"
                 : "border border-[#1e293b] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37]"
             }`}
@@ -109,15 +132,12 @@ export default function VennDiagramVisualizer({
 
       {/* SVG Venn diagram */}
       <div className="rounded-2xl border border-[#1e293b] bg-[#0a0e1a] p-4">
-        <VennSVG highlighted={highlighted} onRegionClick={onRegionClick} />
+        <VennSVG highlighted={highlighted} onRegionClick={handleRegionClick} />
 
         {/* Region info */}
         <div className="mt-3 rounded-xl border border-[#1e293b] bg-[#0f172a] px-4 py-2.5 text-center">
           <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#d4af37] mb-0.5">
-            Highlighted:{" "}
-            {vennMode === "NOT"
-              ? "NOT A (everything outside A)"
-              : `A ${vennMode} B`}
+            Highlighted: {highlightLabel}
           </p>
           <p className="text-xl font-black text-white font-mono">
             {highlightedCount}/6 outcomes — P = {highlightedP}
@@ -134,10 +154,12 @@ export default function VennDiagramVisualizer({
           {REGIONS.map((r) => (
             <button
               key={r.id}
-              onClick={() => onRegionClick(r.id)}
+              onClick={() => handleRegionClick(r.id)}
               className={`rounded-xl border px-3 py-2.5 text-left transition-colors ${
-                vennRegionsClicked.includes(r.id)
-                  ? "border-[#3bb4a4]/50 bg-[#3bb4a4]/10"
+                activeRegion === r.id
+                  ? "border-[#d4af37] bg-[#d4af37]/10"
+                  : vennRegionsClicked.includes(r.id)
+                  ? "border-[#3bb4a4]/40 bg-[#3bb4a4]/5 hover:border-[#d4af37]/50"
                   : "border-[#1e293b] hover:border-[#d4af37]/50"
               }`}
             >

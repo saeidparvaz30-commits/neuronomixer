@@ -13,6 +13,7 @@ import RNNCellDiagram from "./RNNCellDiagram";
 import LSTMCellDiagram from "./LSTMCellDiagram";
 import GradientFlowChart from "./GradientFlowChart";
 import GateExplainer from "./GateExplainer";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function RNNsLSTMsClient() {
   const { data: session } = useSession();
@@ -85,6 +86,7 @@ export default function RNNsLSTMsClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="rnns-lstms" score={100} />
       <div className="max-w-[900px] mx-auto px-5 sm:px-8 py-8">
 
         {/* Breadcrumb */}

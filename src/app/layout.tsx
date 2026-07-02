@@ -2,6 +2,8 @@ import "../styles/globals.css";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import ConditionalChrome from "@/components/appSkeleton/ConditionalChrome";
+import { GeneralSignupPrompt } from "@/components/prompts";
+import { FlushPendingCompletions } from "@/components/FlushPendingCompletions";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
 import GoogleAnalyticsTracker from "@/components/appSkeleton/GoogleAnalyticsTracker";
@@ -72,6 +74,8 @@ export default function RootLayout({
         <NextAuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <ConditionalChrome>{children}</ConditionalChrome>
+            <GeneralSignupPrompt />
+            <FlushPendingCompletions />
             <GoogleAnalyticsTracker />
             <SpeedInsights />
           </ThemeProvider>

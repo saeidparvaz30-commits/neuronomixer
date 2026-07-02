@@ -18,6 +18,7 @@ import OptimizerToggle from "./OptimizerToggle";
 import LearningRateSliders from "./LearningRateSliders";
 import RaceControls from "./RaceControls";
 import ConvergenceTable from "./ConvergenceTable";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const MAX_STEPS = 40;
 
@@ -147,6 +148,7 @@ export default function OptimizersRaceClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="optimizers-race" score={100} />
       <div className="max-w-[1300px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

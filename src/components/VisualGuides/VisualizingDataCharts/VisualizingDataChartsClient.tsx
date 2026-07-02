@@ -8,6 +8,7 @@ import type { DatasetType, ChartOptionId, MisleadingId } from "./types";
 import { DATASETS } from "./types";
 import ChartChooserSection from "./ChartChooserSection";
 import MisleadingChartsGallery from "./MisleadingChartsGallery";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function VisualizingDataChartsClient() {
   const { data: session } = useSession();
@@ -56,6 +57,7 @@ export default function VisualizingDataChartsClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="visualizing-data-charts" score={8} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

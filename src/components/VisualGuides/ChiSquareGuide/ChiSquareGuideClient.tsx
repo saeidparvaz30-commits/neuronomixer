@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   ContingencyTable,
   ScenarioKey,
@@ -75,6 +76,7 @@ function ScenarioSelector({
   const keys = Object.keys(SCENARIO_LABELS) as ScenarioKey[];
   return (
     <div className="flex flex-wrap gap-2">
+      <GuideCompletion isComplete={allComplete} guideSlug="chi-square-independence" score={7} />
       {keys.map(k => (
         <button
           key={k}

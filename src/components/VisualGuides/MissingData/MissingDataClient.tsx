@@ -9,6 +9,7 @@ import DataTable    from "./DataTable";
 import StrategyPanel from "./StrategyPanel";
 import ScatterPlot   from "./ScatterPlot";
 import AccuracyMeter from "./AccuracyMeter";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function MissingDataClient() {
   const { data: session } = useSession();
@@ -47,6 +48,7 @@ export default function MissingDataClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={explored.size === 3} guideSlug="missing-data" score={3} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -193,9 +195,9 @@ export default function MissingDataClient() {
             className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
             ← Previous Guide
           </Link>
-          <Link href="/visual-guides"
+          <Link href="/visual-guides/feature-scaling"
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            All Guides →
+            Next: Feature Scaling Playground →
           </Link>
         </div>
       </div>

@@ -20,6 +20,7 @@ import EffectSizeCalculator from "./EffectSizeCalculator";
 import PowerResultsPanel from "./PowerResultsPanel";
 import SampleSizePlanner from "./SampleSizePlanner";
 import EffectSizeMeasures from "./EffectSizeMeasures";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function StatisticalPowerEffectSizeClient() {
   const { data: session } = useSession();
@@ -139,6 +140,7 @@ export default function StatisticalPowerEffectSizeClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="statistical-power-effect-size" score={7} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

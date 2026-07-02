@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import ScenarioSection from "./ScenarioSection";
 import CustomDAGBuilder from "./CustomDAGBuilder";
 import { ScenarioId } from "./types";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Tab definitions ────────────────────────────────────────────────────────────
 
@@ -176,6 +177,7 @@ export default function CausalThinkingDAGsClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="causal-thinking-dags" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* ── Breadcrumb ── */}
@@ -500,10 +502,10 @@ export default function CausalThinkingDAGsClient() {
             ← Sources of Bias
           </Link>
           <Link
-            href="/visual-guides"
+            href="/visual-guides/time-series-forecasting"
             className="text-sm px-4 py-2 rounded-lg bg-[#d4af37]/10 text-[#d4af37] border border-[#d4af37]/30 hover:bg-[#d4af37]/20 transition-colors"
           >
-            All Guides →
+            Next: Time Series Fundamentals & Forecasting →
           </Link>
         </div>
       </div>

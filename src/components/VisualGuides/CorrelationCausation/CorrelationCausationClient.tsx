@@ -9,6 +9,7 @@ import CausalExplainer           from "./CausalExplainer";
 import BuildYourOwn              from "./BuildYourOwn";
 import SpuriousCorrelationSandbox from "./SpuriousCorrelationSandbox";
 import ExampleGallery            from "./ExampleGallery";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function CorrelationCausationClient() {
   const { data: session } = useSession();
@@ -38,6 +39,7 @@ export default function CorrelationCausationClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="correlation-causation" score={5} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -133,9 +135,9 @@ export default function CorrelationCausationClient() {
             className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
             ← Previous Guide
           </Link>
-          <Link href="/visual-guides"
+          <Link href="/visual-guides/dimensionality-reduction"
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            All Guides →
+            Next: Dimensionality Reduction: PCA, t-SNE & UMAP →
           </Link>
         </div>
       </div>

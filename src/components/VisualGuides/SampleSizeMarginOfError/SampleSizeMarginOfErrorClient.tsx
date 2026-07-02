@@ -19,6 +19,7 @@ import CostPrecisionCurve from "./CostPrecisionCurve";
 import ComparisonTable from "./ComparisonTable";
 import SurveyDesignSection from "./SurveyDesignSection";
 import PollingCaseStudy from "./PollingCaseStudy";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 export default function SampleSizeMarginOfErrorClient() {
   const { data: session } = useSession();
@@ -162,6 +163,7 @@ export default function SampleSizeMarginOfErrorClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={allComplete} guideSlug="sample-size-margin-of-error" score={7} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -359,10 +361,10 @@ export default function SampleSizeMarginOfErrorClient() {
             &larr; Bayes&apos; Theorem
           </Link>
           <Link
-            href="/visual-guides"
+            href="/visual-guides/hypothesis-testing"
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
-            All Visual Guides &rarr;
+            Next: Hypothesis Testing &rarr;
           </Link>
         </div>
       </div>

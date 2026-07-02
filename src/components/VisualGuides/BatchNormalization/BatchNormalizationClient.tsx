@@ -12,6 +12,7 @@ import TrainingRaceChart from "./TrainingRaceChart";
 import LayerNormNote from "./LayerNormNote";
 import { generateDistributions } from "./batchNormLogic";
 import type { BNStep } from "./types";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 function useIntersectionOnce(threshold = 0.3) {
   const ref = useRef<HTMLDivElement>(null);
@@ -84,6 +85,7 @@ export default function BatchNormalizationClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="batch-normalization" score={100} />
       <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

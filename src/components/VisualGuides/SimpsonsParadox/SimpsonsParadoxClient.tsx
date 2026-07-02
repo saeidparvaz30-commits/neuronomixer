@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   type CaseStudy,
   type SubgroupRate,
@@ -40,6 +41,7 @@ function MiniBarChart({
 
   return (
     <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-3 flex flex-col items-center gap-1">
+      <GuideCompletion isComplete={allComplete} guideSlug="simpsons-paradox" score={8} />
       <span className="text-[10px] font-semibold text-[#94a3b8] text-center leading-tight">
         {subgroup.name}
       </span>

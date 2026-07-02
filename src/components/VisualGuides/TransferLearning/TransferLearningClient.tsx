@@ -10,6 +10,7 @@ import StrategySelector, { STRATEGIES } from "./StrategySelector";
 import KnowledgeTransferViz from "./KnowledgeTransferViz";
 import DataComparisonChart from "./DataComparisonChart";
 import type { CNNLayer, TransferStrategy, StrategyInfo } from "./types";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Default layers (fine-tuning strategy applied) ──────────────────────────────
 const DEFAULT_LAYERS: CNNLayer[] = [
@@ -107,6 +108,7 @@ export default function TransferLearningClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="transfer-learning" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

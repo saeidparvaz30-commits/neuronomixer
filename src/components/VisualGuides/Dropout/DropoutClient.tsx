@@ -12,6 +12,7 @@ import RegularizationEffect from "./RegularizationEffect";
 import EnsembleIntuition from "./EnsembleIntuition";
 import { generateNetwork } from "./networkLogic";
 import type { NetworkConfig } from "./types";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 function useIntersectionOnce(threshold = 0.3) {
   const ref = useRef<HTMLDivElement>(null);
@@ -98,6 +99,7 @@ export default function DropoutClient() {
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
+      <GuideCompletion isComplete={isComplete} guideSlug="dropout" score={100} />
       <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}

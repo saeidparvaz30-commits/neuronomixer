@@ -19,6 +19,7 @@ import VarianceDecomposer from "./VarianceDecomposer";
 import PostHocComparison from "./PostHocComparison";
 import RepeatedMeasuresToggle from "./RepeatedMeasuresToggle";
 import ResultsSummary from "./ResultsSummary";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 interface CompletionState {
   anovaRun: boolean;
@@ -112,6 +113,7 @@ export default function AnovaGuideClient() {
 
   return (
     <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="anova-comparing-groups" score={8} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
