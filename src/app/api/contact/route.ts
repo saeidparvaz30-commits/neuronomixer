@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 function escapeHtml(str: string): string {
   return str
@@ -11,6 +12,15 @@ function escapeHtml(str: string): string {
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    const rl = checkRateLimit(`contact:${ip}`, 5, 60 * 60 * 1000);
+    if (!rl.allowed) {
+      return new Response(
+        JSON.stringify({ error: "Too many messages. Please try again later." }),
+        { status: 429 }
+      );
+    }
+
     const { name, email, message } = await req.json();
 
     if (!name || !email || !message) {
@@ -50,9 +60,8 @@ export async function POST(req: Request) {
     return new Response(JSON.stringify({ success: true }), { status: 200 });
   } catch (error: unknown) {
     console.error("Email error:", error);
-    const message = error instanceof Error ? error.message : "Failed to send email";
     return new Response(
-      JSON.stringify({ error: message }),
+      JSON.stringify({ error: "Failed to send message. Please try again later." }),
       { status: 500 }
     );
   }

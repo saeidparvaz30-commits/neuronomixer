@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { client } from "@/sanity/lib/client";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 function escapeHtml(str: string): string {
   return str
@@ -12,6 +13,15 @@ function escapeHtml(str: string): string {
 }
 
 export async function POST(request: Request) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const rl = checkRateLimit(`join-authors:${ip}`, 3, 60 * 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many applications. Please try again later." },
+      { status: 429 }
+    );
+  }
+
   const { name, email, message } = await request.json();
 
   if (!name || !email) {
@@ -89,9 +99,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     console.error("Author join error:", error);
-    const msg = error instanceof Error ? error.message : "Failed to process request.";
     return NextResponse.json(
-      { error: msg },
+      { error: "Failed to process request." },
       { status: 500 }
     );
   }
