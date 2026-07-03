@@ -37,7 +37,30 @@ export async function POST(req: NextRequest) {
     });
 
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "networkidle0" });
+
+    // SSRF guard: the CV HTML is client-supplied, so block every network fetch
+    // except inline data and the image CDNs we already trust (matches
+    // next.config images.remotePatterns). This prevents fetches to internal /
+    // cloud-metadata hosts while still allowing legitimate CV photos.
+    const ALLOWED_HOSTS = new Set(["cdn.sanity.io", "lh3.googleusercontent.com"]);
+    await page.setRequestInterception(true);
+    page.on("request", (r) => {
+      const u = r.url();
+      if (u.startsWith("data:") || u.startsWith("blob:") || u === "about:blank") {
+        return r.continue();
+      }
+      try {
+        const parsed = new URL(u);
+        if (parsed.protocol === "https:" && ALLOWED_HOSTS.has(parsed.hostname)) {
+          return r.continue();
+        }
+      } catch {
+        /* fall through to abort */
+      }
+      return r.abort();
+    });
+
+    await page.setContent(html, { waitUntil: "load" });
     const pdfBuffer = await page.pdf({
       format: "A4",
       printBackground: true,

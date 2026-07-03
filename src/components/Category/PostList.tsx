@@ -15,7 +15,7 @@ const item = {
   show: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 320, damping: 28 },
+    transition: { type: "spring" as const, stiffness: 320, damping: 28 },
   },
 };
 

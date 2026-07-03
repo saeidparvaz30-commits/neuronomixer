@@ -58,6 +58,7 @@ model User {
   onboarded          Boolean          @default(false)
   emailNotifications Boolean          @default(true)
   suspended          Boolean          @default(false)
+  tokenVersion       Int              @default(0)
   authorStatus       AuthorStatus?
   sanityAuthorId     String?
   accounts           Account[]

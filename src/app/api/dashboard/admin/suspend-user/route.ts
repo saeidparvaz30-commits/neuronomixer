@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
   const user = await (prisma as any).user.update({
     where: { id: userId },
-    data: { suspended: true },
+    data: { suspended: true, tokenVersion: { increment: 1 } },
     select: { name: true, email: true },
   });
 
