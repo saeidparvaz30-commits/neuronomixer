@@ -596,7 +596,6 @@ function QQPlot({ fit }: { fit: OLSFit }) {
 function ProgressDot({ done, label }: { done: boolean; label: string }) {
   return (
     <div className="flex items-center gap-1.5">
-      <GuideCompletion isComplete={allComplete} guideSlug="simple-linear-regression" score={8} />
       <div
         className={`w-2 h-2 rounded-full transition-colors duration-300 ${
           done ? "bg-[#3bb4a4]" : "bg-[#1e293b]"
@@ -1196,6 +1195,8 @@ export default function SimpleRegressionClient() {
             Multiple Regression →
           </Link>
         </div>
+
+        <GuideCompletion isComplete={allComplete} guideSlug="simple-linear-regression" score={8} />
       </div>
     </div>
   );

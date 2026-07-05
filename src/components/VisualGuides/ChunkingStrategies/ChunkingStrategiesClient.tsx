@@ -288,6 +288,7 @@ export default function ChunkingStrategiesClient() {
   
   const triedStrategies = useRef<Set<Strategy>>(new Set(["fixed"]));
   const movedSlider = useRef(false);
+  const completionFired = useRef(false);
 
   const chunks: Chunk[] = (() => {
     if (strategy === "fixed") return fixedChunk(SAMPLE_TEXT, chunkSize, overlapSize);

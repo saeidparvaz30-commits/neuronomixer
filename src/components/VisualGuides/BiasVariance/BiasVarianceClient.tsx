@@ -103,7 +103,6 @@ function QuadrantDiagram({ bias, variance }: { bias: number; variance: number })
 
   return (
     <div className="grid grid-cols-2 gap-1.5">
-      <GuideCompletion isComplete={allComplete} guideSlug="bias-variance" score={6} />
       {quadrants.map((q, i) => (
         <motion.div
           key={q.pos}
@@ -403,6 +402,8 @@ export default function BiasVarianceClient() {
             Next Guide →
           </Link>
         </div>
+
+        <GuideCompletion isComplete={allComplete} guideSlug="bias-variance" score={6} />
       </div>
     </div>
   );

@@ -176,6 +176,7 @@ export default function TokenizationClient() {
   
   const hasTyped = useRef(false);
   const hasFinishedBpe = useRef(false);
+  const completionFired = useRef(false);
 
   // Retokenize on input change
   const handleTextChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {

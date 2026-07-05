@@ -54,7 +54,6 @@ const LLM_DOTS = [{ cx: 80, cy: 80 }, { cx: 85, cy: 60 }, { cx: 90, cy: 72 }, { 
 function RiskBar({ value, color }: { value: number; color: string }) {
   return (
     <div>
-      <GuideCompletion isComplete={allComplete} guideSlug="hallucination" score={100} />
       <div className="flex justify-between mb-1">
         <span className="text-[10px] text-[#94a3b8]">Hallucination risk</span>
         <span className="text-[10px] font-semibold" style={{ color }}>{value}%</span>
@@ -304,6 +303,7 @@ export default function HallucinationClient() {
           </Link>
         </div>
 
+        <GuideCompletion isComplete={allComplete} guideSlug="hallucination" score={100} />
       </div>
     </div>
   );

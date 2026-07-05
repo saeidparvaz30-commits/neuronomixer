@@ -144,7 +144,6 @@ function Scatter({
 function ElbowChart({ elbowData, currentK }: { elbowData: { k: number; inertia: number }[]; currentK: number }) {
   if (elbowData.length === 0) return (
     <div className="text-center py-6 text-[#334155] text-[11px]">
-      <GuideCompletion isComplete={allComplete} guideSlug="k-means" score={6} />
       Run the algorithm with different K values to build the elbow curve
     </div>
   );
@@ -499,6 +498,8 @@ export default function KMeansClient() {
             Next Guide →
           </Link>
         </div>
+
+        <GuideCompletion isComplete={allComplete} guideSlug="k-means" score={6} />
       </div>
     </div>
   );

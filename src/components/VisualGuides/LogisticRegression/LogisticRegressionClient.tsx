@@ -442,7 +442,6 @@ function CalibrationPlot({ b0, b1 }: { b0: number; b1: number }) {
 function ProgressDots({ steps }: { steps: { label: string; done: boolean }[] }) {
   return (
     <div className="flex flex-wrap items-center gap-3 mb-8">
-      <GuideCompletion isComplete={allComplete} guideSlug="logistic-regression" score={8} />
       {steps.map(({ label, done }) => (
         <div key={label} className="flex items-center gap-1.5">
           <motion.div
@@ -1135,6 +1134,8 @@ export default function LogisticRegressionClient() {
             Count Models: Poisson →
           </Link>
         </div>
+
+        <GuideCompletion isComplete={allComplete} guideSlug="logistic-regression" score={8} />
 
       </div>
     </div>

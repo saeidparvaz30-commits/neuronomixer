@@ -150,7 +150,6 @@ function TreeDiagram({ root }: { root: TreeNode | null }) {
   if (!root) {
     return (
       <div className="text-center py-10 text-[#334155] text-[13px]">
-      <GuideCompletion isComplete={allComplete} guideSlug="decision-trees" score={8} />
         Click on the scatter plot to add splits
       </div>
     );
@@ -506,6 +505,8 @@ export default function DecisionTreesClient() {
             Next: K-Means Clustering Step by Step →
           </Link>
         </div>
+
+        <GuideCompletion isComplete={allComplete} guideSlug="decision-trees" score={8} />
       </div>
     </div>
   );

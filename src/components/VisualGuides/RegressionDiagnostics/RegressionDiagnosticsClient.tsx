@@ -86,7 +86,6 @@ function ResidualsVsFitted({ points, modelState }: ResidualsPlotProps) {
 
   return (
     <div>
-      <GuideCompletion isComplete={allComplete} guideSlug="regression-diagnostics" score={7} />
       <svg width="100%" viewBox={`0 0 ${PLOT_W} ${PLOT_H}`} className="block">
         <PlotAxes xMin={xMin} xMax={xMax} yMin={yMin} yMax={yMax} xLabel="Fitted Values" yLabel="Residuals" />
         {/* y=0 reference line */}
@@ -913,6 +912,8 @@ export default function RegressionDiagnosticsClient() {
             Logistic Regression →
           </Link>
         </div>
+
+        <GuideCompletion isComplete={allComplete} guideSlug="regression-diagnostics" score={7} />
       </div>
     </div>
   );

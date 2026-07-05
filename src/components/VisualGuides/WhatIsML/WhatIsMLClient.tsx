@@ -103,7 +103,6 @@ const SCENARIOS: Scenario[] = [
 function FlowDiagram({ type, steps, color }: { type: "rules" | "ml"; steps: string[]; color: string }) {
   return (
     <div className="space-y-2">
-      <GuideCompletion isComplete={allComplete} guideSlug="what-is-ml" score={6} />
       {steps.map((step, i) => (
         <motion.div
           key={i}
@@ -408,6 +407,8 @@ export default function WhatIsMLClient() {
             Next Guide →
           </Link>
         </div>
+
+        <GuideCompletion isComplete={allComplete} guideSlug="what-is-ml" score={6} />
       </div>
     </div>
   );

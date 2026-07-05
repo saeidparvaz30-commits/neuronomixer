@@ -144,6 +144,7 @@ export default function RLHFClient() {
   const [ratingsComplete, setRatingsComplete] = useState(false);
   const [barsVisible, setBarsVisible] = useState(false);
   const barsRef = useRef<HTMLDivElement>(null);
+  const completionFired = useRef(false);
 
   // Intersection observer for bar chart
   useEffect(() => {

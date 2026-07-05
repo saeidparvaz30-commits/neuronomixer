@@ -80,7 +80,6 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
 
   return (
     <div className="relative w-full">
-      <GuideCompletion isComplete={allComplete} guideSlug="multiple-regression-confounding" score={7} />
       <svg
         viewBox={`0 0 ${W} ${H}`}
         width="100%"
@@ -1135,6 +1134,8 @@ export default function MultipleRegressionClient() {
             Regression Diagnostics →
           </Link>
         </div>
+
+        <GuideCompletion isComplete={allComplete} guideSlug="multiple-regression-confounding" score={7} />
       </div>
     </div>
   );

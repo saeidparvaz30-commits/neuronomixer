@@ -152,7 +152,6 @@ function MeanArrow({ group, label, color }: { group: Student[]; label: string; c
 
   return (
     <div className="rounded-xl border border-[#1e293b] p-4">
-      <GuideCompletion isComplete={allComplete} guideSlug="regression-to-mean" score={6} />
       <p className="text-[11px] font-semibold mb-3" style={{ color }}>{label}</p>
       <div className="flex items-center gap-3 mb-2">
         <div className="text-center">
@@ -435,6 +434,8 @@ export default function RegressionToMeanClient() {
             Next Guide →
           </Link>
         </div>
+
+        <GuideCompletion isComplete={allComplete} guideSlug="regression-to-mean" score={6} />
       </div>
     </div>
   );

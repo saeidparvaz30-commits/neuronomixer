@@ -76,7 +76,6 @@ function ScenarioSelector({
   const keys = Object.keys(SCENARIO_LABELS) as ScenarioKey[];
   return (
     <div className="flex flex-wrap gap-2">
-      <GuideCompletion isComplete={allComplete} guideSlug="chi-square-independence" score={7} />
       {keys.map(k => (
         <button
           key={k}
@@ -1106,6 +1105,8 @@ export default function ChiSquareGuideClient() {
             Regression to the Mean →
           </Link>
         </div>
+
+        <GuideCompletion isComplete={allComplete} guideSlug="chi-square-independence" score={7} />
       </div>
     </div>
   );
