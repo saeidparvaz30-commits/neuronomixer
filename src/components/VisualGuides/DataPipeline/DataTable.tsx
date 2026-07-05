@@ -12,30 +12,33 @@ function getDisplayData(stage: StageId): DataRow[] {
     { id: 3,  name: "Carol",  age: null, salary: 91000, dept: "Marketing",  issues: ["missing"] },
     { id: 4,  name: "Dave",   age: 45, salary: null,   dept: "Sales",       issues: ["missing"] },
     { id: 5,  name: "Eve",    age: 31, salary: 999999, dept: "Engineering", issues: ["outlier"] },
-    { id: 6,  name: "Frank",  age: 38, salary: 67000,  dept: "Marketting",  issues: ["type-error"] },
+    { id: 6,  name: "Frank",  age: 38, salary: 67000,  dept: "Marketting",  issues: ["inconsistent"] },
     { id: 7,  name: "Grace",  age: 29, salary: 78000,  dept: "Sales",       issues: [] },
-    { id: 8,  name: "Hank",   age: 28, salary: 72000,  dept: "Engineering", issues: ["duplicate"] },
+    // Bob appears twice in the CSV export (re-ingested) — an exact duplicate of row 2
+    { id: 8,  name: "Bob",    age: 28, salary: 72000,  dept: "Engineering", issues: ["duplicate"] },
     { id: 9,  name: "Iris",   age: 36, salary: 88000,  dept: "Marketing",   issues: [] },
     { id: 10, name: "Jack",   age: 41, salary: 95000,  dept: "Sales",       issues: [] },
     { id: 11, name: "Karen",  age: 33, salary: 81000,  dept: "Engineering", issues: [] },
-    { id: 12, name: "Leo",    age: null, salary: 74000, dept: "Marketing",  issues: ["type-error"] },
+    { id: 12, name: "Leo",    age: "thirty", salary: 74000, dept: "Marketing", issues: ["type-error"] },
   ];
 
   if (stage === "ingest" || stage === "validate") return raw;
 
   if (stage === "clean") {
-    // Fix missing ages (median=33), drop duplicate id=8, cap outlier, fix typo
+    // Order matters: drop the exact duplicate (id=8) first, THEN impute with the
+    // medians of the remaining rows. Valid ages after dedup:
+    // 28,29,31,32,33,36,38,41,45 -> median 33. Valid salaries after dedup:
+    // 67k,72k,74k,78k,81k,85k,88k,91k,95k,999999 -> median 83,000.
+    // Salary outlier (id=5) capped at 120,000; department typo corrected.
     return raw
-      .filter(r => r.id !== 8) // remove duplicate
+      .filter(r => r.id !== 8) // remove exact duplicate of row 2
       .map(r => ({
         ...r,
-        age: r.age ?? 33,
-        salary: r.salary ?? 80000,
+        age: typeof r.age === "number" ? r.age : 33,
+        salary: r.id === 5 ? 120000 : r.salary ?? 83000,
         dept: r.dept === "Marketting" ? "Marketing" : r.dept,
-        salary_display: r.id === 5 ? 120000 : r.salary ?? 80000,
-        issues: [],
-      }))
-      .map(r => ({ ...r, salary: r.id === 5 ? 120000 : r.salary ?? 80000 }));
+        issues: [] as IssueType[],
+      }));
   }
 
   if (stage === "transform") {
@@ -123,8 +126,8 @@ export default function DataTable({ stage }: Props) {
                 >
                   <td className="px-3 py-1.5 text-[#475569]">{row.id}</td>
                   <td className="px-3 py-1.5 text-white font-medium">{row.name}</td>
-                  <td className={`px-3 py-1.5 ${row.age === null ? "text-[#f97316]" : "text-[#94a3b8]"}`}>
-                    {row.age === null ? "—" : row.age}
+                  <td className={`px-3 py-1.5 ${typeof row.age !== "number" ? "text-[#f97316]" : "text-[#94a3b8]"}`}>
+                    {row.age === null ? "—" : typeof row.age === "string" ? `"${row.age}"` : row.age}
                   </td>
                   <td className={`px-3 py-1.5 font-mono text-[10px] ${row.id === 5 && stage !== "clean" && stage !== "transform" ? "text-[#ef4444]" : "text-[#94a3b8]"}`}>
                     {row.salary === null ? "—" : isTransform ? row.salary : `$${(row.salary as number).toLocaleString()}`}

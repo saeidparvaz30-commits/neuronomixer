@@ -55,10 +55,14 @@ export default function InteractiveHistogram({
   const xMax = Math.max(...allBins.map(b => b.hi));
   const xRange = xMax - xMin || 1;
 
-  function tx(v: number) { return PAD.l + ((v - xMin) / xRange) * IW; }
-  function ty(h: number) { return PAD.t + (1 - h) * IH; }
+  // Shared y-scale: bins hold true relative frequencies (probability mass per
+  // bin), so one common max keeps all displayed series directly comparable.
+  const yMax = Math.max(...allBins.map(b => b.height), 1e-10);
 
-  const yTicks = [0, 0.25, 0.5, 0.75, 1];
+  function tx(v: number) { return PAD.l + ((v - xMin) / xRange) * IW; }
+  function ty(h: number) { return PAD.t + (1 - h / yMax) * IH; }
+
+  const yTicks = [0, 0.25, 0.5, 0.75, 1].map(t => t * yMax);
   const xTicks = [0, 0.25, 0.5, 0.75, 1].map(t => xMin + t * xRange);
 
   function handleMouseEnter(
@@ -99,7 +103,7 @@ export default function InteractiveHistogram({
               x={PAD.l - 5} y={ty(t) + 3.5}
               textAnchor="end" fill="#475569" fontSize="8"
             >
-              {(t * 100).toFixed(0)}%
+              {(t * 100).toFixed(1)}%
             </text>
           </g>
         ))}
@@ -116,7 +120,7 @@ export default function InteractiveHistogram({
           const naturalW = tx(bin.hi) - tx(bin.lo);
           const w = Math.max(naturalW, 5);
           const x = tx(binCenter) - w / 2;
-          const barH = bin.height * IH;
+          const barH = (bin.height / yMax) * IH;
           return (
             <motion.rect
               key={`overlay-${i}`}
@@ -151,7 +155,7 @@ export default function InteractiveHistogram({
         {showEmpirical && empiricalBins && empiricalBins.map((bin, i) => {
           const x = tx(bin.lo);
           const w = Math.max(tx(bin.hi) - tx(bin.lo) - 0.5, 1);
-          const barH = bin.height * IH;
+          const barH = (bin.height / yMax) * IH;
           return (
             <motion.rect
               key={`emp-${i}`}
@@ -170,7 +174,7 @@ export default function InteractiveHistogram({
         {bins.map((bin, i) => {
           const x = tx(bin.lo);
           const w = Math.max(tx(bin.hi) - tx(bin.lo) - 0.5, 1);
-          const barH = bin.height * IH;
+          const barH = (bin.height / yMax) * IH;
           return (
             <motion.rect
               key={i}

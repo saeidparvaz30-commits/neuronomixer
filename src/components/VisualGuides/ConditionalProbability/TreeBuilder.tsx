@@ -53,7 +53,7 @@ function buildPathFromLeaf(nodeId: string, nodes: TreeNodeData[], branches: Tree
 
   const calculation =
     probs.length > 0
-      ? `P(${nodeLabels.slice(1).join(" → ")}) = ${probs.join(" × ")} = ${jointProb}`
+      ? `P(${nodeLabels.slice(1).join(" → ")}) = ${probs.join(" × ")}${jointProb ? ` = ${jointProb}` : ""}`
       : `P(${nodeLabels[0]}) = 1`;
 
   return {

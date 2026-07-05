@@ -141,23 +141,23 @@ const SCENARIOS: Record<ScenarioType, ScenarioConfig> = {
     id: "medical_testing",
     label: "Medical Testing",
     description:
-      "Disease prevalence is 1%. A test has 95% sensitivity and 10% false-positive rate. Despite sounding accurate, a positive result only means ~8.7% chance of actually having the disease.",
+      "Disease prevalence is 1%. A test has 95% sensitivity and 10% false-positive rate. Despite sounding accurate, a positive result only means ~8.8% chance of actually having the disease.",
     tree: MEDICAL_TREE,
     keyResult: {
       formula: "P(Disease | Test+) = P(Disease ∩ Test+) / P(Test+)",
       numerator: "0.01 × 0.95 = 0.0095",
       denominator: "0.0095 + 0.99 × 0.10 = 0.0095 + 0.099 = 0.1085",
-      result: "0.0095 / 0.1085 ≈ 0.087 (8.7%)",
+      result: "0.0095 / 0.1085 ≈ 0.088 (8.8%)",
       interpretation:
-        "Even with a 95%-accurate test, a positive result has only an 8.7% chance of indicating true disease when the condition is rare. The low base rate (1%) creates many false positives that overwhelm the true positives.",
+        "Even when the test catches 95% of true cases (its sensitivity), a positive result has only an 8.8% chance of indicating true disease when the condition is rare. The low base rate (1%) creates many false positives that overwhelm the true positives.",
     },
     independencePrefill: {
       pA: 0.01,
       pB: 0.1085,
-      pAGivenB: 0.087,
+      pAGivenB: 0.088,
       pALabel: "P(Disease) = 0.01",
       pBLabel: "P(Test+) = 0.1085",
-      pAGivenBLabel: "P(Disease | Test+) = 0.087",
+      pAGivenBLabel: "P(Disease | Test+) ≈ 0.088",
     },
     gridSide: 10,
     buildGrid: buildMedicalGrid,

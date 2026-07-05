@@ -20,11 +20,11 @@ const EXPLANATIONS: Record<ScenarioType, ScenarioExplanation> = {
   medical_testing: {
     title: "Why the Base Rate Matters",
     context:
-      "When a disease is rare (1% prevalence), most people who test positive are actually healthy — even with a 95% accurate test. This is the \"base rate fallacy\" — ignoring how common the condition is.",
+      "When a disease is rare (1% prevalence), most people who test positive are actually healthy — even when the test catches 95% of true cases (its sensitivity; overall accuracy here is about 90%). This is the \"base rate fallacy\" — ignoring how common the condition is.",
     insight:
       "With 1000 people: ~10 have the disease. The test correctly identifies ~9.5 of them (Test+). But of the 990 healthy people, 10% also test positive — that is ~99 false positives. So of ~108 total positives, only ~9 are true positives.",
     keyTakeaway:
-      "P(Disease | Test+) ≈ 8.7%, not 95%. Rare events require extremely accurate tests to avoid being swamped by false positives.",
+      "P(Disease | Test+) ≈ 8.8%, not 95%. Rare events require tests with very low false-positive rates to avoid being swamped by false positives.",
   },
   marbles: {
     title: "Without Replacement Changes Everything",

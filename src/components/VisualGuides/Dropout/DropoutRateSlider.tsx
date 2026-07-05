@@ -13,7 +13,7 @@ function getRateColor(rate: number): string {
 
 function getRateLabel(rate: number): string | null {
   if (rate === 0) return "No dropout";
-  if (rate === 0.5) return "Recommended";
+  if (rate === 0.5) return "Classic default (2014)";
   if (rate >= 0.9) return "Too aggressive";
   return null;
 }
@@ -42,10 +42,12 @@ export default function DropoutRateSlider({ value, onChange }: DropoutRateSlider
 
       {/* Subtitle */}
       <p className="text-sm text-[#94a3b8] mb-5">
+        Each hidden neuron is dropped independently with probability{" "}
         <span style={{ color }} className="font-semibold">
           {pct}%
         </span>{" "}
-        of neurons will be dropped during each training step
+        at every training step, so about {pct}% are dropped on average and the exact count varies.
+        In this demo, input neurons use a reduced rate ({Math.round(pct * 0.3)}%) and output neurons are never dropped.
       </p>
 
       {/* Slider */}
@@ -76,8 +78,8 @@ export default function DropoutRateSlider({ value, onChange }: DropoutRateSlider
       <div className="mt-5 flex flex-wrap gap-2">
         {[
           { range: "0.0–0.2", label: "Input layers", color: "#22c55e" },
-          { range: "0.3–0.5", label: "Hidden layers (standard)", color: "#eab308" },
-          { range: "0.5", label: "Most common default", color: "#3bb4a4" },
+          { range: "0.3–0.5", label: "Fully connected hidden layers", color: "#eab308" },
+          { range: "0.5", label: "Classic MLP default (Srivastava et al. 2014)", color: "#3bb4a4" },
         ].map(({ range, label: l, color: c }) => (
           <div
             key={range}
@@ -90,6 +92,13 @@ export default function DropoutRateSlider({ value, onChange }: DropoutRateSlider
           </div>
         ))}
       </div>
+
+      {/* Modern usage caveat */}
+      <p className="mt-3 text-[11px] text-[#64748b] leading-relaxed">
+        p = 0.5 comes from the original dropout paper (Srivastava et al. 2014) for fully connected layers.
+        Modern convolutional and transformer architectures typically use much lower rates (around 0.1 to 0.3)
+        or rely on batch/layer normalization and other regularizers instead.
+      </p>
     </div>
   );
 }

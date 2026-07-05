@@ -270,7 +270,7 @@ export default function ConfidenceIntervalsClient() {
                 Width vs. Confidence
               </p>
               {([90, 95, 99] as ConfidenceLevel[]).map((level) => {
-                const z = { 90: 1.645, 95: 1.96, 99: 2.576 }[level];
+                const z = { 90: 1.699, 95: 2.045, 99: 2.756 }[level]; // t critical values, df = 29
                 // Approximate width using avg SE from current intervals or a reference
                 const avgSE =
                   intervals.length > 0

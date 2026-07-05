@@ -9,10 +9,13 @@ const EPOCHS = Array.from({ length: 21 }, (_, i) => i);
 function noDropoutTrainLoss(epoch: number): number {
   return 0.9 * Math.pow(0.85, epoch);
 }
+// Validation loss tracks training loss until epoch 10, then a linearly growing
+// overfitting penalty dominates the still-shrinking base term, so the curve
+// bottoms out at epoch 10 and rises afterwards (0.197 at e=10 -> 0.355 at e=20).
 function noDropoutValLoss(epoch: number): number {
   const base = noDropoutTrainLoss(epoch);
-  if (epoch <= 10) return base + 0.02;
-  return base + 0.02 * epoch * 0.18;
+  const overfitPenalty = epoch > 10 ? 0.03 * (epoch - 10) : 0;
+  return base + 0.02 + overfitPenalty;
 }
 function withDropoutTrainLoss(epoch: number): number {
   return 0.9 * Math.pow(0.88, epoch);
@@ -203,6 +206,7 @@ export default function RegularizationEffect() {
       <h3 className="text-lg font-bold text-white mb-1">Does Dropout Actually Help?</h3>
       <p className="text-sm text-[#94a3b8] mb-6">
         Training and validation losses on the same dataset — with and without dropout.
+        Illustrative curves showing the typical qualitative pattern, not a logged training run.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">

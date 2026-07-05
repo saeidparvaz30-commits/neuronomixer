@@ -4,7 +4,7 @@ import CrossValidationClient from "@/components/VisualGuides/CrossValidation/Cro
 export const metadata: Metadata = {
   title: "Cross-Validation: Why One Split Isn't Enough",
   description:
-    "See how K-fold cross-validation rotates through every possible train/validation split to give a robust performance estimate. Compare fold-by-fold errors and the mean ± std.",
+    "See how K-fold cross-validation rotates the validation role across k folds so every point is held out exactly once. Compare fold-by-fold errors and the mean ± std.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/cross-validation" },
   openGraph: {
     title: "Cross-Validation: Why One Split Isn't Enough — NeuroNomixer",

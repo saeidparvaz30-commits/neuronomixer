@@ -70,10 +70,10 @@ export default function StatisticsPanel({
             description="Simplest spread measure. Heavily affected by a single outlier at either extreme."
           />
           <StatCard
-            name="Variance (σ²)"
+            name="Variance (σ², population)"
             formula="Σ(x − μ)² / n"
             value={`${fmt(stats.variance, 0)}`}
-            description="Average squared distance from the mean. Squaring penalises large deviations."
+            description="Average squared distance from the mean, treating these 20 values as the whole population. For a sample you would divide by n − 1 (Bessel's correction) and write s²."
           />
           <motion.div
             layout

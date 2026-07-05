@@ -95,7 +95,7 @@ export default function IndependenceChecker({ scenario, onChecked }: Independenc
           hint="P(A|B)"
           value={pAGivenB}
           onChange={(v) => { setPaGivenB(v); setResult(null); }}
-          placeholder="e.g. 0.087"
+          placeholder="e.g. 0.088"
         />
       </div>
 

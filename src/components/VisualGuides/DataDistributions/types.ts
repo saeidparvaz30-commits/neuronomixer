@@ -32,7 +32,9 @@ export interface DataDistributionsState {
 export interface HistBin {
   lo: number;
   hi: number;
-  /** Normalised height (0-1) */
+  /** True relative frequency of the bin (probability mass, 0-1). The chart
+   *  rescales all displayed series to a shared y-axis, so heights of the
+   *  theoretical, empirical, and overlay bars are directly comparable. */
   height: number;
   /** Raw frequency count (for empirical overlay) */
   count?: number;
@@ -81,17 +83,15 @@ export function getTheoreticalBins(
       const lo = mu - 4 * sigma;
       const hi = mu + 4 * sigma;
       const step = (hi - lo) / BINS;
-      const raw = Array.from({ length: BINS }, (_, i) => {
+      return Array.from({ length: BINS }, (_, i) => {
         const center = lo + (i + 0.5) * step;
-        return gaussianPDF(center, mu, sigma) * step;
+        return {
+          lo: lo + i * step,
+          hi: lo + (i + 1) * step,
+          height: gaussianPDF(center, mu, sigma) * step,
+          label: `${(lo + i * step).toFixed(1)} – ${(lo + (i + 1) * step).toFixed(1)}`,
+        };
       });
-      const maxH = Math.max(...raw, 1e-10);
-      return raw.map((h, i) => ({
-        lo: lo + i * step,
-        hi: lo + (i + 1) * step,
-        height: h / maxH,
-        label: `${(lo + i * step).toFixed(1)} – ${(lo + (i + 1) * step).toFixed(1)}`,
-      }));
     }
     case "uniform": {
       const { a, b } = params as UniformParams;
@@ -99,36 +99,33 @@ export function getTheoreticalBins(
       return Array.from({ length: BINS }, (_, i) => ({
         lo: a + i * step,
         hi: a + (i + 1) * step,
-        height: 1,
+        height: 1 / BINS,
         label: `${(a + i * step).toFixed(1)} – ${(a + (i + 1) * step).toFixed(1)}`,
       }));
     }
     case "exponential": {
       const { lambda } = params as ExponentialParams;
+      // Plot window truncated at 6/lambda (covers ~99.75% of the mass)
       const xMax = 6 / lambda;
       const step = xMax / BINS;
-      const raw = Array.from({ length: BINS }, (_, i) => {
+      return Array.from({ length: BINS }, (_, i) => {
         const center = (i + 0.5) * step;
-        return lambda * Math.exp(-lambda * center) * step;
+        return {
+          lo: i * step,
+          hi: (i + 1) * step,
+          height: lambda * Math.exp(-lambda * center) * step,
+          label: `${(i * step).toFixed(2)} – ${((i + 1) * step).toFixed(2)}`,
+        };
       });
-      const maxH = Math.max(...raw, 1e-10);
-      return raw.map((h, i) => ({
-        lo: i * step,
-        hi: (i + 1) * step,
-        height: h / maxH,
-        label: `${(i * step).toFixed(2)} – ${((i + 1) * step).toFixed(2)}`,
-      }));
     }
     case "poisson": {
       const { lambda } = params as PoissonParams;
       // Show k = 0 .. max(lambda*3, 20)
       const kMax = Math.max(Math.ceil(lambda * 3), 20);
-      const raw = Array.from({ length: kMax + 1 }, (_, k) => poissonPMF(k, lambda));
-      const maxH = Math.max(...raw, 1e-10);
-      return raw.map((h, k) => ({
+      return Array.from({ length: kMax + 1 }, (_, k) => ({
         lo: k - 0.4,
         hi: k + 0.4,
-        height: h / maxH,
+        height: poissonPMF(k, lambda),
         label: `k = ${k}`,
       }));
     }
@@ -149,11 +146,10 @@ export function getEmpiricalBins(
     const kMax = Math.max(Math.ceil(lambda * 3), 20, Math.max(...data));
     const counts = new Array(kMax + 1).fill(0);
     data.forEach(v => { const k = Math.round(v); if (k >= 0 && k <= kMax) counts[k]++; });
-    const maxC = Math.max(...counts, 1);
     return counts.map((c, k) => ({
       lo: k - 0.4,
       hi: k + 0.4,
-      height: c / maxC,
+      height: c / data.length,
       count: c,
       label: `k = ${k}`,
     }));
@@ -171,11 +167,10 @@ export function getEmpiricalBins(
     idx = Math.max(0, Math.min(binCount - 1, idx));
     counts[idx]++;
   });
-  const maxC = Math.max(...counts, 1);
   return counts.map((c, i) => ({
     lo: lo + i * step,
     hi: lo + (i + 1) * step,
-    height: c / maxC,
+    height: c / data.length,
     count: c,
     label: `${(lo + i * step).toFixed(1)} – ${(lo + (i + 1) * step).toFixed(1)}`,
   }));

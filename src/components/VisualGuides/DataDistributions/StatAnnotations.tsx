@@ -58,7 +58,7 @@ export default function StatAnnotations({ stats, color }: Props) {
         <StatRow label="Median" value={stats.median.toFixed(2)} color="#3bb4a4" />
         <StatRow label="Std Dev (σ)" value={stats.stdDev.toFixed(2)} color={color} />
         <StatRow
-          label="Range"
+          label="Plot window"
           value={`${stats.min.toFixed(1)} – ${stats.max.toFixed(1)}`}
           color="#94a3b8"
         />
@@ -88,7 +88,7 @@ export default function StatAnnotations({ stats, color }: Props) {
           </span>
         </div>
         <p className="text-[9px] text-[#334155] mt-1">
-          {stats.kurtosis < 3 ? "Flatter than Normal" : stats.kurtosis === 3 ? "Same peak as Normal" : "Sharper peak than Normal"}
+          {stats.kurtosis < 3 ? "Lighter tails than Normal" : stats.kurtosis === 3 ? "Normal-weight tails" : "Heavier tails than Normal"}
         </p>
       </div>
     </div>

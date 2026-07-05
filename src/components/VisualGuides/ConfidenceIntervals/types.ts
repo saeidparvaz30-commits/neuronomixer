@@ -25,10 +25,12 @@ export const TRUE_MEAN = 100;
 export const TRUE_SD = 15;
 export const SAMPLE_N = 30;
 
-export const Z_SCORES: Record<ConfidenceLevel, number> = {
-  90: 1.645,
-  95: 1.96,
-  99: 2.576,
+// Two-sided t critical values for df = n - 1 = 29 (correct for a mean CI with
+// unknown population SD at n = 30; using z here would give ~93.6% true coverage)
+export const T_SCORES: Record<ConfidenceLevel, number> = {
+  90: 1.699,
+  95: 2.045,
+  99: 2.756,
 };
 
 // ── Math helpers ──────────────────────────────────────────────────────────────
@@ -49,19 +51,20 @@ function computeMean(arr: number[]): number {
   return arr.reduce((a, b) => a + b, 0) / arr.length;
 }
 
+// Sample SD with Bessel's correction (n - 1 divisor), matching the "Sample SD (s)" label
 function computeSD(arr: number[]): number {
   const m = computeMean(arr);
-  return Math.sqrt(arr.reduce((s, x) => s + (x - m) ** 2, 0) / arr.length);
+  return Math.sqrt(arr.reduce((s, x) => s + (x - m) ** 2, 0) / (arr.length - 1));
 }
 
 export function run100Experiments(cl: ConfidenceLevel): ConfidenceInterval[] {
-  const z = Z_SCORES[cl];
+  const t = T_SCORES[cl];
   return Array.from({ length: 100 }, (_, i) => {
     const sample = generateSample(SAMPLE_N);
     const mean = computeMean(sample);
     const sd = computeSD(sample);
     const se = sd / Math.sqrt(SAMPLE_N);
-    const me = z * se;
+    const me = t * se;
     return {
       sampleId: i + 1,
       mean,

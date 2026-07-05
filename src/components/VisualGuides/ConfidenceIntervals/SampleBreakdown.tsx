@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ConfidenceInterval, ConfidenceLevel, TRUE_MEAN, SAMPLE_N, Z_SCORES } from "./types";
+import { ConfidenceInterval, ConfidenceLevel, TRUE_MEAN, SAMPLE_N, T_SCORES } from "./types";
 
 interface Props {
   interval: ConfidenceInterval;
@@ -21,9 +21,9 @@ function scaleX(v: number): number {
 }
 
 export default function SampleBreakdown({ interval, confidenceLevel }: Props) {
-  const z = Z_SCORES[confidenceLevel];
+  const t = T_SCORES[confidenceLevel];
   const se = interval.sd / Math.sqrt(SAMPLE_N);
-  const me = z * se;
+  const me = t * se;
   const borderColor = interval.containsTruth ? "#3bb4a4" : "#ef4444";
   const valueColor = interval.containsTruth ? "#3bb4a4" : "#ef4444";
 
@@ -167,7 +167,7 @@ export default function SampleBreakdown({ interval, confidenceLevel }: Props) {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-[10px] text-[#475569]">
-                  ME = {z.toFixed(3)} × SE
+                  ME = t(29) × SE = {t.toFixed(3)} × SE
                 </span>
                 <span className="text-[12px] font-black font-mono text-white">
                   {me.toFixed(3)}

@@ -46,7 +46,11 @@ export default function ExampleGallery() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <div>
+      <p className="text-[10px] text-[#475569] leading-relaxed mb-3">
+        Each card uses a small illustrative dataset that sketches the real-world pattern; the r shown is computed from the plotted points, not taken from a published study.
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
       {REAL_EXAMPLES.map(ex => {
         const isExpanded  = expandedId === ex.id;
         const groupColors = GROUP_COLORS[ex.id] || {};
@@ -101,6 +105,7 @@ export default function ExampleGallery() {
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

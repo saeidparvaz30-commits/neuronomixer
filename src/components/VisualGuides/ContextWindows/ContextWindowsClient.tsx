@@ -10,6 +10,8 @@ import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const TOKEN_STEPS = [4096, 8192, 16384, 32768, 65536, 131072];
 
+// Illustrative U-shaped curve of the "lost in the middle" effect reported by
+// Liu et al. (2023); not measurements of any specific model.
 const RECALL_POINTS = [
   { pos: 0, acc: 90 }, { pos: 10, acc: 82 }, { pos: 20, acc: 71 },
   { pos: 30, acc: 63 }, { pos: 40, acc: 58 }, { pos: 50, acc: 55 },
@@ -17,11 +19,14 @@ const RECALL_POINTS = [
   { pos: 90, acc: 72 }, { pos: 100, acc: 75 },
 ];
 
+// Documented context limits at each model's release date.
+// Pages derived with the same conversion used in Section 1:
+// tokens × 0.75 words/token ÷ 400 words/page.
 const MODELS = [
-  { name: "GPT-3.5",  tokens: 4_000,     pages: 3,   useCase: "Short chats" },
-  { name: "GPT-4",    tokens: 128_000,   pages: 100, useCase: "Documents" },
-  { name: "Claude 3", tokens: 200_000,   pages: 150, useCase: "Long docs" },
-  { name: "Gemini 1.5", tokens: 1_000_000, pages: 750, useCase: "Books / codebases" },
+  { name: "GPT-3.5 (2022)",        tokens: 4_096,     pages: 8,     useCase: "Short chats" },
+  { name: "GPT-4 Turbo (2023)",    tokens: 128_000,   pages: 240,   useCase: "Documents" },
+  { name: "Claude 3 (2024)",       tokens: 200_000,   pages: 375,   useCase: "Long docs" },
+  { name: "Gemini 1.5 Pro (2024)", tokens: 1_000_000, pages: 1_875, useCase: "Books / codebases" },
 ];
 
 const BAR_SEGMENTS = [
@@ -141,7 +146,7 @@ export default function ContextWindowsClient() {
             Context Windows: <span className="text-[#ef4444]">What the Model Can See</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
-            Slide context length and visualize the lost-in-the-middle effect. Everything inside the window gets equal attention — everything outside is completely invisible.
+            Slide context length and visualize the lost-in-the-middle effect. Everything outside the window is completely invisible to the model, and even content inside the window is not recalled equally well.
           </p>
         </section>
 
@@ -213,14 +218,17 @@ export default function ContextWindowsClient() {
         {/* Section 2: Lost in the Middle */}
         <section className="mb-12">
           <h2 className="text-[18px] font-bold text-white mb-1">Section 2 — The Lost in the Middle Problem</h2>
-          <p className="text-[12px] text-[#94a3b8] mb-6">Even with full attention, recall quality drops for content buried in the middle of a long context.</p>
+          <p className="text-[12px] text-[#94a3b8] mb-6">Even when content fits inside the window, recall quality drops for information buried in the middle of a long context.</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
             <RecallChart onViewed={handleChartViewed} />
+            <p className="mt-3 text-[10px] text-[#475569] leading-relaxed">
+              Illustrative curve of the U-shaped &quot;lost in the middle&quot; pattern reported by Liu et al. (2023). It shows the qualitative shape, not measurements of any specific model.
+            </p>
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
-                { label: "Start (0–10%)", value: "~90%", color: "#3bb4a4", note: "Best recalled" },
-                { label: "Middle (40–60%)", value: "~55%", color: "#ef4444", note: "Often missed" },
-                { label: "End (90–100%)", value: "~75%", color: "#d4af37", note: "Partially recalled" },
+                { label: "Start (0–10%)", value: "~86%", color: "#3bb4a4", note: "Best recalled" },
+                { label: "Middle (40–60%)", value: "~57%", color: "#ef4444", note: "Often missed" },
+                { label: "End (90–100%)", value: "~74%", color: "#d4af37", note: "Partially recalled" },
               ].map(s => (
                 <div key={s.label} className="rounded-xl border border-[#1e293b] p-3 text-center">
                   <p className="text-[10px] text-[#94a3b8] mb-1">{s.label}</p>
@@ -235,7 +243,7 @@ export default function ContextWindowsClient() {
         {/* Section 3: Model Comparison */}
         <section className="mb-12">
           <h2 className="text-[18px] font-bold text-white mb-1">Section 3 — Model Comparison</h2>
-          <p className="text-[12px] text-[#94a3b8] mb-6">Context windows have grown dramatically across model generations.</p>
+          <p className="text-[12px] text-[#94a3b8] mb-6">Context windows have grown dramatically across model generations. The table shows each model&apos;s documented limit at its release date; current models may differ. Page counts use the same conversion as Section 1 (0.75 words per token, 400 words per page).</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] overflow-hidden">
             <div className="hidden sm:grid grid-cols-[1fr_80px_70px_140px_200px] text-[10px] font-semibold text-[#475569] uppercase tracking-wider px-5 py-3 border-b border-[#1e293b]">
               <span>Model</span><span className="text-right">Context</span><span className="text-right">Pages</span><span className="pl-2">Use Case</span><span className="pl-2">Relative Size</span>
@@ -300,7 +308,7 @@ export default function ContextWindowsClient() {
                 {isFull && (
                   <motion.p initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                     className="mt-2 text-[11px] text-[#ef4444] font-semibold">
-                    Oldest messages start getting dropped to free space.
+                    Near the limit: the application (not the model) must now trim the conversation. Most chat apps drop or summarize the oldest messages, and the model never sees what was cut.
                   </motion.p>
                 )}
               </AnimatePresence>

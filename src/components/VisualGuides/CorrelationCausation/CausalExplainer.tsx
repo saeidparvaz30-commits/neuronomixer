@@ -49,7 +49,7 @@ export default function CausalExplainer() {
       <div className="sm:col-span-2 rounded-xl border border-white/10 bg-[#1e293b]/30 p-3 text-center">
         <p className="text-[12px] text-[#94a3b8] leading-relaxed">
           <strong className="text-white">Key rule:</strong>{" "}
-          Causation always implies correlation — but correlation does <em>not</em> imply causation.
+          Correlation does <em>not</em> imply causation. And causation does not even guarantee a visible correlation: opposing pathways or nonlinear effects can cancel the linear signal.
         </p>
       </div>
 

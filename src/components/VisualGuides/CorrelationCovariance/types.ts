@@ -36,6 +36,67 @@ export function normalCDF(x: number): number {
   return x >= 0 ? cdf : 1 - cdf;
 }
 
+// ── Student t two-tailed p-value (exact, via regularized incomplete beta) ────
+// The previous normal approximation was anti-conservative (p too small) for
+// small samples; this evaluates the exact t CDF for any df >= 1.
+
+function logGamma(x: number): number {
+  // Lanczos approximation
+  const g = [
+    76.18009172947146, -86.50532032941677, 24.01409824083091,
+    -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5,
+  ];
+  let y = x;
+  let tmp = x + 5.5;
+  tmp -= (x + 0.5) * Math.log(tmp);
+  let ser = 1.000000000190015;
+  for (let j = 0; j < 6; j++) ser += g[j] / ++y;
+  return -tmp + Math.log((2.5066282746310005 * ser) / x);
+}
+
+function betacf(a: number, b: number, x: number): number {
+  const MAXIT = 200, EPS = 3e-12, FPMIN = 1e-300;
+  const qab = a + b, qap = a + 1, qam = a - 1;
+  let c = 1;
+  let d = 1 - (qab * x) / qap;
+  if (Math.abs(d) < FPMIN) d = FPMIN;
+  d = 1 / d;
+  let h = d;
+  for (let m = 1; m <= MAXIT; m++) {
+    const m2 = 2 * m;
+    let aa = (m * (b - m) * x) / ((qam + m2) * (a + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+    c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+    d = 1 / d;
+    h *= d * c;
+    aa = (-(a + m) * (qab + m) * x) / ((a + m2) * (qap + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+    c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+    d = 1 / d;
+    const del = d * c;
+    h *= del;
+    if (Math.abs(del - 1) < EPS) break;
+  }
+  return h;
+}
+
+function regIncBeta(a: number, b: number, x: number): number {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const bt = Math.exp(
+    logGamma(a + b) - logGamma(a) - logGamma(b) + a * Math.log(x) + b * Math.log(1 - x)
+  );
+  if (x < (a + 1) / (a + b + 2)) return (bt * betacf(a, b, x)) / a;
+  return 1 - (bt * betacf(b, a, 1 - x)) / b;
+}
+
+/** Exact two-tailed p-value for a t statistic with df degrees of freedom. */
+export function tTestPValue(tStat: number, df: number): number {
+  if (!isFinite(tStat)) return 0;
+  const x = df / (df + tStat * tStat);
+  return Math.max(0, Math.min(1, regIncBeta(df / 2, 0.5, x)));
+}
+
 // ── Ranking helper ────────────────────────────────────────────────────────────
 
 function rankArray(arr: number[]): number[] {
@@ -86,6 +147,8 @@ export function computePearsonR(points: DataPoint[]): CorrelationStats {
     sumY2 += dy * dy;
   }
 
+  // Sample convention (n - 1 divisor, Bessel's correction) for covariance and
+  // SDs; the population convention would divide by n instead.
   const covariance = sumXY / (n - 1);
   const sdX = Math.sqrt(sumX2 / (n - 1));
   const sdY = Math.sqrt(sumY2 / (n - 1));
@@ -112,15 +175,7 @@ export function computePearsonR(points: DataPoint[]): CorrelationStats {
       ? pearsonR * Math.sqrt(df / denom)
       : (pearsonR > 0 ? Infinity : -Infinity);
 
-    if (isFinite(tStat)) {
-      // Approximation: t ~ N(0,1) * sqrt(df/(df+t²)) for large df;
-      // use two-tailed normal CDF approximation
-      const x = Math.abs(tStat) * Math.sqrt(df / (df + tStat * tStat));
-      pValue = 2 * (1 - normalCDF(Math.abs(x)));
-      pValue = Math.max(0, Math.min(1, pValue));
-    } else {
-      pValue = 0;
-    }
+    pValue = tTestPValue(tStat, df);
   }
 
   // Spearman ρ: Pearson on ranks

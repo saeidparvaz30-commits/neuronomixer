@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ConfidenceInterval, ConfidenceLevel, TRUE_MEAN, SAMPLE_N, Z_SCORES } from "./types";
+import { ConfidenceInterval, ConfidenceLevel, TRUE_MEAN, SAMPLE_N, T_SCORES } from "./types";
 
 interface Props {
   intervals: ConfidenceInterval[];
@@ -27,7 +27,7 @@ export default function StatsPanel({ intervals, confidenceLevel }: Props) {
   const coverPct = (coverCount / intervals.length) * 100;
   const avgWidth =
     intervals.reduce((a, i) => a + (i.upper - i.lower), 0) / intervals.length;
-  const z = Z_SCORES[confidenceLevel];
+  const t = T_SCORES[confidenceLevel];
   const diff = Math.abs(coverCount - confidenceLevel);
 
   const coverColor =
@@ -35,16 +35,14 @@ export default function StatsPanel({ intervals, confidenceLevel }: Props) {
 
   const interpretation =
     diff <= 3
-      ? `This is exactly what we expect for ${confidenceLevel}% confidence intervals!`
-      : coverCount > confidenceLevel
-      ? "Great coverage!"
-      : "Slightly lower than expected — just chance variation.";
+      ? `Coverage is close to the nominal ${confidenceLevel}%, which is what the procedure promises over many repetitions.`
+      : `Coverage is ${coverCount > confidenceLevel ? "above" : "below"} the nominal ${confidenceLevel}% in this run. With ${intervals.length} intervals, deviations of this size in either direction are ordinary chance variation, not a better or worse procedure.`;
 
   const rows = [
     { label: "Confidence Level", value: `${confidenceLevel}%`, color: "#d4af37" },
     { label: "Sample Size (n)", value: `${SAMPLE_N}`, color: "#94a3b8" },
     { label: "True Mean (μ)", value: `${TRUE_MEAN}`, color: "#94a3b8" },
-    { label: "Z-score", value: z.toFixed(3), color: "#94a3b8" },
+    { label: "t critical (df = 29)", value: t.toFixed(3), color: "#94a3b8" },
     {
       label: "Coverage",
       value: `${coverCount} / ${intervals.length}`,

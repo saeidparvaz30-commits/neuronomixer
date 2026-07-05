@@ -260,7 +260,7 @@ const ANSCOMBE_DATASETS = [
     id: "III",
     points: ANSCOMBE_III,
     color: "#d4af37",
-    description: "Linear with a single influential outlier. That one extreme point drags the regression line and inflates r.",
+    description: "Perfectly linear except for a single outlier. Without that point r would be 1.000; the outlier drags r down to 0.816 and tilts the regression line.",
   },
   {
     id: "IV",
@@ -925,7 +925,7 @@ function InteractiveScatterLifted({
 
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-xl border border-[#1e293b] p-2.5">
-            <p className="text-[9px] uppercase tracking-[1px] text-[#475569] mb-0.5">Covariance</p>
+            <p className="text-[9px] uppercase tracking-[1px] text-[#475569] mb-0.5">Covariance (sample, n-1)</p>
             <p className="text-sm font-bold text-white">{stats.covariance.toFixed(2)}</p>
           </div>
           <div className="rounded-xl border border-[#1e293b] p-2.5">

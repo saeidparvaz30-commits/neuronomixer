@@ -179,7 +179,7 @@ export default function CrossValidationClient() {
           </h1>
           <p className="text-[#94a3b8] text-base max-w-2xl">
             A single train/test split gives you one estimate of performance — which might be lucky or unlucky.
-            K-fold CV rotates through all possible splits to get a robust estimate with a confidence interval.
+            K-fold CV partitions the data into k folds and rotates the validation role across them, giving k estimates (one per fold) instead of one, plus a sense of their spread.
           </p>
         </div>
 
@@ -243,8 +243,8 @@ export default function CrossValidationClient() {
               {activeFold !== null && (
                 <p className="text-xs text-[#94a3b8]">
                   <span style={{ color: FOLD_COLORS[activeFold % FOLD_COLORS.length] }}>Fold {activeFold + 1}</span>
-                  {" "}= validation set ({Math.round(pts.length / k)} points).
-                  Remaining {k - 1} folds used for training.
+                  {" "}= validation set ({pts.filter((_, i) => i % k === activeFold).length} points).
+                  Remaining {k - 1} folds ({pts.filter((_, i) => i % k !== activeFold).length} points) used for training.
                 </p>
               )}
             </div>
@@ -395,7 +395,12 @@ export default function CrossValidationClient() {
               <h3 className="text-xs font-semibold text-[#d4af37] uppercase tracking-wide mb-2">Key Insight</h3>
               <p className="text-xs text-[#94a3b8] leading-relaxed">
                 Every point gets to be in the validation set exactly once. The mean across folds is a
-                much more reliable estimate than any single split, and the std tells you how stable your model is.
+                much more reliable estimate than any single split, and the std shows the spread of fold scores.
+                Because folds share training data, that spread is only a rough stability indicator, not a formal confidence interval.
+              </p>
+              <p className="text-xs text-[#94a3b8] leading-relaxed mt-2">
+                Caveat: if you use these CV scores to pick the polynomial degree, the winning score is optimistically biased.
+                For an honest estimate of the chosen model, use nested CV or a separate held-out test set, and fit any preprocessing inside each training fold to avoid leakage.
               </p>
             </div>
           </div>

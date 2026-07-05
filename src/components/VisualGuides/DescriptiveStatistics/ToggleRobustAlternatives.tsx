@@ -55,16 +55,17 @@ export default function ToggleRobustAlternatives({
           >
             <div className="mt-4 p-4 rounded-2xl border border-[#3bb4a4]/30 bg-[#1e293b]/50">
               <p className="text-[11px] text-[#94a3b8] mb-4 leading-relaxed">
-                Try dragging the $150k person to $500k. Watch mean/SD skyrocket,
-                but trimmed mean/MAD barely budge — they{" "}
-                <span className="text-[#3bb4a4]">ignore</span> extreme values.
+                Try dragging the $150k person down to $60k: the mean drops by about $4.5k
+                and the SD falls from ~$28k to ~$18k, but trimmed mean/MAD barely budge — they{" "}
+                <span className="text-[#3bb4a4]">ignore</span> extreme values. Drag it back
+                out to the $160k cap to see the reverse.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <StatCard
                   name="Trimmed Mean (10%)"
-                  formula="mean(x[2..n-2])"
+                  formula="mean(x[k+1..n−k]), k = 10% of n"
                   value={`$${trimmedMean.toFixed(1)}k`}
-                  description="Remove bottom+top 10% of values, then average the rest. Robust to outliers."
+                  description="Remove the bottom and top 10% of values (k = 2 of the 20 here at each end), then average the rest. Robust to outliers."
                 />
                 <StatCard
                   name="MAD"

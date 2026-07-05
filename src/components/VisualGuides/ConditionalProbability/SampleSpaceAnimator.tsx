@@ -359,7 +359,7 @@ function filterLabel(filter: GridFilter, _scenario: ScenarioType): FilterInfo | 
     disease_and_positive: {
       headline: "Filtered: Disease AND Test+",
       sub: "This is the numerator in P(Disease | Test+). Just 1 person out of 100.",
-      annotation: "P(Disease | Test+) = 0.0095 / 0.1085 ≈ 8.7%",
+      annotation: "P(Disease | Test+) = 0.0095 / 0.1085 ≈ 8.8%",
     },
     disease_and_negative: {
       headline: "Filtered: Disease AND Test−",
@@ -394,8 +394,8 @@ function filterLabel(filter: GridFilter, _scenario: ScenarioType): FilterInfo | 
     },
     factory_a_defective: {
       headline: "Filtered: Factory A defective",
-      sub: "2 of the 4 total defective items come from Factory A.",
-      annotation: "P(Factory A | Defective) = 2/4 ≈ 52.6%",
+      sub: "2 of the 4 defective squares come from Factory A. This 100-square grid rounds Factory B's 1.8 expected defects up to 2; with the exact rates, the split is 52.6% vs 47.4%.",
+      annotation: "P(Factory A | Defective) = 2/4 = 50% in grid (exact: 52.6%)",
     },
     factory_a_ok_items: {
       headline: "Filtered: Factory A — OK items",
@@ -404,8 +404,8 @@ function filterLabel(filter: GridFilter, _scenario: ScenarioType): FilterInfo | 
     },
     factory_b_defective: {
       headline: "Filtered: Factory B defective",
-      sub: "2 of the 4 total defective items come from Factory B.",
-      annotation: "P(Factory B | Defective) = 2/4 ≈ 47.4%",
+      sub: "2 of the 4 defective squares come from Factory B (rounded up from 1.8 expected). With the exact rates, the split is 47.4% vs 52.6%.",
+      annotation: "P(Factory B | Defective) = 2/4 = 50% in grid (exact: 47.4%)",
     },
     factory_b_ok_items: {
       headline: "Filtered: Factory B — OK items",
