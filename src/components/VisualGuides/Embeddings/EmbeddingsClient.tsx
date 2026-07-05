@@ -1,74 +1,156 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
-// ── Data ───────────────────────────────────────────────────────────────────
+// ── Data: a hand-built toy vocabulary ──────────────────────────────────────
+//
+// Every word is a 16-dimensional vector we wrote by hand: named features
+// (weight 1.0) plus two small "noise" dimensions so words are not perfectly
+// aligned. Every similarity number rendered on this page is computed at
+// runtime from these vectors; nothing is hardcoded. The vectors are
+// constructed so the classic analogies genuinely work:
+//   king - man + woman  ≈ queen   (gender direction)
+//   paris - france + germany ≈ berlin   (capital-of direction)
+//   boy - man + woman ≈ girl   (same gender direction, reused)
 
-type Category = "royalty" | "person" | "animal" | "vehicle" | "city";
+type Category = "royalty" | "person" | "city" | "country" | "animal" | "vehicle";
+
+const DIMS = [
+  "human", "royal", "female", "young",
+  "place", "capital", "france", "germany", "japan",
+  "animal", "canine", "domestic",
+  "vehicle", "size",
+  "noise-1", "noise-2",
+] as const;
+
+type Dim = (typeof DIMS)[number];
+
+function v(features: Partial<Record<Dim, number>>): number[] {
+  return DIMS.map((d) => features[d] ?? 0);
+}
 
 interface WordDef {
-  x: number;
-  y: number;
+  vec: number[];
   category: Category;
 }
 
 const WORDS: Record<string, WordDef> = {
-  king:   { x: 0.8,  y: 0.7,   category: "royalty" },
-  queen:  { x: 0.6,  y: 0.9,   category: "royalty" },
-  prince: { x: 0.7,  y: 0.4,   category: "royalty" },
-  man:    { x: 0.8,  y: 0.2,   category: "person" },
-  woman:  { x: 0.6,  y: 0.3,   category: "person" },
-  boy:    { x: 0.7,  y: 0.05,  category: "person" },
-  girl:   { x: 0.5,  y: 0.15,  category: "person" },
-  dog:    { x: -0.5, y: 0.1,   category: "animal" },
-  cat:    { x: -0.6, y: 0.2,   category: "animal" },
-  wolf:   { x: -0.4, y: -0.1,  category: "animal" },
-  car:    { x: -0.7, y: -0.6,  category: "vehicle" },
-  truck:  { x: -0.8, y: -0.7,  category: "vehicle" },
-  bus:    { x: -0.6, y: -0.8,  category: "vehicle" },
-  paris:  { x: 0.1,  y: 0.8,   category: "city" },
-  london: { x: 0.2,  y: 0.7,   category: "city" },
-  tokyo:  { x: 0.0,  y: 0.9,   category: "city" },
+  king:    { category: "royalty", vec: v({ human: 1, royal: 1, "noise-1": -0.05, "noise-2": -0.05 }) },
+  queen:   { category: "royalty", vec: v({ human: 1, royal: 1, female: 1, "noise-1": 0.03, "noise-2": 0.06 }) },
+  man:     { category: "person",  vec: v({ human: 1, "noise-1": 0.06, "noise-2": -0.03 }) },
+  woman:   { category: "person",  vec: v({ human: 1, female: 1, "noise-1": -0.04, "noise-2": 0.07 }) },
+  boy:     { category: "person",  vec: v({ human: 1, young: 1, "noise-1": 0.08, "noise-2": 0.02 }) },
+  girl:    { category: "person",  vec: v({ human: 1, female: 1, young: 1, "noise-1": -0.02, "noise-2": -0.06 }) },
+  paris:   { category: "city",    vec: v({ place: 1, capital: 1, france: 1, "noise-1": -0.03, "noise-2": -0.07 }) },
+  berlin:  { category: "city",    vec: v({ place: 1, capital: 1, germany: 1, "noise-1": 0.05, "noise-2": 0.03 }) },
+  tokyo:   { category: "city",    vec: v({ place: 1, capital: 1, japan: 1, "noise-1": -0.08, "noise-2": 0.01 }) },
+  france:  { category: "country", vec: v({ place: 1, france: 1, "noise-1": 0.07, "noise-2": -0.02 }) },
+  germany: { category: "country", vec: v({ place: 1, germany: 1, "noise-1": -0.06, "noise-2": 0.04 }) },
+  japan:   { category: "country", vec: v({ place: 1, japan: 1, "noise-1": 0.02, "noise-2": 0.08 }) },
+  dog:     { category: "animal",  vec: v({ animal: 1, canine: 1, domestic: 1, "noise-1": 0.04, "noise-2": -0.04 }) },
+  wolf:    { category: "animal",  vec: v({ animal: 1, canine: 1, "noise-1": -0.07, "noise-2": -0.01 }) },
+  cat:     { category: "animal",  vec: v({ animal: 1, domestic: 1, "noise-1": 0.01, "noise-2": 0.05 }) },
+  car:     { category: "vehicle", vec: v({ vehicle: 1, size: 0.3, "noise-1": -0.01, "noise-2": -0.08 }) },
+  truck:   { category: "vehicle", vec: v({ vehicle: 1, size: 0.9, "noise-1": 0.06, "noise-2": 0.05 }) },
+  bus:     { category: "vehicle", vec: v({ vehicle: 1, size: 0.6, "noise-1": -0.05, "noise-2": 0.02 }) },
 };
 
 const CAT_COLORS: Record<Category, string> = {
   royalty: "#d4af37",
   person:  "#3bb4a4",
+  city:    "#ef4444",
+  country: "#f97316",
   animal:  "#a855f7",
   vehicle: "#1e5d8a",
-  city:    "#ef4444",
 };
 
 const CAT_LABELS: Record<Category, string> = {
   royalty: "Royalty",
   person:  "Person",
+  city:    "City",
+  country: "Country",
   animal:  "Animal",
   vehicle: "Vehicle",
-  city:    "City",
 };
 
-// Cluster ellipses: [cx, cy, rx, ry, label, color]
-const CLUSTER_ELLIPSES: [number, number, number, number, string, Category][] = [
-  [0.7,  0.6,  0.22, 0.38, "Royalty",  "royalty"],
-  [0.65, 0.18, 0.2,  0.2,  "People",   "person"],
-  [-0.5, 0.07, 0.2,  0.2,  "Animals",  "animal"],
-  [-0.7, -0.7, 0.18, 0.15, "Vehicles", "vehicle"],
-  [0.1,  0.8,  0.18, 0.12, "Cities",   "city"],
-];
+// ── Vector math (all displayed numbers come from these) ───────────────────
 
-// Pre-defined arithmetic examples
+function dot(a: number[], b: number[]) {
+  return a.reduce((s, x, i) => s + x * b[i], 0);
+}
+function norm(a: number[]) {
+  return Math.sqrt(dot(a, a));
+}
+function cosineSim(a: number[], b: number[]) {
+  const na = norm(a);
+  const nb = norm(b);
+  if (na === 0 || nb === 0) return 0;
+  return Math.max(-1, Math.min(1, dot(a, b) / (na * nb)));
+}
+
+// Avoid the "-0.00" rendering artifact for near-zero cosines
+function fmtSim(sim: number) {
+  const s = sim.toFixed(2);
+  return s === "-0.00" ? "0.00" : s;
+}
+
+function nearestNeighbors(word: string, n = 3): { w: string; sim: number }[] {
+  const ref = WORDS[word].vec;
+  return Object.entries(WORDS)
+    .filter(([w]) => w !== word)
+    .map(([w, d]) => ({ w, sim: cosineSim(ref, d.vec) }))
+    .sort((a, b) => b.sim - a.sim)
+    .slice(0, n);
+}
+
+// Analogy lookup: nearest vocabulary word to (a - b + c), with the three
+// input words excluded from the candidates (standard word2vec practice).
+function solveAnalogy(a: string, b: string, c: string) {
+  const target = WORDS[a].vec.map((x, i) => x - WORDS[b].vec[i] + WORDS[c].vec[i]);
+  const ranked = Object.entries(WORDS)
+    .filter(([w]) => w !== a && w !== b && w !== c)
+    .map(([w, d]) => ({ w, sim: cosineSim(target, d.vec) }))
+    .sort((x, y) => y.sim - x.sim);
+  return { top: ranked[0], runnerUp: ranked[1] };
+}
+
+// ── 2D projection for the plot ─────────────────────────────────────────────
+// The scatter plot is a fixed linear projection of the 16-D vectors onto two
+// display axes. Plot positions are derived from the vectors, but similarity
+// numbers are always computed in the full 16-D space.
+
+const PROJ_X = v({ human: 0.55, royal: 0.15, female: -0.18, young: 0.12, place: -0.35, capital: 0.12, france: 0.20, germany: -0.04, japan: -0.16, animal: -0.72, canine: -0.10, domestic: 0.08, vehicle: -0.16, size: -0.42, "noise-1": 0.10, "noise-2": -0.06 });
+const PROJ_Y = v({ human: -0.06, royal: 0.55, female: 0.16, young: -0.32, place: 0.45, capital: 0.20, france: 0.04, germany: -0.06, japan: 0.12, animal: 0.04, canine: -0.14, domestic: 0.10, vehicle: -0.76, size: -0.14, "noise-1": -0.04, "noise-2": 0.09 });
+
+const POSITIONS: Record<string, { x: number; y: number }> = Object.fromEntries(
+  Object.entries(WORDS).map(([w, d]) => [w, { x: dot(d.vec, PROJ_X), y: dot(d.vec, PROJ_Y) }])
+);
+
+// Cluster ellipses, computed from the projected positions of each category.
+const CLUSTER_ELLIPSES: { cat: Category; cx: number; cy: number; rx: number; ry: number }[] =
+  (Object.keys(CAT_COLORS) as Category[]).map((cat) => {
+    const pts = Object.entries(WORDS)
+      .filter(([, d]) => d.category === cat)
+      .map(([w]) => POSITIONS[w]);
+    const cx = pts.reduce((s, p) => s + p.x, 0) / pts.length;
+    const cy = pts.reduce((s, p) => s + p.y, 0) / pts.length;
+    const rx = Math.max(...pts.map((p) => Math.abs(p.x - cx))) + 0.08;
+    const ry = Math.max(...pts.map((p) => Math.abs(p.y - cy))) + 0.08;
+    return { cat, cx, cy, rx, ry };
+  });
+
+// Pre-defined arithmetic examples. Only the operands are stored; the result
+// word and its cosine similarity are computed at runtime by solveAnalogy.
 interface ArithmeticExample {
   label: string;
   a: string;
   minus: string;
   plus: string;
-  result: string;
-  resultNote: string;
-  similarity: number;
+  explanation: string;
 }
 
 const ARITHMETIC_EXAMPLES: ArithmeticExample[] = [
@@ -77,33 +159,26 @@ const ARITHMETIC_EXAMPLES: ArithmeticExample[] = [
     a: "king",
     minus: "man",
     plus: "woman",
-    result: "queen",
-    resultNote: "queen",
-    similarity: 0.94,
+    explanation:
+      "Subtracting man and adding woman flips the gender features while keeping the royal feature, so the result lands closest to queen.",
   },
   {
     label: "paris − france + germany",
     a: "paris",
-    minus: "london",
-    plus: "tokyo",
-    result: "city-cluster",
-    resultNote: "berlin ≈ city near london",
-    similarity: 0.81,
+    minus: "france",
+    plus: "germany",
+    explanation:
+      "paris minus france isolates a capital-of offset. Adding germany applies that offset to a new country and lands closest to berlin. The same offset also connects japan to tokyo.",
   },
   {
-    label: "dog − wolf + cat",
-    a: "dog",
-    minus: "wolf",
-    plus: "cat",
-    result: "cat",
-    resultNote: "cat",
-    similarity: 0.88,
+    label: "boy − man + woman",
+    a: "boy",
+    minus: "man",
+    plus: "woman",
+    explanation:
+      "This is the same gender direction as the first example, applied in a different region of the space: boy plus (woman minus man) lands closest to girl. One direction, reused across the whole space.",
   },
 ];
-
-// Sample 768-dim vector values (first 8 shown)
-const PARIS_VALS  = [0.12, -0.87,  0.34,  0.61, -0.23,  0.75,  0.08, -0.45];
-const LONDON_VALS = [0.15, -0.81,  0.29,  0.57, -0.18,  0.70,  0.11, -0.39];
 
 // ── SVG coordinate helpers ─────────────────────────────────────────────────
 
@@ -120,58 +195,47 @@ function toSvgY(y: number) {
   return PAD + ((1 - (y + 1) / 2)) * (SVG_H - PAD * 2);
 }
 
-// Cosine similarity approximation from 2D coords
-function cosineSim(a: WordDef, b: WordDef) {
-  const dot = a.x * b.x + a.y * b.y;
-  const na = Math.sqrt(a.x * a.x + a.y * a.y);
-  const nb = Math.sqrt(b.x * b.x + b.y * b.y);
-  if (na === 0 || nb === 0) return 0;
-  return Math.max(-1, Math.min(1, dot / (na * nb)));
-}
-
-function nearestNeighbors(word: string, n = 3): string[] {
-  const ref = WORDS[word];
-  return Object.entries(WORDS)
-    .filter(([w]) => w !== word)
-    .map(([w, v]) => ({ w, sim: cosineSim(ref, v) }))
-    .sort((a, b) => b.sim - a.sim)
-    .slice(0, n)
-    .map((e) => e.w);
-}
-
 // ── Bar chart subcomponent ─────────────────────────────────────────────────
 
 function VectorBarChart({ values, color }: { values: number[]; color: string }) {
   const max = Math.max(...values.map(Math.abs));
   return (
-    <div className="flex items-end gap-1 h-14">
-      {values.map((v, i) => {
-        const height = Math.abs(v) / max;
-        const isPos = v >= 0;
-        return (
-          <div key={i} className="flex flex-col items-center flex-1">
-            {isPos && (
-              <motion.div
-                initial={{ scaleY: 0 }}
-                animate={{ scaleY: 1 }}
-                transition={{ duration: 0.4, delay: i * 0.04 }}
-                style={{ height: `${height * 44}px`, background: color, originY: 1 }}
-                className="w-full rounded-t"
-              />
-            )}
-            {!isPos && (
-              <motion.div
-                initial={{ scaleY: 0 }}
-                animate={{ scaleY: 1 }}
-                transition={{ duration: 0.4, delay: i * 0.04 }}
-                style={{ height: `${height * 44}px`, background: "#ef4444", originY: 0 }}
-                className="w-full rounded-b"
-              />
-            )}
-          </div>
-        );
-      })}
-      <span className="text-[#475569] text-[10px] self-center ml-1">...</span>
+    <div>
+      <div className="flex items-end gap-1 h-14">
+        {values.map((val, i) => {
+          const height = max === 0 ? 0 : Math.abs(val) / max;
+          const isPos = val >= 0;
+          return (
+            <div key={i} className="flex flex-col items-center flex-1">
+              {isPos && (
+                <motion.div
+                  initial={{ scaleY: 0 }}
+                  animate={{ scaleY: 1 }}
+                  transition={{ duration: 0.4, delay: i * 0.04 }}
+                  style={{ height: `${height * 44}px`, background: color, originY: 1 }}
+                  className="w-full rounded-t"
+                />
+              )}
+              {!isPos && (
+                <motion.div
+                  initial={{ scaleY: 0 }}
+                  animate={{ scaleY: 1 }}
+                  transition={{ duration: 0.4, delay: i * 0.04 }}
+                  style={{ height: `${height * 44}px`, background: "#ef4444", originY: 0 }}
+                  className="w-full rounded-b"
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex gap-1 mt-1">
+        {DIMS.map((d) => (
+          <span key={d} className="flex-1 text-center text-[7px] leading-tight text-[#475569] break-all">
+            {d}
+          </span>
+        ))}
+      </div>
     </div>
   );
 }
@@ -209,25 +273,29 @@ export default function EmbeddingsClient() {
   // Active arithmetic example data
   const activeEx = activeExample !== null ? ARITHMETIC_EXAMPLES[activeExample] : null;
 
+  // Solve the active analogy at runtime from the vectors
+  const analogy = useMemo(
+    () => (activeEx ? solveAnalogy(activeEx.a, activeEx.minus, activeEx.plus) : null),
+    [activeEx]
+  );
+
   // Words highlighted in the plot for the active arithmetic example
   const arithmeticWords = activeEx ? [activeEx.a, activeEx.minus, activeEx.plus] : [];
-  const resultWord =
-    activeEx && activeEx.result !== "city-cluster" && WORDS[activeEx.result]
-      ? activeEx.result
-      : null;
+  const resultWord = analogy ? analogy.top.w : null;
 
-  // Arrow for arithmetic: from (a - minus + plus) endpoint
+  // Arrow for arithmetic: from the start word to the computed result word
   const arrowTarget =
     activeEx && resultWord
       ? {
-          x: toSvgX(WORDS[resultWord].x),
-          y: toSvgY(WORDS[resultWord].y),
-          ax: toSvgX(WORDS[activeEx.a].x),
-          ay: toSvgY(WORDS[activeEx.a].y),
+          x: toSvgX(POSITIONS[resultWord].x),
+          y: toSvgY(POSITIONS[resultWord].y),
+          ax: toSvgX(POSITIONS[activeEx.a].x),
+          ay: toSvgY(POSITIONS[activeEx.a].y),
         }
       : null;
 
   const neighbors = selectedWord ? nearestNeighbors(selectedWord) : [];
+  const neighborWords = neighbors.map((n) => n.w);
 
   return (
     <div className="min-h-screen bg-[#0f172a] text-white">
@@ -257,8 +325,9 @@ export default function EmbeddingsClient() {
             <span className="text-[#d4af37]">Words as Numbers in Space</span>
           </h1>
           <p className="text-[#94a3b8] text-base max-w-2xl leading-relaxed">
-            Explore a 2D projection of word embedding space. Click words, try arithmetic like
-            king − man + woman = queen, and see how meaning emerges from geometry.
+            Explore a hand-built word embedding space. Click words, try arithmetic like
+            king − man + woman ≈ queen, and see how meaning emerges from geometry. Every
+            similarity number on this page is computed live from the vectors shown.
           </p>
         </div>
 
@@ -308,6 +377,15 @@ export default function EmbeddingsClient() {
           </p>
 
           <div className="bg-[#1e293b]/50 border border-[#1e293b] rounded-2xl p-5">
+            {/* Toy-vocabulary disclaimer */}
+            <p className="text-[11px] text-[#475569] leading-relaxed mb-3">
+              This is a hand-built illustration: 18 words with 16-dimensional vectors we
+              constructed from named features (plus a little noise), shown through a fixed 2D
+              projection. The arithmetic on these vectors is real, and every number below is
+              computed from them at runtime. Real embeddings are learned from data instead of
+              built by hand, and use hundreds of dimensions.
+            </p>
+
             {/* SVG plot */}
             <div className="overflow-x-auto">
               <svg
@@ -329,8 +407,8 @@ export default function EmbeddingsClient() {
                   stroke="#1e293b" strokeWidth={1}
                 />
 
-                {/* Cluster ellipses */}
-                {CLUSTER_ELLIPSES.map(([cx, cy, rx, ry, , cat]) => (
+                {/* Cluster ellipses (computed from projected positions) */}
+                {CLUSTER_ELLIPSES.map(({ cat, cx, cy, rx, ry }) => (
                   <ellipse
                     key={cat}
                     cx={toSvgX(cx)}
@@ -372,11 +450,11 @@ export default function EmbeddingsClient() {
 
                 {/* Words */}
                 {Object.entries(WORDS).map(([word, def]) => {
-                  const cx = toSvgX(def.x);
-                  const cy = toSvgY(def.y);
+                  const cx = toSvgX(POSITIONS[word].x);
+                  const cy = toSvgY(POSITIONS[word].y);
                   const isHovered = hoveredWord === word;
                   const isSelected = selectedWord === word;
-                  const isNeighbor = neighbors.includes(word);
+                  const isNeighbor = neighborWords.includes(word);
                   const isArithmetic = arithmeticWords.includes(word);
                   const isResult = resultWord === word;
                   const color = CAT_COLORS[def.category];
@@ -483,22 +561,25 @@ export default function EmbeddingsClient() {
                     />
                     <span className="text-white font-semibold text-sm">{selectedWord}</span>
                     <span className="text-[#475569] text-xs ml-1">
-                      ({WORDS[selectedWord].x.toFixed(2)}, {WORDS[selectedWord].y.toFixed(2)})
+                      2D projection: ({POSITIONS[selectedWord].x.toFixed(2)},{" "}
+                      {POSITIONS[selectedWord].y.toFixed(2)})
                     </span>
                   </div>
-                  <p className="text-xs text-[#94a3b8] mb-1">Nearest neighbors:</p>
+                  <p className="text-xs text-[#94a3b8] mb-1">
+                    Nearest neighbors (cosine similarity in the full 16-D space):
+                  </p>
                   <div className="flex gap-2">
                     {neighbors.map((n) => (
                       <span
-                        key={n}
+                        key={n.w}
                         className="px-2 py-0.5 rounded-full text-[11px] font-medium border"
                         style={{
-                          color: CAT_COLORS[WORDS[n].category],
-                          borderColor: CAT_COLORS[WORDS[n].category] + "50",
-                          background: CAT_COLORS[WORDS[n].category] + "15",
+                          color: CAT_COLORS[WORDS[n.w].category],
+                          borderColor: CAT_COLORS[WORDS[n.w].category] + "50",
+                          background: CAT_COLORS[WORDS[n.w].category] + "15",
                         }}
                       >
-                        {n} ({cosineSim(WORDS[selectedWord], WORDS[n]).toFixed(2)})
+                        {n.w} ({fmtSim(n.sim)})
                       </span>
                     ))}
                   </div>
@@ -517,12 +598,14 @@ export default function EmbeddingsClient() {
             Word Arithmetic
           </h2>
           <p className="text-sm text-[#475569] mb-4 ml-8">
-            Vector addition and subtraction produce meaningful new words.
+            Adding and subtracting word vectors moves you along meaningful directions in the
+            space. The result below is found by computing the vector, then searching the
+            vocabulary for its nearest neighbor.
           </p>
 
           <div className="bg-[#1e293b]/50 border border-[#1e293b] rounded-2xl p-5">
             {/* Example buttons */}
-            <div className="flex flex-wrap gap-3 mb-5">
+            <div className="flex flex-wrap gap-3 mb-3">
               {ARITHMETIC_EXAMPLES.map((ex, i) => (
                 <button
                   key={i}
@@ -542,9 +625,16 @@ export default function EmbeddingsClient() {
               ))}
             </div>
 
+            <p className="text-[11px] text-[#475569] leading-relaxed mb-5">
+              As in classic word2vec analogy lookups, the three input words are excluded from
+              the candidate list. In real embedding spaces an input word is often the closest
+              vector to the raw result, so the standard evaluation drops the inputs; we follow
+              the same rule here.
+            </p>
+
             {/* Active example visualization */}
             <AnimatePresence mode="wait">
-              {activeEx && (
+              {activeEx && analogy && (
                 <motion.div
                   key={activeExample}
                   initial={{ opacity: 0, y: 8 }}
@@ -598,40 +688,43 @@ export default function EmbeddingsClient() {
                       transition={{ delay: 0.4 }}
                       className="px-2.5 py-1 rounded-lg text-sm font-bold bg-[#d4af37]/20 text-[#d4af37]"
                     >
-                      {activeEx.resultNote}
+                      {analogy.top.w}
                     </motion.span>
                   </div>
 
-                  {/* Similarity */}
+                  {/* Similarity (computed) */}
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="flex items-center gap-3"
+                    className="flex flex-col gap-1.5"
                   >
-                    <span className="text-xs text-[#475569]">Cosine similarity:</span>
-                    <div className="flex items-center gap-2">
-                      <div className="w-24 h-1.5 rounded-full bg-[#1e293b] overflow-hidden">
-                        <motion.div
-                          className="h-full rounded-full bg-[#d4af37]"
-                          initial={{ width: 0 }}
-                          animate={{ width: `${activeEx.similarity * 100}%` }}
-                          transition={{ duration: 0.6, delay: 0.5 }}
-                        />
-                      </div>
-                      <span className="text-xs font-semibold text-[#d4af37]">
-                        {activeEx.similarity.toFixed(2)}
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-[#475569]">
+                        Cosine similarity to {analogy.top.w}:
                       </span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 h-1.5 rounded-full bg-[#1e293b] overflow-hidden">
+                          <motion.div
+                            className="h-full rounded-full bg-[#d4af37]"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${Math.max(0, analogy.top.sim) * 100}%` }}
+                            transition={{ duration: 0.6, delay: 0.5 }}
+                          />
+                        </div>
+                        <span className="text-xs font-semibold text-[#d4af37]">
+                          {analogy.top.sim.toFixed(2)}
+                        </span>
+                      </div>
                     </div>
+                    <span className="text-[11px] text-[#475569]">
+                      Next closest candidate: {analogy.runnerUp.w} ({fmtSim(analogy.runnerUp.sim)})
+                    </span>
                   </motion.div>
 
                   {/* Explanation */}
                   <p className="text-xs text-[#475569] mt-3 leading-relaxed">
-                    {activeEx.a === "king"
-                      ? "Subtracting the 'man' direction and adding the 'woman' direction navigates to the royalty+female region — queen."
-                      : activeEx.a === "paris"
-                      ? "The city-country relationship is consistent across languages. Paris is to France as Berlin is to Germany — but Berlin isn't in our vocabulary, so we land near the other cities."
-                      : "The domestic-pet direction overrides the wild-wolf aspect, landing closest to cat in embedding space."}
+                    {activeEx.explanation}
                   </p>
                 </motion.div>
               )}
@@ -645,45 +738,46 @@ export default function EmbeddingsClient() {
           </div>
         </section>
 
-        {/* ── Section 3: From Text to Vector ───────────────────────────────── */}
+        {/* ── Section 3: Inside the Vectors ───────────────────────────────── */}
         <section className="mb-10">
           <h2 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
             <span className="w-6 h-6 rounded-md bg-[#ef4444]/20 border border-[#ef4444]/40 flex items-center justify-center text-[#ef4444] text-xs font-bold">
               3
             </span>
-            From Text to Vector
+            Inside the Vectors
           </h2>
           <p className="text-sm text-[#475569] mb-4 ml-8">
-            Real embeddings are 768–1536 dimensional. Each dimension encodes some aspect of meaning.
+            These are the actual 16-dimensional vectors behind two words in the plot above. Our
+            toy dimensions have names only because we built them by hand.
           </p>
 
           <div className="bg-[#1e293b]/50 border border-[#1e293b] rounded-2xl p-5 space-y-5">
-            {[
-              { word: "Paris",  vals: PARIS_VALS,  color: "#ef4444" },
-              { word: "London", vals: LONDON_VALS, color: "#ef4444" },
-            ].map(({ word, vals, color }) => (
+            {(["paris", "berlin"] as const).map((word) => (
               <div key={word}>
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
                   <span className="text-sm font-semibold text-white">{word}</span>
                   <span className="text-[#475569] text-xs">→</span>
-                  <code className="text-xs text-[#94a3b8] font-mono">
-                    [{vals.map((v) => v.toFixed(2)).join(", ")}, ...]
-                    <span className="text-[#334155]"> (768 dims)</span>
+                  <code className="text-xs text-[#94a3b8] font-mono break-all">
+                    [{WORDS[word].vec.map((val) => val.toFixed(2)).join(", ")}]
                   </code>
                 </div>
-                <VectorBarChart values={vals} color={color} />
-                <p className="text-[10px] text-[#334155] mt-1">
-                  Each of 768 dimensions encodes some aspect of meaning
-                </p>
+                <VectorBarChart values={WORDS[word].vec} color={CAT_COLORS[WORDS[word].category]} />
               </div>
             ))}
 
             <div className="pt-2 border-t border-[#1e293b]">
               <p className="text-xs text-[#475569] leading-relaxed">
-                Notice how Paris and London have{" "}
-                <span className="text-[#3bb4a4]">similar bar patterns</span> — they share semantic
-                properties (capital cities, European, large urban centers). Their vectors are close
-                in 768-dimensional space, even though we can only visualize 8 dimensions here.
+                Paris and Berlin share the <span className="text-[#3bb4a4]">place</span> and{" "}
+                <span className="text-[#3bb4a4]">capital</span> features, so their bars mostly
+                line up; they differ on the country dimensions. That overlap is exactly why
+                their cosine similarity is {cosineSim(WORDS.paris.vec, WORDS.berlin.vec).toFixed(2)}.
+              </p>
+              <p className="text-xs text-[#475569] leading-relaxed mt-2">
+                One important difference from real systems: our dimensions are individually
+                readable because we chose the features ourselves. Real embedding models learn
+                vectors with 768 to 1536 dimensions from data, and those dimensions are
+                generally not interpretable one at a time. Meaning lives in directions and in
+                the relative geometry of the space as a whole, not in any single coordinate.
               </p>
             </div>
           </div>
@@ -743,11 +837,14 @@ export default function EmbeddingsClient() {
             <div>
               <p className="text-sm font-semibold text-[#d4af37] mb-1">Key Insight</p>
               <p className="text-sm text-[#94a3b8] leading-relaxed">
-                Modern LLMs use <strong className="text-white">contextual embeddings</strong> — the
-                same word gets different vectors depending on context. &ldquo;bank&rdquo; in
-                &ldquo;river bank&rdquo; vs &ldquo;savings bank&rdquo; have different embeddings,
-                allowing the model to understand polysemy. This is the key advance of transformer
-                architectures over older static embeddings like Word2Vec.
+                Modern LLMs use <strong className="text-white">contextual embeddings</strong>:
+                the same word gets a different vector depending on its context, so
+                &ldquo;bank&rdquo; in &ldquo;river bank&rdquo; and &ldquo;savings bank&rdquo;
+                are represented differently, letting the model handle polysemy. Contextual
+                embeddings actually predate transformers: ELMo (2018) produced them with
+                bidirectional LSTMs. Transformer models like BERT and GPT then made them the
+                dominant approach, replacing static embeddings like word2vec, where each word
+                has one fixed vector like in our toy space above.
               </p>
             </div>
           </div>
