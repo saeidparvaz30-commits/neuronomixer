@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
+import { useReducedMotion } from "framer-motion";
 
 interface Particle {
   id: number;
@@ -34,8 +35,6 @@ function makeParticles(count: number): Particle[] {
   }));
 }
 
-const PARTICLES = makeParticles(80);
-
 interface Props {
   show: boolean;
   saved?: boolean;
@@ -44,6 +43,8 @@ interface Props {
 export default function GuideCelebration({ show, saved = true }: Props) {
   const [visible, setVisible] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reducedMotion = useReducedMotion();
+  const particles = useMemo(() => makeParticles(80), []);
 
   useEffect(() => {
     if (show && !visible) {
@@ -90,8 +91,8 @@ export default function GuideCelebration({ show, saved = true }: Props) {
         className="celeb-overlay fixed inset-0 z-[9999] overflow-hidden pointer-events-none"
         aria-hidden="true"
       >
-        {/* Confetti particles */}
-        {PARTICLES.map((p) => (
+        {/* Confetti particles (skipped when the user prefers reduced motion) */}
+        {!reducedMotion && particles.map((p) => (
           <div
             key={p.id}
             style={{

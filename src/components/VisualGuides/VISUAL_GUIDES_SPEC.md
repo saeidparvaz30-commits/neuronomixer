@@ -1,7 +1,12 @@
 # Visual Guides — Master Style & Pattern Spec
 
+**v2 — 2026-07-05 (Phase 3 canonical standard)**
+
 This file is the canonical reference for building and harmonizing all visual guides on NeuroNomixer.
-When adding or editing any guide, follow every section here exactly.
+When adding or editing any guide, follow every section here exactly. Where v1 and existing guides
+disagree with this document, this document wins.
+
+Reference implementation: `src/components/VisualGuides/TimeSeriesForecast/TimeSeriesForecastClient.tsx`.
 
 ---
 
@@ -33,17 +38,43 @@ export default function Page() {
 
 ---
 
-## 2. NO Breadcrumbs
+## 2. Canonical Shell (all categories)
 
-**Do not include a breadcrumb nav inside any guide page.**
-The global navbar and the "← All Guides" button in the completion screen are sufficient navigation.
-Remove any existing `<nav>` breadcrumb blocks at the top of client components.
+Every guide uses the exact same outer shell. No per-category variations.
+
+```tsx
+<div className="min-h-screen pb-20">
+  <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+    {/* breadcrumb nav */}
+    {/* hero */}
+    {/* guide content */}
+  </div>
+</div>
+```
+
+### Breadcrumb nav is STANDARD
+
+The v1 "no breadcrumbs" rule is dead: 86 of 91 shipped guides have one, so it is the
+de-facto and now official standard. Every guide renders a breadcrumb nav at the top of
+the inner wrapper, before the hero:
+
+```tsx
+<nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+  <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
+    Visual Guides
+  </Link>
+  <span>/</span>
+  <span className="text-[#94a3b8]">{GUIDE_TITLE}</span>
+</nav>
+```
 
 ---
 
 ## 3. Hero Section
 
-Every guide starts with a standard hero block immediately after the outer wrapper:
+Every guide starts with the standard gold-kicker hero immediately after the breadcrumb.
+The kicker uses `var(--color-accent)` (gold) for EVERY category. No red, pink, or purple
+kickers; category identity is carried by the label text, not the color.
 
 ```tsx
 <section className="mb-8">
@@ -64,48 +95,39 @@ Every guide starts with a standard hero block immediately after the outer wrappe
 </section>
 ```
 
-Category label colors (use CSS var, not hardcoded hex):
-- Data & Analysis → `text-[var(--color-accent)]` (#d4af37)
-- Statistics       → `text-[var(--color-accent)]`
-- Machine Learning → `text-[var(--color-accent)]`
-- Deep Learning    → `text-[var(--color-accent)]`
-- LLMs             → `text-[var(--color-accent)]`
-- Applied AI       → `text-[var(--color-accent)]`
-
 ---
 
 ## 4. Completion Tracking
 
-All guides fire a completion event via the same API route:
+`GuideCompletion` (`src/components/VisualGuides/GuideCompletion.tsx`) is the SINGLE writer
+of completion state. Rules:
 
-```ts
-fetch("/api/visual-guides/complete", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ guideSlug: SLUG, score: SCORE }),
-}).catch(() => {});
-```
-
-- Only fire when `session?.user` exists
-- Use a `completionFired = useRef(false)` guard so it fires exactly once
-- Fire inside a `useEffect` that watches the completion condition
-- Score is a number — use a consistent scale:
-  - `100` for fully interactive guides where the user explores all states
-  - `5` for pipeline/step-through guides
-  - `4` for playground guides with multiple required interactions
+- Exactly ONE `<GuideCompletion isComplete={...} guideSlug="..." score={...} />` per guide,
+  rendered from the MAIN client component (`[Guide]Client.tsx`). NEVER render it from a
+  helper subcomponent: a past incident had `GuideCompletion` inside a conditionally mounted
+  subcomponent whose local state scoped the completion flag, so completions fired on mount
+  or never fired at all. Keep it at the top level of the main client component.
+- `isComplete` must be gated by a REAL interaction flag (the user actually explored the
+  required states or finished the exercise). Never `isComplete={true}` on mount, never a
+  timer.
+- NO direct `fetch("/api/visual-guides/complete", ...)` from guide code. GuideCompletion
+  owns the API call, the once-only `useRef` guard, the auth check, the celebration overlay,
+  the signup prompt for anonymous users, and the shared `aria-live` announcement.
+- Score scale: `100` for fully interactive guides, `5` for pipeline/step-through guides,
+  `4` for playground guides with multiple required interactions.
 
 ---
 
 ## 5. Progress Indicator
 
 Show a small pill/dot row near the top of the guide for multi-step or multi-state guides.
-Use the guide's accent color when a state is explored/completed, `#1e293b` when not.
+Use the accent color when a state is explored/completed, `#1e293b` when not.
 
 ```tsx
 {STATES.map((s) => (
   <div key={s.id} className="flex items-center gap-1.5">
     <div className="w-2 h-2 rounded-full transition-colors"
-      style={{ background: explored.has(s.id) ? s.color : "#1e293b" }} />
+      style={{ background: explored.has(s.id) ? "var(--color-accent)" : "#1e293b" }} />
     <span className={`text-[11px] ${explored.has(s.id) ? "text-white" : "text-[#475569]"}`}>
       {s.label}
     </span>
@@ -115,22 +137,22 @@ Use the guide's accent color when a state is explored/completed, `#1e293b` when 
 
 ---
 
-## 6. Completion Screen (Summary Card)
+## 6. Completion Card (required)
 
-Every guide that has a clear "done" state should show a completion card.
-This is the most important UX moment — it should:
+Every guide with a "done" state shows a completion card matching the TimeSeriesForecast
+reference. It must contain, in order:
 
-1. **Congratulate** the user with a title + optional confetti/particle burst
-2. **Summarize** what they learned (key concepts explored, steps completed, etc.)
-3. **Provide a Key Takeaway** — one italic quote that crystallizes the lesson
-4. **Offer three navigation actions** (see Section 7)
+1. **Header**: gold rule + `Guide Complete` kicker (uppercase, tracking) + congrats title + subtitle
+2. **Body**: guide-specific recap of what was learned
+3. **Key Takeaway**: one italic quote in the gold-bordered callout, always present
+4. **Footer**: the three navigation actions (Section 7)
 
 ### Completion card layout
 ```tsx
 <motion.div
-  initial={{ opacity: 0, y: 40 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ type: "spring", bounce: 0.2, duration: 0.65 }}
+  variants={card}            // from useGuideMotion()
+  initial="hidden"
+  animate="visible"
   className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
 >
   {/* Header */}
@@ -150,8 +172,8 @@ This is the most important UX moment — it should:
     {/* ... guide-specific recap content ... */}
 
     {/* Key Takeaway — always present */}
-    <div className="rounded-xl border-l-4 border-[#d4af37] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
-      <p className="text-[12px] font-semibold text-[#d4af37] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
+    <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+      <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
       <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
         &quot;{KEY_TAKEAWAY_QUOTE}&quot;
       </p>
@@ -191,10 +213,10 @@ This is the most important UX moment — it should:
 |---|---|---|
 | Bottom-left | **← All Guides** | Links to `/visual-guides` |
 | Bottom-right (secondary) | **Try Again** | Calls `onReset()` to restart the guide |
-| Bottom-right (primary, gold) | **Next Guide →** | Links to the next guide slug in `GUIDES` order |
+| Bottom-right (primary, gold) | **Next Guide →** | Links to the next guide slug |
 
 Rules:
-- "← All Guides" is never the primary CTA — it should always be the subtle left button
+- "← All Guides" is never the primary CTA; it is always the subtle left button
 - "Next Guide →" uses `bg-[var(--color-accent)] text-[#0a0e1a]` (gold, dark text)
 - "Try Again" uses the bordered ghost style
 - For guides where "Try Again" makes no sense (purely narrative), omit it
@@ -202,70 +224,9 @@ Rules:
 
 ---
 
-## 8. Guide Order & Next Guide Slugs
+## 8. Guide Order & Categories
 
-The canonical order from `VisualGuidesClient.tsx`:
-
-| # | Title | Slug | Next Slug |
-|---|---|---|---|
-| 1 | What Is Data? | `what-is-data` | `how-datasets-are-built` |
-| 2 | How Datasets Are Built | `how-datasets-are-built` | `missing-data` |
-| 3 | Missing Data | `missing-data` | `feature-scaling` |
-| 4 | Feature Scaling Playground | `feature-scaling` | `outlier-detection` |
-| 5 | Outlier Detection | `outlier-detection` | `correlation-causation` |
-| 6 | Correlation vs Causation | `correlation-causation` | `dimensionality-reduction` |
-| 7 | Dimensionality Reduction | `dimensionality-reduction` | `data-distributions` |
-| 8 | Data Distributions | `data-distributions` | `data-pipeline` |
-| 9 | The Data Pipeline | `data-pipeline` | `central-limit-theorem` |
-| 10 | Central Limit Theorem | `central-limit-theorem` | `p-values` |
-| 11 | P-Values Demystified | `p-values` | `confidence-intervals` |
-| 12 | Confidence Intervals | `confidence-intervals` | `bayes-theorem` |
-| 13 | Bayes' Theorem | `bayes-theorem` | `probability-distributions` |
-| 14 | Probability Distributions | `probability-distributions` | `hypothesis-testing` |
-| 15 | Hypothesis Testing | `hypothesis-testing` | `regression-to-mean` |
-| 16 | Regression to the Mean | `regression-to-mean` | `bias-variance` |
-| 17 | Bias-Variance Tradeoff | `bias-variance` | `linear-regression` |
-| 18 | Linear Regression | `linear-regression` | `decision-trees` |
-| 19 | Decision Trees | `decision-trees` | `random-forests` |
-| 20 | Random Forests | `random-forests` | `knn` |
-| 21 | KNN | `knn` | `svm` |
-| 22 | SVM | `svm` | `k-means` |
-| 23 | K-Means Clustering | `k-means` | `cross-validation` |
-| 24 | Cross-Validation | `cross-validation` | `overfitting-underfitting` |
-| 25 | Overfitting & Underfitting | `overfitting-underfitting` | `roc-curves` |
-| 26 | ROC Curves & AUC | `roc-curves` | `confusion-matrix` |
-| 27 | Confusion Matrix | `confusion-matrix` | `gradient-descent` |
-| 28 | Gradient Descent | `gradient-descent` | `neural-network` |
-| 29 | Neural Network Playground | `neural-network` | `what-is-ml` |
-| 30 | What Is Machine Learning? | `what-is-ml` | `activation-functions` |
-| 31 | Activation Functions | `activation-functions` | `backpropagation` |
-| 32 | Backpropagation | `backpropagation` | `cnns` |
-| 33 | CNNs | `cnns` | `pooling-layers` |
-| 34 | Pooling Layers | `pooling-layers` | `rnns-lstms` |
-| 35 | RNNs & LSTMs | `rnns-lstms` | `dropout` |
-| 36 | Dropout | `dropout` | `batch-normalization` |
-| 37 | Batch Normalization | `batch-normalization` | `transfer-learning` |
-| 38 | Transfer Learning | `transfer-learning` | `optimizers-race` |
-| 39 | Optimizers Race | `optimizers-race` | `gans` |
-| 40 | GANs | `gans` | `what-is-llm` |
-| 41 | What Is an LLM? | `what-is-llm` | `tokenization` |
-| 42 | Tokenization | `tokenization` | `embeddings` |
-| 43 | Embeddings | `embeddings` | `self-attention` |
-| 44 | Self-Attention | `self-attention` | `transformer-architecture` |
-| 45 | Transformer Architecture | `transformer-architecture` | `temperature-topk` |
-| 46 | Temperature & Top-K | `temperature-topk` | `context-windows` |
-| 47 | Context Windows | `context-windows` | `hallucination` |
-| 48 | Hallucination | `hallucination` | `fine-tuning-vs-prompting` |
-| 49 | Fine-Tuning vs Prompting | `fine-tuning-vs-prompting` | `rag-explained` |
-| 50 | RAG Explained | `rag-explained` | `vector-databases` |
-| 51 | Vector Databases | `vector-databases` | `chunking-strategies` |
-| 52 | Chunking Strategies | `chunking-strategies` | `prompt-engineering` |
-| 53 | Prompt Engineering | `prompt-engineering` | `ai-agents` |
-| 54 | AI Agents | `ai-agents` | `model-evaluation` |
-| 55 | Model Evaluation | `model-evaluation` | `rlhf` |
-| 56 | RLHF | `rlhf` | `lora-adapters` |
-| 57 | LoRA & Adapters | `lora-adapters` | `ai-safety` |
-| 58 | AI Safety | `ai-safety` | *(last — use All Guides as primary)* |
+Guide order/categories: `prisma/seed-guides.ts` is the single source of truth.
 
 ---
 
@@ -282,34 +243,46 @@ Text-muted:   #94a3b8
 Text-dim:     #475569
 
 Accent (gold):    #d4af37  — var(--color-accent)
+Warning (orange): #f97316  — var(--color-warning)
+Success (green):  #22c55e  — var(--color-success)
 Primary (blue):   #1e5d8a
 Secondary (teal): #3bb4a4
 Red (error):      #ef4444
 Purple:           #a855f7
 Pink:             #ec4899
-
-Category dot colors:
-  data:          #3b82f6
-  stats:         #d4af37
-  ml:            #3bb4a4
-  deep-learning: #a855f7
-  llms:          #ef4444
-  applied-ai:    #ec4899
 ```
+
+Rules:
+- Accent, warning, and success are used ONLY via their CSS vars
+  (`var(--color-accent)`, `var(--color-warning)`, `var(--color-success)`), never as raw hex.
+- All other colors come from the token table above; do not invent new hex values per guide.
 
 ---
 
 ## 10. Animations
 
-- Use Framer Motion for all entrance/exit animations
-- Standard card entrance: `initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}`
-- Standard exit: `exit={{ opacity: 0, y: -6 }}`
-- Completion card spring: `transition={{ type: "spring", bounce: 0.2, duration: 0.65 }}`
-- Never use `Math.random()` directly — use a deterministic LCG seeded function for any pseudo-random data:
+- All entrance/exit animation vocabulary comes from `@/lib/guideMotion` via `useGuideMotion()`:
+
+```tsx
+const { fadeUp, fadeIn, stagger, card, pop } = useGuideMotion();
+
+<motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={GUIDE_VIEWPORT}>
+```
+
+- `useGuideMotion()` returns `{ fadeUp, fadeIn, stagger, card, pop }` and automatically
+  swaps every variant to a short opacity-only fade when the user prefers reduced motion.
+  Do NOT call `useReducedMotion()` per guide; the shared hook (and the shared
+  GuideCelebration/GuideCompletion components) already handle it.
+- NO ad-hoc variant objects in guide code. If a guide needs a motion pattern the shared
+  vocabulary lacks, extend `guideMotion.ts` so every guide gets it.
+- `GUIDE_EASE` (`[0.22, 1, 0.36, 1]`) and `GUIDE_VIEWPORT` (`{ once: true, amount: 0.3 }`)
+  are exported for the rare inline `transition`/`viewport` prop.
+- NO `Math.random()` at module scope or in render paths (hydration mismatch). Use the
+  deterministic LCG for pseudo-random data:
 
 ```ts
-function lcg(seed: number) {
-  return ((seed * 1664525 + 1013904223) & 0xFFFFFFFF) / 0xFFFFFFFF;
+function lcg(seed: number): number {
+  return (((seed * 1664525 + 1013904223) >>> 0) / 0xffffffff);
 }
 ```
 
@@ -330,26 +303,44 @@ Wrap the card in `padding: 2px`, put the conic-gradient spinner inside, and the 
 - **Toggles / method selectors**: use `layoutId="[unique-id]"` Framer Motion pill
 - **Scatter plots**: pure SVG, no external chart library
 - **Sliders**: native `<input type="range">` styled with Tailwind, or custom drag with `useRef` + `onPointerMove`
-- **Tables**: always `border-collapse`, header `bg-[#1e293b]`, alternating rows `#0f172a` / `#162032` (opaque — never transparent)
+- **Tables**: always `border-collapse`, header `bg-[#1e293b]`, alternating rows `#0f172a` / `#162032` (opaque, never transparent)
 - **Code/formula blocks**: `<pre>` with `bg-[#1e293b]/60 font-mono text-[#93c5fd]`
-- **Completion check**: always a `useRef(false)` guard, never use state for this
 
 ---
 
-## 12. Accessibility
+## 12. Accessibility Checklist (required)
 
-- All interactive controls need `aria-label` or visible label
-- Toggle groups use `role="radiogroup"` + `role="radio"` + `aria-checked`
-- Completion messages use an `aria-live="polite"` region (hidden, sr-only)
-- Color is never the sole indicator of state — always pair with shape or text
+Every guide must pass all of these before shipping:
+
+- [ ] Every `<input type="range">` has an associated label (`aria-label` or a visible `<label>`)
+- [ ] Toggle/tab rows use `role="radiogroup"` with `role="radio"` + `aria-checked` on each
+      option (or plain buttons with `aria-pressed`)
+- [ ] Completion is announced via the shared GuideCompletion `aria-live="polite"` region;
+      guides do not add their own completion announcements
+- [ ] Interactive SVG/canvas visualizations have a keyboard-operable alternative or a text
+      equivalent conveying the same information
+- [ ] Color is never the sole indicator of state; always pair with shape, text, or icon
 
 ---
 
-## 13. What NOT To Do
+## 13. Content Rules (required)
 
-- No breadcrumbs inside guide pages
-- No `Math.random()` in render — causes hydration mismatch
-- No Recharts, Chart.js, or other charting libraries — SVG only
-- No `bg-[color]/opacity` on table rows/cells that overlap other elements — use opaque hex
+- Every displayed number is either computed from the on-screen data/model, or visibly
+  labeled "illustrative". No silently invented values.
+- No fabricated benchmark results or vendor-internal figures. If a real number cannot be
+  sourced, do not show a number.
+- No em dashes in prose. Use commas, colons, or separate sentences.
+
+---
+
+## 14. What NOT To Do
+
+- No `Math.random()` at module scope or in render (hydration mismatch)
+- No ad-hoc framer-motion variant objects; use `useGuideMotion()`
+- No direct fetch of `/api/visual-guides/complete` from guide code
+- No `GuideCompletion` inside helper subcomponents; main client component only
+- No Recharts, Chart.js, or other charting libraries; SVG only
+- No `bg-[color]/opacity` on table rows/cells that overlap other elements; use opaque hex
+- No raw hex for accent/warning/success; CSS vars only
 - No `Co-Authored-By` lines in commits
 - Do not push to remote before local verification

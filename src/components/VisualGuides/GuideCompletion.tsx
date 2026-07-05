@@ -35,6 +35,13 @@ export default function GuideCompletion({ isComplete, guideSlug, score }: Props)
 
   return (
     <>
+      <div aria-live="polite" className="sr-only">
+        {isComplete
+          ? session?.user
+            ? "Guide complete. Your progress has been saved."
+            : "Guide complete. Sign up to save your progress."
+          : null}
+      </div>
       <GuideCelebration show={isComplete} saved={!!session?.user} />
       <GuideCompletionSignupPrompt
         guideSlug={guideSlug}
