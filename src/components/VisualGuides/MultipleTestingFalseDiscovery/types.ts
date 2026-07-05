@@ -43,14 +43,20 @@ export function stdDev(arr: number[]): number {
   return Math.sqrt(arr.reduce((a, b) => a + (b - m) ** 2, 0) / (arr.length - 1));
 }
 
-// Abramowitz & Stegun approximation for normal CDF
+// Standard normal CDF via the Abramowitz & Stegun 7.1.26 erf polynomial:
+// Phi(z) = 0.5 * (1 + sign(z) * erf(|z| / sqrt(2))).
+// The erf polynomial MUST be evaluated at x = |z|/sqrt(2) with exp(-x*x);
+// feeding z in directly computes ~Phi(z*sqrt(2)) and shrinks every p-value
+// (~16-17% of null tests would look "significant" at alpha = 0.05).
 export function normalCDF(z: number): number {
   const p = 0.3275911;
   const a = [0.254829592, -0.284496736, 1.421413741, -1.453152027, 1.061405429];
   const sign = z < 0 ? -1 : 1;
-  const t = 1 / (1 + p * Math.abs(z));
+  const x = Math.abs(z) / Math.SQRT2;
+  const t = 1 / (1 + p * x);
   const poly = t * (a[0] + t * (a[1] + t * (a[2] + t * (a[3] + t * a[4]))));
-  return 0.5 * (1 + sign * (1 - poly * Math.exp(-z * z)));
+  const erf = 1 - poly * Math.exp(-x * x);
+  return 0.5 * (1 + sign * erf);
 }
 
 // ── Simulation ─────────────────────────────────────────────────────────────────
