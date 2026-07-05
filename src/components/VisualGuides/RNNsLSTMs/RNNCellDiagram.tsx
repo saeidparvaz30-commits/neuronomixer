@@ -20,7 +20,7 @@ export default function RNNCellDiagram({ step }: Props) {
   return (
     <div className="w-full bg-[#0f172a] rounded-xl overflow-hidden border border-[#1e293b]">
       <div className="px-4 py-2 border-b border-[#1e293b] flex items-center gap-2">
-        <span className="text-xs font-semibold text-white">RNN Cell — step {step + 1}: "{seq.inputToken}"</span>
+        <span className="text-xs font-semibold text-white">RNN Cell · step {step + 1}: "{seq.inputToken}"</span>
         <span className="ml-auto text-[10px] text-[#475569]">h state: [{h.map((v) => v.toFixed(2)).join(", ")}]</span>
       </div>
       <svg viewBox="0 0 400 220" className="w-full" style={{ height: 200 }}>
@@ -88,8 +88,8 @@ export default function RNNCellDiagram({ step }: Props) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15 }}
         >
-          <line x1="200" y1="80" x2="200" y2="22" stroke="#d4af37" strokeWidth="2" markerEnd="url(#arrowGold)" />
-          <text x="200" y="14" fill="#d4af37" fontSize="11" textAnchor="middle" fontWeight="600">yₜ = Wᵧhₜ</text>
+          <line x1="200" y1="80" x2="200" y2="22" stroke="var(--color-accent)" strokeWidth="2" markerEnd="url(#arrowGold)" />
+          <text x="200" y="14" fill="var(--color-accent)" fontSize="11" textAnchor="middle" fontWeight="600">yₜ = Wᵧhₜ</text>
         </motion.g>
 
         {/* Recurrent loop — curved arrow from right back to left */}
@@ -117,7 +117,7 @@ export default function RNNCellDiagram({ step }: Props) {
             <path d="M0,0 L0,6 L8,3 z" fill="#3bb4a4" />
           </marker>
           <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L8,3 z" fill="#d4af37" />
+            <path d="M0,0 L0,6 L8,3 z" fill="var(--color-accent)" />
           </marker>
           <marker id="arrowPrimary" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
             <path d="M0,0 L0,6 L8,3 z" fill="#1e5d8a" />

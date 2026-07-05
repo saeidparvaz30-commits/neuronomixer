@@ -41,7 +41,7 @@ export default function TrainingControls({
           </span>
         )}
         {phase === "train-d" && (
-          <span className="text-[10px] px-2.5 py-1 rounded-full bg-[#1e5d8a]/30 border border-[#1e5d8a]/50 text-[#60a5fa] font-semibold uppercase tracking-wide">
+          <span className="text-[10px] px-2.5 py-1 rounded-full bg-[#1e5d8a]/30 border border-[#1e5d8a]/50 text-[#93c5fd] font-semibold uppercase tracking-wide">
             Training D
           </span>
         )}
@@ -69,7 +69,7 @@ export default function TrainingControls({
         {isPlaying ? (
           <button
             onClick={onPause}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1e5d8a]/30 border border-[#1e5d8a]/50 text-[#60a5fa] text-sm font-semibold hover:bg-[#1e5d8a]/40 transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#1e5d8a]/30 border border-[#1e5d8a]/50 text-[#93c5fd] text-sm font-semibold hover:bg-[#1e5d8a]/40 transition-colors"
           >
             <span>⏸</span>
             <span>Pause</span>
@@ -95,15 +95,17 @@ export default function TrainingControls({
         </button>
 
         {/* Speed selector */}
-        <div className="ml-auto flex items-center gap-1">
+        <div className="ml-auto flex items-center gap-1" role="radiogroup" aria-label="Training speed">
           <span className="text-[10px] text-[#475569] mr-1">Speed:</span>
           {([1, 2] as const).map((s) => (
             <button
               key={s}
               onClick={() => onSpeedChange(s)}
+              role="radio"
+              aria-checked={speed === s}
               className={`w-8 h-7 rounded-lg text-xs font-bold transition-colors ${
                 speed === s
-                  ? "bg-[#d4af37] text-[#0f172a]"
+                  ? "bg-[var(--color-accent)] text-[#0f172a]"
                   : "bg-[#0f172a] border border-[#334155] text-[#94a3b8] hover:border-[#475569]"
               }`}
             >

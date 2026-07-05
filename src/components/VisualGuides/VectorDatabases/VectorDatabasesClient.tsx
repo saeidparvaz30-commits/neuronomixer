@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+import { useGuideMotion } from "@/lib/guideMotion";
 
 // ── Data ────────────────────────────────────────────────────────────────────
 
@@ -113,6 +114,7 @@ function SectionBadge({ n }: { n: number }) {
 
 export default function VectorDatabasesClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
 
   const [hoveredDoc, setHoveredDoc]           = useState<string | null>(null);
@@ -163,39 +165,46 @@ export default function VectorDatabasesClient() {
     setQueriesRun((prev) => new Set([...prev, idx]));
   }
 
+  function handleReset() {
+    setHoveredDoc(null);
+    setActiveQueryIdx(null);
+    setQueriesRun(new Set());
+    setHasSeenTable(false);
+  }
+
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
+    <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="vector-databases" score={100} />
-      <div className="max-w-[900px] mx-auto px-5 sm:px-8 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6 flex-wrap">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
-          <span className="text-[#334155]">/</span>
-          <span className="text-[#94a3b8]">Applied AI</span>
-          <span className="text-[#334155]">/</span>
-          <span className="text-white">Vector Databases: Semantic Search</span>
+          <span>/</span>
+          <span className="text-[#94a3b8]">Vector Databases: Semantic Search</span>
         </nav>
 
         {/* Hero */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-[#ec4899]/15 border border-[#ec4899]/35 rounded-full px-3 py-1 mb-4">
-            <span className="text-xs font-semibold text-[#ec4899] uppercase tracking-wider">
-              Applied AI
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
+              LLMs
             </span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Vector Databases:{" "}
-            <span className="text-[#3bb4a4]">Semantic Search</span>
+            <span className="text-[var(--color-accent)]">Semantic Search</span>
           </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl leading-relaxed">
+          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
             Watch documents become vectors in 2D space. Run semantic queries and
-            see nearest neighbors retrieved by cosine similarity — no keyword
+            see nearest neighbors retrieved by cosine similarity, no keyword
             matching required.
           </p>
-        </div>
+        </section>
 
         {/* Progress bar */}
         <div className="mb-8 bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
@@ -220,7 +229,7 @@ export default function VectorDatabasesClient() {
               <motion.div
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-2 text-xs text-[#3bb4a4] font-semibold"
+                className="mt-2 text-xs text-[var(--color-success)] font-semibold"
               >
                 Guide complete! You understand how vector databases enable semantic search.
               </motion.div>
@@ -274,7 +283,7 @@ export default function VectorDatabasesClient() {
                   const sim = cosineSim(activeQuery.x, activeQuery.y, doc.x, doc.y);
                   const d = dist2D(activeQuery.x, activeQuery.y, doc.x, doc.y);
                   const opacity = 0.15 + (1 - d / maxDist) * 0.55;
-                  const color = sim > 0.8 ? "#3bb4a4" : sim > 0.5 ? "#d4af37" : "#475569";
+                  const color = sim > 0.8 ? "#3bb4a4" : sim > 0.5 ? "var(--color-accent)" : "#475569";
                   return (
                     <line
                       key={doc.id}
@@ -385,7 +394,7 @@ export default function VectorDatabasesClient() {
           </h2>
           <p className="text-sm text-[#475569] mb-4 ml-8">
             Select a query to see it land in vector space. Lines show similarity to each
-            document — the top 3 nearest are highlighted.
+            document: the top 3 nearest are highlighted.
           </p>
 
           <div className="bg-[#1e293b]/50 border border-[#1e293b] rounded-2xl p-5">
@@ -395,6 +404,7 @@ export default function VectorDatabasesClient() {
                 <button
                   key={i}
                   onClick={() => handleQueryClick(i)}
+                  aria-pressed={activeQueryIdx === i}
                   className="px-3 py-2 rounded-xl text-sm font-medium border transition-all text-left"
                   style={{
                     background: activeQueryIdx === i ? "#ec4899" + "20" : "#0f172a",
@@ -480,7 +490,7 @@ export default function VectorDatabasesClient() {
             Keyword vs Semantic Search
           </h2>
           <p className="text-sm text-[#475569] mb-4 ml-8">
-            Query: &ldquo;AI and neural nets&rdquo; — see how each approach handles it.
+            Query: &ldquo;AI and neural nets&rdquo;. See how each approach handles it.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -499,12 +509,12 @@ export default function VectorDatabasesClient() {
                 </div>
                 <div className="p-2 rounded-lg bg-[#0f172a] border border-[#1e293b]">
                   <span className="text-xs text-[#334155] italic">
-                    &ldquo;Machine learning basics&rdquo; — not returned (no &apos;neural&apos;)
+                    &ldquo;Machine learning basics&rdquo;: not returned (no &apos;neural&apos;)
                   </span>
                 </div>
                 <div className="p-2 rounded-lg bg-[#0f172a] border border-[#1e293b]">
                   <span className="text-xs text-[#334155] italic">
-                    &ldquo;Python for data science&rdquo; — not returned (no &apos;neural&apos;)
+                    &ldquo;Python for data science&rdquo;: not returned (no &apos;neural&apos;)
                   </span>
                 </div>
               </div>
@@ -601,7 +611,7 @@ export default function VectorDatabasesClient() {
                   ))}
                 </svg>
                 <p className="text-[11px] text-[#334155] mt-1">
-                  Hierarchical Navigable Small World — O(log n) search
+                  Hierarchical Navigable Small World: O(log n) search
                 </p>
               </div>
 
@@ -621,7 +631,7 @@ export default function VectorDatabasesClient() {
                     query vector
                   </span>
                   <span className="text-[#475569] text-center block">↓ top-k ANN search</span>
-                  {["0.97 — doc A", "0.94 — doc B", "0.88 — doc C"].map((r) => (
+                  {["0.97 · doc A", "0.94 · doc B", "0.88 · doc C"].map((r) => (
                     <div key={r} className="flex items-center gap-1 bg-[#1e293b] rounded px-2 py-0.5">
                       <div className="w-1 h-1 rounded-full bg-[#3bb4a4]" />
                       <span className="text-[#3bb4a4]">{r}</span>
@@ -659,7 +669,7 @@ export default function VectorDatabasesClient() {
                 <tbody>
                   {[
                     { db: "Pinecone",  oss: false, managed: true,  best: "Production SaaS",    color: "#3bb4a4" },
-                    { db: "Weaviate",  oss: true,  managed: true,  best: "Multi-modal",         color: "#d4af37" },
+                    { db: "Weaviate",  oss: true,  managed: true,  best: "Multi-modal",         color: "var(--color-accent)" },
                     { db: "Qdrant",    oss: true,  managed: true,  best: "High performance",    color: "#ec4899" },
                     { db: "pgvector",  oss: true,  managed: false, best: "Existing Postgres",   color: "#1e5d8a" },
                     { db: "Chroma",    oss: true,  managed: false, best: "Local dev",           color: "#a855f7" },
@@ -698,16 +708,16 @@ export default function VectorDatabasesClient() {
         </section>
 
         {/* Gold insight box */}
-        <div className="mb-10 rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-5">
+        <div className="mb-10 rounded-2xl border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 p-5">
           <div className="flex items-start gap-3">
-            <span className="text-[#d4af37] text-lg mt-0.5" aria-hidden>★</span>
+            <span className="text-[var(--color-accent)] text-lg mt-0.5" aria-hidden>★</span>
             <div>
-              <p className="text-sm font-semibold text-[#d4af37] mb-1">Key Insight</p>
+              <p className="text-sm font-semibold text-[var(--color-accent)] mb-1">Key Insight</p>
               <p className="text-sm text-[#94a3b8] leading-relaxed">
                 At 1M documents with 1536-dim vectors (OpenAI ada-002), you need approximately{" "}
                 <strong className="text-white">~6 GB RAM</strong> just to store the index. Vector
                 databases use specialized indexing (HNSW) to search millions of vectors in
-                milliseconds — traditional SQL would require a full table scan, making it orders
+                milliseconds; traditional SQL would require a full table scan, making it orders
                 of magnitude slower.
               </p>
             </div>
@@ -735,6 +745,84 @@ export default function VectorDatabasesClient() {
             <span aria-hidden>→</span>
           </Link>
         </div>
+
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">Semantic Search Mastered!</h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You ran queries against a vector space, compared keyword vs semantic retrieval, and surveyed the database landscape.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  {[
+                    { label: "Queries run", value: `${queriesRun.size} / ${QUERIES.length}`, color: "#ec4899" },
+                    { label: "Search paradigms", value: "Keyword + Semantic", color: "#3bb4a4" },
+                    { label: "Databases compared", value: "5", color: "var(--color-accent)" },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl border border-[#1e293b] p-3">
+                      <p className="text-[10px] text-[#475569] mb-1">{item.label}</p>
+                      <p className="text-[14px] font-mono font-bold" style={{ color: item.color }}>{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[var(--color-accent)]/5 border border-[var(--color-accent)]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;A vector database retrieves by meaning, not by matching words. Embed everything into the same space, and the nearest neighbors of a question are its answers.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
+                    Try Again
+                  </button>
+                  <Link href="/visual-guides/chunking-strategies"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
+              ← All Guides
+            </Link>
+            <Link href="/visual-guides/chunking-strategies"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+              Next Guide →
+            </Link>
+          </div>
+        )}
 
       </div>
     </div>

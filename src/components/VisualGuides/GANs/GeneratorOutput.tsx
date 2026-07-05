@@ -52,7 +52,7 @@ export default function GeneratorOutput({ step }: Props) {
         <div className="h-2 bg-[#0f172a] rounded-full overflow-hidden">
           <motion.div
             className="h-full rounded-full"
-            style={{ background: "linear-gradient(90deg, #7e22ce, #a855f7)" }}
+            style={{ background: "#a855f7" }}
             animate={{ width: `${qualityPct}%` }}
             transition={{ duration: 0.4 }}
           />
@@ -62,14 +62,14 @@ export default function GeneratorOutput({ step }: Props) {
       {/* Discriminator verdict */}
       <div className="flex items-center justify-between bg-[#0f172a]/60 rounded-lg px-3 py-2 border border-[#1e293b]">
         <span className="text-xs text-[#94a3b8]">Discriminator says:</span>
-        <span className="text-xs font-semibold text-[#60a5fa]">
+        <span className="text-xs font-semibold text-[#93c5fd]">
           {fakeRealPct}% real
         </span>
       </div>
 
       {step.epoch === 0 && (
         <p className="text-[10px] text-[#475569] mt-2 text-center italic">
-          Pure noise — G hasn&apos;t learned anything yet
+          Pure noise: G hasn&apos;t learned anything yet
         </p>
       )}
       {step.epoch >= 28 && (

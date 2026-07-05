@@ -64,7 +64,7 @@ export default function TrainingChart({ currentEpoch }: Props) {
     <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-2xl p-5">
       <h2 className="text-base font-semibold text-white mb-1">Training Dynamics</h2>
       <p className="text-xs text-[#475569] mb-3">
-        Watch losses converge toward log(2) ≈ 0.693 — the Nash equilibrium
+        Watch losses converge toward log(2) ≈ 0.693, the Nash equilibrium
       </p>
 
       <div className="overflow-x-auto">
@@ -92,9 +92,9 @@ export default function TrainingChart({ currentEpoch }: Props) {
           {/* Nash equilibrium line */}
           <line
             x1={PAD_L} y1={nashY} x2={W - PAD_R} y2={nashY}
-            stroke="#d4af37" strokeWidth={1} strokeDasharray="5 4" opacity={0.6}
+            stroke="var(--color-accent)" strokeWidth={1} strokeDasharray="5 4" opacity={0.6}
           />
-          <text x={W - PAD_R + 2} y={nashY + 3} fill="#d4af37" fontSize={7} fontWeight={600}>
+          <text x={W - PAD_R + 2} y={nashY + 3} fill="var(--color-accent)" fontSize={7} fontWeight={600}>
             log(2)
           </text>
 
@@ -137,7 +137,7 @@ export default function TrainingChart({ currentEpoch }: Props) {
             <motion.path
               d={accPath}
               fill="none"
-              stroke="#d4af37"
+              stroke="var(--color-accent)"
               strokeWidth={1.5}
               strokeDasharray="5 3"
               initial={{ pathLength: 0 }}
@@ -164,7 +164,7 @@ export default function TrainingChart({ currentEpoch }: Props) {
             <motion.path
               d={gPath}
               fill="none"
-              stroke="#f97316"
+              stroke="var(--color-warning)"
               strokeWidth={2}
               initial={{ pathLength: 0 }}
               animate={{ pathLength: 1 }}
@@ -186,7 +186,7 @@ export default function TrainingChart({ currentEpoch }: Props) {
       {/* Legend */}
       <div className="flex flex-wrap gap-4 mt-2 justify-center">
         <div className="flex items-center gap-1.5">
-          <span className="w-4 h-0.5 bg-[#f97316] inline-block" />
+          <span className="w-4 h-0.5 bg-[var(--color-warning)] inline-block" />
           <span className="text-[10px] text-[#94a3b8]">Generator Loss</span>
         </div>
         <div className="flex items-center gap-1.5">
@@ -195,13 +195,13 @@ export default function TrainingChart({ currentEpoch }: Props) {
         </div>
         <div className="flex items-center gap-1.5">
           <svg width={16} height={4} className="inline-block">
-            <line x1={0} y1={2} x2={16} y2={2} stroke="#d4af37" strokeWidth={1.5} strokeDasharray="4 2" />
+            <line x1={0} y1={2} x2={16} y2={2} stroke="var(--color-accent)" strokeWidth={1.5} strokeDasharray="4 2" />
           </svg>
           <span className="text-[10px] text-[#94a3b8]">D Accuracy (0–1 scale)</span>
         </div>
         <div className="flex items-center gap-1.5">
           <svg width={16} height={4} className="inline-block">
-            <line x1={0} y1={2} x2={16} y2={2} stroke="#d4af37" strokeWidth={1} strokeDasharray="4 3" opacity={0.6} />
+            <line x1={0} y1={2} x2={16} y2={2} stroke="var(--color-accent)" strokeWidth={1} strokeDasharray="4 3" opacity={0.6} />
           </svg>
           <span className="text-[10px] text-[#94a3b8]">Nash Equilibrium (log 2)</span>
         </div>
@@ -213,7 +213,7 @@ export default function TrainingChart({ currentEpoch }: Props) {
           animate={{ opacity: 1, y: 0 }}
           className="text-[10px] text-[#3bb4a4] mt-2 text-center font-semibold"
         >
-          Losses converging toward log(2) — approaching Nash equilibrium!
+          Losses converging toward log(2): approaching Nash equilibrium!
         </motion.p>
       )}
     </div>

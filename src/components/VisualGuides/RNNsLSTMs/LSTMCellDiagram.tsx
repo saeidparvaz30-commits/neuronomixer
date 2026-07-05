@@ -38,7 +38,7 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
   return (
     <div className="w-full bg-[#0f172a] rounded-xl overflow-hidden border border-[#1e293b]">
       <div className="px-4 py-2 border-b border-[#1e293b] flex items-center gap-2">
-        <span className="text-xs font-semibold text-white">LSTM Cell — step {step + 1}: &quot;{sequence.inputToken}&quot;</span>
+        <span className="text-xs font-semibold text-white">LSTM Cell · step {step + 1}: &quot;{sequence.inputToken}&quot;</span>
         <span className="ml-auto text-[10px] text-[#475569]">gates: f / i / o</span>
       </div>
 
@@ -52,7 +52,7 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
             <path d="M0,0 L0,7 L7,3.5 z" fill="#94a3b8" />
           </marker>
           <marker id="lstmArrowGold" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
-            <path d="M0,0 L0,7 L7,3.5 z" fill="#d4af37" />
+            <path d="M0,0 L0,7 L7,3.5 z" fill="var(--color-accent)" />
           </marker>
           <marker id="lstmArrowPurple" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
             <path d="M0,0 L0,7 L7,3.5 z" fill="#a855f7" />
@@ -64,16 +64,16 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
         <motion.line
           key={`highway-${step}`}
           x1="20" y1="55" x2="500" y2="55"
-          stroke="#d4af37"
+          stroke="var(--color-accent)"
           strokeWidth="4"
           opacity="0.7"
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.7 }}
           transition={{ duration: 0.4 }}
         />
-        <text x="20" y="48" fill="#d4af37" fontSize="9" textAnchor="start">Cₜ₋₁</text>
-        <text x="508" y="50" fill="#d4af37" fontSize="9" textAnchor="start">Cₜ</text>
-        <text x="256" y="42" fill="#d4af37" fontSize="8" textAnchor="middle">Cell State (memory highway)</text>
+        <text x="20" y="48" fill="var(--color-accent)" fontSize="9" textAnchor="start">Cₜ₋₁</text>
+        <text x="508" y="50" fill="var(--color-accent)" fontSize="9" textAnchor="start">Cₜ</text>
+        <text x="256" y="42" fill="var(--color-accent)" fontSize="8" textAnchor="middle">Cell State (memory highway)</text>
 
         {/* ─── Forget Gate (f) ─── */}
         {/* Block at x=80, y=100, colored red-tinted */}
@@ -146,8 +146,8 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
         <line x1="285" y1="100" x2="247" y2="91" stroke="#3bb4a4" strokeWidth="1.5" opacity="0.7" markerEnd="url(#lstmArrow)" />
 
         {/* ⊕ add node on the highway, directly above ⊙ */}
-        <circle cx="240" cy="55" r="9" fill="#1e293b" stroke="#d4af37" strokeWidth="1.5" />
-        <text x="240" y="59" fill="#d4af37" fontSize="10" textAnchor="middle" fontWeight="700">⊕</text>
+        <circle cx="240" cy="55" r="9" fill="#1e293b" stroke="var(--color-accent)" strokeWidth="1.5" />
+        <text x="240" y="59" fill="var(--color-accent)" fontSize="10" textAnchor="middle" fontWeight="700">⊕</text>
         {/* i·C̃ flows upward into ⊕, joining the left-to-right highway */}
         <line x1="240" y1="75" x2="240" y2="66" stroke="#22c55e" strokeWidth="1.5" markerEnd="url(#lstmArrow)" />
 

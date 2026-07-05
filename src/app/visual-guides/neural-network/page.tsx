@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "What Is a Neural Network?",
-    description: "Build and explore a neural network — hover neurons to see activations, swap architectures and activation functions.",
+    description: "Build and explore a neural network: hover neurons to see activations, swap architectures and activation functions.",
   },
 };
 

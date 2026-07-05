@@ -51,7 +51,7 @@ export default function SequenceStepper({ networkType, currentStep, onStepChange
   return (
     <div className="flex flex-col gap-4">
       {/* Token blocks */}
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2 flex-wrap" role="radiogroup" aria-label="Sequence step">
         {SENTENCE_TOKENS.map((token, i) => {
           const isActive = i === currentStep;
           const isDone = i < currentStep;
@@ -61,6 +61,8 @@ export default function SequenceStepper({ networkType, currentStep, onStepChange
             <button
               key={i}
               onClick={() => onStepChange(i)}
+              role="radio"
+              aria-checked={isActive}
               className="relative flex flex-col items-center rounded-xl border-2 px-3 py-2 min-w-[64px] transition-all"
               style={{
                 borderColor: isActive ? activeColor : isDone ? `${activeColor}60` : "#334155",
@@ -131,6 +133,7 @@ export default function SequenceStepper({ networkType, currentStep, onStepChange
         </button>
         <button
           onClick={toggleAutoPlay}
+          aria-pressed={isAutoPlay}
           className="px-3 py-1.5 rounded-lg text-sm border transition-all font-medium"
           style={{
             borderColor: isAutoPlay ? activeColor : "#334155",

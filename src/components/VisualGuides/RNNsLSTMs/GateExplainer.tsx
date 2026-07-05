@@ -58,7 +58,7 @@ export default function GateExplainer({ currentStep, sequenceStep }: Props) {
   return (
     <div className="flex flex-col gap-2">
       <p className="text-xs text-[#475569] mb-1">
-        Step {currentStep + 1} — &quot;{sequenceStep.inputToken}&quot; — gate activations
+        Step {currentStep + 1}, &quot;{sequenceStep.inputToken}&quot;: gate activations
       </p>
       {GATES.map((gate) => {
         const isOpen = openGate === gate.id;
@@ -127,7 +127,7 @@ export default function GateExplainer({ currentStep, sequenceStep }: Props) {
                         borderColor: "rgba(212,175,55,0.2)",
                       }}
                     >
-                      <code className="text-xs font-mono text-[#d4af37]">{gate.formula}</code>
+                      <code className="text-xs font-mono text-[var(--color-accent)]">{gate.formula}</code>
                     </div>
                   </div>
                 </motion.div>

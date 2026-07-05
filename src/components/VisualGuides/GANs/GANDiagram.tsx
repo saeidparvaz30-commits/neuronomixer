@@ -106,7 +106,7 @@ export default function GANDiagram({ phase, step }: Props) {
               ))
             )}
             {/* orange border */}
-            <rect x={328} y={57} width={56} height={56} fill="none" stroke="#f97316" strokeWidth={1.5} rx={2} />
+            <rect x={328} y={57} width={56} height={56} fill="none" stroke="var(--color-warning)" strokeWidth={1.5} rx={2} />
           </g>
 
           {/* Fake → D arrow (orange) */}
@@ -117,18 +117,18 @@ export default function GANDiagram({ phase, step }: Props) {
             animate={{ stroke: highlightD ? "#f97316" : "#334155" }}
             transition={{ duration: 0.3 }}
           />
-          <polygon points="422,107 432,114 428,104" fill={highlightD ? "#f97316" : "#334155"} />
-          <text x={396} y={102} fill="#f97316" fontSize={8} fontWeight={600}>fake</text>
+          <polygon points="422,107 432,114 428,104" fill={highlightD ? "var(--color-warning)" : "#334155"} />
+          <text x={396} y={102} fill="var(--color-warning)" fontSize={8} fontWeight={600}>fake</text>
 
           {/* ── Real Images (database icon) ── */}
           <g>
             <text x={356} y={175} textAnchor="middle" fill="#94a3b8" fontSize={8} fontWeight={600}>
               Real Data
             </text>
-            <ellipse cx={356} cy={155} rx={22} ry={7} fill="#1e293b" stroke="#22c55e" strokeWidth={1.5} />
-            <rect x={334} y={155} width={44} height={12} fill="#1e293b" stroke="#22c55e" strokeWidth={1.5} />
-            <ellipse cx={356} cy={167} rx={22} ry={7} fill="#1e293b" stroke="#22c55e" strokeWidth={1.5} />
-            <text x={356} y={159} textAnchor="middle" fill="#22c55e" fontSize={7} fontWeight={600}>DB</text>
+            <ellipse cx={356} cy={155} rx={22} ry={7} fill="#1e293b" stroke="var(--color-success)" strokeWidth={1.5} />
+            <rect x={334} y={155} width={44} height={12} fill="#1e293b" stroke="var(--color-success)" strokeWidth={1.5} />
+            <ellipse cx={356} cy={167} rx={22} ry={7} fill="#1e293b" stroke="var(--color-success)" strokeWidth={1.5} />
+            <text x={356} y={159} textAnchor="middle" fill="var(--color-success)" fontSize={7} fontWeight={600}>DB</text>
           </g>
 
           {/* Real → D arrow (green) */}
@@ -139,8 +139,8 @@ export default function GANDiagram({ phase, step }: Props) {
             animate={{ stroke: highlightD ? "#22c55e" : "#334155" }}
             transition={{ duration: 0.3 }}
           />
-          <polygon points="422,131 432,128 430,138" fill={highlightD ? "#22c55e" : "#334155"} />
-          <text x={396} y={153} fill="#22c55e" fontSize={8} fontWeight={600}>real</text>
+          <polygon points="422,131 432,128 430,138" fill={highlightD ? "var(--color-success)" : "#334155"} />
+          <text x={396} y={153} fill="var(--color-success)" fontSize={8} fontWeight={600}>real</text>
 
           {/* ── Discriminator D ── */}
           <motion.rect
@@ -154,7 +154,7 @@ export default function GANDiagram({ phase, step }: Props) {
             }}
             transition={{ duration: 0.3 }}
           />
-          <text x={487} y={118} textAnchor="middle" fill={highlightD ? "#60a5fa" : "#94a3b8"} fontSize={11} fontWeight={700}>
+          <text x={487} y={118} textAnchor="middle" fill={highlightD ? "#93c5fd" : "#94a3b8"} fontSize={11} fontWeight={700}>
             Discriminator
           </text>
           <text x={487} y={134} textAnchor="middle" fill="#475569" fontSize={9}>
@@ -169,10 +169,10 @@ export default function GANDiagram({ phase, step }: Props) {
             x1={542} y1={125} x2={582} y2={125}
             stroke={highlightD ? "#1e5d8a" : "#334155"}
             strokeWidth={1.5}
-            animate={{ stroke: highlightD ? "#60a5fa" : "#334155" }}
+            animate={{ stroke: highlightD ? "#93c5fd" : "#334155" }}
             transition={{ duration: 0.3 }}
           />
-          <polygon points="582,121 592,125 582,129" fill={highlightD ? "#60a5fa" : "#334155"} />
+          <polygon points="582,121 592,125 582,129" fill={highlightD ? "#93c5fd" : "#334155"} />
 
           {/* ── Output probability bar ── */}
           <g>
@@ -191,7 +191,7 @@ export default function GANDiagram({ phase, step }: Props) {
               animate={{ width: Math.round((1 - step.dAccuracy + 0.1) * 50) }}
               transition={{ duration: 0.4 }}
             />
-            <text x={640} y={118} textAnchor="middle" fill="#60a5fa" fontSize={10} fontWeight={700}>
+            <text x={640} y={118} textAnchor="middle" fill="#93c5fd" fontSize={10} fontWeight={700}>
               {fakePct}% real
             </text>
             <text x={640} y={130} textAnchor="middle" fill="#475569" fontSize={7}>
@@ -201,7 +201,7 @@ export default function GANDiagram({ phase, step }: Props) {
             <text x={640} y={148} textAnchor="middle" fill="#94a3b8" fontSize={8}>
               D accuracy:
             </text>
-            <text x={640} y={160} textAnchor="middle" fill="#d4af37" fontSize={10} fontWeight={700}>
+            <text x={640} y={160} textAnchor="middle" fill="var(--color-accent)" fontSize={10} fontWeight={700}>
               {dAccPct}%
             </text>
           </g>
@@ -236,7 +236,7 @@ export default function GANDiagram({ phase, step }: Props) {
           <span className="text-xs text-[#475569] italic">Training not started</span>
         )}
         {phase === "train-d" && (
-          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#1e5d8a]/20 border border-[#1e5d8a]/40 text-[#60a5fa]">
+          <span className="text-xs font-semibold px-3 py-1 rounded-full bg-[#1e5d8a]/20 border border-[#1e5d8a]/40 text-[#93c5fd]">
             Training D: learning to distinguish real from fake
           </span>
         )}

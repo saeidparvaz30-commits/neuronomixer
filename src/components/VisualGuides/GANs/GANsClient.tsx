@@ -12,9 +12,11 @@ import TrainingChart from "./TrainingChart";
 import TrainingControls from "./TrainingControls";
 import ProblemExplorer from "./ProblemExplorer";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+import { useGuideMotion } from "@/lib/guideMotion";
 
 export default function GANsClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
 
   const [currentEpoch, setCurrentEpoch] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -100,44 +102,45 @@ export default function GANsClient() {
     setHasViewedProblems(true);
   }, []);
 
+  const handleFullReset = useCallback(() => {
+    setIsPlaying(false);
+    setCurrentEpoch(0);
+    setHasReachedEpoch20(false);
+    setHasViewedProblems(false);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
+    <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="gans" score={100} />
-      <div className="max-w-[1300px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6 flex-wrap" aria-label="Breadcrumb">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
           <span>/</span>
-          <span className="text-[#94a3b8]">Deep Learning</span>
-          <span>/</span>
-          <span className="text-white">GANs: The Art of Faking It</span>
+          <span className="text-[#94a3b8]">GANs: The Art of Faking It</span>
         </nav>
 
         {/* Hero */}
-        <div className="mb-8">
-          <div
-            className="inline-flex items-center gap-2 rounded-full px-3 py-1 mb-4 border"
-            style={{ background: "#a855f715", borderColor: "#a855f740" }}
-          >
-            <span
-              className="text-xs font-semibold uppercase tracking-wider"
-              style={{ color: "#a855f7" }}
-            >
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Deep Learning
             </span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            GANs: The Art of Faking It
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
+            GANs: <span className="text-[var(--color-accent)]">The Art of Faking It</span>
           </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl leading-relaxed">
+          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
             Watch a generator evolve from pure noise to convincing images while the discriminator
             fights back. Understand adversarial training, Nash equilibrium, and why GANs are both
             powerful and notoriously tricky to train.
           </p>
-        </div>
+        </section>
 
         {/* Progress bar */}
         <div className="mb-8 bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
@@ -174,7 +177,7 @@ export default function GANsClient() {
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="mt-2 text-xs text-[#3bb4a4] font-semibold"
+                className="mt-2 text-xs text-[var(--color-success)] font-semibold"
               >
                 Guide complete! You understand how GANs work.
               </motion.p>
@@ -227,9 +230,9 @@ export default function GANsClient() {
         </section>
 
         {/* Gold insight box */}
-        <div className="rounded-2xl border border-[#d4af37]/25 bg-[#d4af37]/[0.05] p-5 mb-6">
+        <div className="rounded-2xl border border-[var(--color-accent)]/25 bg-[var(--color-accent)]/[0.05] p-5 mb-6">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-[#d4af37] text-sm font-semibold uppercase tracking-wide">
+            <span className="text-[var(--color-accent)] text-sm font-semibold uppercase tracking-wide">
               Historical Insight
             </span>
           </div>
@@ -240,7 +243,7 @@ export default function GANsClient() {
             the adversarial idea to photorealistic faces. Today&apos;s image generators such as{" "}
             <span className="text-white font-medium">DALL-E and Stable Diffusion</span> are a different
             lineage: DALL-E 1 was autoregressive, while DALL-E 2/3 and Stable Diffusion are{" "}
-            <Link href="/visual-guides/diffusion-models" className="text-[#d4af37] underline underline-offset-2 hover:opacity-80 transition-opacity">
+            <Link href="/visual-guides/diffusion-models" className="text-[var(--color-accent)] underline underline-offset-2 hover:opacity-80 transition-opacity">
               diffusion models
             </Link>
             , which largely replaced GANs for image generation, though GAN-style adversarial losses still
@@ -248,61 +251,84 @@ export default function GANsClient() {
           </p>
         </div>
 
-        {/* Summary card on completion */}
+        {/* Completion card */}
         <AnimatePresence>
           {isComplete && (
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
+              variants={card}
+              initial="hidden"
+              animate="visible"
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
-              className="rounded-2xl border border-[#3bb4a4]/30 bg-[#3bb4a4]/[0.05] p-5 mb-6"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
             >
-              <div className="flex items-center gap-2 mb-2">
-                <svg className="w-4 h-4 text-[#3bb4a4]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-[#3bb4a4] font-semibold text-sm">
-                  You&apos;ve completed the Deep Learning section!
-                </span>
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">Adversarial Training Mastered!</h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You trained a GAN to equilibrium and explored the failure modes that make them notoriously tricky.
+                </p>
               </div>
-              <p className="text-xs text-[#94a3b8] mb-3 leading-relaxed">
-                Next up: Large Language Models — how transformers read, understand, and generate text at scale.
-              </p>
-              <Link
-                href="/visual-guides"
-                className="inline-flex items-center gap-1.5 text-sm text-[#3bb4a4] hover:text-white transition-colors font-semibold"
-              >
-                <span>Next: Large Language Models</span>
-                <span>→</span>
-              </Link>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  {[
+                    { label: "Epochs trained", value: `${currentEpoch} / 30`, color: "#a855f7" },
+                    { label: "Nash equilibrium", value: "log(2)", color: "var(--color-accent)" },
+                    { label: "Failure modes", value: "Explored", color: "#3bb4a4" },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl border border-[#1e293b] p-3">
+                      <p className="text-[10px] text-[#475569] mb-1">{item.label}</p>
+                      <p className="text-[14px] font-mono font-bold" style={{ color: item.color }}>{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[var(--color-accent)]/5 border border-[var(--color-accent)]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;A GAN is a two-player game: the generator learns by trying to fool a critic that is learning right back. Training succeeds when neither side can improve, not when a loss hits zero.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button onClick={handleFullReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
+                    Try Again
+                  </button>
+                  <Link href="/visual-guides/loss-functions"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between pt-4 border-t border-[#1e293b]">
-          <Link
-            href="/visual-guides/optimizers-race"
-            className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            <span>←</span>
-            <span>Optimizers Race</span>
-          </Link>
-          <Link
-            href="/visual-guides"
-            className="text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            All Guides
-          </Link>
-          <Link
-            href="/visual-guides/what-is-llm"
-            className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            <span>Next: What Is a Large Language Model?</span>
-            <span>→</span>
-          </Link>
-        </div>
+        {/* Footer nav */}
+        {!isComplete && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
+              ← All Guides
+            </Link>
+            <Link href="/visual-guides/loss-functions"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+              Next Guide →
+            </Link>
+          </div>
+        )}
 
       </div>
     </div>

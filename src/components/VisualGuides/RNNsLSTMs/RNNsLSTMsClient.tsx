@@ -14,9 +14,11 @@ import LSTMCellDiagram from "./LSTMCellDiagram";
 import GradientFlowChart from "./GradientFlowChart";
 import GateExplainer from "./GateExplainer";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+import { useGuideMotion } from "@/lib/guideMotion";
 
 export default function RNNsLSTMsClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
 
   const [networkType, setNetworkType] = useState<NetworkType>("rnn");
@@ -84,35 +86,43 @@ export default function RNNsLSTMsClient() {
 
   const lstmStep = LSTM_SEQUENCE[currentStep];
 
+  function handleReset() {
+    setNetworkType("rnn");
+    setCurrentStep(0);
+    setSeenTypes(new Set(["rnn"]));
+  }
+
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
+    <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="rnns-lstms" score={100} />
-      <div className="max-w-[900px] mx-auto px-5 sm:px-8 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
-          <span className="text-[#334155]">/</span>
-          <span className="text-white">RNNs &amp; LSTMs</span>
+          <span>/</span>
+          <span className="text-[#94a3b8]">RNNs &amp; LSTMs: Memory in Networks</span>
         </nav>
 
         {/* Hero */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-[#a855f7]/15 border border-[#a855f7]/35 rounded-full px-3 py-1 mb-4">
-            <span className="text-xs font-semibold text-[#a855f7] uppercase tracking-wider">
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Deep Learning
             </span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            RNNs &amp; LSTMs: Memory in Networks
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
+            RNNs &amp; LSTMs: <span className="text-[var(--color-accent)]">Memory in Networks</span>
           </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl leading-relaxed">
+          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
             Watch information flow through recurrent cells step by step. See how LSTMs solve the
             vanishing gradient problem with gates and cell state.
           </p>
-        </div>
+        </section>
 
         {/* Progress bar */}
         <div className="mb-8 bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
@@ -138,7 +148,7 @@ export default function RNNsLSTMsClient() {
               <motion.div
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-2 text-xs text-[#3bb4a4] font-semibold"
+                className="mt-2 text-xs text-[var(--color-success)] font-semibold"
               >
                 Guide complete! Great job exploring both architectures.
               </motion.div>
@@ -146,7 +156,7 @@ export default function RNNsLSTMsClient() {
           </AnimatePresence>
           {!session?.user && (
             <p className="mt-2 text-[11px] text-[#475569]">
-              <Link href="/auth/sign-in" className="text-[#d4af37] hover:underline">
+              <Link href="/auth/sign-in" className="text-[var(--color-accent)] hover:underline">
                 Sign in
               </Link>{" "}
               to save your progress
@@ -178,7 +188,7 @@ export default function RNNsLSTMsClient() {
           <div className="bg-[#1e293b]/50 border border-[#1e293b] rounded-2xl p-5 flex flex-col gap-5">
             <div>
               <p className="text-xs text-[#475569] mb-3">
-                Sequence: <span className="text-[#94a3b8] font-medium">&ldquo;The cat sat on the mat&rdquo;</span> — step through to watch the{" "}
+                Sequence: <span className="text-[#94a3b8] font-medium">&ldquo;The cat sat on the mat&rdquo;</span>. Step through to watch the{" "}
                 <span style={{ color: networkType === "rnn" ? "#1e5d8a" : "#a855f7" }}>
                   {networkType === "rnn" ? "RNN" : "LSTM"}
                 </span>{" "}
@@ -265,19 +275,13 @@ export default function RNNsLSTMsClient() {
         </section>
 
         {/* Gold insight box */}
-        <div
-          className="mb-10 rounded-2xl border p-5"
-          style={{
-            background: "rgba(212,175,55,0.06)",
-            borderColor: "rgba(212,175,55,0.2)",
-          }}
-        >
+        <div className="mb-10 rounded-2xl border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 p-5">
           <div className="flex items-start gap-3">
-            <span className="text-[#d4af37] text-lg mt-0.5">💡</span>
+            <span className="text-[var(--color-accent)] text-lg mt-0.5">💡</span>
             <div>
-              <p className="text-sm font-semibold text-[#d4af37] mb-1">Historical Context</p>
+              <p className="text-sm font-semibold text-[var(--color-accent)] mb-1">Historical Context</p>
               <p className="text-sm text-[#94a3b8] leading-relaxed">
-                LSTMs are no longer the state of the art — Transformers (using self-attention) replaced
+                LSTMs are no longer the state of the art: Transformers (using self-attention) replaced
                 them in 2017 with the landmark &ldquo;Attention Is All You Need&rdquo; paper. But
                 understanding LSTMs gives critical intuition for <em className="text-white">why</em>{" "}
                 attention was needed: sequential processing is slow, and long-range dependencies are hard
@@ -287,58 +291,83 @@ export default function RNNsLSTMsClient() {
           </div>
         </div>
 
-        {/* Summary card when complete */}
+        {/* Completion card */}
         <AnimatePresence>
           {isComplete && (
             <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-10 rounded-2xl border border-[#3bb4a4]/30 bg-[#3bb4a4]/08 p-5"
-              style={{ background: "rgba(59,180,164,0.08)" }}
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
             >
-              <div className="flex items-center gap-3 mb-3">
-                <svg className="w-5 h-5 text-[#3bb4a4]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                <span className="text-sm font-semibold text-[#3bb4a4]">Guide Complete!</span>
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">Recurrent Memory Mastered!</h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You explored both RNN and LSTM architectures, stepped through a full sequence, and saw the vanishing gradient problem first-hand.
+                </p>
               </div>
-              <p className="text-sm text-[#94a3b8] mb-4 leading-relaxed">
-                You&apos;ve explored both RNN and LSTM architectures, stepped through a full sequence, and
-                seen the vanishing gradient problem first-hand. Ready for what came next?
-              </p>
-              <Link
-                href="/visual-guides/dropout"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#3bb4a4]/20 border border-[#3bb4a4]/40 text-[#3bb4a4] text-sm font-semibold hover:bg-[#3bb4a4]/30 transition-all"
-              >
-                Next: Dropout &rarr;
-              </Link>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  {[
+                    { label: "Architectures", value: `${seenTypes.size} / 2`, color: "#a855f7" },
+                    { label: "Sequence steps", value: `${SENTENCE_TOKENS.length} tokens`, color: "#3bb4a4" },
+                    { label: "Gradient flow", value: "Seen", color: "var(--color-accent)" },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl border border-[#1e293b] p-3">
+                      <p className="text-[10px] text-[#475569] mb-1">{item.label}</p>
+                      <p className="text-[14px] font-mono font-bold" style={{ color: item.color }}>{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[var(--color-accent)]/5 border border-[var(--color-accent)]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;An RNN squeezes all history through one repeatedly multiplied hidden state, so old signals fade. The LSTM adds a gated memory highway where gradients survive as long as the network chooses to remember.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
+                    Try Again
+                  </button>
+                  <Link href="/visual-guides/dropout"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between pt-6 border-t border-[#1e293b]">
-          <Link
-            href="/visual-guides/pooling-layers"
-            className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            <span>&#8592;</span>
-            <span>Pooling Layers</span>
-          </Link>
-          <Link
-            href="/visual-guides"
-            className="text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            All Guides
-          </Link>
-          <Link
-            href="/visual-guides/dropout"
-            className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            <span>Dropout</span>
-            <span>&#8594;</span>
-          </Link>
-        </div>
+        {/* Footer nav */}
+        {!isComplete && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
+              ← All Guides
+            </Link>
+            <Link href="/visual-guides/dropout"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+              Next Guide →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

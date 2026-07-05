@@ -42,13 +42,15 @@ export default function NetworkTypeSelector({ selected, onSelect }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-3 flex-wrap">
+      <div className="flex gap-3 flex-wrap" role="radiogroup" aria-label="Network architecture">
         {OPTIONS.map((opt) => {
           const isSelected = selected === opt.id;
           return (
             <button
               key={opt.id}
               onClick={() => onSelect(opt.id)}
+              role="radio"
+              aria-checked={isSelected}
               className="relative flex-1 min-w-[140px] px-5 py-4 rounded-xl border-2 text-left transition-all"
               style={{
                 borderColor: isSelected ? opt.border : "#334155",
@@ -92,7 +94,7 @@ export default function NetworkTypeSelector({ selected, onSelect }: Props) {
         </p>
         <code
           className="text-sm font-mono font-bold"
-          style={{ color: "#d4af37" }}
+          style={{ color: "var(--color-accent)" }}
         >
           {active.formula}
         </code>

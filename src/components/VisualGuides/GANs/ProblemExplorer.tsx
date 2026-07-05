@@ -32,12 +32,12 @@ function ModeCollapseVisual() {
         </div>
         {/* Good: diverse */}
         <div>
-          <p className="text-[9px] text-[#22c55e] font-semibold mb-1 uppercase tracking-wide">Healthy G</p>
+          <p className="text-[9px] text-[var(--color-success)] font-semibold mb-1 uppercase tracking-wide">Healthy G</p>
           <div className="grid grid-cols-4 gap-1">
             {[40, 160, 220, 90, 130, 200, 60, 180].map((v, i) => (
               <div
                 key={i}
-                className="w-8 h-8 rounded border border-[#22c55e]/30"
+                className="w-8 h-8 rounded border border-[var(--color-success)]/30"
                 style={{ background: `rgb(${v},${v},${v})` }}
               />
             ))}
@@ -71,7 +71,7 @@ function InstabilityVisual() {
         <text x={10} y={H - 2} fill="#3b82f6" fontSize={7}>D loss → 0 (D wins)</text>
         <text x={10} y={14} fill="#ef4444" fontSize={7}>G loss explodes ↑</text>
       </svg>
-      <p className="text-[8px] text-[#475569] mt-1">G can&apos;t learn — gradients vanish when D is perfect</p>
+      <p className="text-[8px] text-[#475569] mt-1">G can&apos;t learn: gradients vanish when D is perfect</p>
     </div>
   );
 }
@@ -80,14 +80,14 @@ function MemorizationVisual() {
   return (
     <div className="mt-3 flex items-center gap-4">
       <div className="text-center">
-        <div className="w-12 h-12 rounded border border-[#d4af37]/40 flex items-center justify-center text-lg">
+        <div className="w-12 h-12 rounded border border-[var(--color-accent)]/40 flex items-center justify-center text-lg">
           🖼️
         </div>
         <p className="text-[8px] text-[#94a3b8] mt-1">Training<br />sample</p>
       </div>
-      <div className="text-[#d4af37] text-lg">≈</div>
+      <div className="text-[var(--color-accent)] text-lg">≈</div>
       <div className="text-center">
-        <div className="w-12 h-12 rounded border border-[#d4af37]/40 flex items-center justify-center text-lg">
+        <div className="w-12 h-12 rounded border border-[var(--color-accent)]/40 flex items-center justify-center text-lg">
           🖼️
         </div>
         <p className="text-[8px] text-[#94a3b8] mt-1">G output<br />(copied)</p>
@@ -120,7 +120,7 @@ const PROBLEMS: Problem[] = [
     title: "Memorization",
     subtitle: "G copies training data instead of generalizing",
     color: "#d4af37",
-    body: "Instead of learning the underlying distribution, G may memorize specific training examples and reproduce them. This passes the discriminator's test but produces no new creative outputs — the model has overfit.",
+    body: "Instead of learning the underlying distribution, G may memorize specific training examples and reproduce them. This passes the discriminator's test but produces no new creative outputs; the model has overfit.",
     visual: <MemorizationVisual />,
   },
 ];
