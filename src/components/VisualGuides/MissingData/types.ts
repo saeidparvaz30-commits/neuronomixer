@@ -38,11 +38,17 @@ export function applyStrategy(strategy: Strategy): Row[] {
     );
   }
   if (strategy === "mean-imputation") {
+    const observedMean = (key: "featureA" | "featureB") => {
+      const vals = ORIGINAL_ROWS.map((r) => r[key]).filter((v): v is number => v !== null);
+      return vals.reduce((a, b) => a + b, 0) / vals.length;
+    };
+    const meanA = observedMean("featureA"); // 45.29 for this dataset
+    const meanB = observedMean("featureB"); // 22.6 for this dataset
     return ORIGINAL_ROWS.map((r) => {
       const imputed: Row["imputed"] = {};
       let { featureA, featureB } = r;
-      if (featureA === null) { featureA = 45.6; imputed.featureA = true; }
-      if (featureB === null) { featureB = 23.0; imputed.featureB = true; }
+      if (featureA === null) { featureA = meanA; imputed.featureA = true; }
+      if (featureB === null) { featureB = meanB; imputed.featureB = true; }
       return { ...r, featureA, featureB, imputed };
     });
   }

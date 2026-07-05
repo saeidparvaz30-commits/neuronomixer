@@ -182,6 +182,7 @@ export default function KMeansClient() {
   const [points, setPoints] = useState<Point[]>(() => generatePoints());
   const [centroids, setCentroids] = useState<Centroid[]>([]);
   const [phase, setPhase] = useState<"setup" | "running" | "converged">("setup");
+  const [stepPhase, setStepPhase] = useState<"assign" | "update">("assign");
   const [iteration, setIteration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [inertia, setInertia] = useState(0);
@@ -193,7 +194,7 @@ export default function KMeansClient() {
   const [iterationsRun, setIterationsRun] = useState(0);
   const [viewedBadInit, setViewedBadInit] = useState(false);
   const completionFired = useRef(false);
-  const allComplete = iterationsRun >= 5 || viewedBadInit;
+  const allComplete = iterationsRun >= 5 && viewedBadInit;
 
   useEffect(() => {
     if (allComplete && !completionFired.current && session?.user) {
@@ -216,6 +217,7 @@ export default function KMeansClient() {
     setPoints(generatePoints());
     setCentroids([]);
     setPhase("setup");
+    setStepPhase("assign");
     setIteration(0);
     setIsPlaying(false);
     setInertia(0);
@@ -226,6 +228,7 @@ export default function KMeansClient() {
     setPoints(prev => prev.map(p => ({ ...p, cluster: null })));
     setCentroids([]);
     setPhase("setup");
+    setStepPhase("assign");
     setIteration(0);
     setIsPlaying(false);
     if (playRef.current) clearInterval(playRef.current);
@@ -243,34 +246,42 @@ export default function KMeansClient() {
     }));
     setCentroids(newCentroids);
     setPhase("running");
+    setStepPhase("assign");
     setIteration(0);
     setIsPlaying(false);
   }
 
+  // One call = one half of the k-means loop, so the two phases genuinely alternate:
+  // "assign" colors points by nearest centroid, "update" moves centroids to the mean.
   const runStep = useCallback(() => {
-    setPoints(prev => {
-      const assigned = assignClusters(prev, centroids);
-      const newCentroids = updateCentroids(assigned, centroids);
-      const converged = hasConverged(centroids, newCentroids);
-      const i = computeInertia(assigned, newCentroids);
+    if (stepPhase === "assign") {
+      const assigned = assignClusters(points, centroids);
+      setPoints(assigned);
+      setInertia(computeInertia(assigned, centroids));
+      setStepPhase("update");
+      return;
+    }
 
-      setCentroids(newCentroids);
-      setInertia(i);
-      setIteration(n => n + 1);
-      setIterationsRun(n => n + 1);
+    const newCentroids = updateCentroids(points, centroids);
+    const converged = hasConverged(centroids, newCentroids);
+    const i = computeInertia(points, newCentroids);
 
-      if (converged) {
-        setPhase("converged");
-        setIsPlaying(false);
-        if (playRef.current) clearInterval(playRef.current);
-        setElbowData(prev2 => {
-          const filtered = prev2.filter(d => d.k !== k);
-          return [...filtered, { k, inertia: i }].sort((a, b) => a.k - b.k);
-        });
-      }
-      return assigned;
-    });
-  }, [centroids, k]);
+    setCentroids(newCentroids);
+    setInertia(i);
+    setIteration(n => n + 1);
+    setIterationsRun(n => n + 1);
+    setStepPhase("assign");
+
+    if (converged) {
+      setPhase("converged");
+      setIsPlaying(false);
+      if (playRef.current) clearInterval(playRef.current);
+      setElbowData(prev2 => {
+        const filtered = prev2.filter(d => d.k !== k);
+        return [...filtered, { k, inertia: i }].sort((a, b) => a.k - b.k);
+      });
+    }
+  }, [points, centroids, k, stepPhase]);
 
   useEffect(() => {
     if (isPlaying) {
@@ -284,6 +295,7 @@ export default function KMeansClient() {
   function startAlgorithm() {
     if (centroids.length < k) return;
     setPhase("running");
+    setStepPhase("assign");
     setIteration(0);
   }
 
@@ -361,7 +373,11 @@ export default function KMeansClient() {
             <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
               <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
                 <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569]">
-                  {phase === "setup" ? `Place ${k} centroids (click canvas)` : `Iteration ${iteration}`}
+                  {phase === "setup"
+                    ? `Place ${k} centroids (click canvas)`
+                    : phase === "converged"
+                    ? `Iteration ${iteration}`
+                    : `Iteration ${iteration}: ${stepPhase === "update" ? "points assigned" : "awaiting assignment"}`}
                 </p>
                 <div className="flex items-center gap-2 text-[11px] text-[#475569]">
                   <span>⭐ = centroid</span>
@@ -459,15 +475,15 @@ export default function KMeansClient() {
             <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
               <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">What's Happening</p>
               <AnimatePresence mode="wait">
-                <motion.p key={phase + iteration} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+                <motion.p key={phase + stepPhase + iteration} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
                   className="text-[11px] text-[#94a3b8] leading-relaxed">
                   {phase === "setup"
                     ? `Click on the scatter plot to place ${k} starting centroids. These are the initial cluster centers.`
                     : phase === "converged"
                     ? `Converged after ${iteration} iterations. Centroids no longer move. Inertia: ${inertia.toFixed(0)}.`
-                    : iteration % 2 === 1
-                    ? "Assignment: Each point colored by nearest centroid (Euclidean distance)."
-                    : "Update: Centroids move to the mean of their assigned points."}
+                    : stepPhase === "assign"
+                    ? "Next step is Assignment: each point gets colored by its nearest centroid (Euclidean distance)."
+                    : "Assignment done. Next step is Update: each centroid moves to the mean of its assigned points."}
                 </motion.p>
               </AnimatePresence>
               {viewedBadInit && (

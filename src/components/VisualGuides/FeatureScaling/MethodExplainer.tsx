@@ -22,15 +22,15 @@ const CONTENT: Record<ScalingMethod, { heading: string; body: string; pros: stri
   normalized: {
     heading: "Min-Max Normalization (0–1)",
     body:    "Maps each feature to [0, 1] by subtracting the min and dividing by the range. Easy to interpret but highly sensitive to outliers — one extreme value compresses everything else.",
-    pros:    ["Bounded output [0, 1]", "Preserves zero values", "Intuitive scale"],
+    pros:    ["Bounded output [0, 1]", "Natural fit for pixel data (0–255)", "Intuitive scale"],
     cons:    ["Sensitive to outliers", "New data can fall outside [0, 1]", "Doesn't center at 0"],
     usedBy:  ["KNN", "Neural Networks", "Image processing"],
   },
   standardized: {
     heading: "Z-Score Standardization",
-    body:    "Subtracts the mean and divides by the standard deviation — giving each feature a mean of 0 and standard deviation of 1. Robust to outliers and ideal for normally distributed data.",
-    pros:    ["Outlier robust", "Compatible with PCA/SVD", "Zero mean, unit variance"],
-    cons:    ["Unbounded range", "Less intuitive values", "Loses original scale meaning"],
+    body:    "Subtracts the mean and divides by the standard deviation, giving each feature a mean of 0 and standard deviation of 1. Works best on roughly normal data. Outliers still pull the mean and inflate the standard deviation; when they are severe, median/IQR scaling (RobustScaler) is the robust choice.",
+    pros:    ["Less outlier-distorted than min-max", "Compatible with PCA/SVD", "Zero mean, unit variance"],
+    cons:    ["Not outlier robust (mean and SD shift)", "Unbounded range", "Less intuitive values"],
     usedBy:  ["SVM", "PCA", "Linear/Logistic Regression", "KNN"],
   },
 };

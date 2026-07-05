@@ -37,7 +37,7 @@ function closedFormNote(formula: FormulaType, n: number): string {
     case "i2":
       return `= n(n+1)(2n+1)/6 = ${(n * (n + 1) * (2 * n + 1)) / 6}`;
     case "2i+1":
-      return `= n² = ${n * n}`;
+      return `= n(n+2) = ${n}×${n + 2} = ${n * (n + 2)}`;
   }
 }
 

@@ -11,26 +11,28 @@ const D = 4096;
 const FULL = D * D;
 const fmt = (n: number) => n >= 1e6 ? `${(n/1e6).toFixed(2)}M` : n >= 1e3 ? `${(n/1e3).toFixed(1)}K` : String(n);
 
+// Illustrative positions based on the LoRA (2021) and QLoRA (2023) papers, which
+// report low-rank tuning within a point or two of full fine-tuning (sometimes above it).
 const SCATTER = [
   { label: "Full FT", x: 100, y: 100, color: "#ef4444", diamond: false },
-  { label: "LoRA r=64", x: 0.8, y: 97, color: "#3bb4a4", diamond: false },
-  { label: "LoRA r=16", x: 0.2, y: 94, color: "#3bb4a4", diamond: false },
-  { label: "LoRA r=4", x: 0.05, y: 88, color: "#3bb4a4", diamond: false },
-  { label: "QLoRA r=16", x: 0.2, y: 91, color: "#a855f7", diamond: true },
-  { label: "Adapters", x: 0.5, y: 93, color: "#d4af37", diamond: false },
+  { label: "LoRA r=64", x: 0.8, y: 99.6, color: "#3bb4a4", diamond: false },
+  { label: "LoRA r=16", x: 0.2, y: 99.3, color: "#3bb4a4", diamond: false },
+  { label: "LoRA r=4", x: 0.05, y: 98.4, color: "#3bb4a4", diamond: false },
+  { label: "QLoRA r=16", x: 0.2, y: 98.8, color: "#a855f7", diamond: true },
+  { label: "Adapters", x: 0.5, y: 98.0, color: "#d4af37", diamond: false },
 ];
 
 const TABLE = [
   { method: "Full Fine-Tune", params: "100%", vram: "~80 GB", quality: "Baseline", c: "#ef4444" },
-  { method: "LoRA (r=16)", params: "~0.2%", vram: "~16 GB", quality: "~94%", c: "#3bb4a4" },
-  { method: "QLoRA (r=16)", params: "~0.2%", vram: "~8 GB", quality: "~92%", c: "#a855f7" },
-  { method: "Adapters", params: "~0.5%", vram: "~20 GB", quality: "~93%", c: "#d4af37" },
+  { method: "LoRA (r=16)", params: "~0.2%", vram: "~16 GB", quality: "Near parity", c: "#3bb4a4" },
+  { method: "QLoRA (r=16)", params: "~0.2%", vram: "~8 GB", quality: "Near parity", c: "#a855f7" },
+  { method: "Adapters", params: "~0.5%", vram: "~20 GB", quality: "Within ~1%", c: "#d4af37" },
 ];
 
 // svg scatter helpers
 const SL = 52, SR = 20, ST = 16, SB = 44, SW = 480, SH = 260;
 const xS = (v: number) => { const mn = Math.log10(0.04), mx = Math.log10(110); return SL + ((Math.log10(Math.max(v,0.04))-mn)/(mx-mn))*(SW-SL-SR); };
-const yS = (v: number) => ST + ((100-v)/20)*(SH-ST-SB);
+const yS = (v: number) => ST + ((100-v)/6)*(SH-ST-SB);
 
 export default function LoRAAdaptersClient() {
   const { data: session } = useSession();
@@ -220,10 +222,10 @@ export default function LoRAAdaptersClient() {
           <p className="text-[12px] text-[#94a3b8] mb-5">Low-rank fine-tuning achieves near full-fine-tuning quality while training a fraction of parameters.</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 overflow-x-auto">
             <svg viewBox={`0 0 ${SW} ${SH}`} className="w-full max-w-[480px] mx-auto block">
-              {[80,85,90,95,100].map(y=><line key={y} x1={SL} y1={yS(y)} x2={SW-SR} y2={yS(y)} stroke="#1e293b" strokeWidth={1}/>)}
+              {[94,96,98,100].map(y=><line key={y} x1={SL} y1={yS(y)} x2={SW-SR} y2={yS(y)} stroke="#1e293b" strokeWidth={1}/>)}
               <line x1={SL} y1={ST} x2={SL} y2={SH-SB} stroke="#334155" strokeWidth={1.5}/>
               <line x1={SL} y1={SH-SB} x2={SW-SR} y2={SH-SB} stroke="#334155" strokeWidth={1.5}/>
-              {[80,85,90,95,100].map(y=><text key={y} x={SL-6} y={yS(y)+4} textAnchor="end" fontSize={9} fill="#475569">{y}%</text>)}
+              {[94,96,98,100].map(y=><text key={y} x={SL-6} y={yS(y)+4} textAnchor="end" fontSize={9} fill="#475569">{y}%</text>)}
               {[0.05,0.2,0.5,1,5,25,100].map(x=><text key={x} x={xS(x)} y={SH-SB+14} textAnchor="middle" fontSize={9} fill="#475569">{x<1?x:`${x}%`}</text>)}
               <text x={(SL+SW-SR)/2} y={SH-4} textAnchor="middle" fontSize={9} fill="#94a3b8">% of original params trained (log scale)</text>
               <text x={10} y={(ST+SH-SB)/2} textAnchor="middle" fontSize={9} fill="#94a3b8" transform={`rotate(-90,10,${(ST+SH-SB)/2})`}>Performance vs full FT (%)</text>
@@ -245,6 +247,11 @@ export default function LoRAAdaptersClient() {
                 </div>
               ))}
             </div>
+            <p className="text-[10px] text-[#475569] mt-3 text-center leading-relaxed">
+              Positions are illustrative, based on the LoRA (2021) and QLoRA (2023) papers: low-rank
+              tuning typically lands within a point or two of full fine-tuning and sometimes beats it.
+              Exact numbers depend on the task, model, and rank.
+            </p>
           </div>
         </section>
 
@@ -329,7 +336,7 @@ export default function LoRAAdaptersClient() {
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wider text-[#d4af37] mb-2">Key Insight</p>
               <p className="text-[13px] text-white leading-relaxed">
-                QLoRA enabled fine-tuning LLaMA 65B on a single 48 GB GPU — previously requiring 780 GB. This democratized LLM fine-tuning for researchers and small teams. Most open-source fine-tuned models (Alpaca, Vicuna) use LoRA. The underlying reason it works: weight updates during fine-tuning tend to be inherently low-rank — most task-specific information lives in a small subspace.
+                QLoRA enabled fine-tuning LLaMA 65B on a single 48 GB GPU, where full 16-bit fine-tuning needs over 780 GB. This democratized LLM fine-tuning for researchers and small teams. Note that the original Alpaca and Vicuna were full fine-tunes; it was community reproductions like Alpaca-LoRA, and the QLoRA paper&apos;s own Guanaco models, that showed adapters can reach comparable quality at a fraction of the cost. The underlying reason it works: weight updates during fine-tuning tend to be inherently low-rank, so most task-specific information lives in a small subspace.
               </p>
             </div>
           </div>

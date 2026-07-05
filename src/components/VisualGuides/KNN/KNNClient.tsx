@@ -15,17 +15,40 @@ function euclidean(a: { x: number; y: number }, b: { x: number; y: number }) {
 }
 
 // ── Generate training data ────────────────────────────────────────────────────
-function generateTrainingData(): TrainPt[] {
+// Two OVERLAPPING clusters: with fully separated blobs every K gives the same
+// boundary, so overfitting/underfitting would be invisible. The overlap zone in
+// the middle is what makes the choice of K matter.
+function generateTrainingData(nPerClass = 75): TrainPt[] {
+  const gauss = () => (Math.random() + Math.random() + Math.random()) / 3 - 0.5;
+  const clamp = (v: number) => Math.max(2, Math.min(98, v));
   const pts: TrainPt[] = [];
-  // Class 0: lower-left region
-  for (let i = 0; i < 75; i++) {
-    pts.push({ id: i, x: 5 + Math.random() * 40, y: 5 + Math.random() * 40, cls: 0 });
+  for (let i = 0; i < nPerClass; i++) {
+    pts.push({ id: i, x: clamp(40 + gauss() * 66), y: clamp(40 + gauss() * 66), cls: 0 });
   }
-  // Class 1: upper-right region
-  for (let i = 0; i < 75; i++) {
-    pts.push({ id: 75 + i, x: 55 + Math.random() * 40, y: 55 + Math.random() * 40, cls: 1 });
+  for (let i = 0; i < nPerClass; i++) {
+    pts.push({ id: nPerClass + i, x: clamp(60 + gauss() * 66), y: clamp(60 + gauss() * 66), cls: 1 });
   }
   return pts;
+}
+
+// Accuracy for every k in 1..maxK, computed from the actual points.
+// Each evaluation point sorts the training set by distance once, then majority
+// votes over the first k classes. When evalPts IS the training set, k=1 finds
+// the point itself at distance 0, so training accuracy at K=1 is 100% by definition.
+function accuracyCurve(evalPts: TrainPt[], train: TrainPt[], maxK: number): number[] {
+  const correct = new Array(maxK).fill(0);
+  for (const q of evalPts) {
+    const sortedCls = [...train]
+      .sort((a, b) => euclidean(q, a) - euclidean(q, b))
+      .map(p => p.cls);
+    let v1 = 0;
+    for (let k = 1; k <= maxK; k++) {
+      v1 += sortedCls[k - 1];
+      const predicted = v1 >= k - v1 ? 1 : 0;
+      if (predicted === q.cls) correct[k - 1]++;
+    }
+  }
+  return correct.map(c => (c / evalPts.length) * 100);
 }
 
 function knnPredict(pt: { x: number; y: number }, train: TrainPt[], k: number): { predicted: 0 | 1; votes: [number, number] } {
@@ -149,26 +172,24 @@ function KNNPlot({
 }
 
 // ── Accuracy chart ────────────────────────────────────────────────────────────
-function AccuracyChart({ train, currentK }: { train: TrainPt[]; currentK: number }) {
+function AccuracyChart({ trainAcc, validAcc, currentK }: { trainAcc: number[]; validAcc: number[]; currentK: number }) {
   const W = 280, H = 120, PAD = { l: 32, r: 8, t: 8, b: 24 };
   const IW = W - PAD.l - PAD.r, IH = H - PAD.t - PAD.b;
 
-  // Pre-simulated accuracy values (realistic pattern for this dataset)
-  const trainAcc = (k: number) => Math.max(60, 100 - k * 2.2);
-  const validAcc = (k: number) => {
-    if (k <= 1) return 68;
-    if (k <= 3) return 78 + k * 3;
-    if (k <= 7) return 88 - (k - 5) * 0.5;
-    return Math.max(72, 88 - k * 1.5);
-  };
+  const maxK = trainAcc.length;
+  const yMin = Math.min(60, Math.floor(Math.min(...trainAcc, ...validAcc) / 5) * 5);
 
-  const ks = Array.from({ length: 20 }, (_, i) => i + 1);
-  const maxK = 20;
+  const ks = Array.from({ length: maxK }, (_, i) => i + 1);
   const tx = (k: number) => PAD.l + ((k - 1) / (maxK - 1)) * IW;
-  const ty = (v: number) => PAD.t + IH - ((v - 60) / 40) * IH;
+  const ty = (v: number) => PAD.t + IH - ((v - yMin) / (100 - yMin)) * IH;
 
-  const trainPath = ks.map((k, i) => `${i === 0 ? "M" : "L"} ${tx(k).toFixed(1)} ${ty(trainAcc(k)).toFixed(1)}`).join(" ");
-  const validPath = ks.map((k, i) => `${i === 0 ? "M" : "L"} ${tx(k).toFixed(1)} ${ty(validAcc(k)).toFixed(1)}`).join(" ");
+  const yTicks = Array.from(
+    { length: Math.floor((100 - yMin) / 10) + 1 },
+    (_, i) => yMin + i * 10
+  );
+
+  const trainPath = ks.map((k, i) => `${i === 0 ? "M" : "L"} ${tx(k).toFixed(1)} ${ty(trainAcc[k - 1]).toFixed(1)}`).join(" ");
+  const validPath = ks.map((k, i) => `${i === 0 ? "M" : "L"} ${tx(k).toFixed(1)} ${ty(validAcc[k - 1]).toFixed(1)}`).join(" ");
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} width="100%">
@@ -182,15 +203,15 @@ function AccuracyChart({ train, currentK }: { train: TrainPt[]; currentK: number
       <line x1={tx(currentK)} y1={PAD.t} x2={tx(currentK)} y2={PAD.t + IH}
         stroke="#d4af37" strokeWidth="1.5" strokeDasharray="3,2" />
 
-      {[60, 70, 80, 90, 100].map(v => (
+      {yTicks.map(v => (
         <text key={v} x={PAD.l - 3} y={ty(v) + 3} textAnchor="end" fill="#475569" fontSize="7">{v}</text>
       ))}
       {[1, 5, 10, 15, 20].map(k => (
         <text key={k} x={tx(k)} y={PAD.t + IH + 12} textAnchor="middle" fill="#475569" fontSize="7">{k}</text>
       ))}
       <text x={PAD.l + IW / 2} y={H - 2} textAnchor="middle" fill="#475569" fontSize="8">K</text>
-      <text x={PAD.l + IW - 2} y={ty(trainAcc(maxK)) - 3} fill="#3b82f6" fontSize="7">Train</text>
-      <text x={PAD.l + IW - 2} y={ty(validAcc(maxK)) + 8} fill="#f97316" fontSize="7">Valid</text>
+      <text x={PAD.l + IW - 2} y={ty(trainAcc[maxK - 1]) - 3} fill="#3b82f6" fontSize="7">Train</text>
+      <text x={PAD.l + IW - 2} y={ty(validAcc[maxK - 1]) + 8} fill="#f97316" fontSize="7">Valid</text>
     </svg>
   );
 }
@@ -199,6 +220,7 @@ function AccuracyChart({ train, currentK }: { train: TrainPt[]; currentK: number
 export default function KNNClient() {
   const { data: session } = useSession();
   const [train] = useState<TrainPt[]>(() => generateTrainingData());
+  const [validation] = useState<TrainPt[]>(() => generateTrainingData(25));
   const [k, setK] = useState(5);
   const [queryPts, setQueryPts] = useState<QueryPt[]>([]);
   const [selectedQuery, setSelectedQuery] = useState<number | null>(null);
@@ -208,6 +230,10 @@ export default function KNNClient() {
 
   const GRID_N = 30;
   const boundary = useMemo(() => computeBoundary(train, k, GRID_N), [train, k]);
+  const accCurves = useMemo(() => ({
+    train: accuracyCurve(train, train, 20),
+    valid: accuracyCurve(validation, train, 20),
+  }), [train, validation]);
 
   const allComplete = queryPts.length >= 1 && (Math.abs(kMoved[0] - kMoved[1]) >= 10);
 
@@ -351,13 +377,18 @@ export default function KNNClient() {
 
             {/* Accuracy chart */}
             <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
-              <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">Training vs Validation Accuracy (Approximate)</p>
-              <AccuracyChart train={train} currentK={k} />
+              <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">Training vs Validation Accuracy (Computed Live)</p>
+              <AccuracyChart trainAcc={accCurves.train} validAcc={accCurves.valid} currentK={k} />
               <div className="flex items-center gap-4 mt-2 text-[10px]">
                 <span className="flex items-center gap-1"><span className="inline-block w-4 h-0.5 bg-[#3b82f6]" /> Training</span>
                 <span className="flex items-center gap-1"><span className="inline-block w-4 h-0.5 bg-[#f97316]" /> Validation</span>
                 <span className="text-[#d4af37]">│ current K</span>
               </div>
+              <p className="text-[10px] text-[#475569] mt-2 leading-relaxed">
+                Both curves are computed from the actual points: training accuracy scores the visible
+                points against themselves (at K=1 each point finds itself, so it is always 100%),
+                validation accuracy scores 50 held-out points drawn from the same two clusters.
+              </p>
             </div>
           </div>
 

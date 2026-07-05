@@ -93,7 +93,7 @@ export const METHOD_META = {
     label:   "Standardized (z-score)",
     color:   "#3b82f6",
     formula: "x_std = (x − mean(x)) / std(x)\ny_std = (y − mean(y)) / std(y)",
-    tagline: "Centers data around 0 with unit variance. Robust to skewed ranges.",
+    tagline: "Centers data around 0 with unit variance. Outliers still shift the mean and SD.",
     xLabel:  "Age (std devs)",
     yLabel:  "Salary (std devs)",
     xMin: -2.2, xMax: 2.2, yMin: -2.2, yMax: 2.2,

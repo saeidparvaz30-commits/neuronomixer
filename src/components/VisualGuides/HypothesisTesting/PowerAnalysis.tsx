@@ -140,7 +140,7 @@ export default function PowerAnalysis({ alpha, power, onViewed }: PowerAnalysisP
 
               {/* Tradeoff note */}
               <p className="mt-4 text-[11px] text-[#475569] leading-relaxed">
-                <span className="text-[#d4af37] font-semibold">Key tradeoff:</span> Lowering α reduces Type I errors but increases Type II errors (lower power). Raising n is the cleanest way to reduce both simultaneously.
+                <span className="text-[#d4af37] font-semibold">Key tradeoff:</span> Lowering α reduces Type I errors but increases Type II errors (lower power). Note that the Type I error rate is fixed by your choice of α no matter how large the sample gets. What a bigger n buys you is a lower β at the same α, or room to choose a stricter α without sacrificing power.
               </p>
             </div>
           </motion.div>

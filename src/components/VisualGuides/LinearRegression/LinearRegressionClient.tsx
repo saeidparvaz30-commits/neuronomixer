@@ -65,12 +65,17 @@ function RegressionScatter({
   const lineY0 = reg.slope * 0 + reg.intercept;
   const lineY100 = reg.slope * 100 + reg.intercept;
 
-  // Confidence band (rough: ±2*RMSE at each x)
-  const rmse = Math.sqrt(reg.mse);
+  // ~95% prediction band: yhat ± 2·s·sqrt(1 + 1/n + (x − x̄)² / Sxx),
+  // with s² = SSE/(n−2). It flares at the edges, where predictions are less certain.
+  const n = points.length;
+  const xbar = n > 0 ? points.reduce((a, p) => a + p.x, 0) / n : 0;
+  const sxx = points.reduce((a, p) => a + (p.x - xbar) ** 2, 0);
+  const s = n > 2 ? Math.sqrt((reg.mse * n) / (n - 2)) : Math.sqrt(reg.mse);
   const ciPts = Array.from({ length: 20 }, (_, i) => {
     const x = i * (100 / 19);
     const yhat = reg.slope * x + reg.intercept;
-    return { x, upper: Math.min(100, yhat + 2 * rmse), lower: Math.max(0, yhat - 2 * rmse) };
+    const half = 2 * s * Math.sqrt(1 + 1 / Math.max(n, 1) + (sxx > 0 ? (x - xbar) ** 2 / sxx : 0));
+    return { x, upper: Math.min(100, yhat + half), lower: Math.max(0, yhat - half) };
   });
   const upperPath = ciPts.map((p, i) => `${i === 0 ? "M" : "L"} ${tx(p.x).toFixed(1)} ${ty(p.upper).toFixed(1)}`).join(" ");
   const lowerPath = [...ciPts].reverse().map((p, i) => `${i === 0 ? "L" : "L"} ${tx(p.x).toFixed(1)} ${ty(p.lower).toFixed(1)}`).join(" ");
@@ -339,7 +344,7 @@ export default function LinearRegressionClient() {
               <div className="space-y-2">
                 {[
                   { label: "Show residuals", value: showResiduals, set: setShowResiduals, color: "#d4af37" },
-                  { label: "Show confidence band", value: showCI, set: setShowCI, color: "#3bb4a4" },
+                  { label: "Show ~95% prediction band", value: showCI, set: setShowCI, color: "#3bb4a4" },
                 ].map(({ label, value, set, color }) => (
                   <button key={label}
                     onClick={() => set(!value)}

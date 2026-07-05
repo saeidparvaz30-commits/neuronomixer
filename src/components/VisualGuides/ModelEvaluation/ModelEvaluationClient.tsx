@@ -8,17 +8,38 @@ import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Metric helpers ─────────────────────────────────────────────────────────────
 
+function ngramCounts(tokens: string[], n: number): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (let i = 0; i + n <= tokens.length; i++) {
+    const gram = tokens.slice(i, i + n).join("_");
+    counts.set(gram, (counts.get(gram) ?? 0) + 1);
+  }
+  return counts;
+}
+
+// Simplified BLEU-2: geometric mean of CLIPPED unigram + bigram precision,
+// times the brevity penalty. Clipping caps each n-gram at its reference count,
+// so repeating a matching word cannot inflate the score.
 function bleuScore(reference: string, hypothesis: string): number {
   const refTokens = reference.toLowerCase().split(/\W+/).filter(Boolean);
   const hypTokens = hypothesis.toLowerCase().split(/\W+/).filter(Boolean);
-  if (!hypTokens.length) return 0;
-  const matches = hypTokens.filter((t) => refTokens.includes(t)).length;
-  const precision = matches / hypTokens.length;
+  if (!hypTokens.length || !refTokens.length) return 0;
+  const precisions = [1, 2].map((n) => {
+    const hypCounts = ngramCounts(hypTokens, n);
+    const refCounts = ngramCounts(refTokens, n);
+    let clipped = 0;
+    let total = 0;
+    for (const [gram, count] of hypCounts) {
+      clipped += Math.min(count, refCounts.get(gram) ?? 0);
+      total += count;
+    }
+    return total ? clipped / total : 0;
+  });
   const bp =
     hypTokens.length >= refTokens.length
       ? 1
       : Math.exp(1 - refTokens.length / hypTokens.length);
-  return Math.min(1, bp * precision);
+  return Math.min(1, bp * Math.sqrt(precisions[0] * precisions[1]));
 }
 
 function rouge1(reference: string, hypothesis: string): number {
@@ -71,7 +92,7 @@ const METRIC_FAILURES = [
     reference: "The dog bit the man.",
     hypothesis: "The man bit the dog.",
     insight:
-      "Same words, opposite meaning. BLEU sees 100% word overlap but the semantics are completely reversed.",
+      "Same words, opposite meaning. Every word matches and three of the four bigrams survive the swap, so BLEU-2 stays high while the semantics are reversed. Only longer n-grams would expose it.",
     color: "#ef4444",
   },
   {
@@ -80,16 +101,16 @@ const METRIC_FAILURES = [
     reference: "The capital of France is Paris.",
     hypothesis: "Paris is the French capital.",
     insight:
-      "A perfect paraphrase is penalised because the n-gram sequences differ. BLEU punishes creativity.",
+      "A perfect paraphrase is penalised because the word order differs: not a single bigram matches, so BLEU-2 collapses to zero. BLEU punishes creativity.",
     color: "#d4af37",
   },
   {
     id: "repetition",
-    label: "Low perplexity, garbage output",
+    label: "Repetition: why BLEU clips",
     reference: "The model generates coherent and accurate text.",
     hypothesis: "The the the the the the the.",
     insight:
-      "Repeated tokens have very low perplexity (the model is not \"surprised\"), yet the output is meaningless.",
+      "Unclipped precision would score this 1.00, since every \"the\" appears in the reference. Clipping caps it at the reference count, so BLEU collapses to zero. Perplexity can also be fooled: a model stuck in a repetition loop grows ever more confident in the repeated token, so low perplexity alone never guarantees quality.",
     color: "#a855f7",
   },
 ];
@@ -100,7 +121,7 @@ const FRAMEWORKS = [
     full: "Massive Multitask Language Understanding",
     tests: "General knowledge across 57 academic subjects",
     detail: "Multiple-choice questions spanning STEM, humanities, law, medicine",
-    leader: "GPT-4o: ~88%",
+    leader: "GPT-4o (2024): 88.7%",
     color: "#3bb4a4",
   },
   {
@@ -108,7 +129,7 @@ const FRAMEWORKS = [
     full: "HumanEval",
     tests: "Code generation — 164 Python problems",
     detail: "Pass@1 rate: model writes a function, tests run against hidden test cases",
-    leader: "GPT-4o: ~90%",
+    leader: "GPT-4o (2024): 90.2%",
     color: "#1e5d8a",
   },
   {
@@ -116,7 +137,7 @@ const FRAMEWORKS = [
     full: "HellaSwag",
     tests: "Commonsense reasoning & sentence completion",
     detail: "Model picks the most plausible next sentence from 4 adversarially filtered choices",
-    leader: "GPT-4: ~95%",
+    leader: "GPT-4 (2023): 95.3%",
     color: "#d4af37",
   },
   {
@@ -125,7 +146,7 @@ const FRAMEWORKS = [
     tests: "Multi-turn conversation quality",
     detail:
       "GPT-4 judges responses on writing, reasoning, math, coding across 80 multi-turn questions",
-    leader: "GPT-4: 8.99 / 10",
+    leader: "GPT-4 (2023): 8.99 / 10",
     color: "#a855f7",
   },
 ];
@@ -213,7 +234,7 @@ function MetricCalculator({ onEdited }: { onEdited: () => void }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 pt-2">
-        <MetricBar label="BLEU score" value={bleu} />
+        <MetricBar label="BLEU-2 score" value={bleu} />
         <MetricBar label="ROUGE-1" value={r1} />
         <MetricBar label="ROUGE-2" value={r2} />
         <div className="space-y-1">
@@ -276,7 +297,7 @@ function MetricFailureCards() {
 
             <div className="flex gap-4 text-[11px]">
               <span>
-                <span className="text-[#475569]">BLEU </span>
+                <span className="text-[#475569]">BLEU-2 </span>
                 <span className="font-bold" style={{ color: scoreColor(bleu) }}>
                   {bleu.toFixed(2)}
                 </span>
@@ -324,13 +345,13 @@ function FrameworkCards({ containerRef }: { containerRef: React.RefObject<HTMLDi
               className="text-[10px] font-semibold px-2 py-1 rounded-full flex-shrink-0"
               style={{ background: `${fw.color}15`, color: fw.color }}
             >
-              SOTA
+              Benchmark
             </span>
           </div>
           <p className="text-[12px] text-white font-semibold leading-tight">{fw.tests}</p>
           <p className="text-[11px] text-[#94a3b8] leading-relaxed">{fw.detail}</p>
           <div className="rounded-lg bg-[#1e293b] px-3 py-2">
-            <p className="text-[9px] uppercase tracking-wider text-[#475569] mb-0.5">Current leader</p>
+            <p className="text-[9px] uppercase tracking-wider text-[#475569] mb-0.5">Reference score (at publication)</p>
             <p className="text-[12px] font-bold" style={{ color: fw.color }}>
               {fw.leader}
             </p>
@@ -534,7 +555,7 @@ export default function ModelEvaluationClient() {
           {/* Metric definitions */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
             {[
-              { name: "BLEU", desc: "n-gram precision + brevity penalty", color: "#3bb4a4" },
+              { name: "BLEU", desc: "Clipped n-gram precision + brevity penalty (computed here up to bigrams)", color: "#3bb4a4" },
               { name: "ROUGE-1", desc: "Unigram recall overlap", color: "#1e5d8a" },
               { name: "ROUGE-2", desc: "Bigram recall overlap", color: "#d4af37" },
               { name: "BERTScore", desc: "Semantic similarity via embeddings", color: "#a855f7" },
@@ -599,9 +620,11 @@ export default function ModelEvaluationClient() {
                 Key Insight
               </p>
               <p className="text-[13px] text-white leading-relaxed">
-                LMSYS Chatbot Arena uses ELO ratings from 500K+ human comparisons — currently
-                the most reliable LLM ranking method. Academic benchmarks are often gamed;
-                human preference is harder to optimize against.
+                LMSYS Chatbot Arena ranks models with Elo-style ratings computed from
+                millions of blind, head-to-head human votes. Static academic benchmarks
+                can leak into training data and be gamed; live human preference is much
+                harder to optimize against, which is why many teams treat Arena rankings
+                as the stronger signal.
               </p>
             </div>
           </div>

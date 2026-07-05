@@ -236,9 +236,15 @@ export default function GANsClient() {
           <p className="text-sm text-[#94a3b8] leading-relaxed">
             <span className="text-white font-medium">GANs were invented by Ian Goodfellow in 2014</span> at a bar
             after a debate with colleagues about generative models. He coded up the first working version
-            that same night. Modern variants like{" "}
-            <span className="text-white font-medium">StyleGAN, DALL-E, and Stable Diffusion</span> generate
-            photorealistic images, video, and audio — all building on that original adversarial idea.
+            that same night. Successors like <span className="text-white font-medium">StyleGAN</span> pushed
+            the adversarial idea to photorealistic faces. Today&apos;s image generators such as{" "}
+            <span className="text-white font-medium">DALL-E and Stable Diffusion</span> are a different
+            lineage: they are{" "}
+            <Link href="/visual-guides/diffusion-models" className="text-[#d4af37] underline underline-offset-2 hover:opacity-80 transition-opacity">
+              diffusion models
+            </Link>
+            , which largely replaced GANs for image generation, though GAN-style adversarial losses still
+            appear inside some of their components.
           </p>
         </div>
 
