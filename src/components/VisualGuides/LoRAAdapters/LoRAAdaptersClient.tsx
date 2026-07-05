@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const RANKS = [1, 2, 4, 8, 16, 32, 64];
@@ -19,14 +20,14 @@ const SCATTER = [
   { label: "LoRA r=16", x: 0.2, y: 99.3, color: "#3bb4a4", diamond: false },
   { label: "LoRA r=4", x: 0.05, y: 98.4, color: "#3bb4a4", diamond: false },
   { label: "QLoRA r=16", x: 0.2, y: 98.8, color: "#a855f7", diamond: true },
-  { label: "Adapters", x: 0.5, y: 98.0, color: "#d4af37", diamond: false },
+  { label: "Adapters", x: 0.5, y: 98.0, color: "var(--color-accent)", diamond: false },
 ];
 
 const TABLE = [
   { method: "Full Fine-Tune", params: "100%", vram: "~80 GB", quality: "Baseline", c: "#ef4444" },
   { method: "LoRA (r=16)", params: "~0.2%", vram: "~16 GB", quality: "Near parity", c: "#3bb4a4" },
   { method: "QLoRA (r=16)", params: "~0.2%", vram: "~8 GB", quality: "Near parity", c: "#a855f7" },
-  { method: "Adapters", params: "~0.5%", vram: "~20 GB", quality: "Within 1-2% (illustrative)", c: "#d4af37" },
+  { method: "Adapters", params: "~0.5%", vram: "~20 GB", quality: "Within 1-2% (illustrative)", c: "var(--color-accent)" },
 ];
 
 // svg scatter helpers
@@ -36,6 +37,7 @@ const yS = (v: number) => ST + ((100-v)/6)*(SH-ST-SB);
 
 export default function LoRAAdaptersClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const [matMode, setMatMode] = useState<"full"|"lora">("full");
   const [rankIdx, setRankIdx] = useState(4);
   const [loraOn, setLoraOn] = useState(true);
@@ -64,28 +66,36 @@ export default function LoRAAdaptersClient() {
     if (!plotRef.current) { plotRef.current = true; setPlotDone(true); }
   }, []);
 
+  function handleReset() {
+    setMatMode("full");
+    setRankIdx(4);
+    setLoraOn(true);
+    setSliderDone(false);
+    sliderRef.current = false;
+  }
+
   return (
     <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={allComplete} guideSlug="lora-adapters" score={100} />
-      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
-          <span className="text-white/20">/</span>
-          <span className="text-[#ec4899]">Applied AI</span>
-          <span className="text-white/20">/</span>
-          <span className="text-white">LoRA &amp; Adapters: Efficient Fine-Tuning</span>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
+            Visual Guides
+          </Link>
+          <span>/</span>
+          <span className="text-[#94a3b8]">LoRA &amp; Adapters: Efficient Fine-Tuning</span>
         </nav>
 
         {/* Hero */}
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#ec4899]"/><span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#ec4899]">Applied AI</span><span className="w-6 h-px bg-[#ec4899]"/>
+            <span className="w-6 h-px bg-[var(--color-accent)]" /><span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">Applied AI</span><span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">LoRA &amp; <span className="text-[#ec4899]">Adapters</span></h1>
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">LoRA &amp; <span className="text-[var(--color-accent)]">Adapters</span></h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
-            Fine-tuning a 7B model requires updating all 7 billion weights — expensive and slow. LoRA learns two tiny matrices whose product approximates the full weight update. Same quality, a fraction of the cost.
+            Fine-tuning a 7B model requires updating all 7 billion weights: expensive and slow. LoRA learns two tiny matrices whose product approximates the full weight update. Same quality, a fraction of the cost.
           </p>
         </section>
 
@@ -93,14 +103,14 @@ export default function LoRAAdaptersClient() {
         <div className="flex items-center gap-3 mb-10 flex-wrap">
           {[{label:"Rank slider",done:sliderDone},{label:"Quality plot viewed",done:plotDone}].map(({label,done})=>(
             <div key={label} className="flex items-center gap-1.5">
-              <motion.div className="w-2 h-2 rounded-full" animate={{backgroundColor:done?"#ec4899":"#1e293b"}} transition={{duration:0.4}}/>
+              <div className="w-2 h-2 rounded-full transition-colors" style={{ background: done ? "var(--color-accent)" : "#1e293b" }} />
               <span className={`text-[11px] transition-colors ${done?"text-white":"text-[#475569]"}`}>{label}</span>
             </div>
           ))}
           {!session?.user && <p className="text-[11px] text-[#475569] ml-auto">Sign in to save progress</p>}
           <AnimatePresence>
             {allComplete && (
-              <motion.span initial={{opacity:0}} animate={{opacity:1}} className="ml-auto text-[11px] font-semibold text-[#ec4899] flex items-center gap-1">
+              <motion.span initial={{opacity:0}} animate={{opacity:1}} className="ml-auto text-[11px] font-semibold text-[var(--color-success)] flex items-center gap-1">
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
                 Guide complete!
               </motion.span>
@@ -110,12 +120,12 @@ export default function LoRAAdaptersClient() {
 
         {/* S1: Weight Matrix */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 1 — The Weight Matrix Problem</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 1: The Weight Matrix Problem</h2>
           <p className="text-[12px] text-[#94a3b8] mb-5">Toggle between full fine-tuning and LoRA to see how the weight update changes.</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
-            <div className="flex gap-2 mb-5">
+            <div className="flex gap-2 mb-5" role="radiogroup" aria-label="Weight update mode">
               {(["full","lora"] as const).map(m=>(
-                <button key={m} onClick={()=>setMatMode(m)} className={`px-4 py-2 rounded-xl text-[13px] font-semibold border transition-all ${matMode===m?"bg-[#ec4899] border-[#ec4899] text-white":"border-[#1e293b] text-[#94a3b8] hover:border-[#334155] hover:text-white"}`}>
+                <button key={m} role="radio" aria-checked={matMode===m} onClick={()=>setMatMode(m)} className={`px-4 py-2 rounded-xl text-[13px] font-semibold border transition-all ${matMode===m?"bg-[var(--color-accent)] border-[var(--color-accent)] text-[#0a0e1a]":"border-[#1e293b] text-[#94a3b8] hover:border-[#334155] hover:text-white"}`}>
                   {m==="full"?"Full Fine-Tuning":"LoRA"}
                 </button>
               ))}
@@ -181,19 +191,19 @@ export default function LoRAAdaptersClient() {
 
         {/* S2: Rank Slider */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 2 — Rank Slider</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 2: Rank Slider</h2>
           <p className="text-[12px] text-[#94a3b8] mb-5">Drag the slider to see how rank r controls trainable parameters and memory usage.</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[13px] font-bold text-white">Rank r = <span className="text-[#ec4899]">{r}</span></p>
+              <p className="text-[13px] font-bold text-white">Rank r = <span className="text-[var(--color-accent)]">{r}</span></p>
               <p className="text-[11px] text-[#475569]">d = {D.toLocaleString()} (fixed)</p>
             </div>
-            <input type="range" min={0} max={RANKS.length-1} value={rankIdx} onChange={e=>{setRankIdx(Number(e.target.value));if(!sliderRef.current){sliderRef.current=true;setSliderDone(true);}}} className="w-full accent-[#ec4899] cursor-pointer mb-1"/>
+            <input type="range" aria-label="LoRA rank r" min={0} max={RANKS.length-1} value={rankIdx} onChange={e=>{setRankIdx(Number(e.target.value));if(!sliderRef.current){sliderRef.current=true;setSliderDone(true);}}} className="w-full accent-[var(--color-accent)] cursor-pointer mb-1"/>
             <div className="flex justify-between mb-5">
-              {RANKS.map(rv=><span key={rv} className={`text-[10px] ${RANKS[rankIdx]===rv?"text-[#ec4899] font-bold":"text-[#334155]"}`}>{rv}</span>)}
+              {RANKS.map(rv=><span key={rv} className={`text-[10px] ${RANKS[rankIdx]===rv?"text-[var(--color-accent)] font-bold":"text-[#334155]"}`}>{rv}</span>)}
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-              {[{label:"LoRA params",val:fmt(loraP),color:"#3bb4a4"},{label:"Full layer",val:fmt(FULL),color:"#ef4444"},{label:"Param savings",val:`${((1-loraP/FULL)*100).toFixed(2)}%`,color:"#d4af37"},{label:"LoRA mem (fp32)",val:`${((loraP*4)/1048576).toFixed(2)} MB`,color:"#ec4899"}].map(({label,val,color})=>(
+              {[{label:"LoRA params",val:fmt(loraP),color:"#3bb4a4"},{label:"Full layer",val:fmt(FULL),color:"#ef4444"},{label:"Param savings",val:`${((1-loraP/FULL)*100).toFixed(2)}%`,color:"var(--color-accent)"},{label:"LoRA mem (fp32)",val:`${((loraP*4)/1048576).toFixed(2)} MB`,color:"#ec4899"}].map(({label,val,color})=>(
                 <div key={label} className="rounded-xl border border-[#1e293b] p-3">
                   <p className="text-[10px] text-[#475569] mb-1">{label}</p>
                   <p className="text-[16px] font-black" style={{color}}>{val}</p>
@@ -218,7 +228,7 @@ export default function LoRAAdaptersClient() {
 
         {/* S3: Quality Scatter */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 3 — Quality vs Efficiency</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 3: Quality vs Efficiency</h2>
           <p className="text-[12px] text-[#94a3b8] mb-5">Low-rank fine-tuning achieves near full-fine-tuning quality while training a fraction of parameters.</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 overflow-x-auto">
             <svg viewBox={`0 0 ${SW} ${SH}`} className="w-full max-w-[480px] mx-auto block">
@@ -240,7 +250,7 @@ export default function LoRAAdaptersClient() {
               })}
             </svg>
             <div className="flex items-center gap-4 mt-3 flex-wrap justify-center">
-              {[{shape:"c",color:"#ef4444",label:"Full FT"},{shape:"c",color:"#3bb4a4",label:"LoRA"},{shape:"d",color:"#a855f7",label:"QLoRA"},{shape:"c",color:"#d4af37",label:"Adapters"}].map(({shape,color,label})=>(
+              {[{shape:"c",color:"#ef4444",label:"Full FT"},{shape:"c",color:"#3bb4a4",label:"LoRA"},{shape:"d",color:"#a855f7",label:"QLoRA"},{shape:"c",color:"var(--color-accent)",label:"Adapters"}].map(({shape,color,label})=>(
                 <div key={label} className="flex items-center gap-1.5">
                   {shape==="d"?<svg width="10" height="10" viewBox="0 0 10 10"><rect x="1" y="1" width="8" height="8" fill={color} transform="rotate(45,5,5)"/></svg>:<div className="w-2.5 h-2.5 rounded-full" style={{background:color}}/>}
                   <span className="text-[10px] text-[#94a3b8]">{label}</span>
@@ -257,12 +267,12 @@ export default function LoRAAdaptersClient() {
 
         {/* S4: Transformer Diagram */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 4 — Where LoRA Is Applied</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 4: Where LoRA Is Applied</h2>
           <p className="text-[12px] text-[#94a3b8] mb-5">LoRA adapters are inserted into specific weight matrices inside each transformer block.</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
             <div className="flex items-center gap-3 mb-5">
               <p className="text-[13px] text-[#94a3b8]">LoRA enabled</p>
-              <button onClick={()=>setLoraOn(v=>!v)} className={`relative w-10 h-5 rounded-full transition-colors ${loraOn?"bg-[#ec4899]":"bg-[#1e293b]"}`}>
+              <button onClick={()=>setLoraOn(v=>!v)} aria-pressed={loraOn} aria-label="LoRA enabled" className={`relative w-10 h-5 rounded-full transition-colors ${loraOn?"bg-[var(--color-accent)]":"bg-[#1e293b]"}`}>
                 <motion.div className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow" animate={{left:loraOn?"calc(100% - 18px)":"2px"}} transition={{duration:0.2}}/>
               </button>
             </div>
@@ -290,10 +300,10 @@ export default function LoRAAdaptersClient() {
                   {[{id:"Up",active:true},{id:"Down",active:true}].map(m=>(
                     <div key={m.id} className="relative">
                       <div className={`rounded-lg border p-2 text-center transition-colors ${m.active&&loraOn?"border-[#d4af37]/50 bg-[#d4af37]/10":"border-[#334155] bg-[#1e293b]"}`}>
-                        <p className={`text-[13px] font-black ${m.active&&loraOn?"text-[#d4af37]":"text-[#94a3b8]"}`}>{m.id}</p>
+                        <p className={`text-[13px] font-black ${m.active&&loraOn?"text-[var(--color-accent)]":"text-[#94a3b8]"}`}>{m.id}</p>
                         <p className="text-[9px] text-[#475569] mt-0.5">{m.id}-projection</p>
                       </div>
-                      {m.active&&loraOn&&<motion.div initial={{opacity:0,scale:0.5}} animate={{opacity:1,scale:1}} className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-[#d4af37] flex items-center justify-center"><span className="text-[8px] font-black text-[#0a0e1a]">L</span></motion.div>}
+                      {m.active&&loraOn&&<motion.div initial={{opacity:0,scale:0.5}} animate={{opacity:1,scale:1}} className="absolute -top-2 -right-2 w-4 h-4 rounded-full bg-[var(--color-accent)] flex items-center justify-center"><span className="text-[8px] font-black text-[#0a0e1a]">L</span></motion.div>}
                     </div>
                   ))}
                 </div>
@@ -302,15 +312,15 @@ export default function LoRAAdaptersClient() {
               <div className="rounded-lg border border-[#334155] bg-[#1e293b] px-4 py-2 text-[11px] text-[#94a3b8] w-full max-w-[360px] text-center">Output</div>
             </div>
             {loraOn&&<motion.div initial={{opacity:0}} animate={{opacity:1}} className="mt-4 flex gap-4 flex-wrap">
-              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[#ec4899]"/><span className="text-[10px] text-[#94a3b8]">Q/K/V — most impactful</span></div>
-              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[#d4af37]"/><span className="text-[10px] text-[#94a3b8]">FFN projections — also common</span></div>
+              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[#ec4899]"/><span className="text-[10px] text-[#94a3b8]">Q/K/V: most impactful</span></div>
+              <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[var(--color-accent)]"/><span className="text-[10px] text-[#94a3b8]">FFN projections: also common</span></div>
             </motion.div>}
           </div>
         </section>
 
         {/* S5: Comparison Table */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 5 — Method Comparison</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 5: Method Comparison</h2>
           <p className="text-[12px] text-[#94a3b8] mb-5">Numbers are for a 7B parameter model on a typical fine-tuning workload.</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] overflow-hidden">
             <div className="overflow-x-auto">
@@ -332,9 +342,9 @@ export default function LoRAAdaptersClient() {
         {/* Gold insight */}
         <div className="rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-6 mb-12">
           <div className="flex items-start gap-3">
-            <span className="text-[#d4af37] text-xl mt-0.5">💡</span>
+            <span className="text-[var(--color-accent)] text-xl mt-0.5">💡</span>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#d4af37] mb-2">Key Insight</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">Key Insight</p>
               <p className="text-[13px] text-white leading-relaxed">
                 QLoRA enabled fine-tuning LLaMA 65B on a single 48 GB GPU, where full 16-bit fine-tuning needs over 780 GB. This democratized LLM fine-tuning for researchers and small teams. Note that the original Alpaca and Vicuna were full fine-tunes; it was community reproductions like Alpaca-LoRA, and the QLoRA paper&apos;s own Guanaco models, that showed adapters can reach comparable quality at a fraction of the cost. The underlying reason it works: weight updates during fine-tuning tend to be inherently low-rank, so most task-specific information lives in a small subspace.
               </p>
@@ -342,21 +352,100 @@ export default function LoRAAdaptersClient() {
           </div>
         </div>
 
-        {/* Summary card */}
-        <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 mb-10 flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8] mb-1">Up Next</p>
-            <p className="text-[15px] font-bold text-white">AI Safety</p>
-            <p className="text-[12px] text-[#94a3b8] mt-1">Continue the Applied AI section — explore alignment and safety techniques.</p>
-          </div>
-          <Link href="/visual-guides/ai-safety" className="px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-[#ec4899] text-white hover:opacity-90 transition-opacity whitespace-nowrap">Next Guide →</Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  Low-Rank Mastery!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You explored how two thin matrices can stand in for a full weight
+                  update, and what that buys you in params, memory, and quality.
+                </p>
+              </div>
 
-        {/* Nav */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link href="/visual-guides/fine-tuning-vs-prompting" className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">← Fine-Tuning vs Prompting</Link>
-          <Link href="/visual-guides/ai-safety" className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">AI Safety →</Link>
-        </div>
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">The Trick</p>
+                    <p className="text-[12px] text-[#94a3b8] leading-relaxed">
+                      W stays frozen; only B·A (rank r) is trained.
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Your Rank</p>
+                    <p className="text-[12px] text-[#94a3b8] leading-relaxed">
+                      At r = {r}: <span className="font-mono font-bold text-white">{fmt(loraP)}</span>{" "}
+                      params vs {fmt(FULL)} for the full layer.
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Quality</p>
+                    <p className="text-[12px] text-[#94a3b8] leading-relaxed">
+                      Low-rank tuning lands within a point or two of full fine-tuning.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Fine-tuning updates live in a small subspace. LoRA exploits that:
+                    freeze the model, learn two thin matrices, and get near full
+                    fine-tuning quality for a fraction of the parameters.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href="/visual-guides/ai-safety"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Nav (pre-completion) */}
+        {!allComplete && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link href="/visual-guides/fine-tuning-vs-prompting" className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">← Fine-Tuning vs Prompting</Link>
+            <Link href="/visual-guides/ai-safety" className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">AI Safety →</Link>
+          </div>
+        )}
 
       </div>
     </div>

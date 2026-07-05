@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
+import { useGuideMotion } from "@/lib/guideMotion";
 import { Phase3State, seededRandom } from "./types";
 
 interface Props {
@@ -33,6 +34,7 @@ export default function Phase3Collect({
   onNext,
   onBack,
 }: Props) {
+  const { fadeUp } = useGuideMotion();
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const rngRef = useRef(seededRandom(42));
 
@@ -194,9 +196,9 @@ export default function Phase3Collect({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
       className="space-y-6"
     >
       {/* Progress bar */}
@@ -210,7 +212,7 @@ export default function Phase3Collect({
 
         <div className="rounded-full bg-[#1e293b] h-3 overflow-hidden mb-2">
           <motion.div
-            className="h-full rounded-full bg-[#d4af37]"
+            className="h-full rounded-full bg-[var(--color-accent)]"
             style={{ width: `${progress * 100}%` }}
             transition={{ duration: 0.1 }}
           />
@@ -218,7 +220,7 @@ export default function Phase3Collect({
         <div className="flex justify-between text-[10px] text-[#475569]">
           <span>Start</span>
           <span
-            className={`font-semibold ${state.isComplete ? "text-[#3bb4a4]" : "text-[#d4af37]"}`}
+            className={`font-semibold ${state.isComplete ? "text-[#3bb4a4]" : "text-[var(--color-accent)]"}`}
           >
             {state.isComplete
               ? "Collection complete!"
@@ -357,7 +359,7 @@ export default function Phase3Collect({
                 y1={PAD.t}
                 x2={toX(state.elapsedDays, state.totalDays)}
                 y2={H - PAD.b}
-                stroke="#d4af37"
+                stroke="var(--color-accent)"
                 strokeWidth={1}
                 strokeDasharray="3 3"
               />
@@ -428,7 +430,7 @@ export default function Phase3Collect({
             </div>
             <div>
               <p className="text-[11px] text-[#94a3b8]">Relative Lift</p>
-              <p className="text-xl font-bold text-[#d4af37]">
+              <p className="text-xl font-bold text-[var(--color-accent)]">
                 {currentControlRate > 0
                   ? (
                       ((currentTreatmentRate - currentControlRate) /
@@ -496,7 +498,7 @@ export default function Phase3Collect({
         {state.isComplete && (
           <button
             onClick={onNext}
-            className="ml-auto px-6 py-2.5 rounded-xl font-semibold text-sm bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="ml-auto px-6 py-2.5 rounded-xl font-semibold text-sm bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Analyze Results →
           </button>

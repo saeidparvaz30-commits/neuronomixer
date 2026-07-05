@@ -2,8 +2,9 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Data ───────────────────────────────────────────────────────────────────────
@@ -84,7 +85,7 @@ function lerpHex(t: number): string {
 }
 
 function textColorForWeight(w: number): string {
-  return w > 0.3 ? "#ffffff" : "#94a3b8";
+  return w > 0.3 ? "#f1f5f9" : "#94a3b8";
 }
 
 // ── QKV step data ──────────────────────────────────────────────────────────────
@@ -97,7 +98,7 @@ const QKV_STEPS = [
     textColor: "#93c5fd",
     question: "What am I looking for?",
     formula: "Q = X · W_Q",
-    desc: 'Each token projects itself into "query space" — essentially asking: what context do I need to understand myself?',
+    desc: 'Each token projects itself into "query space", essentially asking: what context do I need to understand myself?',
   },
   {
     id: "K",
@@ -107,7 +108,7 @@ const QKV_STEPS = [
     textColor: "#fcd34d",
     question: "What do I contain?",
     formula: "K = X · W_K",
-    desc: "Each token also projects into \"key space\" — announcing what information it holds, ready to be matched against queries.",
+    desc: "Each token also projects into \"key space\", announcing what information it holds, ready to be matched against queries.",
   },
   {
     id: "V",
@@ -117,13 +118,14 @@ const QKV_STEPS = [
     textColor: "#6ee7e7",
     question: "What information do I pass on?",
     formula: "score(q,k) = (Q · K^T) / √d_k  →  softmax  →  weighted sum of V",
-    desc: "After computing attention weights via Q·K dot-products scaled by √d_k, the output is a weighted sum of Value vectors — the actual content transferred.",
+    desc: "After computing attention weights via Q·K dot-products scaled by √d_k, the output is a weighted sum of Value vectors: the actual content transferred.",
   },
 ];
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function SelfAttentionClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const [selectedSentence, setSelectedSentence] = useState(0);
   const [hoveredCell, setHoveredCell] = useState<{ row: number; col: number } | null>(null);
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
@@ -143,6 +145,15 @@ export default function SelfAttentionClient() {
   function selectQKV(idx: number) {
     setActiveQKV(idx);
     setVisitedQKV(prev => new Set([...prev, idx]));
+  }
+
+  function handleReset() {
+    setSelectedSentence(0);
+    setHoveredCell(null);
+    setSelectedRow(null);
+    setActiveQKV(0);
+    setVisitedSentences(new Set([0]));
+    setVisitedQKV(new Set([0]));
   }
 
   const isComplete = visitedSentences.size >= 3 && visitedQKV.size >= 3;
@@ -167,7 +178,7 @@ export default function SelfAttentionClient() {
       return lerpHex(w * 1.2 > 1 ? 1 : w * 1.2);
     }
     if (hoveredCell?.row === row && hoveredCell?.col === col) {
-      return "#d4af37";
+      return "var(--color-accent)";
     }
     return lerpHex(w);
   }
@@ -180,32 +191,36 @@ export default function SelfAttentionClient() {
   const step = QKV_STEPS[activeQKV];
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
+    <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="self-attention" score={100} />
-      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6 flex-wrap">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
+            Visual Guides
+          </Link>
           <span>/</span>
-          <span className="text-[#ef4444]">LLMs</span>
-          <span>/</span>
-          <span className="text-white">Self-Attention: How Transformers Focus</span>
+          <span className="text-[#94a3b8]">Self-Attention: How Transformers Focus</span>
         </nav>
 
         {/* Hero */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-[#ef4444]/20 border border-[#ef4444]/40 rounded-full px-3 py-1 mb-4">
-            <span className="text-xs font-semibold text-[#ef4444] uppercase tracking-wider">LLMs</span>
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
+              LLMs
+            </span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Self-Attention: How Transformers Focus
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
+            Self-Attention: How Transformers <span className="text-[var(--color-accent)]">Focus</span>
           </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl">
+          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
             Select a sentence and watch the attention heatmap light up. Step through Query, Key, and
             Value vectors to see how transformers resolve word ambiguity through context.
           </p>
-        </div>
+        </section>
 
         {/* Progress bar */}
         <div className="mb-8 bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
@@ -223,7 +238,7 @@ export default function SelfAttentionClient() {
             />
           </div>
           {isComplete && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 text-xs text-[#3bb4a4] font-semibold">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 text-xs text-[var(--color-success)] font-semibold">
               Guide complete! Progress saved.
             </motion.div>
           )}
@@ -235,16 +250,18 @@ export default function SelfAttentionClient() {
         {/* Section 1: Choose a sentence */}
         <section className="mb-8">
           <h2 className="text-lg font-semibold text-white mb-4">1. Choose a Sentence</h2>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3" role="radiogroup" aria-label="Example sentence">
             {SENTENCES.map((s, i) => (
               <button
                 key={i}
+                role="radio"
+                aria-checked={selectedSentence === i}
                 onClick={() => selectSentence(i)}
                 className="px-4 py-2 rounded-lg text-sm font-medium border transition-all"
                 style={{
                   borderColor: selectedSentence === i ? "#ef4444" : "#334155",
                   backgroundColor: selectedSentence === i ? "rgba(239,68,68,0.12)" : "rgba(30,41,59,0.6)",
-                  color: selectedSentence === i ? "#fca5a5" : "#94a3b8",
+                  color: selectedSentence === i ? "#f1f5f9" : "#94a3b8",
                   boxShadow: selectedSentence === i ? "0 0 0 1px #ef4444" : "none",
                 }}
               >
@@ -268,7 +285,7 @@ export default function SelfAttentionClient() {
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-xs text-[#d4af37] font-mono"
+                  className="text-xs text-[var(--color-accent)] font-mono"
                 >
                   &ldquo;{sentence.tokens[hoveredCell.row]}&rdquo; attends to &ldquo;{sentence.tokens[hoveredCell.col]}&rdquo; with weight{" "}
                   {(sentence.matrix[hoveredCell.row][hoveredCell.col] * 100).toFixed(0)}%
@@ -332,10 +349,12 @@ export default function SelfAttentionClient() {
         {/* Section 3: Q, K, V Explained */}
         <section className="mb-8">
           <h2 className="text-lg font-semibold text-white mb-4">3. Q, K, V Explained</h2>
-          <div className="flex gap-3 mb-5 flex-wrap">
+          <div className="flex gap-3 mb-5 flex-wrap" role="radiogroup" aria-label="Attention component">
             {QKV_STEPS.map((s, i) => (
               <button
                 key={s.id}
+                role="radio"
+                aria-checked={activeQKV === i}
                 onClick={() => selectQKV(i)}
                 className="px-5 py-2 rounded-lg text-sm font-bold border transition-all"
                 style={{
@@ -372,7 +391,7 @@ export default function SelfAttentionClient() {
             </div>
             <div
               className="inline-block px-4 py-2 rounded-lg font-mono text-sm mb-4"
-              style={{ backgroundColor: "#1a120033", border: `1px solid ${step.borderColor}44`, color: "#d4af37" }}
+              style={{ backgroundColor: "rgba(30,41,59,0.6)", border: `1px solid ${step.borderColor}44`, color: "#93c5fd" }}
             >
               {step.formula}
             </div>
@@ -381,7 +400,7 @@ export default function SelfAttentionClient() {
 
           {/* Score formula reminder */}
           <div className="mt-4 flex items-center gap-3 flex-wrap">
-            <div className="bg-[#0f172a] border border-[#334155] rounded-lg px-4 py-2 font-mono text-xs text-[#d4af37]">
+            <div className="bg-[#1e293b]/60 border border-[#334155] rounded-lg px-4 py-2 font-mono text-xs text-[#93c5fd]">
               Attention(Q, K, V) = softmax(QK&#7488; / &radic;d&#8342;) &middot; V
             </div>
             <p className="text-xs text-[#94a3b8]">
@@ -394,12 +413,12 @@ export default function SelfAttentionClient() {
         <section className="mb-8">
           <h2 className="text-lg font-semibold text-white mb-2">4. Multi-Head Attention</h2>
           <p className="text-xs text-[#94a3b8] mb-4">
-            Multiple heads run in parallel — each learning different relationship types simultaneously.
+            Multiple heads run in parallel, each learning different relationship types simultaneously.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {HEAD_MATRICES.map((mat, hi) => {
-              const headLabels = ["Head 1 — Syntactic", "Head 2 — Semantic", "Head 3 — Positional"];
-              const headColors = ["#3b82f6", "#d4af37", "#3bb4a4"];
+              const headLabels = ["Head 1: Syntactic", "Head 2: Semantic", "Head 3: Positional"];
+              const headColors = ["#3b82f6", "var(--color-accent)", "#3bb4a4"];
               const toks = SENTENCES[2].tokens;
               return (
                 <div key={hi} className="bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-3">
@@ -422,7 +441,7 @@ export default function SelfAttentionClient() {
                             className="w-7 h-5 flex items-center justify-center text-[8px] font-mono rounded mx-px"
                             style={{
                               backgroundColor: lerpHex(w),
-                              color: w > 0.3 ? "#fff" : "#475569",
+                              color: w > 0.3 ? "#f1f5f9" : "#475569",
                             }}
                           >
                             {(w * 100).toFixed(0)}
@@ -441,51 +460,118 @@ export default function SelfAttentionClient() {
         </section>
 
         {/* Gold insight box */}
-        <div className="mb-8 bg-[#1a1200]/60 border border-[#d4af37]/30 rounded-xl p-5">
-          <h3 className="text-xs font-semibold text-[#d4af37] uppercase tracking-wide mb-2">Key Insight</h3>
+        <div className="mb-8 bg-[#0f172a] border border-[#d4af37]/30 rounded-xl p-5">
+          <h3 className="text-xs font-semibold text-[var(--color-accent)] uppercase tracking-wide mb-2">Key Insight</h3>
           <p className="text-sm text-[#94a3b8] leading-relaxed">
             The attention mechanism runs in{" "}
-            <span className="text-white font-semibold">O(n²) time</span> — processing a 10K token
+            <span className="text-white font-semibold">O(n²) time</span>: processing a 10K token
             sequence requires 100M attention computations. This is why context window scaling is
             challenging.
           </p>
         </div>
 
-        {/* Summary / next guide */}
-        <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-5 flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <p className="text-xs text-[#94a3b8] mb-1">Up next</p>
-            <p className="text-white font-semibold text-sm">Transformer Architecture</p>
-            <p className="text-xs text-[#94a3b8] mt-1">
-              See how self-attention layers stack into encoder and decoder blocks.
-            </p>
-          </div>
-          <Link
-            href="/visual-guides/transformer-architecture"
-            className="shrink-0 px-4 py-2 rounded-lg text-sm font-semibold border border-[#ef4444]/40 bg-[#ef4444]/10 text-[#fca5a5] hover:bg-[#ef4444]/20 transition-colors"
-          >
-            Explore →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  Attention Understood!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You explored all three sentences and all three attention components.
+                </p>
+              </div>
 
-        {/* Nav */}
-        <div className="flex items-center justify-between mt-10 pt-6 border-t border-[#1e293b]">
-          <Link
-            href="/visual-guides"
-            className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            <span>←</span><span>All Guides</span>
-          </Link>
-          <Link href="/visual-guides" className="text-sm text-[#94a3b8] hover:text-white transition-colors">
-            Visual Guides
-          </Link>
-          <Link
-            href="/visual-guides/transformer-architecture"
-            className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            <span>Transformer Architecture</span><span>→</span>
-          </Link>
-        </div>
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Heatmaps</p>
+                    <p className="text-[12px] text-[#94a3b8] leading-relaxed">
+                      Attention weights show which tokens each word looks at for context.
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Q, K, V</p>
+                    <p className="text-[12px] text-[#94a3b8] leading-relaxed">
+                      Queries ask, Keys advertise, and Values carry the content that flows.
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Multi-Head</p>
+                    <p className="text-[12px] text-[#94a3b8] leading-relaxed">
+                      Parallel heads capture syntactic, semantic, and positional patterns.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Self-attention lets every token weigh every other token: the word
+                    bank decides between money and river by looking at its neighbours,
+                    and multiple heads do this for different relationships at once.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href="/visual-guides/transformer-architecture"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← All Guides
+            </Link>
+            <Link
+              href="/visual-guides/transformer-architecture"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Transformer Architecture →
+            </Link>
+          </div>
+        )}
 
       </div>
     </div>

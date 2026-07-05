@@ -16,7 +16,7 @@ export default function LayerNormNote() {
             NLP,{" "}
             <span className="font-semibold text-[#a855f7]">Layer Normalization</span> normalizes
             across the{" "}
-            <span className="font-semibold text-white">FEATURE dimension</span> instead — works for
+            <span className="font-semibold text-white">FEATURE dimension</span> instead: it works for
             single samples and variable-length sequences.
           </p>
           <div className="mt-3 grid grid-cols-2 gap-3">

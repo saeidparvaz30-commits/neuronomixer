@@ -82,7 +82,7 @@ export default function DistributionDisplay({ distributions, withBN }: Props) {
           className="text-sm font-bold"
           style={{ color: withBN ? "#3bb4a4" : "#ef4444" }}
         >
-          {withBN ? "With Batch Norm — distributions stabilized" : "Without Batch Norm — distributions shift each layer"}
+          {withBN ? "With Batch Norm: distributions stabilized" : "Without Batch Norm: distributions shift each layer"}
         </span>
       </div>
 

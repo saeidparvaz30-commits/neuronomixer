@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useGuideMotion } from "@/lib/guideMotion";
 import { Phase2State, RandomizationMethod, SIMULATED_COVARIATES, normalCDF } from "./types";
 
 interface Props {
@@ -41,6 +42,8 @@ const METHODS: {
 ];
 
 export default function Phase2Randomize({ state, onChange, onNext, onBack }: Props) {
+  const { fadeUp } = useGuideMotion();
+
   function setMethod(m: RandomizationMethod) {
     onChange({ ...state, randomizationMethod: m });
   }
@@ -59,9 +62,9 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
       className="space-y-6"
     >
       {/* Method selection */}
@@ -71,14 +74,16 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
           Choose how participants will be assigned to control and treatment groups.
         </p>
 
-        <div className="space-y-3">
+        <div className="space-y-3" role="radiogroup" aria-label="Randomization method">
           {METHODS.map((m) => (
             <button
               key={m.id}
+              role="radio"
+              aria-checked={state.randomizationMethod === m.id}
               onClick={() => setMethod(m.id)}
               className={`w-full text-left rounded-xl border p-4 transition-all ${
                 state.randomizationMethod === m.id
-                  ? "border-[#d4af37] bg-[#1e293b]"
+                  ? "border-[var(--color-accent)] bg-[#1e293b]"
                   : "border-[#1e293b] bg-[#0f172a] hover:border-[#1e5d8a]"
               }`}
             >
@@ -86,7 +91,7 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
                 <div
                   className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg flex-shrink-0 mt-0.5 ${
                     state.randomizationMethod === m.id
-                      ? "bg-[#d4af37]/20 text-[#d4af37]"
+                      ? "bg-[#d4af37]/20 text-[var(--color-accent)]"
                       : "bg-[#1e293b] text-[#94a3b8]"
                   }`}
                 >
@@ -96,7 +101,7 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
                   <p
                     className={`text-sm font-semibold mb-1 ${
                       state.randomizationMethod === m.id
-                        ? "text-[#d4af37]"
+                        ? "text-[var(--color-accent)]"
                         : "text-white"
                     }`}
                   >
@@ -110,12 +115,12 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
                   <div
                     className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                       state.randomizationMethod === m.id
-                        ? "border-[#d4af37]"
+                        ? "border-[var(--color-accent)]"
                         : "border-[#475569]"
                     }`}
                   >
                     {state.randomizationMethod === m.id && (
-                      <div className="w-2 h-2 rounded-full bg-[#d4af37]" />
+                      <div className="w-2 h-2 rounded-full bg-[var(--color-accent)]" />
                     )}
                   </div>
                 </div>
@@ -250,11 +255,11 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
         <div className="mt-4 flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-sm bg-[#3bb4a4]/20 border border-[#3bb4a4]" />
-            <span className="text-[11px] text-[#94a3b8]">p &gt; 0.05 — balanced</span>
+            <span className="text-[11px] text-[#94a3b8]">p &gt; 0.05: balanced</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-sm bg-[#ef4444]/20 border border-[#ef4444]" />
-            <span className="text-[11px] text-[#94a3b8]">p ≤ 0.05 — imbalanced</span>
+            <span className="text-[11px] text-[#94a3b8]">p ≤ 0.05: imbalanced</span>
           </div>
           <div className="ml-auto">
             <span
@@ -316,7 +321,7 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
         </button>
         <button
           onClick={onNext}
-          className="px-6 py-3 rounded-xl font-semibold text-sm bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+          className="px-6 py-3 rounded-xl font-semibold text-sm bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
         >
           Start Data Collection →
         </button>

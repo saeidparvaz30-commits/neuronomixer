@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 
 import ComparisonToggle from "./ComparisonToggle";
 import DistributionDisplay from "./DistributionDisplay";
@@ -39,6 +40,7 @@ function useIntersectionOnce(threshold = 0.3) {
 
 export default function BatchNormalizationClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
 
   // Core state
@@ -77,6 +79,14 @@ export default function BatchNormalizationClient() {
     if (viewedModesRef.current.size >= 2) setHasViewedBoth(true);
   }
 
+  function handleReset() {
+    setWithBN(false);
+    setCurrentStep(1);
+    setHasViewedBoth(false);
+    setHasCompletedFormula(false);
+    viewedModesRef.current = new Set([false]);
+  }
+
   // Progress percentage
   const progress =
     (hasViewedBoth ? 34 : 0) +
@@ -84,38 +94,36 @@ export default function BatchNormalizationClient() {
     (hasViewedRace ? 33 : 0);
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
+    <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="batch-normalization" score={100} />
-      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
           <span>/</span>
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
-            Deep Learning
-          </Link>
-          <span>/</span>
-          <span className="text-white">Batch Normalization Explained</span>
+          <span className="text-[#94a3b8]">Batch Normalization Explained</span>
         </nav>
 
         {/* Hero */}
-        <div className="mb-6">
-          <div className="inline-flex items-center gap-2 bg-[#a855f7]/20 border border-[#a855f7]/40 rounded-full px-3 py-1 mb-4">
-            <span className="text-xs font-semibold text-[#a855f7] uppercase tracking-wider">
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Deep Learning
             </span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Batch Normalization Explained
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
+            Batch <span className="text-[var(--color-accent)]">Normalization</span> Explained
           </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl leading-relaxed">
+          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
             See how batch normalization stabilizes activation distributions and speeds up training.
-            Watch two neural networks race — with and without BatchNorm.
+            Watch two neural networks race, with and without BatchNorm.
           </p>
-        </div>
+        </section>
 
         {/* Progress bar */}
         <div className="mb-8 bg-[#1e293b]/60 border border-white/[0.07] rounded-xl p-4">
@@ -153,7 +161,7 @@ export default function BatchNormalizationClient() {
           {/* Sign-in nudge */}
           {!session?.user && (
             <p className="text-[11px] text-[#475569] mt-2">
-              <Link href="/auth/sign-in" className="text-[#d4af37] hover:underline">
+              <Link href="/auth/sign-in" className="text-[var(--color-accent)] hover:underline">
                 Sign in
               </Link>{" "}
               to save your progress
@@ -254,7 +262,7 @@ export default function BatchNormalizationClient() {
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-lg bg-[#d4af37]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
               <svg
-                className="w-4 h-4 text-[#d4af37]"
+                className="w-4 h-4 text-[var(--color-accent)]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -268,7 +276,7 @@ export default function BatchNormalizationClient() {
               </svg>
             </div>
             <div>
-              <div className="text-sm font-bold text-[#d4af37] mb-1">
+              <div className="text-sm font-bold text-[var(--color-accent)] mb-1">
                 Before or After Activation?
               </div>
               <p className="text-sm text-[#94a3b8] leading-relaxed">
@@ -284,49 +292,108 @@ export default function BatchNormalizationClient() {
           </div>
         </div>
 
-        {/* Summary card when complete */}
-        {isComplete && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="p-6 bg-gradient-to-br from-[#a855f7]/10 to-[#3bb4a4]/10 border border-[#a855f7]/30 rounded-2xl"
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-full bg-[#3bb4a4]/20 border border-[#3bb4a4]/40 flex items-center justify-center">
-                <svg
-                  className="w-4 h-4 text-[#3bb4a4]"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  BatchNorm Understood!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You explored shifting activations, stepped through the four BatchNorm
+                  computations, and watched the training race.
+                </p>
               </div>
-              <span className="font-bold text-white">Guide Complete!</span>
-            </div>
-            <p className="text-sm text-[#94a3b8] leading-relaxed mb-5">
-              You now understand how BatchNorm stabilizes activation distributions, allows higher
-              learning rates, and acts as implicit regularization. Next, see how transfer learning
-              lets you reuse pretrained network knowledge.
-            </p>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Distributions</p>
+                    <p className="text-[12px] text-[#94a3b8] leading-relaxed">
+                      Compared activation distributions with and without BatchNorm.
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">The Math</p>
+                    <p className="text-[12px] text-[#94a3b8] leading-relaxed">
+                      Stepped through mean, variance, normalize, then scale and shift.
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Training Speed</p>
+                    <p className="text-[12px] text-[#94a3b8] leading-relaxed">
+                      Saw why smoother optimization lets you raise the learning rate.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;BatchNorm normalizes each mini-batch to zero mean and unit
+                    variance, then lets the learnable γ and β scale it back: the payoff
+                    is a smoother loss landscape and faster, more stable training.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href="/visual-guides/transfer-learning"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← All Guides
+            </Link>
             <Link
               href="/visual-guides/transfer-learning"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#a855f7] hover:bg-[#9333ea] text-white font-semibold text-sm rounded-xl transition-colors"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
             >
-              Next: Transfer Learning
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
+              Next Guide →
             </Link>
-          </motion.div>
+          </div>
         )}
       </div>
     </div>

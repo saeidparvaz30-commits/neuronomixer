@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useGuideMotion } from "@/lib/guideMotion";
 import {
   Phase1State,
   MetricName,
@@ -20,6 +21,7 @@ interface Props {
 const METRICS: MetricName[] = ["Conversion Rate", "Revenue per User", "Click-through Rate"];
 
 export default function Phase1Design({ state, onChange, onNext }: Props) {
+  const { fadeUp } = useGuideMotion();
   const { hypothesis, metric, parameters } = state;
 
   function update(partial: Partial<Phase1State>) {
@@ -46,9 +48,9 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
       className="space-y-6"
     >
       {/* Hypothesis */}
@@ -61,7 +63,7 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
         <div className="space-y-4">
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-widest text-[#94a3b8] mb-1.5">
-              H₀ — Null Hypothesis
+              H₀: Null Hypothesis
             </label>
             <input
               type="text"
@@ -76,7 +78,7 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
 
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-widest text-[#94a3b8] mb-1.5">
-              H₁ — Alternative Hypothesis
+              H₁: Alternative Hypothesis
             </label>
             <input
               type="text"
@@ -93,10 +95,12 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
             <label className="block text-[11px] font-semibold uppercase tracking-widest text-[#94a3b8] mb-2">
               Test Direction
             </label>
-            <div className="flex gap-3">
+            <div className="flex gap-3" role="radiogroup" aria-label="Test direction">
               {(["two-tailed", "one-tailed"] as TestDirection[]).map((dir) => (
                 <button
                   key={dir}
+                  role="radio"
+                  aria-checked={hypothesis.direction === dir}
                   onClick={() =>
                     update({ hypothesis: { ...hypothesis, direction: dir } })
                   }
@@ -131,10 +135,12 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
             <label className="block text-[11px] font-semibold uppercase tracking-widest text-[#94a3b8] mb-2">
               Metric Type
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2" role="radiogroup" aria-label="Metric type">
               {METRICS.map((m) => (
                 <button
                   key={m}
+                  role="radio"
+                  aria-checked={metric.name === m}
                   onClick={() => update({ metric: { ...metric, name: m } })}
                   className={`py-2.5 px-3 rounded-xl text-[12px] font-medium border transition-colors text-left ${
                     metric.name === m
@@ -153,12 +159,13 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
               <label className="text-[11px] font-semibold uppercase tracking-widest text-[#94a3b8]">
                 Baseline Rate
               </label>
-              <span className="text-sm font-bold text-[#d4af37]">
+              <span className="text-sm font-bold text-[var(--color-accent)]">
                 {(metric.baselineRate * 100).toFixed(1)}%
               </span>
             </div>
             <input
               type="range"
+              aria-label="Baseline rate percent"
               min={1}
               max={50}
               step={0.5}
@@ -171,7 +178,7 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
                   },
                 })
               }
-              className="w-full accent-[#d4af37]"
+              className="w-full accent-[var(--color-accent)]"
             />
             <div className="flex justify-between text-[10px] text-[#475569] mt-1">
               <span>1%</span>
@@ -195,12 +202,13 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
               <label className="text-[11px] font-semibold uppercase tracking-widest text-[#94a3b8]">
                 Significance Level (α)
               </label>
-              <span className="text-sm font-bold text-[#d4af37]">
+              <span className="text-sm font-bold text-[var(--color-accent)]">
                 {parameters.alpha.toFixed(2)}
               </span>
             </div>
             <input
               type="range"
+              aria-label="Significance level alpha"
               min={1}
               max={10}
               step={0.5}
@@ -213,7 +221,7 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
                   },
                 })
               }
-              className="w-full accent-[#d4af37]"
+              className="w-full accent-[var(--color-accent)]"
             />
             <div className="flex justify-between text-[10px] text-[#475569] mt-1">
               <span>0.01 (strict)</span>
@@ -227,12 +235,13 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
               <label className="text-[11px] font-semibold uppercase tracking-widest text-[#94a3b8]">
                 Statistical Power (1−β)
               </label>
-              <span className="text-sm font-bold text-[#d4af37]">
+              <span className="text-sm font-bold text-[var(--color-accent)]">
                 {(parameters.power * 100).toFixed(0)}%
               </span>
             </div>
             <input
               type="range"
+              aria-label="Statistical power percent"
               min={70}
               max={99}
               step={1}
@@ -245,7 +254,7 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
                   },
                 })
               }
-              className="w-full accent-[#d4af37]"
+              className="w-full accent-[var(--color-accent)]"
             />
             <div className="flex justify-between text-[10px] text-[#475569] mt-1">
               <span>70%</span>
@@ -259,12 +268,13 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
               <label className="text-[11px] font-semibold uppercase tracking-widest text-[#94a3b8]">
                 Min. Detectable Effect (MDE)
               </label>
-              <span className="text-sm font-bold text-[#d4af37]">
+              <span className="text-sm font-bold text-[var(--color-accent)]">
                 {(parameters.mde * 100).toFixed(1)}%
               </span>
             </div>
             <input
               type="range"
+              aria-label="Minimum detectable effect percent"
               min={0.5}
               max={5}
               step={0.1}
@@ -277,7 +287,7 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
                   },
                 })
               }
-              className="w-full accent-[#d4af37]"
+              className="w-full accent-[var(--color-accent)]"
             />
             <div className="flex justify-between text-[10px] text-[#475569] mt-1">
               <span>0.5% (small)</span>
@@ -308,7 +318,7 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
 
         <div className="text-center">
           <p className="text-[11px] text-[#94a3b8] mb-1">Per group (control &amp; treatment)</p>
-          <p className="text-5xl font-black text-[#d4af37] tabular-nums">
+          <p className="text-5xl font-black text-[var(--color-accent)] tabular-nums">
             {formulaResult.toLocaleString()}
           </p>
           <p className="text-[12px] text-[#94a3b8] mt-1">
@@ -320,7 +330,7 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
           {[
             { label: "α", value: parameters.alpha.toFixed(2), color: "#ef4444" },
             { label: "Power", value: `${(parameters.power * 100).toFixed(0)}%`, color: "#3bb4a4" },
-            { label: "MDE", value: `${(parameters.mde * 100).toFixed(1)}%`, color: "#d4af37" },
+            { label: "MDE", value: `${(parameters.mde * 100).toFixed(1)}%`, color: "var(--color-accent)" },
           ].map(({ label, value, color }) => (
             <div
               key={label}
@@ -341,7 +351,7 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
           disabled={!canProceed}
           className={`px-6 py-3 rounded-xl font-semibold text-sm transition-all ${
             canProceed
-              ? "bg-[#d4af37] text-[#0a0e1a] hover:opacity-90"
+              ? "bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90"
               : "bg-[#1e293b] text-[#475569] cursor-not-allowed"
           }`}
         >

@@ -110,7 +110,7 @@ export default function FormulaWalkthrough({ currentStep, onStepChange, onComple
                 <div
                   className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0 transition-colors ${
                     isActive
-                      ? "bg-[#d4af37] text-[#0f172a]"
+                      ? "bg-[var(--color-accent)] text-[#0f172a]"
                       : isPast
                       ? "bg-[#3bb4a4]/20 text-[#3bb4a4] border border-[#3bb4a4]/30"
                       : "bg-[#1e293b] text-[#475569] border border-white/[0.06]"
@@ -119,7 +119,7 @@ export default function FormulaWalkthrough({ currentStep, onStepChange, onComple
                   {isPast ? "✓" : s.step}
                 </div>
                 <span
-                  className={`text-sm font-semibold ${isActive ? "text-[#d4af37]" : isPast ? "text-[#94a3b8]" : "text-[#475569]"}`}
+                  className={`text-sm font-semibold ${isActive ? "text-[var(--color-accent)]" : isPast ? "text-[#94a3b8]" : "text-[#475569]"}`}
                 >
                   Step {s.step}: {s.title}
                 </span>
@@ -135,7 +135,7 @@ export default function FormulaWalkthrough({ currentStep, onStepChange, onComple
                   </div>
                   <div
                     className="text-xs font-mono font-semibold"
-                    style={{ color: isActive ? "#d4af37" : "#3bb4a4" }}
+                    style={{ color: isActive ? "var(--color-accent)" : "#3bb4a4" }}
                   >
                     {s.result}
                   </div>
@@ -157,7 +157,7 @@ export default function FormulaWalkthrough({ currentStep, onStepChange, onComple
         </button>
         <button
           onClick={next}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0f172a] hover:bg-[#c9a227] transition-colors"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0f172a] hover:opacity-90 transition-opacity"
         >
           {currentStep < 4 ? "Next ▶" : "Complete ✓"}
         </button>
