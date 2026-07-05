@@ -8,8 +8,11 @@ export async function PUT(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const session = await auth();
-  if ((session?.user as { role?: string } | undefined)?.role !== "ADMIN") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 401 });
+  if (!session?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  if ((session.user as { role?: string }).role !== "ADMIN") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const { slug } = await params;
@@ -26,11 +29,17 @@ export async function PUT(
     return NextResponse.json({ error: "visibility must be DRAFT, PUBLISHED, or HIDDEN" }, { status: 400 });
   }
 
-  const unit = await prisma.guideUnit.update({
-    where: { slug },
-    data: { visibility },
-    select: { id: true, slug: true, name: true, visibility: true },
-  });
-
-  return NextResponse.json({ unit });
+  try {
+    const unit = await prisma.guideUnit.update({
+      where: { slug },
+      data: { visibility },
+      select: { id: true, slug: true, name: true, visibility: true },
+    });
+    return NextResponse.json({ unit });
+  } catch (e) {
+    if (e && typeof e === "object" && "code" in e && (e as { code?: string }).code === "P2025") {
+      return NextResponse.json({ error: "Unit not found" }, { status: 404 });
+    }
+    throw e;
+  }
 }
