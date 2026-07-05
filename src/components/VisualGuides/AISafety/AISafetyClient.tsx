@@ -201,7 +201,7 @@ export default function AISafetyClient() {
         {/* Section 2 - Training-Time Alignment */}
         <section className="mb-12">
           <h2 className="text-[18px] font-bold text-white mb-1">Section 2: Training-Time Alignment</h2>
-          <p className="text-[12px] text-[#94a3b8] mb-5">The two most widely used alignment methods both work during training. They shape the model&apos;s weights before it is ever deployed.</p>
+          <p className="text-[12px] text-[#94a3b8] mb-5">Two of the most widely used alignment methods both work during training. They shape the model&apos;s weights before it is ever deployed.</p>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {TRAINING_METHODS.map((m, i) => (
               <motion.div key={m.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}
@@ -302,7 +302,7 @@ export default function AISafetyClient() {
               Mechanistic interpretability tries to understand a model&apos;s internals: which features individual components represent, and how they combine into circuits that produce behavior. Anthropic&apos;s sparse-autoencoder work (2023-2024) showed that individual, human-understandable features can be extracted from production-scale models.
             </p>
             <p className="text-[12px] text-[#94a3b8] leading-relaxed">
-              It remains an open research area. Today&apos;s tools explain fragments of model behavior, and reliably auditing a model&apos;s internals, for example to rule out deceptive behavior, is an unsolved problem. That is exactly why it matters for safety: guardrails and evals observe outputs, while interpretability is the only route to checking the reasoning behind them.
+              It remains an open research area. Today&apos;s tools explain fragments of model behavior, and reliably auditing a model&apos;s internals, for example to rule out deceptive behavior, is an unsolved problem. That is exactly why it matters for safety: guardrails and evals observe outputs, while interpretability is the most direct route to checking the reasoning behind them.
             </p>
           </div>
         </section>

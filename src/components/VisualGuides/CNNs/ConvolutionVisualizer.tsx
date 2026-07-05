@@ -298,7 +298,7 @@ export default function ConvolutionVisualizer({
                     className="w-7 h-7 flex items-center justify-center text-[8px] font-mono rounded-sm"
                     style={{ background: pixelColor(v), color: v > 127 ? "#000" : "#fff" }}
                   >
-                    {(v / 255).toFixed(1)}
+                    {(v / 255).toFixed(2)}
                   </div>
                 ))
               )}

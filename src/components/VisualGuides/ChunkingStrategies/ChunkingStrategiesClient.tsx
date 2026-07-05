@@ -109,6 +109,19 @@ function recursiveChunk(text: string, maxLen: number = RECURSIVE_MAX_CHARS): Chu
     const sentences = p.split(/(?<=[.!?])\s+/).filter(Boolean);
     let buffer = "";
     for (const s of sentences) {
+      if (s.length > maxLen) {
+        if (buffer) {
+          chunks.push({ text: buffer });
+          buffer = "";
+        }
+        let rest = s;
+        while (rest.length > maxLen) {
+          chunks.push({ text: rest.slice(0, maxLen) });
+          rest = rest.slice(maxLen);
+        }
+        buffer = rest;
+        continue;
+      }
       if (buffer && buffer.length + 1 + s.length > maxLen) {
         chunks.push({ text: buffer });
         buffer = s;

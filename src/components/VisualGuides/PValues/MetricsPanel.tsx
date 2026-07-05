@@ -21,7 +21,7 @@ export default function MetricsPanel({ groupA, groupB, tStatistic, pValue, alpha
   const n = groupA.length;
   const df = 2 * n - 2;
 
-  // 95% CI for the difference: (meanA - meanB) ± t_crit * SE
+  // 95% CI for the difference: (meanB - meanA) ± t_crit * SE
   const sA = stdDev(groupA);
   const sB = stdDev(groupB);
   const pooledSD = Math.sqrt(((n - 1) * sA ** 2 + (n - 1) * sB ** 2) / df);

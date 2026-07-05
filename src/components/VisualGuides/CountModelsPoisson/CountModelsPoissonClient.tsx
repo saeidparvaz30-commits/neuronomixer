@@ -466,7 +466,7 @@ export default function CountModelsPoissonClient() {
         <p className="text-sm text-[var(--color-text-muted)] max-w-2xl">
           Lower <strong className="text-white">AIC</strong> and{" "}
           <strong className="text-white">deviance</strong> indicate a better fit.
-          Higher log-likelihood is better. Use AIC to compare non-nested models.
+          Higher log-likelihood is better. Use AIC to weigh model complexity against fit.
         </p>
 
         <AnimatePresence mode="wait">

@@ -383,7 +383,7 @@ export default function EmbeddingsClient() {
               constructed from named features (plus a little noise), shown through a fixed 2D
               projection. The arithmetic on these vectors is real, and every number below is
               computed from them at runtime. Real embeddings are learned from data instead of
-              built by hand, and use hundreds of dimensions.
+              built by hand, and use hundreds to thousands of dimensions.
             </p>
 
             {/* SVG plot */}
@@ -841,7 +841,7 @@ export default function EmbeddingsClient() {
                 the same word gets a different vector depending on its context, so
                 &ldquo;bank&rdquo; in &ldquo;river bank&rdquo; and &ldquo;savings bank&rdquo;
                 are represented differently, letting the model handle polysemy. Contextual
-                embeddings actually predate transformers: ELMo (2018) produced them with
+                embeddings actually predate transformer language models: ELMo (2018) produced them with
                 bidirectional LSTMs. Transformer models like BERT and GPT then made them the
                 dominant approach, replacing static embeddings like word2vec, where each word
                 has one fixed vector like in our toy space above.

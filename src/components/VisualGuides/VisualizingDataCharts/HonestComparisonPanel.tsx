@@ -79,7 +79,7 @@ function CherryDeceptive() {
   const pts = xs.map((x, i) => `${x},${toY(subset[i])}`).join(" ");
 
   return (
-    <svg viewBox={`0 0 ${totalW} ${chartH + 36}`} className="w-full max-h-[160px]" aria-label="Cherry-picked line chart Jul-Dec only">
+    <svg viewBox={`0 0 ${totalW} ${chartH + 36}`} className="w-full max-h-[160px]" aria-label="Cherry-picked line chart showing only the last 7 points (55 to 95)">
       <line x1={leftPad} y1={topPad} x2={leftPad} y2={topPad + chartH} stroke="#334155" strokeWidth="1.5" />
       <line x1={leftPad} y1={topPad + chartH} x2={totalW - 5} y2={topPad + chartH} stroke="#334155" strokeWidth="1.5" />
       <polyline points={pts} fill="none" stroke="#3bb4a4" strokeWidth="2.5" strokeLinejoin="round" />

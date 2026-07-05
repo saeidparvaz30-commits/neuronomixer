@@ -262,7 +262,7 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
           <div className="flex items-center gap-2 flex-wrap">
             {result.isNormal ? (
               <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/30">
-                Normality met (r &gt; 0.95)
+                Normality plausible (r &gt; 0.95)
               </span>
             ) : (
               <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#ec4899]/20 text-[#ec4899] border border-[#ec4899]/30">

@@ -239,7 +239,7 @@ export default function GANsClient() {
             that same night. Successors like <span className="text-white font-medium">StyleGAN</span> pushed
             the adversarial idea to photorealistic faces. Today&apos;s image generators such as{" "}
             <span className="text-white font-medium">DALL-E and Stable Diffusion</span> are a different
-            lineage: they are{" "}
+            lineage: DALL-E 1 was autoregressive, while DALL-E 2/3 and Stable Diffusion are{" "}
             <Link href="/visual-guides/diffusion-models" className="text-[#d4af37] underline underline-offset-2 hover:opacity-80 transition-opacity">
               diffusion models
             </Link>

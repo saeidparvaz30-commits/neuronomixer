@@ -275,7 +275,7 @@ export default function KNNClient() {
     ? [...train].sort((a, b) => euclidean(selectedQ, a) - euclidean(selectedQ, b)).slice(0, k)
     : [];
 
-  const kLabel = k <= 2 ? "⚠ Overfitting: boundary follows noise" : k >= 15 ? "⚠ Underfitting: boundary too smooth" : "✓ Balanced boundary";
+  const kLabel = k <= 2 ? "⚠ Overfitting: boundary follows noise" : k >= 15 ? "⚠ Large K: smoother boundary; watch the validation curve for where accuracy peaks" : "✓ Balanced boundary";
 
   const progress = [
     { label: queryPts.length >= 1 ? "Query point added ✓" : "Add a query point", done: queryPts.length >= 1 },

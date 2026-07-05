@@ -26,7 +26,7 @@ const TABLE = [
   { method: "Full Fine-Tune", params: "100%", vram: "~80 GB", quality: "Baseline", c: "#ef4444" },
   { method: "LoRA (r=16)", params: "~0.2%", vram: "~16 GB", quality: "Near parity", c: "#3bb4a4" },
   { method: "QLoRA (r=16)", params: "~0.2%", vram: "~8 GB", quality: "Near parity", c: "#a855f7" },
-  { method: "Adapters", params: "~0.5%", vram: "~20 GB", quality: "Within ~1%", c: "#d4af37" },
+  { method: "Adapters", params: "~0.5%", vram: "~20 GB", quality: "Within 1-2% (illustrative)", c: "#d4af37" },
 ];
 
 // svg scatter helpers
