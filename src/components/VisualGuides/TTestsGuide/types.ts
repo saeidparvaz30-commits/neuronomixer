@@ -9,7 +9,7 @@ export interface TTestResult {
   ciLower: number;
   ciUpper: number;
   cohensD: number;
-  effectSizeLabel: "small" | "medium" | "large";
+  effectSizeLabel: "negligible" | "small" | "medium" | "large";
   significant: boolean;
 }
 
@@ -94,6 +94,20 @@ export function tCDF(t: number, df: number): number {
   return 1 - 0.5 * incompleteBeta(x, df / 2, 0.5);
 }
 
+// ── t quantile (inverse CDF) via bisection ────────────────────────────────────
+
+export function tQuantile(p: number, df: number): number {
+  // Only needed for upper-tail quantiles (p > 0.5) in CI construction
+  let lo = 0;
+  let hi = 50;
+  for (let i = 0; i < 100; i++) {
+    const mid = (lo + hi) / 2;
+    if (tCDF(mid, df) < p) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
 // ── Normal CDF (Abramowitz & Stegun) ─────────────────────────────────────────
 
 export function normalCDF(z: number): number {
@@ -111,8 +125,10 @@ export function normalCDF(z: number): number {
 
 // ── Effect size label ─────────────────────────────────────────────────────────
 
-export function effectSizeLabel(d: number): "small" | "medium" | "large" {
+// Cohen's conventional benchmarks: 0.2 small, 0.5 medium, 0.8 large
+export function effectSizeLabel(d: number): "negligible" | "small" | "medium" | "large" {
   const abs = Math.abs(d);
+  if (abs < 0.2) return "negligible";
   if (abs < 0.5) return "small";
   if (abs < 0.8) return "medium";
   return "large";
@@ -129,8 +145,8 @@ export function runOneSampleTTest(values: number[], targetMean: number): TTestRe
   const df = n - 1;
   const abst = Math.abs(tStat);
   const pValue = Math.max(0, Math.min(1, 2 * (1 - tCDF(abst, df))));
-  // 95% CI for the mean
-  const tCrit = 2.0; // approximate t-critical for large df
+  // 95% CI for the mean, using the exact t critical value for these df
+  const tCrit = tQuantile(0.975, df);
   const ciLower = m - tCrit * se;
   const ciUpper = m + tCrit * se;
   const d = (m - targetMean) / s;
@@ -176,8 +192,8 @@ export function runIndependentTTest(
   const abst = Math.abs(tStat);
   const pValue = Math.max(0, Math.min(1, 2 * (1 - tCDF(abst, df))));
 
-  // 95% CI for difference
-  const tCrit = 2.0;
+  // 95% CI for difference, using the exact t critical value for these df
+  const tCrit = tQuantile(0.975, df);
   const ciLower = diff - tCrit * se;
   const ciUpper = diff + tCrit * se;
 

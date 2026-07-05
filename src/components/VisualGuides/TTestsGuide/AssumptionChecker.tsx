@@ -17,8 +17,11 @@ function normalInvCDF(p: number): number {
   return p < 0.5 ? -x : x;
 }
 
-// ── Simplified Shapiro-Wilk W statistic ───────────────────────────────────────
-function shapiroWilkW(data: number[]): number {
+// ── Q-Q correlation normality check ──────────────────────────────────────────
+// Squared Pearson correlation between the sorted data and the expected normal
+// quantiles. This measures how straight the Q-Q plot is. It is a descriptive
+// check, NOT the formal Shapiro-Wilk test, and it produces no p-value.
+function qqCorrelationSquared(data: number[]): number {
   const n = data.length;
   const sorted = [...data].sort((a, b) => a - b);
   const m = mean(sorted);
@@ -47,7 +50,7 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
   const [W, setW] = useState<number | null>(null);
 
   const runCheck = () => {
-    const w = shapiroWilkW(data);
+    const w = qqCorrelationSquared(data);
     setW(w);
     setChecked(true);
     onChecked();
@@ -173,18 +176,23 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
     );
   };
 
-  // ── Shapiro-Wilk badge ─────────────────────────────────────────────────────
-  const ShapiroBadge = ({ w }: { w: number }) => {
-    let color = "#ef4444", label = "p < 0.05 — Non-normal";
-    if (w > 0.95) { color = "#3bb4a4"; label = "p > 0.05 — Normal"; }
-    else if (w > 0.90) { color = "#d4af37"; label = "p ≈ 0.01–0.05 — Borderline"; }
+  // ── Q-Q correlation badge ──────────────────────────────────────────────────
+  const NormalityBadge = ({ w }: { w: number }) => {
+    let color = "#ef4444", label = "Clear departure from the line";
+    if (w > 0.95) { color = "#3bb4a4"; label = "Points hug the reference line"; }
+    else if (w > 0.90) { color = "#d4af37"; label = "Some departure from the line"; }
     return (
       <div>
-        <p className="text-[10px] text-[#94a3b8] mb-1 font-semibold">Shapiro-Wilk Test</p>
+        <p className="text-[10px] text-[#94a3b8] mb-1 font-semibold">Q-Q Correlation (normality check)</p>
         <div className="rounded-lg border p-3 text-center" style={{ borderColor: color + "40", background: color + "10" }}>
-          <p className="text-[18px] font-black font-mono" style={{ color }}>W = {w.toFixed(4)}</p>
+          <p className="text-[18px] font-black font-mono" style={{ color }}>r&sup2; = {w.toFixed(4)}</p>
           <p className="text-[10px] font-semibold mt-0.5" style={{ color }}>{label}</p>
         </div>
+        <p className="text-[9px] text-[#475569] leading-relaxed mt-1.5">
+          Descriptive check only: r&sup2; measures how straight the Q-Q plot is, and the
+          color bands are rules of thumb. A formal test such as Shapiro-Wilk computes a
+          p-value whose critical value depends on the sample size.
+        </p>
       </div>
     );
   };
@@ -227,7 +235,7 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
           >
             <HistogramSVG />
             <QQPlot />
-            <ShapiroBadge w={W} />
+            <NormalityBadge w={W} />
           </motion.div>
         )}
       </AnimatePresence>

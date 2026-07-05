@@ -25,11 +25,14 @@ const TRAIN_STEPS = [
   { icon: "👍", title: "RLHF", desc: "Refined with human feedback — humans rank outputs, a reward model is trained, PPO optimizes the LLM.", color: "#a855f7" },
 ];
 
+// Illustrative scale tiers. There are no agreed parameter thresholds at which
+// specific abilities appear; these tiers only convey that richer capabilities
+// tend to show up at larger scales (see the caption rendered with this section).
 const EMERGENT = [
-  { thresh: "1B params", items: ["Basic grammar", "Simple Q&A"], color: "#475569" },
-  { thresh: "10B params", items: ["Code completion", "Translation"], color: "#1e5d8a" },
-  { thresh: "100B params", items: ["Chain-of-thought reasoning", "Arithmetic"], color: "#3bb4a4" },
-  { thresh: "1T params", items: ["Multi-step planning", "Analogical reasoning"], color: "#d4af37" },
+  { thresh: "~1B params", items: ["Basic grammar", "Simple Q&A"], color: "#475569" },
+  { thresh: "~10B params", items: ["Code completion", "Translation"], color: "#1e5d8a" },
+  { thresh: "~100B params", items: ["Chain-of-thought reasoning", "Arithmetic"], color: "#3bb4a4" },
+  { thresh: "Frontier scale", items: ["Multi-step planning", "Analogical reasoning"], color: "#d4af37" },
 ];
 
 const GEN_TOKENS = ["Paris", " is", " the", " capital", " of", " France", "."];
@@ -181,7 +184,7 @@ export default function WhatIsLLMClient() {
                 <motion.div key="done" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-center py-4">
                   <div className="text-3xl mb-3">🎉</div>
                   <p className="text-[14px] font-bold text-white mb-1">That&apos;s exactly what LLMs do!</p>
-                  <p className="text-[12px] text-[#94a3b8]">At every step they predict the most probable next token — billions of times per second.</p>
+                  <p className="text-[12px] text-[#94a3b8]">At every step they predict the most probable next token, append it, and repeat. In production a model typically streams tens to hundreds of tokens per second.</p>
                 </motion.div>
               ) : (
                 <motion.div key={predRound} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
@@ -274,7 +277,7 @@ export default function WhatIsLLMClient() {
         {/* ── S4: Emergent Abilities ── */}
         <section className="mb-12">
           <h2 className="text-[18px] font-bold text-white mb-1">Section 4 — Emergent Abilities</h2>
-          <p className="text-[12px] text-[#94a3b8] mb-5">These capabilities were never explicitly trained — they appeared as scale increased, surprising researchers.</p>
+          <p className="text-[12px] text-[#94a3b8] mb-5">These capabilities were never explicitly trained; they appeared as models scaled up, surprising researchers. The tiers below are illustrative: abilities emerge gradually and unevenly, there are no agreed parameter thresholds, and some researchers argue apparent &ldquo;jumps&rdquo; are partly an artifact of how benchmarks are scored.</p>
           <div ref={emergRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {EMERGENT.map((tier, i) => (
               <motion.div key={tier.thresh}

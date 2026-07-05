@@ -78,18 +78,14 @@ export function chiSquarePDF(x: number, df: number): number {
   );
 }
 
-// F-distribution PDF
+// F-distribution PDF: f(x) = sqrt((d1 x)^d1 d2^d2 / (d1 x + d2)^(d1+d2)) / (x B(d1/2, d2/2))
 export function fPDF(x: number, df1: number, df2: number): number {
   if (x <= 0) return 0;
   const num = Math.pow(df1 * x, df1) * Math.pow(df2, df2);
   const denom = Math.pow(df1 * x + df2, df1 + df2);
-  return (
-    Math.sqrt(num / denom) /
-    (x *
-      Math.exp(
-        logGamma((df1 + df2) / 2) - logGamma(df1 / 2) - logGamma(df2 / 2)
-      ))
-  );
+  const logBeta =
+    logGamma(df1 / 2) + logGamma(df2 / 2) - logGamma((df1 + df2) / 2);
+  return Math.sqrt(num / denom) / (x * Math.exp(logBeta));
 }
 
 // ── SVG path helpers ──────────────────────────────────────────────────────────

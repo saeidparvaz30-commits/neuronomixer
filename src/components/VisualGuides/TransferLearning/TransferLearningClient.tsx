@@ -219,11 +219,15 @@ export default function TransferLearningClient() {
         <section className="mb-10" ref={chartRef}>
           <h2 className="text-xl font-bold text-white mb-1">Why It Works With Less Data</h2>
           <p className="text-sm text-[#94a3b8] mb-4">
-            Transfer learning consistently outperforms training from scratch, especially when labelled
-            data is scarce. The gap shrinks as data grows beyond 100K samples.
+            Transfer learning typically outperforms training from scratch, especially when labelled
+            data is scarce, and the gap narrows as data grows.
           </p>
           <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-2xl p-4 sm:p-6">
             <DataComparisonChart animate={hasViewedChart} />
+            <p className="text-[11px] text-[#475569] mt-3">
+              Illustrative numbers showing the typical pattern, not measurements from a specific
+              published benchmark. Exact accuracies depend on the task, model, and datasets.
+            </p>
           </div>
         </section>
 
@@ -233,9 +237,11 @@ export default function TransferLearningClient() {
             Real-World Insight
           </h3>
           <p className="text-sm text-[#94a3b8] leading-relaxed">
-            GPT-4, CLIP, and most modern AI models are fine-tuned, not trained from scratch.
-            Even ChatGPT started as a base language model that was transfer-learned with human
-            feedback (RLHF). Transfer learning is not a shortcut — it is the standard.
+            Very few teams train large models from scratch. Foundation models like GPT-4 and CLIP
+            are pretrained once, at enormous cost, and everyone else adapts them: fine-tuning them
+            or reusing their learned representations for downstream tasks. ChatGPT itself is a
+            pretrained base model adapted with instruction tuning and human feedback (RLHF).
+            Reusing a pretrained model is not a shortcut; it is the standard practice.
           </p>
         </div>
 

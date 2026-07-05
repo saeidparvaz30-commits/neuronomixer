@@ -24,12 +24,12 @@ const SCENARIOS: ScenarioInfo[] = [
     notQuiteHint:
       "Think about what baseline you'd need to interpret 45%. Is that number good or bad without context?",
     revealText:
-      "45% compared to what? Without a baseline, this number is meaningless. The data reveals a Simpson's Paradox-style structure: mobile users adopt at 65% while desktop users adopt at only 25%. The headline figure blurs this critical difference. Asking 'compared to what?' is the first move of statistical thinking.",
+      "45% compared to what? Without a baseline, this number is meaningless. The aggregate also hides real subgroup differences: mobile users adopt at 65% while desktop users adopt at only 25%, and the headline figure blurs that heterogeneity. (This is aggregation hiding structure, not Simpson's Paradox, which requires the direction of an effect to reverse once you split by a lurking variable.) Asking 'compared to what?' is the first move of statistical thinking.",
     conceptTerms: [
       {
         term: "Simpson's Paradox",
         definition:
-          "A trend appears in different groups of data but reverses or disappears when the groups are combined.",
+          "A trend appears in different groups of data but reverses or disappears when the groups are combined. Mere differences between subgroups, with no reversal, are heterogeneity rather than a paradox.",
       },
     ],
     framings: {
@@ -94,7 +94,7 @@ const SCENARIOS: ScenarioInfo[] = [
     notQuiteHint:
       "An 8-point mean difference tells you nothing about whether that difference is consistent or driven by a few extreme values.",
     revealText:
-      "The individual scores show high variance within both groups. The 95% confidence interval around the treatment effect stretches from near zero to +15.5 — overlapping with the placebo CI. Without a formal significance test, we cannot conclude the effect is real. Statistical significance (is this likely due to chance?) must be answered before clinical significance (is this large enough to matter?).",
+      "The individual scores show high variance within both groups. The 95% confidence interval for the treatment effect (the drug-minus-placebo difference of 6 points) stretches from about -1.5 to +13.5, comfortably including zero, and the two-sample t-test gives p of roughly 0.11. We cannot conclude the effect is real. Statistical significance (is this likely due to chance?) must be answered before clinical significance (is this large enough to matter?).",
     conceptTerms: [
       {
         term: "confidence interval",
@@ -111,9 +111,9 @@ const SCENARIOS: ScenarioInfo[] = [
       descriptive:
         "Treated group mean improvement: 8 points (SD ≈ 15). Control group mean improvement: 2 points (SD ≈ 14). Individual data points show substantial overlap.",
       inferential:
-        "A two-sample t-test on these 60 subjects would yield a p-value near 0.09 — not significant at the 0.05 threshold. We cannot reject the null hypothesis that the drug has no effect.",
+        "A two-sample t-test on these 60 subjects (30 per group) yields p ≈ 0.11, not significant at the 0.05 threshold. We cannot reject the null hypothesis that the drug has no effect.",
       predictive:
-        "With the current evidence, predicting the drug works for the next patient is premature. A larger trial (n ≥ 150) would be needed to reliably detect an 8-point effect given this variance.",
+        "With the current evidence, predicting the drug works for the next patient is premature. Roughly 90+ subjects per group would be needed for 80% power to detect the observed 6-point group difference given this variance.",
     },
   },
 ];

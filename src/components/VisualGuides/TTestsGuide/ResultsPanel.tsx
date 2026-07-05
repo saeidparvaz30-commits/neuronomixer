@@ -88,7 +88,7 @@ export default function ResultsPanel({
             <p className="text-[11px] text-[#94a3b8] leading-relaxed">
               <strong className="text-white">Interpretation: </strong>
               {result.significant
-                ? `The data provide sufficient evidence (p = ${result.pValue < 0.001 ? "< 0.001" : result.pValue.toFixed(4)}) to reject the null hypothesis at the 5% significance level. The ${result.effectSizeLabel} effect (Cohen\u2019s d = ${result.cohensD.toFixed(2)}) suggests a ${result.effectSizeLabel === "small" ? "modest" : result.effectSizeLabel === "medium" ? "moderate" : "substantial"} practical difference between ${group1Name} and ${group2Name}.`
+                ? `The data provide sufficient evidence (p = ${result.pValue < 0.001 ? "< 0.001" : result.pValue.toFixed(4)}) to reject the null hypothesis at the 5% significance level. The ${result.effectSizeLabel} effect (Cohen\u2019s d = ${result.cohensD.toFixed(2)}) suggests a ${result.effectSizeLabel === "negligible" ? "trivially small" : result.effectSizeLabel === "small" ? "modest" : result.effectSizeLabel === "medium" ? "moderate" : "substantial"} practical difference between ${group1Name} and ${group2Name}.`
                 : `The data do not provide sufficient evidence (p = ${result.pValue.toFixed(4)}) to reject the null hypothesis at the 5% significance level. We cannot conclude there is a statistically significant difference between ${group1Name} and ${group2Name}. The 95% CI ${result.ciLower < nullValue && result.ciUpper > nullValue ? "contains" : "does not contain"} the null value.`}
             </p>
           </div>

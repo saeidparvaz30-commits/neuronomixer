@@ -21,10 +21,10 @@ const BLOCKS: Block[] = [
     explanation: "Each token attends to all previous tokens. Multiple heads run in parallel, each capturing different relationships.",
     formula: "Attention(Q,K,V) = softmax(QKᵀ / √dₖ) · V" },
   { id: "add-norm-1", label: "Add & Norm", color: "#334155", border: "#64748b", repeat: true,
-    explanation: "Residual connection: add the input back to the output, then normalize. Prevents vanishing gradients and enables very deep networks.",
+    explanation: "Residual connection: add the input back to the output, then normalize. Prevents vanishing gradients and enables very deep networks. Shown in the original Transformer's post-norm form; GPT-2 and most modern LLMs apply LayerNorm before each sublayer (pre-norm) instead.",
     formula: "LayerNorm(x + Sublayer(x))" },
   { id: "ffn", label: "Feed-Forward Network", color: "#0f766e", border: "#3bb4a4", repeat: true,
-    explanation: "A two-layer MLP applied identically to each position. Width is typically 4× the model dimension.",
+    explanation: "A two-layer MLP applied identically to each position. Width is typically 4× the model dimension. The max(0, ·) shown is the original Transformer's ReLU; GPT-2 and most modern LLMs use GELU (or gated variants like SwiGLU) instead.",
     formula: "FFN(x) = max(0, xW₁ + b₁)W₂ + b₂" },
   { id: "add-norm-2", label: "Add & Norm", color: "#334155", border: "#64748b", repeat: true,
     explanation: "Second residual connection after the feed-forward network. Stabilizes training and enables gradient flow across all N layers.",
@@ -140,13 +140,13 @@ export default function TransformerArchitectureClient() {
       {/* Section 1: Architecture Explorer */}
       <section className="mb-12">
         <h2 className="text-lg font-semibold mb-2">Architecture Explorer</h2>
-        <p className="text-[#94a3b8] text-sm mb-5">Click any block to expand its explanation. Blocks 3–6 repeat N times (GPT-4 uses ~96 layers).</p>
+        <p className="text-[#94a3b8] text-sm mb-5">Click any block to expand its explanation. Blocks 3–6 repeat N times (96 layers in GPT-3; GPT-4&apos;s architecture is unpublished).</p>
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Stack */}
           <div className="flex flex-col gap-2 lg:w-72 flex-shrink-0">
             {above.map((b) => <BlockBtn key={b.id} block={b} selected={selected === b.id} explored={explored.has(b.id)} onClick={() => handleBlock(b.id)} />)}
             <div className="border-2 border-dashed border-[#3bb4a4] rounded-xl p-2 flex flex-col gap-2">
-              <p className="text-[10px] text-[#3bb4a4] font-mono text-center tracking-wide">× N LAYERS (e.g. 96 for GPT-4)</p>
+              <p className="text-[10px] text-[#3bb4a4] font-mono text-center tracking-wide">× N LAYERS (e.g. 96 for GPT-3)</p>
               {repeat.map((b) => <BlockBtn key={b.id} block={b} selected={selected === b.id} explored={explored.has(b.id)} onClick={() => handleBlock(b.id)} />)}
             </div>
             {below.map((b) => <BlockBtn key={b.id} block={b} selected={selected === b.id} explored={explored.has(b.id)} onClick={() => handleBlock(b.id)} />)}

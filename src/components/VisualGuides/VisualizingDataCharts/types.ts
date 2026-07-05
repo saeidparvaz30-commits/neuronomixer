@@ -189,8 +189,8 @@ export const MISLEADING_CHARTS: MisleadingChart[] = [
     id: "cherry_picked",
     title: "Cherry-Picked Time Range",
     lie: "Showing only the recovery period hides the 50% crash that preceded it. The selected window creates a false impression of consistent growth.",
-    deceptiveCaption: "Stock up 30% — showing only Jul–Dec 2024.",
-    honestCaption: "Full year view: a 50% crash in H1 followed by a partial recovery. Net result: still down 20%.",
+    deceptiveCaption: "Stock up 73%, showing only the second half of the year (from 55 to 95).",
+    honestCaption: "Full year view: a 50% crash in H1 (100 to 50) followed by a strong recovery. Net result: still down 5% from the January start of 100.",
   },
   {
     id: "dual_axes",

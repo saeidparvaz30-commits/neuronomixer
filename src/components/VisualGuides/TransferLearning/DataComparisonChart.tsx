@@ -2,7 +2,9 @@
 
 import { motion } from "framer-motion";
 
-// Pre-computed deterministic accuracy values
+// ILLUSTRATIVE accuracy values chosen to show the typical qualitative pattern
+// (transfer > scratch at low data; gap narrows with more data). Not taken from
+// a specific published benchmark; the client renders a visible caption saying so.
 // X-axis: [100 samples, 1K, 10K, 100K]
 const DATA_POINTS = [
   { label: "100", fromScratch: 38, transfer: 71 },

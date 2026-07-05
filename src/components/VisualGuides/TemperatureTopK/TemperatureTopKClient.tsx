@@ -306,11 +306,13 @@ export default function TemperatureTopKClient() {
 
         {/* Gold insight */}
         <div className="rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-5 mb-10">
-          <p className="text-[11px] font-semibold text-[#d4af37] uppercase tracking-wider mb-2">Real-world defaults</p>
+          <p className="text-[11px] font-semibold text-[#d4af37] uppercase tracking-wider mb-2">Real-world settings</p>
           <p className="text-[13px] text-white leading-relaxed">
-            ChatGPT uses <span className="text-[#d4af37] font-semibold">T≈0.7, top-p=0.9</span> by default.{" "}
-            Code generation models often use <span className="text-[#3bb4a4] font-semibold">T=0.2</span> for determinism.{" "}
-            Creative writing uses <span className="text-[#a855f7] font-semibold">T=0.9–1.1</span>.
+            Major LLM APIs (OpenAI, Anthropic) default to <span className="text-[#d4af37] font-semibold">T=1.0</span> with
+            no top-p cutoff, and what consumer apps like ChatGPT use internally is not published.{" "}
+            In practice, developers often dial down to <span className="text-[#3bb4a4] font-semibold">T≈0&ndash;0.3</span> for
+            code and extraction tasks, and up to <span className="text-[#a855f7] font-semibold">T≈0.9&ndash;1.1</span> for
+            creative writing.
           </p>
         </div>
 

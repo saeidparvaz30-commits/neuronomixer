@@ -220,7 +220,7 @@ function TTab({ tDF, onTDFChange }: TTabProps) {
 
       {/* Stats */}
       <div className="flex flex-wrap gap-2">
-        <StatPill label="Mean" value="0" color={tColor} />
+        <StatPill label="Mean" value={tDF > 1 ? "0" : "undefined"} color={tColor} />
         <StatPill label="Variance" value={variance} color={tColor} />
         <StatPill
           label="Support"
@@ -417,7 +417,9 @@ function FTab({ fDF1, fDF2, onFDF1Change, onFDF2Change }: FTabProps) {
   const colorBright = "#4a9fd5";
 
   const { fPath, xMax } = useMemo(() => {
-    const xMax = Math.max(4, fDF1 > 1 ? (fDF2 / (fDF2 - 2)) * 4 : 6);
+    // Scale the x-range off the mean df2/(df2-2), which only exists for df2 > 2.
+    // For df2 <= 2 (mean undefined/infinite) fall back to a fixed window.
+    const xMax = fDF2 > 2 ? Math.max(4, (fDF2 / (fDF2 - 2)) * 4) : 6;
     const pts = generatePoints(
       (x) => fPDF(x, fDF1, fDF2),
       0.01,

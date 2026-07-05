@@ -23,22 +23,31 @@ function SubplotPanel({ df, index }: SubplotProps) {
   const tColor = "#3bb4a4";
   const normalColor = "#475569";
 
-  const { tPath, normalPath } = useMemo(() => {
+  const { tPath, normalPath, similarityPct } = useMemo(() => {
     const xMin = -5;
     const xMax = 5;
     const tPts = generatePoints((x) => tPDF(x, df), xMin, xMax, 200);
     const normPts = generatePoints(normalPDF, xMin, xMax, 200);
     const yMax =
       Math.max(...tPts.map(([, y]) => y), ...normPts.map(([, y]) => y)) * 1.1;
+
+    // Overlap coefficient: area shared by the two densities,
+    // integral of min(t, normal) dx via the trapezoid rule. Outside [-5, 5]
+    // the minimum is the normal density, whose tail mass there is negligible.
+    const dx = (xMax - xMin) / (tPts.length - 1);
+    let overlap = 0;
+    for (let i = 0; i < tPts.length - 1; i++) {
+      const a = Math.min(tPts[i][1], normPts[i][1]);
+      const b = Math.min(tPts[i + 1][1], normPts[i + 1][1]);
+      overlap += ((a + b) / 2) * dx;
+    }
+
     return {
       tPath: pointsToSVGPath(tPts, SUBPLOT_W, SUBPLOT_H, xMin, xMax, yMax),
       normalPath: pointsToSVGPath(normPts, SUBPLOT_W, SUBPLOT_H, xMin, xMax, yMax),
+      similarityPct: Math.round(overlap * 100),
     };
   }, [df]);
-
-  // How close is this t-curve to normal? (rough heuristic: df/(df+1))
-  const similarity = df / (df + 1);
-  const similarityPct = Math.round(similarity * 100);
 
   return (
     <motion.div
@@ -127,7 +136,8 @@ export default function TConvergenceVisualizer({
           </h2>
           <p className="text-[11px] text-[#94a3b8] mt-0.5">
             Each panel shows t (solid teal) vs standard normal (dashed gray).
-            The similarity badge shows how close they are.
+            The badge shows the density overlap: the share of probability area
+            the two curves have in common.
           </p>
         </div>
 
@@ -185,7 +195,7 @@ export default function TConvergenceVisualizer({
               >
                 N%
               </span>
-              <span className="text-[10px] text-[#94a3b8]">similarity to normal</span>
+              <span className="text-[10px] text-[#94a3b8]">density overlap with normal</span>
             </div>
           </div>
         </motion.div>

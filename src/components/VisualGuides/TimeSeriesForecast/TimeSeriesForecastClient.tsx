@@ -150,7 +150,79 @@ function computeES(values: number[], alpha: number): number[] {
   return result;
 }
 
-// ── Forecast ──────────────────────────────────────────────────────────────────
+// ── Model fitting (uses ONLY the data it is given) ───────────────────────────
+
+interface FittedModel {
+  slope: number;
+  trendAnchor: number; // estimated trend level at the last point of the fitting data
+  residStd: number;
+  seasonalPattern: number[]; // 12 monthly offsets learned from the fitting data
+}
+
+function fitModel(train: number[]): FittedModel {
+  const decomp = computeDecomposition(train);
+  const nTrain = train.length;
+
+  // Seasonal pattern (average offset per calendar month, fitting data only)
+  const seasonalPattern = Array.from({ length: 12 }, (_, m) => {
+    const mVals = decomp.seasonal.filter((_, i) => i % 12 === m);
+    return mVals.reduce((a, b) => a + b, 0) / mVals.length;
+  });
+
+  // Fit a linear trend by ordinary least squares to the deseasonalized
+  // training values (raw value minus seasonal offset). Fitting on the raw
+  // deseasonalized series avoids the end-of-series bias of the centred
+  // moving average, whose window is truncated near the boundary.
+  const deseasonalized = train.map((v, i) => v - seasonalPattern[i % 12]);
+  const xBar = (nTrain - 1) / 2;
+  const yBar = deseasonalized.reduce((a, b) => a + b, 0) / nTrain;
+  let sxy = 0,
+    sxx = 0;
+  for (let i = 0; i < nTrain; i++) {
+    sxy += (i - xBar) * (deseasonalized[i] - yBar);
+    sxx += (i - xBar) ** 2;
+  }
+  const slope = sxx !== 0 ? sxy / sxx : 0;
+  // Fitted trend line evaluated at the last training point
+  const trendAnchor = yBar + slope * (nTrain - 1 - xBar);
+
+  // Residual std of THIS model (trend line + seasonal) on the fitting data only
+  const modelResiduals = train.map(
+    (v, i) => v - (yBar + slope * (i - xBar) + seasonalPattern[i % 12])
+  );
+  const residStd =
+    Math.sqrt(modelResiduals.reduce((acc, v) => acc + v * v, 0) / nTrain) || 1;
+
+  return { slope, trendAnchor, residStd, seasonalPattern };
+}
+
+function forecastAhead(
+  model: FittedModel,
+  trainLen: number,
+  horizonMonths: number
+): { forecastValues: number[]; upperBound: number[]; lowerBound: number[] } {
+  const forecastValues: number[] = [];
+  const upperBound: number[] = [];
+  const lowerBound: number[] = [];
+
+  for (let h = 1; h <= horizonMonths; h++) {
+    const forecast =
+      model.trendAnchor +
+      model.slope * h +
+      model.seasonalPattern[(trainLen + h - 1) % 12];
+
+    // Simplified interval heuristic (see note in the forecast section)
+    const pi = 1.96 * model.residStd * Math.sqrt(1 + h / trainLen);
+
+    forecastValues.push(parseFloat(forecast.toFixed(2)));
+    upperBound.push(parseFloat((forecast + pi).toFixed(2)));
+    lowerBound.push(parseFloat((forecast - pi).toFixed(2)));
+  }
+
+  return { forecastValues, upperBound, lowerBound };
+}
+
+// ── Forecast for display (fit on all 48 months, project into 2024) ───────────
 
 interface ForecastResult {
   forecastValues: number[];
@@ -159,54 +231,13 @@ interface ForecastResult {
   forecastLabels: string[];
 }
 
-function computeForecast(
-  values: number[],
-  decomp: DecompositionResult,
-  horizonMonths: number = 12
-): ForecastResult {
-  const n = values.length;
-  const trainLen = n - 12; // hold-out last 12 for accuracy metrics
-
-  // Fit linear trend to last 12 months of training data
-  const trendWindow = decomp.trend.slice(Math.max(0, trainLen - 12), trainLen);
-  const xBar = (trendWindow.length - 1) / 2;
-  let sxy = 0,
-    sxx = 0;
-  for (let i = 0; i < trendWindow.length; i++) {
-    sxy += (i - xBar) * (trendWindow[i] - trendWindow[xBar | 0]);
-    sxx += (i - xBar) ** 2;
-  }
-  const slope = sxx !== 0 ? sxy / sxx : 0;
-  const trendIntercept = trendWindow[trendWindow.length - 1];
-
-  // Residual std from full series
-  const residStd =
-    Math.sqrt(
-      decomp.residual.reduce((acc, v) => acc + v * v, 0) / n
-    ) || 1;
-
-  // Seasonal pattern (averaged 12 months)
-  const seasonalPattern = Array.from({ length: 12 }, (_, m) => {
-    const mVals = decomp.seasonal.filter((_, i) => i % 12 === m);
-    return mVals.reduce((a, b) => a + b, 0) / mVals.length;
-  });
-
-  // Generate forecast + intervals
-  const forecastValues: number[] = [];
-  const upperBound: number[] = [];
-  const lowerBound: number[] = [];
-
-  for (let h = 1; h <= horizonMonths; h++) {
-    const trendComponent = trendIntercept + slope * h;
-    const seasonalComponent = seasonalPattern[(n + h - 1) % 12];
-    const forecast = trendComponent + seasonalComponent;
-
-    const pi = 1.96 * residStd * Math.sqrt(1 + h / n);
-
-    forecastValues.push(parseFloat(forecast.toFixed(2)));
-    upperBound.push(parseFloat((forecast + pi).toFixed(2)));
-    lowerBound.push(parseFloat((forecast - pi).toFixed(2)));
-  }
+function computeForecast(values: number[], horizonMonths: number = 12): ForecastResult {
+  const model = fitModel(values);
+  const { forecastValues, upperBound, lowerBound } = forecastAhead(
+    model,
+    values.length,
+    horizonMonths
+  );
 
   // Forecast labels: Jan 24 .. Dec 24
   const forecastLabels: string[] = [];
@@ -224,26 +255,29 @@ function computeForecast(
   return { forecastValues, upperBound, lowerBound, forecastLabels };
 }
 
-// ── Accuracy metrics (on held-out last 12 months) ────────────────────────────
+// ── Honest hold-out accuracy ──────────────────────────────────────────────────
+// Fit on the first 36 months ONLY, forecast the final 12, and score those
+// forecasts against the held-out actuals the model never saw. Fitting on the
+// full series and then "evaluating" on its last 12 months would be temporal
+// leakage: the centred-moving-average trend and the seasonal averages would
+// already contain the hold-out values.
 
-function computeAccuracy(
-  values: number[],
-  decomp: DecompositionResult
-): { mae: number; rmse: number; mape: number } {
-  const n = values.length;
-  const holdoutStart = n - 12;
+function computeAccuracy(values: number[]): { mae: number; rmse: number; mape: number } {
+  const holdout = 12;
+  const trainLen = values.length - holdout;
+  const train = values.slice(0, trainLen);
 
-  // Fitted = trend + seasonal
-  const fitted = values.map((_, i) => decomp.trend[i] + decomp.seasonal[i]);
+  const model = fitModel(train);
+  const { forecastValues } = forecastAhead(model, trainLen, holdout);
 
-  const holdoutActual = values.slice(holdoutStart);
-  const holdoutFitted = fitted.slice(holdoutStart);
-
-  const errors = holdoutActual.map((a, i) => a - holdoutFitted[i]);
+  const holdoutActual = values.slice(trainLen);
+  const errors = holdoutActual.map((a, i) => a - forecastValues[i]);
   const mae = errors.reduce((s, e) => s + Math.abs(e), 0) / errors.length;
   const rmse = Math.sqrt(errors.reduce((s, e) => s + e * e, 0) / errors.length);
   const mape =
-    (holdoutActual.reduce((s, a, i) => s + Math.abs(errors[i]) / Math.abs(a), 0) / errors.length) * 100;
+    (holdoutActual.reduce((s, a, i) => s + Math.abs(errors[i]) / Math.abs(a), 0) /
+      errors.length) *
+    100;
 
   return { mae, rmse, mape };
 }
@@ -312,15 +346,9 @@ export default function TimeSeriesForecastClient() {
   const maSmoothed = useMemo(() => computeMA(values, maWindow), [values, maWindow]);
   const esSmoothed = useMemo(() => computeES(values, alpha), [values, alpha]);
 
-  const forecast = useMemo(
-    () => computeForecast(values, decomposition),
-    [values, decomposition]
-  );
+  const forecast = useMemo(() => computeForecast(values), [values]);
 
-  const accuracy = useMemo(
-    () => computeAccuracy(values, decomposition),
-    [values, decomposition]
-  );
+  const accuracy = useMemo(() => computeAccuracy(values), [values]);
 
   function handleDatasetChange(id: DatasetId) {
     setActiveDataset(id);
@@ -535,9 +563,12 @@ export default function TimeSeriesForecastClient() {
                 12-Month Forecast with Prediction Intervals
               </p>
               <p className="text-[12px] text-[#475569] leading-relaxed">
-                Extends the linear trend fitted on the last 12 months, plus the
-                learned seasonal pattern. Prediction intervals widen as the forecast
-                horizon grows: PI = ŷ ± 1.96 · σ · √(1 + h/n).
+                Extends a linear trend fitted by least squares to the deseasonalized
+                history, plus the learned monthly seasonal pattern. The shaded band
+                widens with the forecast horizon using a simplified rule of thumb,
+                PI ≈ ŷ ± 1.96 · σ · √(1 + h/n). Real forecasting libraries derive
+                interval width from the fitted model (for example ARIMA state-space
+                variances) rather than this shortcut.
               </p>
             </div>
             <ForecastPlot
@@ -555,7 +586,19 @@ export default function TimeSeriesForecastClient() {
           {/* Section 5: Accuracy metrics */}
           <div>
             <p className="text-[13px] font-semibold text-white mb-3">
-              Hold-Out Accuracy (last 12 months)
+              Hold-Out Accuracy (fit on 2020&ndash;2022, evaluated on 2023)
+            </p>
+            <p className="text-[12px] text-[#475569] leading-relaxed mb-3 max-w-[640px]">
+              The model is fit on the first 36 months only, then forecasts the final 12
+              months it never saw. The metrics below compare those forecasts against the
+              held-out 2023 actuals. Scoring a model on data it was fit on would be{" "}
+              <Link
+                href="/visual-guides/data-leakage"
+                className="underline underline-offset-2 text-[#94a3b8] hover:text-white"
+              >
+                data leakage
+              </Link>
+              , and the numbers would look better than the model deserves.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
@@ -705,7 +748,7 @@ export default function TimeSeriesForecastClient() {
                     Try Again
                   </button>
                   <Link
-                    href="/visual-guides/anomaly-detection"
+                    href="/visual-guides/outlier-detection"
                     className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
                   >
                     Next Guide →
@@ -726,7 +769,7 @@ export default function TimeSeriesForecastClient() {
               ← All Guides
             </Link>
             <Link
-              href="/visual-guides/anomaly-detection"
+              href="/visual-guides/outlier-detection"
               className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
             >
               Next Guide →

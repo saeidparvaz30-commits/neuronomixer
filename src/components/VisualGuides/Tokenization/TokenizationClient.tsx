@@ -113,12 +113,12 @@ const COMPARISON_EXAMPLES = [
 const INSIGHT_CARDS = [
   {
     title: "Cost",
-    body: "GPT-4 charges per token. 1K tokens \u2248 750 words — so concise prompts save money.",
+    body: "LLM APIs charge per token. 1K tokens \u2248 750 words, so concise prompts save money.",
     color: "#d4af37",
   },
   {
     title: "Context limits",
-    body: "GPT-4 supports 128K tokens \u2248 100K words max. Every token in context counts against this limit.",
+    body: "GPT-4o supports 128K tokens \u2248 96K words max. Every token in context counts against this limit.",
     color: "#3bb4a4",
   },
   {
@@ -158,8 +158,8 @@ const BPE_STEPS = [
 // ── Cost estimate ──────────────────────────────────────────────────────────
 
 function estimateCost(tokenCount: number): string {
-  // GPT-4o input: $5 / 1M tokens
-  const cost = (tokenCount / 1_000_000) * 5;
+  // GPT-4o input: $2.50 / 1M tokens (OpenAI list price since Aug 2024)
+  const cost = (tokenCount / 1_000_000) * 2.5;
   if (cost < 0.00001) return "<$0.00001";
   return `~$${cost.toFixed(5)}`;
 }
@@ -528,8 +528,9 @@ export default function TokenizationClient() {
             <span className="font-mono text-[#3bb4a4]">[&ldquo;token&rdquo;, &ldquo;ize&rdquo;]</span> — 2 tokens.
             But{" "}
             <span className="text-white font-mono">&ldquo;détokeniser&rdquo;</span> (French) splits into
-            6+ tokens. This is why models perform better in English than other languages — every
-            foreign or rare word consumes more context budget and costs more.
+            6+ tokens. Inefficient tokenization is one reason models handle non-English text worse:
+            every foreign or rare word burns more context budget and costs more. The bigger driver,
+            though, is training data: the corpora these models learn from are predominantly English.
           </p>
         </div>
 

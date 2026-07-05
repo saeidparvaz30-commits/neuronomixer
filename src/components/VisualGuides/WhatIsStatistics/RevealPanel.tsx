@@ -74,9 +74,12 @@ function LoanDefaultViz() {
 }
 
 function ClinicalTrialViz() {
-  // Dot plot: show mean and CI for treated vs control
-  const treated = { mean: 8, ci: [0.5, 15.5] };
-  const control = { mean: 2, ci: [-4.5, 8.5] };
+  // Dot plot: mean and 95% CI for each group.
+  // Consistent with the scenario's stated data (n = 30 per group):
+  // Treated: 8 ± t(29, 0.975) * 15/sqrt(30) = 8 ± 5.6  -> [2.4, 13.6]
+  // Control: 2 ± t(29, 0.975) * 14/sqrt(30) = 2 ± 5.2  -> [-3.2, 7.2]
+  const treated = { mean: 8, ci: [2.4, 13.6] };
+  const control = { mean: 2, ci: [-3.2, 7.2] };
 
   const groups = [
     { label: "Treated", ...treated, color: "#3bb4a4" },
@@ -127,7 +130,7 @@ function ClinicalTrialViz() {
           </div>
         ))}
         <p className="text-[11px] text-[#94a3b8]">
-          The CIs overlap near zero. The 8-point difference is not clearly distinguishable from noise without a formal significance test.
+          What matters is the CI for the difference between groups: about -1.5 to +13.5 points, which includes zero (two-sample t-test p ≈ 0.11). Eyeballing whether two group CIs overlap is not a reliable significance test; groups whose CIs overlap somewhat can still differ significantly.
         </p>
       </div>
     </div>

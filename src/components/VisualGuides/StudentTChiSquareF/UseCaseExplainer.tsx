@@ -78,13 +78,13 @@ const CARDS = [
     description:
       "The F-distribution is defined as the ratio of two scaled chi-square variables. It arises whenever you compare variances.",
     bullets: [
-      "Levene's test / Bartlett's test: Are the variances of two groups equal?",
+      "Variance-ratio and Levene's tests: Are group variances equal? (Bartlett's test answers the same question but its statistic follows chi-square, not F)",
       "One-way ANOVA: Do multiple group means differ significantly?",
       "Regression F-statistic: Is the overall regression model significant?",
       "Two-way ANOVA: Main effects and interaction effects",
     ],
     example:
-      "Three production lines. Test if they have equal output variances using the F-test with df1 = 2, df2 = 87.",
+      "Three production lines, 30 samples each. Test if they have equal output variances using Levene's test, an F-test with df1 = 2, df2 = 87.",
     insightBadge: "Ratio of two chi-squares",
     accentColor: "#4a9fd5",
   },
