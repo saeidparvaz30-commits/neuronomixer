@@ -23,7 +23,7 @@ function ThreatAnatomyInner() {
       label: "User message",
       trust: "Written by your user",
       text: '"Summarize my unread email."',
-      color: "#3b82f6",
+      color: "#1e5d8a",
     },
     {
       label: "Tool result",

@@ -92,7 +92,7 @@ export const DEFENSES: DefenseMeta[] = [
     riskLevel: 2,
     riskLabel: "Reduced: fewer injections succeed, some still do",
     honestNote:
-      "Spotlighting lowers the compliance rate but does not eliminate it. A rephrased attack can still get through.",
+      "Source labeling (also called spotlighting) lowers the compliance rate but does not eliminate it. A rephrased attack can still get through.",
   },
   {
     id: "gating",
@@ -136,7 +136,7 @@ export const SCENARIO_RUNS: Record<DefenseId, ScenarioStep[]> = {
     {
       actor: "tool",
       title: "Tool result: 3 messages",
-      text: "Message 2, a routine-looking newsletter, contains an embedded line the user never sees in the subject:",
+      text: "Message 2, a routine-looking newsletter, hides an embedded instruction in its body that the user never notices:",
       tone: "warning",
       showsInjection: true,
     },

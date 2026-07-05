@@ -37,23 +37,27 @@ type Props = {
 
 function ScenarioExplorerInner({ defense, onDefenseChange, completedRuns, onRunComplete }: Props) {
   const { fadeUp } = useGuideMotion();
-  // Number of transcript steps currently revealed (0 = not started).
-  const [revealed, setRevealed] = useState(0);
+  // Steps revealed, tagged with the defense they belong to so a defense switch
+  // resets the count synchronously (no stale read crediting an unwatched run).
+  const [progress, setProgress] = useState<{ defense: DefenseId; n: number }>({
+    defense,
+    n: 0,
+  });
 
   const steps = SCENARIO_RUNS[defense];
   const meta = DEFENSES.find((d) => d.id === defense)!;
+  const revealed = progress.defense === defense ? progress.n : 0;
   const finished = revealed >= steps.length;
-
-  useEffect(() => {
-    setRevealed(0);
-  }, [defense]);
 
   useEffect(() => {
     if (finished) onRunComplete(defense);
   }, [finished, defense, onRunComplete]);
 
   function advance() {
-    setRevealed((r) => Math.min(steps.length, r + 1));
+    setProgress((p) => {
+      const base = p.defense === defense ? p.n : 0;
+      return { defense, n: Math.min(steps.length, base + 1) };
+    });
   }
 
   return (
@@ -241,7 +245,7 @@ function ScenarioExplorerInner({ defense, onDefenseChange, completedRuns, onRunC
                 </button>
               ) : (
                 <button
-                  onClick={() => setRevealed(0)}
+                  onClick={() => setProgress({ defense, n: 0 })}
                   className="px-4 py-2 rounded-xl text-[12px] font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37]"
                 >
                   Replay this configuration
