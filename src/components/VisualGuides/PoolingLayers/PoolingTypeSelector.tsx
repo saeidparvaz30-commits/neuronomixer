@@ -18,7 +18,7 @@ const TABS: Tab[] = [
     color: "#3bb4a4",
     tagline: "Takes the strongest signal",
     description:
-      "Picks the largest value in each window. Great for preserving the most prominent feature — such as the brightest edge or strongest activation.",
+      "Picks the largest value in each window. Great for preserving the most prominent feature, such as the brightest edge or strongest activation.",
   },
   {
     id: "average",
@@ -57,12 +57,14 @@ export default function PoolingTypeSelector({ selected, onSelect }: Props) {
   return (
     <div>
       {/* Tab buttons */}
-      <div className="flex gap-2 flex-wrap">
+      <div role="radiogroup" aria-label="Pooling type" className="flex gap-2 flex-wrap">
         {TABS.map((tab) => {
           const isActive = tab.id === selected;
           return (
             <button
               key={tab.id}
+              role="radio"
+              aria-checked={isActive}
               onClick={() => onSelect(tab.id)}
               className="relative px-4 py-2 rounded-lg text-sm font-semibold border transition-all"
               style={{
@@ -98,7 +100,7 @@ export default function PoolingTypeSelector({ selected, onSelect }: Props) {
         }}
       >
         <p className="text-sm font-semibold mb-1" style={{ color: selectedTab.color }}>
-          {selectedTab.label} Pooling &mdash; {selectedTab.tagline}
+          {selectedTab.label} Pooling: {selectedTab.tagline}
         </p>
         <p className="text-[13px] text-[#94a3b8] leading-relaxed">{selectedTab.description}</p>
       </motion.div>

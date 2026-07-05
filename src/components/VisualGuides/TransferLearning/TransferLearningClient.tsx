@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 
 import LayerFreezer from "./LayerFreezer";
 import StrategySelector, { STRATEGIES } from "./StrategySelector";
@@ -48,6 +49,7 @@ function useIntersectionOnce(threshold = 0.3) {
 
 export default function TransferLearningClient() {
   const { data: session } = useSession();
+  const { fadeUp, card } = useGuideMotion();
   const completionFired = useRef(false);
 
   const [layers, setLayers] = useState<CNNLayer[]>(DEFAULT_LAYERS);
@@ -96,6 +98,13 @@ export default function TransferLearningClient() {
     setSelectedStrategy(null);
   }
 
+  function handleReset() {
+    setLayers(DEFAULT_LAYERS);
+    setSelectedStrategy("fine-tuning");
+    setHasInteractedWithLayers(false);
+    setHasSelectedStrategy(false);
+  }
+
   // Progress calc
   const steps = [
     { label: "View Transfer Viz", done: true },
@@ -107,36 +116,47 @@ export default function TransferLearningClient() {
   const progressPct = (doneCount / steps.length) * 100;
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
+    <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="transfer-learning" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6 flex-wrap">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
           <span>/</span>
-          <span className="text-[#94a3b8]">Deep Learning</span>
-          <span>/</span>
-          <span className="text-white">Transfer Learning: Stand on Giants&apos; Shoulders</span>
+          <span className="text-[#94a3b8]">Transfer Learning: Stand on Giants&apos; Shoulders</span>
         </nav>
 
         {/* Hero */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-[#a855f7]/20 border border-[#a855f7]/40 rounded-full px-3 py-1 mb-4">
-            <span className="text-xs font-semibold text-[#a855f7] uppercase tracking-wider">
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Deep Learning
             </span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Transfer Learning: Stand on Giants&apos; Shoulders
-          </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl">
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
+          >
+            Transfer Learning:{" "}
+            <span className="text-[var(--color-accent)]">Stand on Giants&apos; Shoulders</span>
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]"
+          >
             Click to freeze and unfreeze CNN layers. See how pretrained features transfer across tasks
             with dramatically less training data.
-          </p>
-        </div>
+          </motion.p>
+        </section>
 
         {/* Progress bar */}
         <div className="mb-6 bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
@@ -148,7 +168,7 @@ export default function TransferLearningClient() {
           </div>
           <div className="h-2 bg-[#0f172a] rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-gradient-to-r from-[#a855f7] to-[#3bb4a4] rounded-full"
+              className="h-full bg-[var(--color-accent)] rounded-full"
               animate={{ width: `${progressPct}%` }}
               transition={{ duration: 0.4 }}
             />
@@ -167,14 +187,14 @@ export default function TransferLearningClient() {
             <motion.div
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-2 text-xs text-[#3bb4a4] font-semibold"
+              className="mt-2 text-xs text-[var(--color-success)] font-semibold"
             >
               Guide complete! Great work.
             </motion.div>
           )}
           {!session?.user && (
             <p className="text-[11px] text-[#475569] mt-2">
-              <Link href="/auth/sign-in" className="text-[#d4af37] hover:underline">
+              <Link href="/auth/sign-in" className="text-[var(--color-accent)] hover:underline">
                 Sign in
               </Link>{" "}
               to save progress
@@ -187,7 +207,7 @@ export default function TransferLearningClient() {
           <h2 className="text-xl font-bold text-white mb-1">How Knowledge Transfers</h2>
           <p className="text-sm text-[#94a3b8] mb-4">
             Early layers of a CNN learn universal features useful for any vision task. These can be
-            reused directly — only the final layers need retraining for your specific problem.
+            reused directly; only the final layers need retraining for your specific problem.
           </p>
           <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-2xl p-4 sm:p-6">
             <KnowledgeTransferViz />
@@ -233,7 +253,7 @@ export default function TransferLearningClient() {
 
         {/* Insight box */}
         <div className="mb-10 bg-[#d4af37]/8 border border-[#d4af37]/25 rounded-2xl p-5 sm:p-6">
-          <h3 className="text-sm font-semibold text-[#d4af37] uppercase tracking-wide mb-2">
+          <h3 className="text-sm font-semibold text-[var(--color-accent)] uppercase tracking-wide mb-2">
             Real-World Insight
           </h3>
           <p className="text-sm text-[#94a3b8] leading-relaxed">
@@ -245,53 +265,89 @@ export default function TransferLearningClient() {
           </p>
         </div>
 
-        {/* Summary card (on completion) */}
+        {/* Completion card */}
         {isComplete && (
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-10 bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 rounded-2xl p-5 sm:p-6"
+            variants={card}
+            initial="hidden"
+            animate="visible"
+            className="mt-8 mb-10 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
           >
-            <div className="flex items-center gap-2 mb-3">
-              <svg className="w-5 h-5 text-[#3bb4a4]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              <span className="text-base font-bold text-[#3bb4a4]">Guide Complete!</span>
+            {/* Header */}
+            <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-5 h-px bg-[var(--color-accent)]" />
+                <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                  Guide Complete
+                </span>
+              </div>
+              <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                Transfer Learning Unlocked!
+              </h2>
+              <p className="text-sm text-[#94a3b8] mt-1">
+                You froze layers, applied transfer strategies, and saw why less data is needed.
+              </p>
             </div>
-            <p className="text-sm text-[#94a3b8] mb-4">
-              You understand how to freeze layers, apply transfer strategies, and why less data is
-              needed. Ready to see how optimizers race to minimise loss?
-            </p>
-            <Link
-              href="/visual-guides/optimizers-race"
-              className="inline-flex items-center gap-2 bg-[#3bb4a4] text-[#0f172a] font-semibold text-sm px-4 py-2 rounded-lg hover:brightness-110 transition-all"
-            >
-              Next: Optimizers Race →
-            </Link>
+
+            {/* Body */}
+            <div className="px-6 py-5">
+              <p className="text-[13px] text-[#94a3b8] leading-relaxed mb-4">
+                You understand how to freeze layers, apply transfer strategies, and why less
+                data is needed. Ready to see how optimizers race to minimise loss?
+              </p>
+
+              {/* Key Takeaway */}
+              <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                  Key Takeaway
+                </p>
+                <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                  &quot;Reusing a pretrained model is not a shortcut; it is the standard
+                  practice. Early layers learn universal features, so only the final layers
+                  need retraining for your specific task.&quot;
+                </p>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+              <Link
+                href="/visual-guides"
+                className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+              >
+                ← All Guides
+              </Link>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleReset}
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  Try Again
+                </button>
+                <Link
+                  href="/visual-guides/optimizers-race"
+                  className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                >
+                  Next Guide →
+                </Link>
+              </div>
+            </div>
           </motion.div>
         )}
 
         {/* Navigation */}
-        <div className="flex items-center justify-between pt-6 border-t border-[#1e293b]">
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/batch-normalization"
-            className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
           >
-            <span>←</span>
-            <span>Batch Normalization</span>
-          </Link>
-          <Link
-            href="/visual-guides"
-            className="text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            All Guides
+            ← Batch Normalization
           </Link>
           <Link
             href="/visual-guides/optimizers-race"
-            className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
-            <span>Optimizers Race</span>
-            <span>→</span>
+            Next Guide →
           </Link>
         </div>
 

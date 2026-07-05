@@ -40,7 +40,7 @@ export default function ComparisonTable({
         <h2 className="text-base font-semibold text-white">
           Function Comparison
         </h2>
-        <p className="text-xs text-[#64748b] mt-0.5">
+        <p className="text-xs text-[#475569] mt-0.5">
           Click a row to explore that function
         </p>
       </div>
@@ -89,7 +89,7 @@ export default function ComparisonTable({
                       />
                       <span
                         className="font-semibold"
-                        style={{ color: isSelected ? prop.color : "#f8fafc" }}
+                        style={{ color: isSelected ? prop.color : "#f1f5f9" }}
                       >
                         {prop.label}
                       </span>

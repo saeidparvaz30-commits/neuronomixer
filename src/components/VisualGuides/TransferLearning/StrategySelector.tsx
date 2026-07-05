@@ -40,25 +40,25 @@ interface Props {
 
 function dataNeededColor(val: StrategyInfo["dataNeeded"]): string {
   if (val === "Very Small (<1K)") return "text-[#3bb4a4] bg-[#3bb4a4]/10 border-[#3bb4a4]/30";
-  if (val === "Small (1K-10K)") return "text-[#d4af37] bg-[#d4af37]/10 border-[#d4af37]/30";
-  return "text-[#f87171] bg-[#f87171]/10 border-[#f87171]/30";
+  if (val === "Small (1K-10K)") return "text-[var(--color-accent)] bg-[#d4af37]/10 border-[#d4af37]/30";
+  return "text-[#ef4444] bg-[#ef4444]/10 border-[#ef4444]/30";
 }
 
 function speedColor(val: StrategyInfo["trainingSpeed"]): string {
   if (val === "Fast") return "text-[#3bb4a4] bg-[#3bb4a4]/10 border-[#3bb4a4]/30";
-  if (val === "Medium") return "text-[#d4af37] bg-[#d4af37]/10 border-[#d4af37]/30";
-  return "text-[#f87171] bg-[#f87171]/10 border-[#f87171]/30";
+  if (val === "Medium") return "text-[var(--color-accent)] bg-[#d4af37]/10 border-[#d4af37]/30";
+  return "text-[#ef4444] bg-[#ef4444]/10 border-[#ef4444]/30";
 }
 
 function accuracyColor(val: StrategyInfo["accuracy"]): string {
-  if (val === "Good") return "text-[#93c5fd] bg-[#3b82f6]/10 border-[#3b82f6]/30";
-  if (val === "Better") return "text-[#d4af37] bg-[#d4af37]/10 border-[#d4af37]/30";
+  if (val === "Good") return "text-[#93c5fd] bg-[#1e5d8a]/10 border-[#1e5d8a]/30";
+  if (val === "Better") return "text-[var(--color-accent)] bg-[#d4af37]/10 border-[#d4af37]/30";
   return "text-[#a855f7] bg-[#a855f7]/10 border-[#a855f7]/30";
 }
 
 export default function StrategySelector({ selected, onSelect }: Props) {
   return (
-    <div className="flex flex-col gap-3">
+    <div role="radiogroup" aria-label="Transfer learning strategy" className="flex flex-col gap-3">
       {STRATEGIES.map((s) => {
         const isActive = selected === s.id;
         return (
@@ -71,6 +71,8 @@ export default function StrategySelector({ selected, onSelect }: Props) {
               />
             )}
             <button
+              role="radio"
+              aria-checked={isActive}
               onClick={() => onSelect(s)}
               className={`relative w-full text-left rounded-xl p-4 border transition-all ${
                 isActive

@@ -121,7 +121,7 @@ export default function TrainingCurveChart({
       <h3 className="text-sm font-semibold text-white mb-1">
         Training Loss (Illustrative)
       </h3>
-      <p className="text-[11px] text-[#64748b] mb-3">
+      <p className="text-[11px] text-[#475569] mb-3">
         Stylized curves showing the typical convergence pattern of each
         function; not data from a real training run
       </p>
@@ -199,7 +199,7 @@ export default function TrainingCurveChart({
         <text
           x={(PAD_L + CW - PAD_R) / 2}
           y={CH - 4}
-          fill="#64748b"
+          fill="#475569"
           fontSize="8.5"
           textAnchor="middle"
         >
@@ -208,7 +208,7 @@ export default function TrainingCurveChart({
         <text
           x={9}
           y={(PAD_T + CH - PAD_B) / 2}
-          fill="#64748b"
+          fill="#475569"
           fontSize="8.5"
           textAnchor="middle"
           transform={`rotate(-90, 9, ${(PAD_T + CH - PAD_B) / 2})`}
@@ -242,6 +242,7 @@ export default function TrainingCurveChart({
           <button
             key={id}
             onClick={() => toggleId(id)}
+            aria-pressed={visibleIds.has(id)}
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] border transition-all"
             style={{
               borderColor: visibleIds.has(id) ? CURVE_COLORS[id] : "#334155",
@@ -265,11 +266,11 @@ export default function TrainingCurveChart({
       </div>
 
       {/* Insight */}
-      <p className="mt-3 text-[11px] text-[#64748b] leading-relaxed">
+      <p className="mt-3 text-[11px] text-[#475569] leading-relaxed">
         <span className="text-[#3bb4a4] font-semibold">ReLU</span> and{" "}
         <span className="text-[#a855f7] font-semibold">Leaky ReLU</span>{" "}
         converge fastest.{" "}
-        <span className="text-[#1e5d8a] font-semibold" style={{ color: "#3b82f6" }}>
+        <span className="text-[#93c5fd] font-semibold">
           Sigmoid
         </span>{" "}
         typically struggles in deep networks due to vanishing gradients. These

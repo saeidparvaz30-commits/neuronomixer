@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 
 import type { FunctionId, FunctionProperties } from "./types";
 import FunctionSelector from "./FunctionSelector";
@@ -23,7 +24,7 @@ const FUNCTION_PROPERTIES: Record<FunctionId, FunctionProperties> = {
     color: "#3bb4a4",
     formula: "f(x) = max(0, x)",
     range: "[0, ∞)",
-    gradient: "1 for x > 0, 0 for x < 0 — sparse, efficient backprop",
+    gradient: "1 for x > 0, 0 for x < 0: sparse, efficient backprop",
     vanishingRisk: false,
     deadNeuronRisk: true,
     bestFor: ["Hidden layers in deep networks", "CNNs and image recognition"],
@@ -35,7 +36,7 @@ const FUNCTION_PROPERTIES: Record<FunctionId, FunctionProperties> = {
   sigmoid: {
     id: "sigmoid",
     label: "Sigmoid",
-    color: "#3b82f6",
+    color: "#1e5d8a",
     formula: "f(x) = 1 / (1 + e⁻ˣ)",
     range: "(0, 1)",
     gradient: "Max 0.25 at x=0; shrinks exponentially as |x| grows",
@@ -53,7 +54,7 @@ const FUNCTION_PROPERTIES: Record<FunctionId, FunctionProperties> = {
     color: "#d4af37",
     formula: "f(x) = tanh(x)",
     range: "(-1, 1)",
-    gradient: "Max 1 at x=0 — stronger than sigmoid but still vanishes",
+    gradient: "Max 1 at x=0: stronger than sigmoid but still vanishes",
     vanishingRisk: true,
     deadNeuronRisk: false,
     bestFor: ["Hidden layers (older networks)", "LSTM cell/candidate values"],
@@ -68,7 +69,7 @@ const FUNCTION_PROPERTIES: Record<FunctionId, FunctionProperties> = {
     color: "#a855f7",
     formula: "f(x) = x > 0 ? x : 0.01x",
     range: "(-∞, ∞)",
-    gradient: "1 for x > 0, 0.01 for x < 0 — always non-zero",
+    gradient: "1 for x > 0, 0.01 for x < 0: always non-zero",
     vanishingRisk: false,
     deadNeuronRisk: false,
     bestFor: ["Modern deep networks", "When ReLU causes dead neurons"],
@@ -92,6 +93,7 @@ function computeProgress(
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function ActivationFunctionsClient() {
   const { data: session } = useSession();
+  const { fadeUp } = useGuideMotion();
 
   const [selectedFunction, setSelectedFunction] = useState<FunctionId>("relu");
   const [switchCount, setSwitchCount] = useState(0);
@@ -144,40 +146,48 @@ export default function ActivationFunctionsClient() {
   const currentProps = FUNCTION_PROPERTIES[selectedFunction];
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
+    <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="activation-functions" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
           <span>/</span>
-          <span className="text-white">Activation Functions</span>
+          <span className="text-[#94a3b8]">Activation Functions</span>
         </nav>
 
         {/* Hero */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="mb-8"
-        >
-          <div className="inline-flex items-center gap-2 bg-[#a855f7]/20 border border-[#a855f7]/40 rounded-full px-3 py-1 mb-4">
-            <span className="text-xs font-semibold text-[#a855f7] uppercase tracking-wider">
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Deep Learning
             </span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Activation Functions: ReLU, Sigmoid &amp; Friends
-          </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl leading-relaxed">
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
+          >
+            Activation Functions:{" "}
+            <span className="text-[var(--color-accent)]">ReLU, Sigmoid &amp; Friends</span>
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]"
+          >
             Explore how different activation functions affect gradient flow,
             training speed, and the dreaded &ldquo;dead neuron&rdquo; problem. Select a
             function to see its properties and training behavior.
-          </p>
-        </motion.div>
+          </motion.p>
+        </section>
 
         {/* Progress bar */}
         <div className="mb-8 bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
@@ -189,7 +199,7 @@ export default function ActivationFunctionsClient() {
           </div>
           <div className="h-2 bg-[#0f172a] rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-gradient-to-r from-[#a855f7] to-[#3bb4a4] rounded-full"
+              className="h-full bg-[var(--color-accent)] rounded-full"
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.4 }}
             />
@@ -199,7 +209,7 @@ export default function ActivationFunctionsClient() {
               <motion.div
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-2 text-xs text-[#3bb4a4] font-semibold"
+                className="mt-2 text-xs text-[var(--color-success)] font-semibold"
               >
                 Guide complete! You&apos;ve explored all activation functions.
               </motion.div>
@@ -207,7 +217,7 @@ export default function ActivationFunctionsClient() {
           </AnimatePresence>
           {!session?.user && (
             <p className="mt-2 text-[11px] text-[#475569]">
-              <Link href="/auth/sign-in" className="text-[#d4af37] hover:underline">
+              <Link href="/auth/sign-in" className="text-[var(--color-accent)] hover:underline">
                 Sign in
               </Link>{" "}
               to save your progress.
@@ -236,7 +246,7 @@ export default function ActivationFunctionsClient() {
                   style={{ backgroundColor: currentProps.color }}
                 />
                 <h2 className="text-sm font-semibold text-white">
-                  {currentProps.label} — {currentProps.formula}
+                  {currentProps.label}: {currentProps.formula}
                 </h2>
               </div>
               <FunctionPlotter
@@ -274,26 +284,18 @@ export default function ActivationFunctionsClient() {
         </AnimatePresence>
 
         {/* Navigation */}
-        <div className="flex items-center justify-between pt-6 border-t border-[#1e293b]">
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/neural-network"
-            className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
           >
-            <span>&#8592;</span>
-            <span>What Is a Neural Network?</span>
-          </Link>
-          <Link
-            href="/visual-guides"
-            className="text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            All Guides
+            &#8592; What Is a Neural Network?
           </Link>
           <Link
             href="/visual-guides/backpropagation"
-            className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
-            <span>Next: Backpropagation: How Networks Learn</span>
-            <span>&#8594;</span>
+            Next Guide &#8594;
           </Link>
         </div>
       </div>

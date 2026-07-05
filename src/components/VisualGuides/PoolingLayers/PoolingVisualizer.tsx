@@ -165,8 +165,8 @@ export default function PoolingVisualizer({ config, grid = DEFAULT_GRID }: Props
                       width: CELL_SIZE,
                       height: CELL_SIZE,
                       background: cellColor(val),
-                      color: val > 180 ? "#0f172a" : "#e2e8f0",
-                      outline: isActive ? "2px solid #f97316" : "none",
+                      color: val > 180 ? "#0f172a" : "#f1f5f9",
+                      outline: isActive ? "2px solid var(--color-warning)" : "none",
                       outlineOffset: "-1px",
                       zIndex: isActive ? 2 : 1,
                     }}
@@ -235,8 +235,8 @@ export default function PoolingVisualizer({ config, grid = DEFAULT_GRID }: Props
                       width: CELL_SIZE,
                       height: CELL_SIZE,
                       background: cellColor(v),
-                      color: v > 180 ? "#0f172a" : "#e2e8f0",
-                      outline: "2px solid #f97316",
+                      color: v > 180 ? "#0f172a" : "#f1f5f9",
+                      outline: "2px solid var(--color-warning)",
                       outlineOffset: "-1px",
                     }}
                   >
@@ -301,8 +301,8 @@ export default function PoolingVisualizer({ config, grid = DEFAULT_GRID }: Props
                       background: isDone
                         ? outputCellColor(val)
                         : "rgba(30,41,59,0.6)",
-                      color: isDone && val > 150 ? "#0f172a" : "#e2e8f0",
-                      outline: isCurrent ? "2px solid #22d3ee" : "none",
+                      color: isDone && val > 150 ? "#0f172a" : "#f1f5f9",
+                      outline: isCurrent ? "2px solid #3bb4a4" : "none",
                       outlineOffset: "-1px",
                       opacity: isDone ? 1 : 0.3,
                     }}

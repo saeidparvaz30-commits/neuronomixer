@@ -245,7 +245,7 @@ export default function FunctionPlotter({
         <text
           x={(PAD_L + W - PAD_R) / 2}
           y={H - 4}
-          fill="#64748b"
+          fill="#475569"
           fontSize="9"
           textAnchor="middle"
         >
@@ -254,7 +254,7 @@ export default function FunctionPlotter({
         <text
           x={9}
           y={(PAD_T + H - PAD_B) / 2}
-          fill="#64748b"
+          fill="#475569"
           fontSize="9"
           textAnchor="middle"
           transform={`rotate(-90, 9, ${(PAD_T + H - PAD_B) / 2})`}
@@ -342,7 +342,7 @@ export default function FunctionPlotter({
               cx={hoverPoint.sx}
               cy={hoverPoint.sy}
               r={5}
-              fill="#d4af37"
+              fill="var(--color-accent)"
               stroke="#0f172a"
               strokeWidth="1.5"
             />

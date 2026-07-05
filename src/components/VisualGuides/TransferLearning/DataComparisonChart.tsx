@@ -124,11 +124,11 @@ export default function DataComparisonChart({ animate = true }: Props) {
                   <line
                     x1={cx + barW / 2 + 4} y1={yPos(d.fromScratch)}
                     x2={cx + barW / 2 + 4} y2={yPos(d.transfer)}
-                    stroke="#d4af37" strokeWidth={1.5} strokeDasharray="3 2"
+                    stroke="var(--color-accent)" strokeWidth={1.5} strokeDasharray="3 2"
                   />
                   <text
                     x={cx + barW / 2 + 14} y={(yPos(d.fromScratch) + yPos(d.transfer)) / 2 + 4}
-                    fill="#d4af37" fontSize={8} fontWeight="600"
+                    fill="var(--color-accent)" fontSize={8} fontWeight="600"
                   >
                     +{d.transfer - d.fromScratch}%
                   </text>

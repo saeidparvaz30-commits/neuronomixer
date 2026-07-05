@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useGuideMotion } from "@/lib/guideMotion";
 import type { FunctionProperties } from "./types";
 
 interface PropertiesPanelProps {
@@ -41,12 +42,13 @@ function RiskBadge({
 }
 
 export default function PropertiesPanel({ properties }: PropertiesPanelProps) {
+  const { fadeUp } = useGuideMotion();
   return (
     <motion.div
       key={properties.id}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
       className="rounded-xl border border-[#1e293b] bg-[#0f172a] p-4 space-y-4"
     >
       {/* Row 1: formula + range */}
@@ -114,10 +116,10 @@ export default function PropertiesPanel({ properties }: PropertiesPanelProps) {
 
       {/* Key insight */}
       <div className="rounded-lg bg-[#d4af37]/10 border border-[#d4af37]/30 px-4 py-3">
-        <p className="text-[10px] uppercase tracking-wide text-[#d4af37] mb-1 font-semibold">
+        <p className="text-[10px] uppercase tracking-wide text-[var(--color-accent)] mb-1 font-semibold">
           Key Insight
         </p>
-        <p className="text-xs text-[#cbd5e1] leading-relaxed">
+        <p className="text-xs text-[#f1f5f9] leading-relaxed">
           {properties.keyInsight}
         </p>
       </div>

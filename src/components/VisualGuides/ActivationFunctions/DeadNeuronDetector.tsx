@@ -72,7 +72,7 @@ export default function DeadNeuronDetector({
   function getInsight(): string {
     if (deadCount === 0) return "No dead neurons detected. The network is healthy.";
     if (deadCount === 1) return `${deadCount} neuron is permanently inactive. It contributes nothing to learning.`;
-    return `${deadCount} out of ${neurons.length} neurons are dead — never activating regardless of input. This wastes ${Math.round((deadCount / neurons.length) * 100)}% of network capacity.`;
+    return `${deadCount} out of ${neurons.length} neurons are dead, never activating regardless of input. This wastes ${Math.round((deadCount / neurons.length) * 100)}% of network capacity.`;
   }
 
   if (functionId !== "relu") {
@@ -93,7 +93,7 @@ export default function DeadNeuronDetector({
             <h3 className="text-sm font-semibold text-white">
               Dead Neuron Detector
             </h3>
-            <p className="text-[11px] text-[#64748b] mt-0.5">
+            <p className="text-[11px] text-[#475569] mt-0.5">
               ReLU-only: neurons receiving always-negative inputs never fire.
               Illustrative demo: counts are simulated, not from a trained network.
             </p>

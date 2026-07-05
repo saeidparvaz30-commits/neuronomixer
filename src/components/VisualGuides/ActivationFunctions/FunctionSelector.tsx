@@ -11,10 +11,10 @@ interface FunctionSelectorProps {
 }
 
 const SHORT_DESCRIPTIONS: Record<FunctionId, string> = {
-  relu: "max(0, x) — sparse activations, fast training",
-  sigmoid: "1/(1+e⁻ˣ) — smooth probability output",
-  tanh: "tanh(x) — zero-centered, symmetric",
-  "leaky-relu": "x > 0 ? x : 0.01x — fixes dying ReLU",
+  relu: "max(0, x): sparse activations, fast training",
+  sigmoid: "1/(1+e⁻ˣ): smooth probability output",
+  tanh: "tanh(x): zero-centered, symmetric",
+  "leaky-relu": "x > 0 ? x : 0.01x: fixes dying ReLU",
 };
 
 export default function FunctionSelector({
@@ -25,13 +25,19 @@ export default function FunctionSelector({
   const ids: FunctionId[] = ["relu", "sigmoid", "tanh", "leaky-relu"];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+    <div
+      role="radiogroup"
+      aria-label="Activation function"
+      className="grid grid-cols-2 sm:grid-cols-4 gap-2"
+    >
       {ids.map((id) => {
         const prop = properties[id];
         const isSelected = id === selectedId;
         return (
           <button
             key={id}
+            role="radio"
+            aria-checked={isSelected}
             onClick={() => onSelect(id)}
             className="relative text-left px-3 py-3 rounded-xl border transition-all duration-200"
             style={{
@@ -52,11 +58,11 @@ export default function FunctionSelector({
             <div className="relative z-10">
               <p
                 className="text-sm font-semibold mb-0.5 transition-colors"
-                style={{ color: isSelected ? prop.color : "#f8fafc" }}
+                style={{ color: isSelected ? prop.color : "#f1f5f9" }}
               >
                 {prop.label}
               </p>
-              <p className="text-[10px] leading-snug text-[#64748b]">
+              <p className="text-[10px] leading-snug text-[#475569]">
                 {SHORT_DESCRIPTIONS[id]}
               </p>
             </div>

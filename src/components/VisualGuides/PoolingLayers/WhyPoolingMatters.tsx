@@ -70,7 +70,7 @@ export default function WhyPoolingMatters() {
         {REASONS.map((reason) => (
           <div key={reason.title} className="flex items-start gap-3">
             {/* Gold bullet icon */}
-            <div className="w-8 h-8 rounded-lg bg-[#d4af37]/15 border border-[#d4af37]/30 flex items-center justify-center flex-shrink-0 text-[#d4af37] mt-0.5">
+            <div className="w-8 h-8 rounded-lg bg-[#d4af37]/15 border border-[#d4af37]/30 flex items-center justify-center flex-shrink-0 text-[var(--color-accent)] mt-0.5">
               {reason.icon}
             </div>
             <div>

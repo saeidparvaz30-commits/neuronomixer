@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Activation Functions: ReLU, Sigmoid & Friends — NeuroNomixer",
     description:
-      "Interactive guide to activation functions — plot curves, compare training loss, and visualize dead neurons.",
+      "Interactive guide to activation functions: plot curves, compare training loss, and visualize dead neurons.",
     url: "https://www.neuronomixer.com/visual-guides/activation-functions",
     type: "article",
   },

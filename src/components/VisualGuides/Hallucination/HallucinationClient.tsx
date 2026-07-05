@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion, GUIDE_VIEWPORT } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 type Seg = { text: string; wrong: boolean; explanation?: string };
@@ -36,8 +37,8 @@ const EXAMPLES: { id: number; type: string; segments: Seg[] }[] = [
 ];
 
 const WHY = [
-  { title: "Pattern completion, not reasoning", body: "LLMs predict statistically likely next tokens — not facts. They complete patterns that look plausible, even when wrong.", color: "#ef4444" },
-  { title: "No uncertainty representation", body: "The model always generates something. It has no built-in 'I don't know' state — it fills gaps confidently regardless of knowledge.", color: "#d4af37" },
+  { title: "Pattern completion, not reasoning", body: "LLMs predict statistically likely next tokens, not facts. They complete patterns that look plausible, even when wrong.", color: "#ef4444" },
+  { title: "No uncertainty representation", body: "The model always generates something. It has no built-in 'I don't know' state; it fills gaps confidently regardless of knowledge.", color: "#d4af37" },
   { title: "Training data noise", body: "1 trillion tokens contain contradictions, errors, and myths. The model absorbs inconsistencies and may reproduce the wrong version confidently.", color: "#3bb4a4" },
 ];
 
@@ -68,6 +69,7 @@ function RiskBar({ value, color }: { value: number; color: string }) {
 
 export default function HallucinationClient() {
   const { data: session } = useSession();
+  const { fadeUp, stagger, card } = useGuideMotion();
   const [revealed, setRevealed] = useState<Record<number, boolean>>({});
   const [mitigOn, setMitigOn] = useState<Record<string, boolean>>({});
   const [mitigViewed, setMitigViewed] = useState(false);
@@ -91,44 +93,57 @@ export default function HallucinationClient() {
 
   const progress = [{ label: "Spot 3 hallucinations", done: revealedCount >= 3 }, { label: "Mitigation strategies", done: mitigViewed }];
 
+  function handleReset() {
+    setRevealed({});
+    setMitigOn({});
+  }
+
   return (
     <div className="min-h-screen pb-20">
-      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
-        <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
-          <span className="text-white/20">/</span>
-          <span className="text-[#ef4444]">LLMs</span>
-          <span className="text-white/20">/</span>
-          <span className="text-white">Hallucination: When AI Makes Things Up</span>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">Visual Guides</Link>
+          <span>/</span>
+          <span className="text-[#94a3b8]">Hallucination: When AI Makes Things Up</span>
         </nav>
 
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#ef4444]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#ef4444]">LLMs</span>
-            <span className="w-6 h-px bg-[#ef4444]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">LLMs</span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
-            Hallucination: <span className="text-[#ef4444]">When AI Makes Things Up</span>
-          </h1>
-          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
-            LLMs generate confident-sounding text — even when it&apos;s factually wrong. Learn to spot hallucinations, understand why they happen, and know how to mitigate them.
-          </p>
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
+          >
+            Hallucination: <span className="text-[var(--color-accent)]">When AI Makes Things Up</span>
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]"
+          >
+            LLMs generate confident-sounding text, even when it&apos;s factually wrong. Learn to spot hallucinations, understand why they happen, and know how to mitigate them.
+          </motion.p>
         </section>
 
         <div className="flex items-center gap-3 mb-10 flex-wrap">
           {progress.map(({ label, done }) => (
             <div key={label} className="flex items-center gap-1.5">
-              <motion.div className="w-2 h-2 rounded-full" animate={{ backgroundColor: done ? "#3bb4a4" : "#1e293b" }} transition={{ duration: 0.4 }} />
+              <div className="w-2 h-2 rounded-full transition-colors" style={{ background: done ? "var(--color-accent)" : "#1e293b" }} />
               <span className={`text-[11px] transition-colors ${done ? "text-white" : "text-[#475569]"}`}>{label}</span>
             </div>
           ))}
           {!session?.user && <p className="text-[11px] text-[#475569] ml-auto">Sign in to save progress</p>}
           <AnimatePresence>
             {allComplete && (
-              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="ml-auto text-[11px] font-semibold text-[#3bb4a4] flex items-center gap-1">
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="ml-auto text-[11px] font-semibold text-[var(--color-success)] flex items-center gap-1">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                 Guide complete!
               </motion.span>
             )}
@@ -137,17 +152,23 @@ export default function HallucinationClient() {
 
         {/* Section 1 */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 1 — Spot the Hallucination</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 1: Spot the Hallucination</h2>
           <p className="text-[12px] text-[#94a3b8] mb-2">Each block is an LLM response. Click <span className="text-white font-semibold">Reveal</span> to see what&apos;s wrong.</p>
           <p className="text-[11px] text-[#475569] mb-6">
             Score: <span className="text-white font-bold">{revealedCount}</span>/5 revealed
             {revealedCount >= 3 && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="ml-2 text-[#3bb4a4]">✓ Milestone reached</motion.span>}
           </p>
-          <div className="flex flex-col gap-4">
-            {EXAMPLES.map((ex, i) => {
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={GUIDE_VIEWPORT}
+            className="flex flex-col gap-4"
+          >
+            {EXAMPLES.map((ex) => {
               const isRevealed = !!revealed[ex.id];
               return (
-                <motion.div key={ex.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}
+                <motion.div key={ex.id} variants={fadeUp}
                   className="rounded-2xl border bg-[#0f172a] p-5" style={{ borderColor: isRevealed ? "#ef444430" : "#1e293b" }}>
                   <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
                     <div className="flex items-center gap-2">
@@ -184,32 +205,38 @@ export default function HallucinationClient() {
                 </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </section>
 
         {/* Section 2 */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 2 — Why This Happens</h2>
-          <p className="text-[12px] text-[#94a3b8] mb-6">Hallucination isn&apos;t a patchable bug — it&apos;s a structural property of how LLMs work.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {WHY.map((c, i) => (
-              <motion.div key={c.title} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 2: Why This Happens</h2>
+          <p className="text-[12px] text-[#94a3b8] mb-6">Hallucination isn&apos;t a patchable bug; it&apos;s a structural property of how LLMs work.</p>
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={GUIDE_VIEWPORT}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4"
+          >
+            {WHY.map((c) => (
+              <motion.div key={c.title} variants={fadeUp}
                 className="rounded-2xl border bg-[#0f172a] p-5" style={{ borderColor: `${c.color}30` }}>
                 <div className="w-2 h-2 rounded-full mb-3" style={{ backgroundColor: c.color }} />
                 <p className="text-[13px] font-bold text-white mb-2">{c.title}</p>
                 <p className="text-[12px] text-[#94a3b8] leading-relaxed">{c.body}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         {/* Section 3 */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 3 — Confidence ≠ Accuracy</h2>
-          <p className="text-[12px] text-[#94a3b8] mb-6">LLMs cluster at high confidence regardless of whether their answers are correct — the calibration gap.</p>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 3: Confidence ≠ Accuracy</h2>
+          <p className="text-[12px] text-[#94a3b8] mb-6">LLMs cluster at high confidence regardless of whether their answers are correct: the calibration gap.</p>
           <div ref={plotRef} className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
             <h3 className="text-[13px] font-bold text-white mb-1">Confidence vs. Actual Accuracy</h3>
-            <p className="text-[11px] text-[#94a3b8] mb-5">A well-calibrated model&apos;s confidence tracks accuracy. LLMs are often overconfident — high confidence even when wrong.</p>
+            <p className="text-[11px] text-[#94a3b8] mb-5">A well-calibrated model&apos;s confidence tracks accuracy. LLMs are often overconfident: high confidence even when wrong.</p>
             <svg viewBox="0 0 240 200" className="w-full max-w-[440px] mx-auto block">
               {[0, 50, 100].map(v => (
                 <React.Fragment key={v}>
@@ -241,13 +268,13 @@ export default function HallucinationClient() {
 
         {/* Section 4 */}
         <section className="mb-12" ref={mitigRef}>
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 4 — Mitigation Strategies</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 4: Mitigation Strategies</h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">Toggle each strategy to see how it reduces hallucination risk in practice.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {MITIGATIONS.map((m) => {
               const on = !!mitigOn[m.id];
               const risk = on ? m.riskAfter : m.riskBefore;
-              const riskColor = risk > 60 ? "#ef4444" : risk > 35 ? "#d4af37" : "#3bb4a4";
+              const riskColor = risk > 60 ? "#ef4444" : risk > 35 ? "var(--color-accent)" : "#3bb4a4";
               return (
                 <div key={m.id} className="rounded-2xl border bg-[#0f172a] p-5 transition-colors" style={{ borderColor: on ? `${m.color}40` : "#1e293b" }}>
                   <div className="flex items-start justify-between gap-3 mb-3">
@@ -273,33 +300,95 @@ export default function HallucinationClient() {
 
         <div className="rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-6 mb-12">
           <div className="flex items-start gap-3">
-            <span className="text-[#d4af37] text-xl mt-0.5">💡</span>
+            <span className="text-[var(--color-accent)] text-xl mt-0.5">💡</span>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#d4af37] mb-2">Key Insight</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">Key Insight</p>
               <p className="text-[13px] text-white leading-relaxed">
-                GPT-4&apos;s hallucination rate is estimated at 3–15% depending on task and measurement method. Even state-of-the-art models hallucinate regularly — treat AI outputs as drafts, not facts.
+                GPT-4&apos;s hallucination rate is estimated at 3–15% depending on task and measurement method. Even state-of-the-art models hallucinate regularly; treat AI outputs as drafts, not facts.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 mb-10 flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8] mb-1">Up Next</p>
-            <p className="text-[15px] font-bold text-white">Fine-tuning vs. Prompting</p>
-            <p className="text-[12px] text-[#94a3b8] mt-1">When do you need to retrain a model vs. just engineer a better prompt?</p>
-          </div>
-          <Link href="/visual-guides/fine-tuning-vs-prompting" className="px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-[#ef4444] text-white hover:opacity-90 transition-opacity whitespace-nowrap">
-            Next Guide →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 mb-10 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              {/* Header */}
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  Hallucination Spotter!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You spotted {revealedCount} planted hallucinations and explored the mitigation strategies.
+                </p>
+              </div>
+
+              {/* Body */}
+              <div className="px-6 py-5">
+                <p className="text-[13px] text-[#94a3b8] leading-relaxed mb-4">
+                  You saw how confident-sounding text can be factually wrong, why hallucination
+                  is structural to next-token prediction, and how RAG, citations, lower
+                  temperature, and human review each cut the risk.
+                </p>
+
+                {/* Key Takeaway */}
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Even state-of-the-art models hallucinate regularly; treat AI outputs
+                    as drafts, not facts.&quot;
+                  </p>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href="/visual-guides/fine-tuning-vs-prompting"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link href="/visual-guides/what-is-llm" className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
             ← What Is an LLM?
           </Link>
           <Link href="/visual-guides/fine-tuning-vs-prompting" className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            Fine-tuning vs. Prompting →
+            Next Guide →
           </Link>
         </div>
 

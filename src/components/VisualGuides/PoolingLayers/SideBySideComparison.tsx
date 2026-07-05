@@ -34,7 +34,7 @@ function cellBg(value: number, type: "max" | "average"): string {
 
 function cellTextColor(value: number): string {
   const normalized = value / 255;
-  return normalized > 0.55 ? "#0f172a" : "#e2e8f0";
+  return normalized > 0.55 ? "#0f172a" : "#f1f5f9";
 }
 
 type MiniGridProps = {
@@ -108,7 +108,7 @@ export default function SideBySideComparison({ onVisible }: Props) {
         Same 8&times;8 input, same 2&times;2 kernel, stride 2 &rarr; 4&times;4 output.{" "}
         <span className="text-white font-semibold">Max Pooling</span> retains sharp features
         (higher peak values);{" "}
-        <span className="text-[#1e8ab0] font-semibold">Average Pooling</span> is smoother
+        <span className="text-[#93c5fd] font-semibold">Average Pooling</span> is smoother
         (values blend together).
       </p>
 
@@ -140,7 +140,7 @@ export default function SideBySideComparison({ onVisible }: Props) {
         <div className="flex flex-col items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-[#1e5d8a]" />
-            <span className="text-sm font-semibold text-[#4a9eca]">Average Pooling</span>
+            <span className="text-sm font-semibold text-[#93c5fd]">Average Pooling</span>
             <span className="text-[11px] text-[#475569]">2&times;2, stride 2</span>
           </div>
           <MiniGrid grid={avgOutput} type="average" />
@@ -161,7 +161,7 @@ export default function SideBySideComparison({ onVisible }: Props) {
           {
             label: "Average Pooling range",
             grid: avgOutput,
-            color: "#4a9eca",
+            color: "#93c5fd",
           },
         ].map(({ label, grid, color }) => {
           const flat = grid.flat();

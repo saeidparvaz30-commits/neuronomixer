@@ -23,13 +23,15 @@ export default function PoolingControls({
     <div className="flex flex-col gap-4">
       {/* Kernel Size row */}
       <div className="flex items-center gap-4 flex-wrap">
-        <span className="text-[13px] font-semibold text-[#94a3b8] w-24 flex-shrink-0">
+        <span id="pooling-kernel-label" className="text-[13px] font-semibold text-[#94a3b8] w-24 flex-shrink-0">
           Kernel Size
         </span>
-        <div className="flex gap-2">
+        <div role="radiogroup" aria-labelledby="pooling-kernel-label" className="flex gap-2">
           {([2, 3] as const).map((k) => (
             <button
               key={k}
+              role="radio"
+              aria-checked={config.kernelSize === k}
               onClick={() => onKernelChange(k)}
               className="px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all"
               style={{
@@ -48,13 +50,15 @@ export default function PoolingControls({
 
       {/* Stride row */}
       <div className="flex items-center gap-4 flex-wrap">
-        <span className="text-[13px] font-semibold text-[#94a3b8] w-24 flex-shrink-0">
+        <span id="pooling-stride-label" className="text-[13px] font-semibold text-[#94a3b8] w-24 flex-shrink-0">
           Stride
         </span>
-        <div className="flex gap-2">
+        <div role="radiogroup" aria-labelledby="pooling-stride-label" className="flex gap-2">
           {([1, 2] as const).map((s) => (
             <button
               key={s}
+              role="radio"
+              aria-checked={config.stride === s}
               onClick={() => onStrideChange(s)}
               className="px-4 py-1.5 rounded-lg text-sm font-semibold border transition-all"
               style={{

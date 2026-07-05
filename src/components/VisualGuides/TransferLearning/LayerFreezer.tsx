@@ -28,12 +28,12 @@ function layerBg(state: LayerState): string {
 
 function badgeBg(state: LayerState): string {
   if (state === "frozen") return "bg-[#1e5d8a]/40 text-[#93c5fd]";
-  if (state === "fine-tune") return "bg-[#d4af37]/20 text-[#d4af37]";
-  return "bg-[#a855f7]/20 text-[#d946ef]";
+  if (state === "fine-tune") return "bg-[#d4af37]/20 text-[var(--color-accent)]";
+  return "bg-[#a855f7]/20 text-[#a855f7]";
 }
 
 function featureColor(state: LayerState): string {
-  if (state === "frozen") return "text-[#64748b]";
+  if (state === "frozen") return "text-[#475569]";
   if (state === "fine-tune") return "text-[#94a3b8]";
   return "text-[#3bb4a4]";
 }
@@ -82,7 +82,7 @@ export default function LayerFreezer({ layers, onChange }: Props) {
                   layer.state === "frozen"
                     ? "#1e5d8a"
                     : layer.state === "fine-tune"
-                    ? "#d4af37"
+                    ? "var(--color-accent)"
                     : "#a855f7",
                 opacity: 0.7,
               }}
@@ -136,7 +136,7 @@ export default function LayerFreezer({ layers, onChange }: Props) {
         </div>
         <div className="flex items-center justify-between text-xs">
           <span className="text-[#94a3b8]">Trainable parameters</span>
-          <span className="font-mono font-semibold text-[#d4af37]">
+          <span className="font-mono font-semibold text-[var(--color-accent)]">
             {(trainableParams / 1000).toFixed(0)}K
           </span>
         </div>

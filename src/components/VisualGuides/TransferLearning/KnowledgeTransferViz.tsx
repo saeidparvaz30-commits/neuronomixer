@@ -9,7 +9,7 @@ const EARLY_FEATURES = [
 ];
 
 const LATE_FEATURES = [
-  { color: "#d4af37", label: "Classes" },
+  { color: "var(--color-accent)", label: "Classes" },
   { color: "#c9963a", label: "Head" },
 ];
 
@@ -135,11 +135,11 @@ export default function KnowledgeTransferViz() {
           style={{ originX: "634px", originY: "158px" }}
         >
           <rect x={558} y={138} width={154} height={40} rx={8}
-            fill="#d4af37" fillOpacity={0.25} stroke="#d4af37" strokeWidth={2} />
-          <text x={635} y={155} fill="#d4af37" fontSize={10} textAnchor="middle" fontWeight="700">
+            fill="var(--color-accent)" fillOpacity={0.25} stroke="var(--color-accent)" strokeWidth={2} />
+          <text x={635} y={155} fill="var(--color-accent)" fontSize={10} textAnchor="middle" fontWeight="700">
             ✨ New Head
           </text>
-          <text x={635} y={170} fill="#d4af37" fontSize={8} textAnchor="middle" opacity={0.7}>
+          <text x={635} y={170} fill="var(--color-accent)" fontSize={8} textAnchor="middle" opacity={0.7}>
             trained from scratch
           </text>
         </motion.g>
@@ -148,7 +148,7 @@ export default function KnowledgeTransferViz() {
         <g transform="translate(10, 207)">
           <rect x={0} y={0} width={10} height={10} rx={2} fill="#1e5d8a" fillOpacity={0.7} />
           <text x={14} y={9} fill="#94a3b8" fontSize={8}>Shared (frozen) layers</text>
-          <rect x={130} y={0} width={10} height={10} rx={2} fill="#d4af37" fillOpacity={0.7} />
+          <rect x={130} y={0} width={10} height={10} rx={2} fill="var(--color-accent)" fillOpacity={0.7} />
           <text x={144} y={9} fill="#94a3b8" fontSize={8}>New custom head</text>
         </g>
       </svg>

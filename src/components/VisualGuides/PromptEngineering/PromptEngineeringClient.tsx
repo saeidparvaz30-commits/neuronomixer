@@ -32,28 +32,28 @@ const PATTERNS: Pattern[] = [
     desc: "Provide 2–5 examples before the actual task.",
     prompt: "Text: This is amazing! -> POSITIVE\nText: Terrible experience. -> NEGATIVE\nText: It arrived on time. -> NEUTRAL\nText: I love this product! ->",
     response: "POSITIVE",
-    annotations: ["Example 1 — label maps input to output", "Example 2", "Example 3", "Model infers the pattern here"],
+    annotations: ["Example 1: label maps input to output", "Example 2", "Example 3", "Model infers the pattern here"],
   },
   {
     id: "cot", name: "Chain-of-Thought", icon: "C", mostUsed: true,
     desc: "Force step-by-step reasoning before the answer.",
     prompt: "Q: Roger has 5 tennis balls. He buys 2 more cans with 3 balls each. How many balls does he have? Think step by step.\nA:",
     response: "Roger starts with 5 balls.\nHe buys 2 x 3 = 6 more balls.\nTotal: 5 + 6 = 11 balls.",
-    annotations: ["The task question", '"Think step by step" triggers CoT reasoning', "Output cue — model fills in the reasoning"],
+    annotations: ["The task question", '"Think step by step" triggers CoT reasoning', "Output cue: model fills in the reasoning"],
   },
   {
     id: "role", name: "Role Prompting", icon: "R",
     desc: "Assign an expert persona to change tone and depth.",
     prompt: "You are a senior Python developer. Review this code and identify issues:\n\ndef add(a, b):\n  return a + b\nprint(add('2', 3))",
     response: "Issue: Type mismatch. '2' is a string, 3 is an int. Python will raise TypeError.\nFix: int(a) + b, or use type hints: def add(a: int, b: int) -> int.",
-    annotations: ["Persona assignment — changes tone, depth, vocabulary", "The actual task follows the persona"],
+    annotations: ["Persona assignment: changes tone, depth, vocabulary", "The actual task follows the persona"],
   },
   {
     id: "output-format", name: "Output Format", icon: "O",
     desc: "Specify exact output structure to get structured data.",
     prompt: 'Analyze this review and respond ONLY with JSON:\n{"sentiment": "...", "score": 0-10, "key_issue": "..."}\nReview: Great camera but battery dies fast.',
     response: '{"sentiment": "mixed", "score": 6, "key_issue": "short battery life"}',
-    annotations: ["Strict output instruction — ONLY is important", "Output schema — model fills the values", "Input data"],
+    annotations: ["Strict output instruction: ONLY is important", "Output schema: model fills the values", "Input data"],
   },
   {
     id: "self-consistency", name: "Self-Consistency", icon: "S",
@@ -128,23 +128,21 @@ export default function PromptEngineeringClient() {
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
-          <span className="text-white/20">/</span>
-          <span className="text-[#ec4899]">Applied AI</span>
-          <span className="text-white/20">/</span>
-          <span className="text-white">Prompt Engineering Patterns</span>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">Visual Guides</Link>
+          <span>/</span>
+          <span className="text-[#94a3b8]">Prompt Engineering Patterns</span>
         </nav>
 
         {/* Hero */}
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#ec4899]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#ec4899]">Applied AI</span>
-            <span className="w-6 h-px bg-[#ec4899]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">Applied AI</span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
-            Prompt Engineering <span className="text-[#ec4899]">Patterns</span>
+            Prompt Engineering <span className="text-[var(--color-accent)]">Patterns</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
             Six reusable patterns for writing prompts that reliably produce the output you want. Each pattern comes with an editable live demo.
@@ -159,7 +157,7 @@ export default function PromptEngineeringClient() {
               { label: "Prompt anatomy viewed", done: anatomyViewed },
             ].map(({ label, done }) => (
               <div key={label} className="flex items-center gap-1.5">
-                <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${done ? "bg-[#ec4899]" : "bg-[#1e293b]"}`} />
+                <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${done ? "bg-[var(--color-accent)]" : "bg-[#1e293b]"}`} />
                 <span className={`text-[11px] ${done ? "text-white" : "text-[#475569]"}`}>{label}</span>
               </div>
             ))}
@@ -171,8 +169,8 @@ export default function PromptEngineeringClient() {
             <AnimatePresence>
               {allComplete && (
                 <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                  className="ml-auto text-[11px] font-semibold text-[#ec4899] flex items-center gap-1">
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  className="ml-auto text-[11px] font-semibold text-[var(--color-success)] flex items-center gap-1">
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                   Guide complete!
@@ -181,7 +179,7 @@ export default function PromptEngineeringClient() {
             </AnimatePresence>
           </div>
           <div className="h-1 rounded-full bg-[#1e293b] overflow-hidden">
-            <motion.div className="h-full rounded-full bg-[#ec4899]"
+            <motion.div className="h-full rounded-full bg-[var(--color-accent)]"
               initial={{ width: "0%" }} animate={{ width: `${progressPct}%` }}
               transition={{ duration: 0.5, ease: "easeOut" }} />
           </div>
@@ -197,12 +195,12 @@ export default function PromptEngineeringClient() {
                   selectedPattern === p.id ? "border-[#ec4899] bg-[#ec4899]/5" : "border-[#1e293b] bg-[#0f172a] hover:border-[#334155]"
                 }`}>
                 {p.mostUsed && (
-                  <span className="absolute top-2.5 right-2.5 text-[9px] font-bold text-[#d4af37] bg-[#d4af37]/10 border border-[#d4af37]/30 rounded-full px-1.5 py-0.5">
+                  <span className="absolute top-2.5 right-2.5 text-[9px] font-bold text-[var(--color-accent)] bg-[#d4af37]/10 border border-[#d4af37]/30 rounded-full px-1.5 py-0.5">
                     Most used
                   </span>
                 )}
                 <div className="w-8 h-8 rounded-xl flex items-center justify-center text-[14px] font-black mb-3"
-                  style={{ background: selectedPattern === p.id ? "#ec4899" : "#1e293b", color: selectedPattern === p.id ? "#fff" : "#94a3b8" }}>
+                  style={{ background: selectedPattern === p.id ? "#ec4899" : "#1e293b", color: selectedPattern === p.id ? "#f1f5f9" : "#94a3b8" }}>
                   {p.icon}
                 </div>
                 <p className="text-[13px] font-bold text-white mb-1">{p.name}</p>
@@ -224,7 +222,7 @@ export default function PromptEngineeringClient() {
               <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-2 h-2 rounded-full bg-[#ef4444]" />
-                  <div className="w-2 h-2 rounded-full bg-[#d4af37]" />
+                  <div className="w-2 h-2 rounded-full bg-[var(--color-accent)]" />
                   <div className="w-2 h-2 rounded-full bg-[#3bb4a4]" />
                   <p className="ml-2 text-[11px] font-semibold text-[#475569] uppercase tracking-wider">Prompt Editor</p>
                 </div>
@@ -232,7 +230,7 @@ export default function PromptEngineeringClient() {
                   value={editablePrompt[selectedPattern]}
                   onChange={(e) => setEditablePrompt((prev) => ({ ...prev, [selectedPattern]: e.target.value }))}
                   spellCheck={false} rows={6}
-                  className="w-full rounded-xl bg-[#0a0f1e] border border-[#1e293b] text-[12px] font-mono text-white p-3 resize-none focus:outline-none focus:border-[#ec4899] transition-colors leading-relaxed"
+                  className="w-full rounded-xl bg-[#0a0e1a] border border-[#1e293b] text-[12px] font-mono text-white p-3 resize-none focus:outline-none focus:border-[#ec4899] transition-colors leading-relaxed"
                 />
                 <div className="mt-3 space-y-1.5">
                   {active.annotations.map((ann, i) => (
@@ -253,7 +251,7 @@ export default function PromptEngineeringClient() {
                   </div>
                   <p className="text-[11px] font-semibold text-[#3bb4a4] uppercase tracking-wider">Simulated AI Response</p>
                 </div>
-                <div className="rounded-xl bg-[#0a0f1e] border border-[#1e293b] p-3 min-h-[120px]">
+                <div className="rounded-xl bg-[#0a0e1a] border border-[#1e293b] p-3 min-h-[120px]">
                   <pre className="text-[12px] font-mono text-[#3bb4a4] whitespace-pre-wrap leading-relaxed">{active.response}</pre>
                 </div>
                 <p className="mt-3 text-[10px] text-[#475569]">Response is pre-defined to illustrate the expected output of this pattern.</p>
@@ -314,7 +312,7 @@ export default function PromptEngineeringClient() {
                         </div>
                         <div className="sm:col-span-2 rounded-xl border border-[#d4af37]/20 bg-[#d4af37]/5 p-3">
                           <p className="text-[11px] text-[#94a3b8] leading-relaxed">
-                            <span className="text-[#d4af37] font-semibold">Tip: </span>{m.tip}
+                            <span className="text-[var(--color-accent)] font-semibold">Tip: </span>{m.tip}
                           </p>
                         </div>
                       </div>
@@ -328,7 +326,7 @@ export default function PromptEngineeringClient() {
 
         {/* Gold insight */}
         <div className="mb-10 rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-5">
-          <p className="text-[10px] font-bold uppercase tracking-[2px] text-[#d4af37] mb-2">Key Insight</p>
+          <p className="text-[10px] font-bold uppercase tracking-[2px] text-[var(--color-accent)] mb-2">Key Insight</p>
           <p className="text-[13px] text-white leading-relaxed">
             Prompt engineering is a skill with diminishing returns. For production systems, RAG + few-shot examples often outperforms elaborate prompt engineering. Know when to prompt vs when to fine-tune.
           </p>
@@ -337,12 +335,12 @@ export default function PromptEngineeringClient() {
         {/* Summary card */}
         <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-[#ec4899] mb-1">Up next</p>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-1">Up next</p>
             <p className="text-[15px] font-bold text-white">AI Agents</p>
             <p className="text-[12px] text-[#94a3b8] mt-0.5">How autonomous agents plan, use tools, and loop until a goal is reached.</p>
           </div>
           <Link href="/visual-guides/ai-agents"
-            className="flex-shrink-0 px-5 py-2.5 rounded-xl text-[13px] font-bold bg-[#ec4899] text-white hover:opacity-90 transition-opacity">
+            className="flex-shrink-0 px-5 py-2.5 rounded-xl text-[13px] font-bold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
             Next Guide &rarr;
           </Link>
         </div>
@@ -350,11 +348,11 @@ export default function PromptEngineeringClient() {
         {/* Bottom nav */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link href="/visual-guides/fine-tuning-vs-prompting"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#ec4899] hover:text-[#ec4899] transition-colors">
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
             &larr; Previous Guide
           </Link>
           <Link href="/visual-guides/ai-agents"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#ec4899] text-white hover:opacity-90 transition-opacity">
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
             Next Guide &rarr;
           </Link>
         </div>
