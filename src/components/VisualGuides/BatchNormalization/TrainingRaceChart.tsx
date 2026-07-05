@@ -31,11 +31,19 @@ function pointsToPath(points: { epoch: number; loss: number }[]) {
 const bnPath = pointsToPath(TRAINING_CURVES.map((p) => ({ epoch: p.epoch, loss: p.withBN })));
 const noBnPath = pointsToPath(TRAINING_CURVES.map((p) => ({ epoch: p.epoch, loss: p.withoutBN })));
 
-// Find crossover — "BN converges X epochs faster" to reach same final loss
-const finalWithBN = TRAINING_CURVES[19].withBN;
-const firstEpochNoBNReaches = TRAINING_CURVES.findIndex((p) => p.withoutBN <= finalWithBN * 1.05);
-const epochsFaster = firstEpochNoBNReaches > 0 ? firstEpochNoBNReaches - 19 : 5;
-const epochsFasterAbs = Math.abs(epochsFaster) || 5;
+// Compare epochs needed to reach a common loss threshold, computed from the
+// plotted curves themselves.
+const LOSS_THRESHOLD = 0.25;
+const bnIdx = TRAINING_CURVES.findIndex((p) => p.withBN <= LOSS_THRESHOLD);
+const noBnIdx = TRAINING_CURVES.findIndex((p) => p.withoutBN <= LOSS_THRESHOLD);
+const bnEpochAtThreshold = bnIdx >= 0 ? TRAINING_CURVES[bnIdx].epoch : null;
+const noBnEpochAtThreshold = noBnIdx >= 0 ? TRAINING_CURVES[noBnIdx].epoch : null;
+const badgeText =
+  bnEpochAtThreshold !== null && noBnEpochAtThreshold !== null
+    ? `Loss ${LOSS_THRESHOLD}: epoch ${bnEpochAtThreshold} vs ${noBnEpochAtThreshold} (${noBnEpochAtThreshold - bnEpochAtThreshold} epochs faster)`
+    : bnEpochAtThreshold !== null
+    ? `Only BatchNorm reaches loss ${LOSS_THRESHOLD} (epoch ${bnEpochAtThreshold}) within 20 epochs`
+    : `Neither curve reaches loss ${LOSS_THRESHOLD} in 20 epochs`;
 
 const Y_TICKS = [0, 0.25, 0.5, 0.75, 1.0];
 const X_TICKS = [1, 5, 10, 15, 20];
@@ -66,13 +74,14 @@ export default function TrainingRaceChart() {
       className="bg-[#1e293b]/60 border border-white/[0.07] rounded-2xl p-5 sm:p-6"
     >
       <div className="flex items-center justify-between mb-1">
-        <h3 className="text-base font-bold text-white">Training Speed Comparison</h3>
+        <h3 className="text-base font-bold text-white">Training Speed Comparison (Illustrative)</h3>
         <span className="text-xs bg-[#3bb4a4]/15 border border-[#3bb4a4]/30 text-[#3bb4a4] px-2.5 py-0.5 rounded-full font-semibold">
-          BatchNorm ~{epochsFasterAbs + 3} epochs faster
+          {badgeText}
         </span>
       </div>
       <p className="text-xs text-[#94a3b8] mb-4">
-        Both networks start at the same loss. Watch BatchNorm pull ahead.
+        Stylized loss curves illustrating the typical effect of BatchNorm; both
+        start at the same loss. The badge above is computed from these plotted curves.
       </p>
 
       {/* SVG chart */}

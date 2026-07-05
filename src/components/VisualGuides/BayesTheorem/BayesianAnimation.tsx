@@ -2,11 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import type { ScenarioType } from "./types";
+import { SCENARIO_CONFIGS } from "./types";
 
 interface BayesianAnimationProps {
   baseRate: number;
   sensitivity: number;
   specificity: number;
+  scenario: ScenarioType;
   animationStep: 1 | 2 | 3;
   onStepComplete: (step: 1 | 2 | 3) => void;
 }
@@ -20,9 +23,12 @@ export default function BayesianAnimation({
   baseRate,
   sensitivity,
   specificity,
+  scenario,
   animationStep,
   onStepComplete,
 }: BayesianAnimationProps) {
+  const sc = SCENARIO_CONFIGS[scenario];
+  const w = sc.wording;
   const N = 100_000;
   const withDisease = Math.round(N * baseRate);
   const withoutDisease = N - withDisease;
@@ -84,7 +90,7 @@ export default function BayesianAnimation({
       {/* Population rectangle */}
       <div className="space-y-3">
         <p className="text-[10px] text-[#475569]">
-          Imagine <span className="text-white font-semibold">100,000 people</span> taking the test
+          Imagine <span className="text-white font-semibold">100,000 {w.entityPlural}</span> going through {w.testPhrase}
         </p>
 
         {/* Main area diagram */}
@@ -152,7 +158,7 @@ export default function BayesianAnimation({
                   <span className="text-[8px] font-bold text-white px-1 text-center leading-tight">
                     {fmt(withDisease)}
                     <br />
-                    have disease
+                    {w.hasCondition}
                   </span>
                 </motion.div>
               )}
@@ -218,7 +224,7 @@ export default function BayesianAnimation({
                   <span className="text-[8px] text-[#94a3b8] px-1 text-center leading-tight">
                     {fmt(withoutDisease)}
                     <br />
-                    no disease
+                    {w.lacksCondition}
                   </span>
                 </motion.div>
               )}
@@ -248,14 +254,14 @@ export default function BayesianAnimation({
               </p>
               <div className="flex gap-4 flex-wrap">
                 <span className="text-[11px] text-[#3bb4a4]">
-                  ~{fmt(withDisease)} have the disease
+                  ~{fmt(withDisease)} {w.hasCondition}
                 </span>
                 <span className="text-[11px] text-[#94a3b8]">
-                  ~{fmt(withoutDisease)} do not
+                  ~{fmt(withoutDisease)} {w.lacksCondition}
                 </span>
               </div>
               <p className="text-[10px] text-[#475569]">
-                Base rate: {(baseRate * 100).toFixed(1)}% — the tiny blue slice on the left
+                Base rate: {(baseRate * 100).toFixed(1)}% (the teal slice on the left)
               </p>
             </motion.div>
           )}
@@ -275,19 +281,19 @@ export default function BayesianAnimation({
               <div className="grid grid-cols-2 gap-2 text-[10px]">
                 <div>
                   <span className="text-[#d4af37] font-semibold">TP (gold):</span>
-                  <span className="text-[#94a3b8] ml-1">{fmt(tp)} test positive AND have disease</span>
+                  <span className="text-[#94a3b8] ml-1">{fmt(tp)} {w.testPositive} AND truly {w.hasCondition}</span>
                 </div>
                 <div>
                   <span className="text-[#1e5d8a] font-semibold" style={{ color: "#6ba3c8" }}>FN (blue):</span>
-                  <span className="text-[#94a3b8] ml-1">{fmt(fn)} have disease but test negative</span>
+                  <span className="text-[#94a3b8] ml-1">{fmt(fn)} truly {w.hasCondition} but are missed</span>
                 </div>
                 <div>
                   <span className="text-[#ef4444] font-semibold">FP (red):</span>
-                  <span className="text-[#94a3b8] ml-1">{fmt(fp)} test positive but are healthy</span>
+                  <span className="text-[#94a3b8] ml-1">{fmt(fp)} {w.testPositive} but {w.lacksCondition}</span>
                 </div>
                 <div>
                   <span className="text-[#475569] font-semibold">TN (dark):</span>
-                  <span className="text-[#94a3b8] ml-1">{fmt(tn)} test negative and are healthy</span>
+                  <span className="text-[#94a3b8] ml-1">{fmt(tn)} correctly cleared</span>
                 </div>
               </div>
             </motion.div>
@@ -307,8 +313,7 @@ export default function BayesianAnimation({
               </p>
               <p className="text-[10px] text-[#94a3b8]">
                 Of the{" "}
-                <span className="text-white font-semibold">{fmt(tp + fp)}</span> people who test
-                positive:
+                <span className="text-white font-semibold">{fmt(tp + fp)}</span> {w.entityPlural} that {w.testPositive}:
               </p>
               <div className="flex gap-3 flex-wrap">
                 <span className="text-[11px] font-semibold text-[#d4af37]">
@@ -321,7 +326,7 @@ export default function BayesianAnimation({
               </div>
               <div className="rounded-lg bg-[#0f172a] border border-[#d4af37]/40 px-3 py-2">
                 <p className="text-[10px] text-[#94a3b8] font-mono">
-                  P(Disease | Test+) = {fmt(tp)} / ({fmt(tp)} + {fmt(fp)})
+                  P({sc.conditionName} | {sc.testName}) = {fmt(tp)} / ({fmt(tp)} + {fmt(fp)})
                 </p>
                 <p className="text-[16px] font-black text-[#d4af37] mt-0.5">
                   ≈ {(posterior * 100).toFixed(2)}%

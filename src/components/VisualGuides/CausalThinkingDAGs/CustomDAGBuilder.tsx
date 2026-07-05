@@ -138,6 +138,24 @@ export default function CustomDAGBuilder() {
         setTimeout(() => setFeedback(""), 2000);
         return;
       }
+      // Reject cycles: if the target can already reach the source, adding
+      // source -> target would create a loop, and DAGs are acyclic.
+      const reachable = new Set<string>();
+      const stack = [nodeId];
+      while (stack.length > 0) {
+        const cur = stack.pop()!;
+        if (reachable.has(cur)) continue;
+        reachable.add(cur);
+        for (const ed of edges) {
+          if (ed.source === cur) stack.push(ed.target);
+        }
+      }
+      if (reachable.has(pendingSource)) {
+        setPendingSource(null);
+        setFeedback("Rejected: that arrow would create a cycle. DAGs are acyclic (the A in DAG)");
+        setTimeout(() => setFeedback(""), 3000);
+        return;
+      }
       const id = uniqueEdgeId();
       setEdges((prev) => [...prev, { id, source: pendingSource, target: nodeId }]);
       setPendingSource(null);

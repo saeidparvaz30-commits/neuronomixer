@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Phase4Props, twoProportionZTest, normalCDF } from "./types";
+import { Phase4Props, twoProportionZTest, zAlphaFor, normalQuantile } from "./types";
 
 // SVG chart dimensions
 const W = 480;
@@ -31,8 +31,16 @@ export default function Phase4Analyze({
   onBack,
 }: Props) {
   const { z, pValue, ciLow, ciHigh, cohenH } = useMemo(
-    () => twoProportionZTest(controlConversions, controlN, treatmentConversions, treatmentN),
-    [controlConversions, controlN, treatmentConversions, treatmentN]
+    () =>
+      twoProportionZTest(
+        controlConversions,
+        controlN,
+        treatmentConversions,
+        treatmentN,
+        alpha,
+        direction
+      ),
+    [controlConversions, controlN, treatmentConversions, treatmentN, alpha, direction]
   );
 
   const isSignificant = pValue < alpha;
@@ -40,8 +48,12 @@ export default function Phase4Analyze({
   const p2 = treatmentConversions / treatmentN;
   const diff = p2 - p1;
 
-  // Practical significance: observed lift >= 50% of MDE
-  const isPracticallySignificant = Math.abs(diff) >= mde * 0.5;
+  // Confidence level matching the chosen alpha
+  const confPct = ((1 - alpha) * 100).toFixed(0);
+  const zCI = normalQuantile(1 - alpha / 2);
+
+  // Practical significance: observed lift meets or exceeds the MDE you planned for
+  const isPracticallySignificant = Math.abs(diff) >= mde;
 
   // Z-distribution visualization
   const zMin = -4;
@@ -50,8 +62,8 @@ export default function Phase4Analyze({
   const mu = 0;
   const sigma = 1;
 
-  // Critical value
-  const zCrit = direction === "two-tailed" ? 1.96 : 1.645;
+  // Critical value from the user's actual alpha and direction
+  const zCrit = zAlphaFor(alpha, direction);
 
   // Build distribution points
   const pts = Array.from({ length: steps + 1 }, (_, i) => {
@@ -132,7 +144,7 @@ export default function Phase4Analyze({
             </p>
             <p className="text-[13px] text-[#94a3b8]">
               {isSignificant
-                ? `p = ${pValue < 0.001 ? "< 0.001" : pValue.toFixed(4)} is below α = ${alpha.toFixed(2)}. The observed difference is unlikely due to chance.`
+                ? `p = ${pValue < 0.001 ? "< 0.001" : pValue.toFixed(4)} is below α = ${alpha.toFixed(2)}. If there were truly no difference, data at least this extreme would occur in only ${pValue < 0.001 ? "under 0.1%" : `about ${(pValue * 100).toFixed(1)}%`} of experiments.`
                 : `p = ${pValue < 0.001 ? "< 0.001" : pValue.toFixed(4)} is above α = ${alpha.toFixed(2)}. Insufficient evidence to conclude a real effect exists.`}
             </p>
           </div>
@@ -299,14 +311,14 @@ export default function Phase4Analyze({
               formula: "z = (p₂ − p₁) / √(p̂(1−p̂)(1/n₁ + 1/n₂))",
             },
             {
-              label: "p-value (two-tailed)",
+              label: `p-value (${direction === "two-tailed" ? "two-tailed" : "one-tailed, right"})`,
               value: pValue < 0.0001 ? "< 0.0001" : pValue.toFixed(4),
-              formula: "p = 2 × Φ(−|z|)",
+              formula: direction === "two-tailed" ? "p = 2 × Φ(−|z|)" : "p = 1 − Φ(z)",
             },
             {
-              label: "95% CI for Difference",
+              label: `${confPct}% CI for Difference`,
               value: `[${(ciLow * 100).toFixed(2)}%, ${(ciHigh * 100).toFixed(2)}%]`,
-              formula: "(p₂−p₁) ± 1.96 × SE_diff",
+              formula: `(p₂−p₁) ± ${zCI.toFixed(3)} × SE_diff`,
             },
             {
               label: "Cohen's h (Effect Size)",
@@ -329,7 +341,7 @@ export default function Phase4Analyze({
 
       {/* Confidence interval bar */}
       <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
-        <h3 className="text-sm font-semibold text-white mb-4">95% Confidence Interval</h3>
+        <h3 className="text-sm font-semibold text-white mb-4">{confPct}% Confidence Interval</h3>
         <div className="relative">
           {(() => {
             const range = 0.1;

@@ -4,14 +4,14 @@ import BootstrapPermutationCVClient from "@/components/VisualGuides/BootstrapPer
 export const metadata: Metadata = {
   title: "Bootstrap, Permutation Tests & Cross-Validation | NeuroNomixer",
   description:
-    "Master modern resampling methods: bootstrap confidence intervals, permutation tests, and K-fold cross-validation with learning curves.",
+    "Master modern resampling methods: bootstrap confidence intervals, permutation tests, and K-fold cross-validation with validation curves.",
   alternates: {
     canonical: "https://www.neuronomixer.com/visual-guides/bootstrap-permutation-cv",
   },
   openGraph: {
     title: "Bootstrap, Permutation Tests & Cross-Validation | NeuroNomixer",
     description:
-      "Master modern resampling methods: bootstrap confidence intervals, permutation tests, and K-fold cross-validation with learning curves.",
+      "Master modern resampling methods: bootstrap confidence intervals, permutation tests, and K-fold cross-validation with validation curves.",
     url: "https://www.neuronomixer.com/visual-guides/bootstrap-permutation-cv",
     siteName: "NeuroNomixer",
     type: "website",

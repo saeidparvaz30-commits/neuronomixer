@@ -28,7 +28,7 @@ export default function ScenarioIntro({
           : `${(state.baseRate * 100).toFixed(0)}%`,
     },
     {
-      label: "Test Accuracy",
+      label: "Sensitivity",
       value: `${(state.sensitivity * 100).toFixed(0)}%`,
     },
     {

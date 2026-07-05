@@ -253,11 +253,13 @@ export default function BayesTheoremClient() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <PriorPanel
                   baseRate={state.baseRate}
+                  scenario={state.scenario}
                   onBaseRateChange={handleBaseRateChange}
                 />
                 <LikelihoodPanel
                   sensitivity={state.sensitivity}
                   specificity={state.specificity}
+                  scenario={state.scenario}
                   onSensitivityChange={handleSensitivityChange}
                   onSpecificityChange={handleSpecificityChange}
                 />
@@ -268,6 +270,7 @@ export default function BayesTheoremClient() {
                 baseRate={state.baseRate}
                 sensitivity={state.sensitivity}
                 specificity={state.specificity}
+                scenario={state.scenario}
                 animationStep={state.animationStep}
                 onStepComplete={handleAnimationStepComplete}
               />
@@ -279,6 +282,7 @@ export default function BayesTheoremClient() {
                   baseRate={state.baseRate}
                   sensitivity={state.sensitivity}
                   specificity={state.specificity}
+                  scenario={state.scenario}
                 />
                 <PosteriorResult
                   posterior={state.posterior}
@@ -293,6 +297,7 @@ export default function BayesTheoremClient() {
               <ComparisonView
                 intuition={state.intuition}
                 posterior={state.posterior}
+                sensitivity={state.sensitivity}
               />
             </>
           )}

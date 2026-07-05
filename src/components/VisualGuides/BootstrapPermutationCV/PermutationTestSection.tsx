@@ -50,10 +50,12 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
   const observedDiff = group2Mean - group1Mean;
   const combined = [...GROUP1, ...GROUP2];
 
+  // (k + 1) / (N + 1): the observed labeling counts as one permutation,
+  // so a permutation p-value can never legitimately be exactly 0.
   const computePValue = useCallback((dist: number[]) => {
     const absDiff = Math.abs(observedDiff);
     const extreme = dist.filter((d) => Math.abs(d) >= absDiff).length;
-    return extreme / dist.length;
+    return (extreme + 1) / (dist.length + 1);
   }, [observedDiff]);
 
   const stopAnimation = useCallback(() => {
@@ -199,7 +201,8 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
           </div>
           <h2 className="text-xl font-bold text-white">Permutation Test</h2>
           <p className="text-sm text-[#94a3b8] mt-1">
-            Test if the difference between two groups is statistically significant — without distributional assumptions.
+            Test if the difference between two groups is statistically significant. No normality
+            assumption needed, only that observations are exchangeable between groups under the null.
           </p>
         </div>
         {isDone && (
@@ -269,12 +272,21 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
                         color: "#ef4444",
                         label: `obs (${observedDiff.toFixed(1)})`,
                       },
+                      {
+                        x: -observedDiff,
+                        color: "#ef4444",
+                        label: `−obs (${(-observedDiff).toFixed(1)})`,
+                      },
                     ]
                   : []
               }
-              shadedRange={
+              shadedRanges={
                 nullDist.length > 0
-                  ? { lo: observedDiff, hi: Math.max(...nullDist) + 1, color: "#ef4444" }
+                  ? [
+                      // both tails count toward the two-tailed p-value
+                      { lo: Math.abs(observedDiff), hi: Math.max(...nullDist) + 1, color: "#ef4444" },
+                      { lo: Math.min(...nullDist) - 1, hi: -Math.abs(observedDiff), color: "#ef4444" },
+                    ]
                   : undefined
               }
             />
@@ -357,7 +369,7 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
                 "Randomly shuffle and re-split into two groups of same size.",
                 "Compute the difference for this random permutation.",
                 "Repeat 5,000 times to build the null distribution.",
-                "p-value = fraction of permutations with |diff| ≥ |observed|.",
+                "p-value = (k + 1) / (N + 1), where k = permutations with |diff| ≥ |observed|. Both tails count, and the +1 (the observed labeling itself) keeps p from ever being exactly 0.",
               ].map((step, i) => (
                 <li key={i} className="flex gap-2 text-xs text-[#94a3b8]">
                   <span className="text-[#3bb4a4] font-bold shrink-0">{i + 1}.</span>

@@ -170,8 +170,17 @@ export default function BiasVarianceClient() {
     return () => { if (autoRef.current) clearInterval(autoRef.current); };
   }, [autoThrow, throwDarts]);
 
-  // MSE = bias^2 + variance^2 (conceptual)
-  const mse = (bias ** 2 + variance ** 2).toFixed(3);
+  // The "variance" slider sets the per-axis standard deviation (sigma) of the
+  // dart scatter. Darts land in 2D, so the expected squared distance from the
+  // bullseye is bias^2 + 2*sigma^2.
+  const biasSq = bias ** 2;
+  const varianceContribution = 2 * variance ** 2;
+  const expectedSqError = biasSq + varianceContribution;
+  // Observed mean squared distance of the darts currently on the board
+  const observedMSE =
+    darts.length > 0
+      ? darts.reduce((s, d) => s + d.x ** 2 + d.y ** 2, 0) / darts.length
+      : 0;
 
   const progress = [
     { label: `Dart sets thrown: ${Math.min(dartSets, 5)}/5`, done: dartSets >= 5 },
@@ -237,8 +246,8 @@ export default function BiasVarianceClient() {
               <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-4">Dart Settings</p>
 
               {[
-                { label: "Bias (systematic error)", value: bias, min: 0, max: 1.2, step: 0.05, set: (v: number) => setBias(v), color: "#ef4444" },
-                { label: "Variance (random error)", value: variance, min: 0.05, max: 1.2, step: 0.05, set: (v: number) => setVariance(v), color: "#3bb4a4" },
+                { label: "Bias (systematic offset)", value: bias, min: 0, max: 1.2, step: 0.05, set: (v: number) => setBias(v), color: "#ef4444" },
+                { label: "Spread σ (per-axis std. dev.)", value: variance, min: 0.05, max: 1.2, step: 0.05, set: (v: number) => setVariance(v), color: "#3bb4a4" },
               ].map(({ label, value, min, max, step, set, color }) => (
                 <div key={label} className="mb-4">
                   <div className="flex justify-between mb-1">
@@ -253,16 +262,20 @@ export default function BiasVarianceClient() {
 
               <div className="rounded-lg border border-[#1e293b] p-3 mb-4">
                 <div className="flex justify-between text-[11px] mb-1.5">
-                  <span className="text-[#475569]">Expected MSE</span>
-                  <span className="font-mono text-[#d4af37]">{mse}</span>
+                  <span className="text-[#475569]">Expected sq. error (bias² + 2σ²)</span>
+                  <span className="font-mono text-[#d4af37]">{expectedSqError.toFixed(3)}</span>
                 </div>
                 <div className="flex justify-between text-[11px] mb-1.5">
                   <span className="text-[#475569]">Bias² component</span>
-                  <span className="font-mono text-[#ef4444]">{(bias ** 2).toFixed(3)}</span>
+                  <span className="font-mono text-[#ef4444]">{biasSq.toFixed(3)}</span>
                 </div>
-                <div className="flex justify-between text-[11px]">
-                  <span className="text-[#475569]">Variance component</span>
-                  <span className="font-mono text-[#3bb4a4]">{(variance ** 2).toFixed(3)}</span>
+                <div className="flex justify-between text-[11px] mb-1.5">
+                  <span className="text-[#475569]">Variance component (2σ², both axes)</span>
+                  <span className="font-mono text-[#3bb4a4]">{varianceContribution.toFixed(3)}</span>
+                </div>
+                <div className="flex justify-between text-[11px] pt-1.5 border-t border-[#1e293b]">
+                  <span className="text-[#475569]">Observed on this board</span>
+                  <span className="font-mono text-white">{observedMSE.toFixed(3)}</span>
                 </div>
               </div>
 
@@ -313,6 +326,13 @@ export default function BiasVarianceClient() {
                 <div className="aspect-square max-w-[280px] mx-auto">
                   <Bullseye darts={darts} bias={bias} variance={variance} />
                 </div>
+                <p className="text-[10px] text-[#94a3b8] leading-relaxed mt-3">
+                  How to read this: each dart is one model trained on a different
+                  random sample of data, and the bullseye is the true value it
+                  should predict. Bias = how far the centroid (average model) sits
+                  from the bullseye. Variance = how scattered the darts are around
+                  their own centroid.
+                </p>
                 <div className="flex items-center gap-4 mt-3 justify-center">
                   <div className="flex items-center gap-1.5">
                     <div className="w-2.5 h-2.5 rounded-full bg-[#3bb4a4]" />
@@ -349,9 +369,9 @@ export default function BiasVarianceClient() {
               </p>
               <div className="space-y-3">
                 {[
-                  { label: "Bias²", value: bias ** 2, max: 1.44, color: "#ef4444" },
-                  { label: "Variance", value: variance ** 2, max: 1.44, color: "#3bb4a4" },
-                  { label: "Irreducible noise", value: 0.05, max: 1.44, color: "#475569" },
+                  { label: "Bias²", value: biasSq, max: 2.88, color: "#ef4444" },
+                  { label: "Variance (2σ²)", value: varianceContribution, max: 2.88, color: "#3bb4a4" },
+                  { label: "Irreducible noise (illustrative constant, not simulated on the board)", value: 0.05, max: 2.88, color: "#475569" },
                 ].map(({ label, value, max, color }) => (
                   <div key={label}>
                     <div className="flex justify-between text-[11px] mb-1">
@@ -370,7 +390,7 @@ export default function BiasVarianceClient() {
                 ))}
                 <div className="flex justify-between text-[11px] font-semibold pt-2 border-t border-[#1e293b]">
                   <span className="text-[#d4af37]">Total MSE</span>
-                  <span className="font-mono text-[#d4af37]">{(bias ** 2 + variance ** 2 + 0.05).toFixed(3)}</span>
+                  <span className="font-mono text-[#d4af37]">{(expectedSqError + 0.05).toFixed(3)}</span>
                 </div>
               </div>
             </div>

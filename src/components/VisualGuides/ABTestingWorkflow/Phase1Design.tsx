@@ -7,6 +7,8 @@ import {
   MetricName,
   TestDirection,
   computeSampleSize,
+  normalQuantile,
+  zAlphaFor,
 } from "./types";
 
 interface Props {
@@ -32,9 +34,11 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
     onChange(next);
   }
 
-  const zAlphaLabel = hypothesis.direction === "two-tailed" ? "1.96" : "1.645";
-  const zPowerLabel = parameters.power <= 0.8 ? "0.842" : parameters.power <= 0.9 ? "1.282" : "1.645";
+  const zAlpha = zAlphaFor(parameters.alpha, hypothesis.direction);
+  const zPower = normalQuantile(parameters.power);
   const p = metric.baselineRate;
+  const p2 = Math.min(0.999, p + parameters.mde);
+  const pBar = (p + p2) / 2;
   const formulaResult = state.sampleSize;
 
   const canProceed =
@@ -108,8 +112,8 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
             </div>
             <p className="text-[11px] text-[#475569] mt-2">
               {hypothesis.direction === "two-tailed"
-                ? "Tests for any difference in either direction. More conservative, z_α = 1.96"
-                : "Tests if treatment is better. Less conservative, z_α = 1.645"}
+                ? `Tests for any difference in either direction. More conservative: α is split across both tails, so z_α/2 = ${zAlphaFor(parameters.alpha, "two-tailed").toFixed(3)} at your α = ${parameters.alpha.toFixed(2)}`
+                : `Tests if treatment is better. Less conservative: all of α sits in one tail, so z_α = ${zAlphaFor(parameters.alpha, "one-tailed").toFixed(3)} at your α = ${parameters.alpha.toFixed(2)}`}
             </p>
           </div>
         </div>
@@ -292,13 +296,13 @@ export default function Phase1Design({ state, onChange, onNext }: Props) {
         {/* Formula display */}
         <div className="rounded-xl bg-[#1e293b] p-4 mb-5 font-mono text-[12px] text-[#94a3b8] space-y-1">
           <p>
-            <span className="text-white">n</span> = 2 × (z<sub>α</sub> + z<sub>β</sub>)² × p(1−p) / MDE²
+            <span className="text-white">n</span> = [z<sub>α</sub>·√(2p̄(1−p̄)) + z<sub>β</sub>·√(p₁(1−p₁) + p₂(1−p₂))]² / MDE²
           </p>
           <p className="text-[#475569]">
-            = 2 × ({zAlphaLabel} + {zPowerLabel})² × {p.toFixed(3)}×{(1 - p).toFixed(3)} / {parameters.mde.toFixed(4)}²
+            p₁ = {p.toFixed(3)}, p₂ = p₁ + MDE = {p2.toFixed(3)}, p̄ = {pBar.toFixed(3)}
           </p>
           <p className="text-[#475569]">
-            = 2 × {((parseFloat(zAlphaLabel) + parseFloat(zPowerLabel)) ** 2).toFixed(3)} × {(p * (1 - p)).toFixed(4)} / {(parameters.mde ** 2).toFixed(6)}
+            = [{zAlpha.toFixed(3)}×{Math.sqrt(2 * pBar * (1 - pBar)).toFixed(4)} + {zPower.toFixed(3)}×{Math.sqrt(p * (1 - p) + p2 * (1 - p2)).toFixed(4)}]² / {(parameters.mde ** 2).toFixed(6)}
           </p>
         </div>
 

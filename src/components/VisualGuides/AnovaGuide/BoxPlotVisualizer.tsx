@@ -165,7 +165,7 @@ export default function BoxPlotVisualizer({ groups, grandMean, highlightGroup }:
             return (
               <g key={g.groupName} opacity={opacity}>
                 <title>
-                  {g.groupName}: Median={stats.median.toFixed(1)}, Q1={stats.q1.toFixed(1)}, Q3={stats.q3.toFixed(1)}, Min={stats.whiskerLow.toFixed(1)}, Max={stats.whiskerHigh.toFixed(1)}
+                  {g.groupName}: Median={stats.median.toFixed(1)}, Q1={stats.q1.toFixed(1)}, Q3={stats.q3.toFixed(1)}, Whiskers (within 1.5×IQR)=[{stats.whiskerLow.toFixed(1)}, {stats.whiskerHigh.toFixed(1)}]{stats.outliers.length > 0 ? `, ${stats.outliers.length} outlier${stats.outliers.length > 1 ? "s" : ""}` : ""}
                 </title>
 
                 {/* Whisker lines */}
@@ -280,6 +280,13 @@ export default function BoxPlotVisualizer({ groups, grandMean, highlightGroup }:
           <span className="text-[10px] text-[#94a3b8]">Median</span>
         </div>
       </div>
+
+      <p className="mt-3 text-[11px] text-[#475569] leading-relaxed">
+        One-way ANOVA assumes independent observations, approximately normal
+        residuals within each group, and roughly equal group variances. Check
+        the box plots above for badly skewed groups or very unequal spreads
+        before trusting the F-test.
+      </p>
     </div>
   );
 }

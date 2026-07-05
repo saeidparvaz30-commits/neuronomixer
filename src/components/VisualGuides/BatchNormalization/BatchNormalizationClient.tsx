@@ -167,13 +167,17 @@ export default function BatchNormalizationClient() {
             <div className="w-7 h-7 rounded-lg bg-[#a855f7]/20 border border-[#a855f7]/30 flex items-center justify-center text-xs font-bold text-[#a855f7]">
               1
             </div>
-            <h2 className="text-xl font-bold text-white">The Problem: Internal Covariate Shift</h2>
+            <h2 className="text-xl font-bold text-white">The Problem: Shifting Activation Distributions</h2>
           </div>
 
           <p className="text-[#94a3b8] text-sm leading-relaxed mb-5 max-w-2xl">
-            Without normalization, activation distributions shift layer by layer. This forces each
-            layer to constantly adapt to its input distribution — slowing training and causing
-            instability.
+            Without normalization, activation distributions shift layer by layer as earlier layers
+            update. The original 2015 paper (Ioffe &amp; Szegedy) called this &quot;internal
+            covariate shift&quot; and proposed BatchNorm as the cure. Why BatchNorm actually helps
+            is still debated: later work (Santurkar et al., 2018) found it speeds up training even
+            when covariate shift is artificially re-injected, and attributes the benefit mainly to
+            a smoother optimization landscape. The shifting distributions below illustrate the
+            original motivation.
           </p>
 
           <div className="space-y-4">
@@ -201,6 +205,18 @@ export default function BatchNormalizationClient() {
             onStepChange={setCurrentStep}
             onComplete={() => setHasCompletedFormula(true)}
           />
+
+          <div className="mt-4 p-4 bg-[#1e293b]/60 border border-white/[0.07] rounded-xl max-w-2xl">
+            <p className="text-sm text-[#94a3b8] leading-relaxed">
+              <span className="text-white font-semibold">Training vs. inference:</span>{" "}
+              the four steps above use the current mini-batch&apos;s own mean and variance. At
+              inference time there may be no batch at all, so BatchNorm instead uses running
+              averages of the mean and variance accumulated during training, while γ and β stay
+              fixed at their learned values. Forgetting to switch modes (e.g.{" "}
+              <code className="text-[#3bb4a4]">model.eval()</code> in PyTorch) is a classic source
+              of inference bugs.
+            </p>
+          </div>
         </section>
 
         {/* Section 3: Training Race */}
@@ -213,8 +229,9 @@ export default function BatchNormalizationClient() {
           </div>
 
           <p className="text-[#94a3b8] text-sm leading-relaxed mb-4 max-w-2xl">
-            Two identical networks, same architecture, same data. The only difference: one uses
-            Batch Normalization. Watch what happens to convergence.
+            The stylized curves below illustrate what typically happens when two otherwise
+            identical networks train with and without Batch Normalization. They are constructed
+            for teaching, not recorded from a live run.
           </p>
 
           <TrainingRaceChart />
@@ -255,12 +272,13 @@ export default function BatchNormalizationClient() {
                 Before or After Activation?
               </div>
               <p className="text-sm text-[#94a3b8] leading-relaxed">
-                BatchNorm is applied{" "}
-                <span className="text-white font-semibold">BEFORE the activation function</span> in
-                the original 2015 paper by Ioffe &amp; Szegedy. But many practitioners now apply it{" "}
-                <span className="text-white font-semibold">AFTER</span> — both approaches are used
-                in production. The &quot;pre-activation&quot; variant (BatchNorm → Activation) is
-                argued to have better gradient flow.
+                In the original 2015 paper by Ioffe &amp; Szegedy, BatchNorm normalizes the{" "}
+                <span className="text-white font-semibold">pre-activation values</span>: the order
+                is Linear → BatchNorm → Activation. Some practitioners instead place it after the
+                activation (Linear → Activation → BatchNorm); both orderings appear in production
+                code. Separately, ResNet-v2&apos;s &quot;pre-activation&quot; blocks (BN → ReLU →
+                weight layer) showed that normalizing before the weight layer improves gradient
+                flow in very deep residual networks.
               </p>
             </div>
           </div>
@@ -289,7 +307,7 @@ export default function BatchNormalizationClient() {
               <span className="font-bold text-white">Guide Complete!</span>
             </div>
             <p className="text-sm text-[#94a3b8] leading-relaxed mb-5">
-              You now understand how BatchNorm reduces internal covariate shift, allows higher
+              You now understand how BatchNorm stabilizes activation distributions, allows higher
               learning rates, and acts as implicit regularization. Next, see how transfer learning
               lets you reuse pretrained network knowledge.
             </p>

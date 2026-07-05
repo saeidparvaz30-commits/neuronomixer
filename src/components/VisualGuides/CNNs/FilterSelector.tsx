@@ -11,6 +11,7 @@ interface FilterSelectorProps {
 
 export default function FilterSelector({ selected, onSelect }: FilterSelectorProps) {
   return (
+    <div className="flex flex-col gap-2.5">
     <div className="flex gap-2 flex-wrap">
       {FILTERS.map((f) => {
         const isSelected = selected === f.id;
@@ -45,11 +46,20 @@ export default function FilterSelector({ selected, onSelect }: FilterSelectorPro
                 color: f.layerDepth === "early" ? "#3bb4a4" : "#d4af37",
               }}
             >
-              {f.layerDepth === "early" ? "Early Layer" : "Mid Layer"}
+              {f.layerDepth === "early" ? "Edge detector" : "Classic image kernel"}
             </span>
           </button>
         );
       })}
+    </div>
+    <p className="text-[11px] text-[#94a3b8] leading-relaxed">
+      These are classic hand-crafted kernels, chosen so you can see the
+      mechanics of convolution. In a real CNN the filter values are{" "}
+      <span className="text-white font-semibold">learned from data</span> during
+      training; nobody writes them by hand. Early layers usually converge to
+      edge-like detectors resembling these; deeper layers combine them into
+      texture and object-part detectors.
+    </p>
     </div>
   );
 }

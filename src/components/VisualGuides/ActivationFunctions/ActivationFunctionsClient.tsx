@@ -37,13 +37,13 @@ const FUNCTION_PROPERTIES: Record<FunctionId, FunctionProperties> = {
     label: "Sigmoid",
     color: "#3b82f6",
     formula: "f(x) = 1 / (1 + e⁻ˣ)",
-    range: "[0, 1]",
-    gradient: "Max 0.25 at x=0 — shrinks exponentially near ±∞",
+    range: "(0, 1)",
+    gradient: "Max 0.25 at x=0; shrinks exponentially as |x| grows",
     vanishingRisk: true,
     deadNeuronRisk: false,
-    bestFor: ["Binary classification output", "Probability estimation"],
+    bestFor: ["Binary classification output", "Probability estimation", "LSTM/GRU gates"],
     keyInsight:
-      "Classic S-curve, but gradient vanishes near ±1, slowing deep network training.",
+      "Classic S-curve, but the gradient vanishes for large |x| as the output saturates toward 0 or 1, slowing deep network training.",
     description:
       "Squashes all values into (0, 1). Historically popular but largely replaced by ReLU in hidden layers.",
   },
@@ -52,11 +52,11 @@ const FUNCTION_PROPERTIES: Record<FunctionId, FunctionProperties> = {
     label: "Tanh",
     color: "#d4af37",
     formula: "f(x) = tanh(x)",
-    range: "[-1, 1]",
+    range: "(-1, 1)",
     gradient: "Max 1 at x=0 — stronger than sigmoid but still vanishes",
     vanishingRisk: true,
     deadNeuronRisk: false,
-    bestFor: ["Hidden layers (older networks)", "LSTM gates"],
+    bestFor: ["Hidden layers (older networks)", "LSTM cell/candidate values"],
     keyInsight:
       "Zero-centered output helps training, but still suffers from vanishing gradients in deep networks.",
     description:
@@ -101,7 +101,7 @@ export default function ActivationFunctionsClient() {
   const [showSummary, setShowSummary] = useState(false);
   const completionFired = useRef(false);
 
-  const isComplete = exploredFunctions.size >= 3;
+  const isComplete = exploredFunctions.size >= 4;
   const progress = computeProgress(exploredFunctions, switchCount);
 
   // Fire completion API

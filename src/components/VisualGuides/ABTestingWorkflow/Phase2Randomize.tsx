@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Phase2State, RandomizationMethod, SIMULATED_COVARIATES } from "./types";
+import { Phase2State, RandomizationMethod, SIMULATED_COVARIATES, normalCDF } from "./types";
 
 interface Props {
   state: Phase2State;
@@ -46,6 +46,16 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
   }
 
   const total = state.controlSize + state.treatmentSize;
+
+  // Covariate balance summary, computed from the same table data shown below
+  const allBalanced = SIMULATED_COVARIATES.every((c) => c.pValue > 0.05);
+
+  // Sample Ratio Mismatch (SRM) check: z-test of the observed split vs the
+  // intended 50/50 allocation. p < 0.001 is the conventional SRM alarm.
+  const srmZ =
+    total > 0 ? (state.controlSize - total / 2) / Math.sqrt(total * 0.25) : 0;
+  const srmP = 2 * (1 - normalCDF(Math.abs(srmZ)));
+  const srmOk = srmP >= 0.001;
 
   return (
     <motion.div
@@ -247,10 +257,44 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
             <span className="text-[11px] text-[#94a3b8]">p ≤ 0.05 — imbalanced</span>
           </div>
           <div className="ml-auto">
-            <span className="text-[11px] font-semibold text-[#3bb4a4]">
-              ✓ All covariates balanced
+            <span
+              className={`text-[11px] font-semibold ${
+                allBalanced ? "text-[#3bb4a4]" : "text-[#ef4444]"
+              }`}
+            >
+              {allBalanced
+                ? "✓ All covariates balanced"
+                : "✗ At least one covariate imbalanced"}
             </span>
           </div>
+        </div>
+
+        {/* SRM check */}
+        <div className="mt-4 rounded-xl bg-[#1e293b] p-4">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <p className="text-[11px] font-semibold text-white">
+                Sample Ratio Mismatch (SRM) check
+              </p>
+              <p className="text-[11px] text-[#94a3b8] mt-0.5">
+                Observed split {state.controlSize.toLocaleString()} /{" "}
+                {state.treatmentSize.toLocaleString()} vs intended 50/50: z ={" "}
+                {srmZ.toFixed(3)}, p = {srmP.toFixed(3)}
+              </p>
+            </div>
+            <span
+              className={`text-[11px] font-semibold ${
+                srmOk ? "text-[#3bb4a4]" : "text-[#ef4444]"
+              }`}
+            >
+              {srmOk ? "✓ No mismatch detected" : "✗ SRM detected (p < 0.001): investigate before analyzing"}
+            </span>
+          </div>
+          <p className="text-[11px] text-[#94a3b8] mt-2 leading-relaxed">
+            In a real experiment, an assignment ratio that drifts from the plan
+            (p &lt; 0.001 here) usually signals a bug in the randomizer or logging,
+            and it invalidates downstream results.
+          </p>
         </div>
       </div>
 

@@ -77,7 +77,10 @@ export default function PostHocComparison({ comparisons, onViewed }: PostHocComp
           {significantPairs.length} significant pair{significantPairs.length !== 1 ? "s" : ""}
         </span>
       </div>
-      <p className="text-[11px] text-[#475569] mb-4">Tukey HSD · α = 0.05</p>
+      <p className="text-[11px] text-[#475569] mb-4">
+        Bonferroni-corrected pairwise t-tests · family α = 0.05 · CIs are
+        Bonferroni-adjusted (simultaneous 95%)
+      </p>
 
       {/* View toggle */}
       <div className="flex items-center gap-1 mb-4 p-1 bg-[#1e293b] rounded-xl w-fit">
@@ -148,7 +151,7 @@ export default function PostHocComparison({ comparisons, onViewed }: PostHocComp
                                   {comp.meanDiff > 0 ? "+" : ""}{fmt(comp.meanDiff, 1)}
                                 </div>
                                 <div style={{ color: comp.significant ? "#4ade80" : "#94a3b8" }} className="text-[9px]">
-                                  p={fmtP(comp.pValueTukey)}
+                                  p={fmtP(comp.pValueAdjusted)}
                                 </div>
                               </div>
                             </td>
@@ -175,8 +178,8 @@ export default function PostHocComparison({ comparisons, onViewed }: PostHocComp
                                         <span className="text-[#475569]">vs {col}:</span>
                                         <span className="font-mono text-white">
                                           Δ = {comp.meanDiff > 0 ? "+" : ""}{fmt(comp.meanDiff, 2)},
-                                          95% CI [{fmt(comp.ciLower, 2)}, {fmt(comp.ciUpper, 2)}],
-                                          p = {fmtP(comp.pValueTukey)}
+                                          adj. 95% CI [{fmt(comp.ciLower, 2)}, {fmt(comp.ciUpper, 2)}],
+                                          p = {fmtP(comp.pValueAdjusted)}
                                         </span>
                                         {comp.significant ? (
                                           <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#14532d] text-[#4ade80]">SIG</span>

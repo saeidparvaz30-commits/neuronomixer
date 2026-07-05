@@ -90,11 +90,17 @@ export function computeForward() {
   // Output gradients: ∂L/∂o = pred - target (for softmax + cross-entropy)
   const dO = aO.map((p, i) => p - TARGET_VALUES[i]);
 
-  // Gradient at hidden layer: ∂L/∂h = W_HO^T × dO ⊙ ReLU'(zH)
+  // Gradient at hidden pre-activations: ∂L/∂zH = (W_HO^T × dO) ⊙ ReLU'(zH)
+  // (∂L/∂aH is the upstream sum alone; multiplying by ReLU' converts it to ∂L/∂zH)
   const dH: number[] = aH.map((_, j) => {
     const upstreamSum = FIXED_WEIGHTS_HO.reduce((s, row, k) => s + row[j] * dO[k], 0);
     return upstreamSum * reluPrime(zH[j]);
   });
+
+  // Gradient at the inputs: ∂L/∂x = W_IH^T × dH
+  const dX: number[] = x.map((_, i) =>
+    FIXED_WEIGHTS_IH.reduce((s, row, j) => s + row[i] * dH[j], 0)
+  );
 
   // Weight gradients
   const dW_HO: number[][] = FIXED_WEIGHTS_HO.map((_, k) =>
@@ -110,7 +116,7 @@ export function computeForward() {
   const newW_IH = FIXED_WEIGHTS_IH.map((row, j) => row.map((w, i) => w - lr * dW_IH[j][i]));
   const newW_HO = FIXED_WEIGHTS_HO.map((row, k) => row.map((w, j) => w - lr * dW_HO[k][j]));
 
-  return { x, zH, aH, zO, aO, loss, dO, dH, dW_IH, dW_HO, newW_IH, newW_HO };
+  return { x, zH, aH, zO, aO, loss, dO, dH, dX, dW_IH, dW_HO, newW_IH, newW_HO };
 }
 
 export const FORWARD_DATA = computeForward();
@@ -150,7 +156,7 @@ export const STEP_CONTENTS: StepContent[] = [
     keyPoints: [
       "Softmax squashes any real-valued logits into a probability distribution.",
       `Predictions: [${FORWARD_DATA.aO.map(v => v.toFixed(3)).join(", ")}]`,
-      "The network is most confident about class 1 here — training will shift that toward class 1 (index 0).",
+      `The highest probability (${FORWARD_DATA.aO[0].toFixed(3)}) already sits on class 0, the true class, but the network is far from certain. Training will push that probability toward 1.`,
     ],
     phase: "forward",
   },
@@ -185,11 +191,11 @@ export const STEP_CONTENTS: StepContent[] = [
     title: "Backprop: Hidden Layer",
     description:
       "Gradients flow backward from the output through the weight matrix W_HO. Each hidden neuron accumulates upstream gradients, then the result is gated by ReLU's derivative (0 or 1).",
-    formula: "∂L/∂h = (W_HO)ᵀ · (∂L/∂o) ⊙ ReLU′(z)",
+    formula: "∂L/∂z_h = ((W_HO)ᵀ · (∂L/∂o)) ⊙ ReLU′(z_h)",
     keyPoints: [
       "Chain rule: gradients multiply at every junction.",
-      "ReLU′ = 0 if z ≤ 0 — those neurons receive no gradient update (dead neurons).",
-      "The transposed weight matrix routes errors back proportionally.",
+      "ReLU′ = 0 if z ≤ 0, so those neurons get zero gradient from THIS example. A neuron that stays inactive for every training example never updates: that is a dead neuron.",
+      "The transposed weight matrix routes errors back proportionally; multiplying by ReLU′ turns ∂L/∂a into ∂L/∂z.",
     ],
     phase: "backward",
   },
@@ -200,7 +206,7 @@ export const STEP_CONTENTS: StepContent[] = [
       "Gradients now reach the input layer too, completing the full backward pass. Every weight in the network now has a gradient indicating how much it contributed to the error.",
     formula: "∂L/∂W = (∂L/∂a) · xᵀ",
     keyPoints: [
-      "Input gradients show which features had the most influence on the loss.",
+      `Input gradients ∂L/∂x = (W_IH)ᵀ · ∂L/∂z_h = [${FORWARD_DATA.dX.map(v => v.toFixed(3)).join(", ")}], showing how the loss would change if each input feature moved.`,
       "Weight gradients = outer product of upstream gradient × layer input.",
       "All gradients are now ready — the update step can begin.",
     ],

@@ -31,7 +31,7 @@ export interface PairwiseComparison {
   meanDiff: number;
   ciLower: number;
   ciUpper: number;
-  pValueTukey: number;
+  pValueAdjusted: number;
   significant: boolean;
 }
 
@@ -150,15 +150,42 @@ export function computeANOVA(groups: GroupData[]): AnovaStatistics {
   };
 }
 
-// ── Tukey HSD pairwise comparisons ───────────────────────────────────────────
+// ── Bonferroni-corrected pairwise t-tests ────────────────────────────────────
 
-export function computeTukeyHSD(
+/**
+ * Inverse Student-t CDF by bisection on tCDF.
+ * Returns t >= 0 such that P(T <= t) = p, for p in [0.5, 1).
+ */
+export function tQuantile(p: number, df: number): number {
+  if (p <= 0.5) return 0;
+  let lo = 0;
+  let hi = 500;
+  for (let i = 0; i < 100; i++) {
+    const mid = (lo + hi) / 2;
+    if (tCDF(mid, df) < p) lo = mid;
+    else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+/**
+ * Pairwise post-hoc comparisons using Bonferroni-corrected t-tests
+ * on the pooled ANOVA error (MS_Within).
+ * The CIs use the same Bonferroni-adjusted level as the p-values
+ * (simultaneous ~95% family coverage), so a CI excludes 0 exactly
+ * when the adjusted p-value is below 0.05.
+ */
+export function computeBonferroniPairwise(
   groups: GroupData[],
   anova: AnovaStatistics
 ): PairwiseComparison[] {
   const comparisons: PairwiseComparison[] = [];
   const k = groups.length;
   const numPairs = (k * (k - 1)) / 2;
+  const alpha = 0.05;
+  // Bonferroni-adjusted per-comparison level for simultaneous CIs
+  const tCrit =
+    anova.dfWithin > 0 ? tQuantile(1 - alpha / numPairs / 2, anova.dfWithin) : 0;
 
   for (let i = 0; i < groups.length; i++) {
     for (let j = i + 1; j < groups.length; j++) {
@@ -171,11 +198,10 @@ export function computeTukeyHSD(
       const n2 = g2.values.length;
       const se = Math.sqrt(anova.msWithin * (1 / n1 + 1 / n2));
       const t_ij = se === 0 ? 0 : Math.abs(meanDiff) / se;
-      // Bonferroni-corrected Tukey approximation
       const rawP = 2 * (1 - tCDF(t_ij, anova.dfWithin));
-      const pValueTukey = Math.min(1, numPairs * rawP);
-      const ciLower = meanDiff - 1.96 * se;
-      const ciUpper = meanDiff + 1.96 * se;
+      const pValueAdjusted = Math.min(1, numPairs * rawP);
+      const ciLower = meanDiff - tCrit * se;
+      const ciUpper = meanDiff + tCrit * se;
 
       comparisons.push({
         group1: g1.groupName,
@@ -183,8 +209,8 @@ export function computeTukeyHSD(
         meanDiff,
         ciLower,
         ciUpper,
-        pValueTukey,
-        significant: pValueTukey < 0.05,
+        pValueAdjusted,
+        significant: pValueAdjusted < alpha,
       });
     }
   }

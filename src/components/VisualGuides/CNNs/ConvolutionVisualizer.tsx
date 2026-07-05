@@ -7,9 +7,21 @@ import { FilterDefinition, SampleImage } from "./types";
 interface ConvolutionVisualizerProps {
   filter: FilterDefinition;
   image: SampleImage;
-  onOutputReady?: (output: number[][]) => void;
+  onOutputReady?: (display: number[][], raw: number[][]) => void;
 }
 
+function kernelDivisor(kernel: number[][]): number {
+  const kernelSum = kernel.flat().reduce((a, b) => a + b, 0);
+  // Averaging kernels (e.g. Gaussian blur, sum = 16) are normalized by their
+  // sum so the response stays in the input's 0-1 range.
+  return kernelSum > 1 ? kernelSum : 1;
+}
+
+/**
+ * True convolution response: pixels scaled to 0-1, element-wise multiplied by
+ * the kernel and summed (divided by the kernel sum for averaging kernels).
+ * No display rescaling happens here; values can be negative.
+ */
 function convolve(grid: number[][], kernel: number[][]): number[][] {
   const rows = grid.length;
   const cols = grid[0].length;
@@ -17,9 +29,7 @@ function convolve(grid: number[][], kernel: number[][]): number[][] {
   const outRows = rows - kSize + 1;
   const outCols = cols - kSize + 1;
   const output: number[][] = [];
-
-  const kernelSum = kernel.flat().reduce((a, b) => a + b, 0);
-  const divisor = kernelSum > 1 ? kernelSum : 1;
+  const divisor = kernelDivisor(kernel);
 
   for (let r = 0; r < outRows; r++) {
     const row: number[] = [];
@@ -30,8 +40,7 @@ function convolve(grid: number[][], kernel: number[][]): number[][] {
           sum += (grid[r + kr][c + kc] / 255) * kernel[kr][kc];
         }
       }
-      const normalized = Math.min(255, Math.max(0, (sum / divisor + 1) * 128));
-      row.push(normalized);
+      row.push(sum / divisor);
     }
     output.push(row);
   }
@@ -63,8 +72,8 @@ export default function ConvolutionVisualizer({
   const normOutput = useMemo(() => minMaxNormalize(rawOutput), [rawOutput]);
 
   useEffect(() => {
-    onOutputReady?.(normOutput);
-  }, [normOutput, onOutputReady]);
+    onOutputReady?.(normOutput, rawOutput);
+  }, [normOutput, rawOutput, onOutputReady]);
 
   // Reset step when filter/image changes
   useEffect(() => {
@@ -75,7 +84,9 @@ export default function ConvolutionVisualizer({
   const currentPos = ALL_POSITIONS[stepIdx] ?? [0, 0];
   const [hr, hc] = currentPos;
 
-  const computedVal = rawOutput[hr]?.[hc] ?? 0;
+  const divisor = kernelDivisor(filter.kernel);
+  const rawResponse = rawOutput[hr]?.[hc] ?? 0;
+  const displayVal = normOutput[hr]?.[hc] ?? 0;
 
   const step = useCallback(() => {
     setStepIdx((prev) => (prev + 1) % ALL_POSITIONS.length);
@@ -220,7 +231,8 @@ export default function ConvolutionVisualizer({
             </AnimatePresence>
           </div>
           <p className="text-[10px] text-[#475569] mt-1.5 text-center">
-            Orange box = current 3×3 patch
+            Orange box = current 3×3 patch. Stride = 1, no padding, which is
+            why the 8×8 input shrinks to a 6×6 output.
           </p>
         </div>
 
@@ -275,18 +287,18 @@ export default function ConvolutionVisualizer({
           Computation at position ({hr},{hc})
         </p>
         <div className="flex gap-3 items-center flex-wrap">
-          {/* Patch values */}
+          {/* Patch values (scaled to 0-1 so they match the sum shown) */}
           <div>
-            <p className="text-[9px] text-[#475569] mb-1 text-center">Patch</p>
+            <p className="text-[9px] text-[#475569] mb-1 text-center">Patch (÷255)</p>
             <div className="grid gap-0.5" style={{ gridTemplateColumns: "repeat(3, 28px)" }}>
               {patchVals.map((row, kr) =>
                 row.map((v, kc) => (
                   <div
                     key={`p-${kr}-${kc}`}
-                    className="w-7 h-7 flex items-center justify-center text-[9px] font-mono rounded-sm"
+                    className="w-7 h-7 flex items-center justify-center text-[8px] font-mono rounded-sm"
                     style={{ background: pixelColor(v), color: v > 127 ? "#000" : "#fff" }}
                   >
-                    {v}
+                    {(v / 255).toFixed(1)}
                   </div>
                 ))
               )}
@@ -329,26 +341,40 @@ export default function ConvolutionVisualizer({
               </span>
             </div>
           </div>
+          {divisor > 1 && (
+            <div className="flex flex-col items-center">
+              <p className="text-[9px] text-[#475569] mb-1">÷ {divisor} (kernel sum)</p>
+              <div
+                className="w-14 h-14 rounded-lg flex items-center justify-center border"
+                style={{ background: "#1e293b", borderColor: "#22c55e60" }}
+              >
+                <span className="text-xs font-bold text-[#22c55e]">
+                  {rawResponse.toFixed(3)}
+                </span>
+              </div>
+            </div>
+          )}
           <div className="flex flex-col items-center">
-            <p className="text-[9px] text-[#475569] mb-1">→ Output</p>
+            <p className="text-[9px] text-[#475569] mb-1">→ Display (0–255)</p>
             <div
               className="w-14 h-14 rounded-lg flex items-center justify-center border"
               style={{
-                background: outputPixelColor(computedVal),
+                background: outputPixelColor(displayVal),
                 borderColor: "#22c55e60",
               }}
             >
               <span
                 className="text-xs font-bold drop-shadow-lg"
-                style={{ color: computedVal > 127 ? "#000" : "#fff" }}
+                style={{ color: displayVal > 127 ? "#000" : "#fff" }}
               >
-                {Math.round(computedVal)}
+                {Math.round(displayVal)}
               </span>
             </div>
           </div>
         </div>
         <p className="text-[10px] text-[#475569] mt-2">
-          Element-wise multiply → sum → normalize to 0–255
+          Element-wise multiply → sum{divisor > 1 ? ` → ÷${divisor} (averaging kernel)` : ""} → the
+          whole output map is then min-max rescaled to 0–255 purely for display.
         </p>
       </div>
     </div>

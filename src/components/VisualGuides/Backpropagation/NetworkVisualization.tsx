@@ -210,7 +210,7 @@ export default function NetworkVisualization({ step }: Props) {
     } else if (layer === "hidden") {
       label = `h${index + 1}`;
       if (step >= 5) {
-        value = `∂L/∂h = ${FORWARD_DATA.dH[index].toFixed(4)}`;
+        value = `∂L/∂z = ${FORWARD_DATA.dH[index].toFixed(4)}`;
         sub = `a = ${FORWARD_DATA.aH[index].toFixed(4)}`;
       } else {
         value = `a = ${FORWARD_DATA.aH[index].toFixed(4)}`;

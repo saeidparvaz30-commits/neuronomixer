@@ -41,7 +41,7 @@ const STRATEGIES: { id: Strategy; label: string; description: string }[] = [
   {
     id: "recursive",
     label: "Recursive",
-    description: "Split on paragraph → sentence boundaries",
+    description: "Split on paragraph, then sentence boundaries, until each chunk fits a size budget",
   },
   {
     id: "document",
@@ -54,14 +54,20 @@ const USE_CASES = [
   {
     useCase: "Customer support docs",
     strategy: "Recursive",
-    reason: "Preserves Q&A pairs and conversational context",
+    reason: "Keeps paragraphs and sentences intact without requiring document markup",
     color: "#3bb4a4",
   },
   {
     useCase: "Legal contracts",
-    strategy: "Fixed-Size",
-    reason: "Uniform chunks for consistent similarity search",
+    strategy: "Document-Structure",
+    reason: "Clauses and numbered sections are the meaningful retrieval units; splitting mid-clause destroys meaning",
     color: "#1e5d8a",
+  },
+  {
+    useCase: "Chat logs / transcripts",
+    strategy: "Fixed-Size",
+    reason: "Little inherent structure, so uniform windows with overlap are a reasonable default",
+    color: "#d4af37",
   },
   {
     useCase: "Code documentation",
@@ -85,18 +91,32 @@ function fixedChunk(text: string, size: number, overlap: number): Chunk[] {
   return chunks;
 }
 
-function recursiveChunk(text: string): Chunk[] {
-  const paragraphs = text.split(/\n\n+/).filter(Boolean);
+// Recursive character splitting, faithful to the real algorithm: try the
+// coarsest separator first (paragraphs); any piece over the size budget is
+// split at the next separator level (sentences) and greedily re-packed so
+// every chunk fits the budget.
+const RECURSIVE_MAX_CHARS = 220;
+
+function recursiveChunk(text: string, maxLen: number = RECURSIVE_MAX_CHARS): Chunk[] {
   const chunks: Chunk[] = [];
+  const paragraphs = text.split(/\n\n+/).filter(Boolean);
   for (const para of paragraphs) {
-    const sentences = para.split(/(?<=[.!?])\s+/).filter(Boolean);
-    if (sentences.length <= 2) {
-      chunks.push({ text: para.trim() });
-    } else {
-      const mid = Math.ceil(sentences.length / 2);
-      chunks.push({ text: sentences.slice(0, mid).join(" ").trim() });
-      chunks.push({ text: sentences.slice(mid).join(" ").trim() });
+    const p = para.trim();
+    if (p.length <= maxLen) {
+      chunks.push({ text: p });
+      continue;
     }
+    const sentences = p.split(/(?<=[.!?])\s+/).filter(Boolean);
+    let buffer = "";
+    for (const s of sentences) {
+      if (buffer && buffer.length + 1 + s.length > maxLen) {
+        chunks.push({ text: buffer });
+        buffer = s;
+      } else {
+        buffer = buffer ? `${buffer} ${s}` : s;
+      }
+    }
+    if (buffer) chunks.push({ text: buffer });
   }
   return chunks;
 }
@@ -637,7 +657,9 @@ export default function ChunkingStrategiesClient() {
           <h2 className="text-xl font-bold text-white mb-1">Chunk Size Trade-offs</h2>
           <p className="text-[13px] text-[#94a3b8] mb-5">
             Small chunks improve retrieval precision but lose context. Large chunks carry
-            more context but reduce precision. The optimal zone is 256–512 tokens.
+            more context but reduce precision. For many general text corpora, 256–512 tokens
+            is a common starting range, but the right size depends on your documents,
+            queries, and embedding model, and should be tuned with retrieval evals.
           </p>
 
           <div className="rounded-2xl border border-white/10 bg-[#1e293b] p-5 flex justify-center">
@@ -750,10 +772,10 @@ export default function ChunkingStrategiesClient() {
           </p>
           <p className="text-[14px] text-[#94a3b8] leading-relaxed">
             Small chunks (128 tokens) = precise retrieval but may lack context. Large
-            chunks (1024 tokens) = rich context but retrieval is less precise. Many
-            production systems use{" "}
-            <span className="text-white font-semibold">512 tokens with 10% overlap</span>{" "}
-            as a reliable starting point.
+            chunks (1024 tokens) = rich context but retrieval is less precise. A common
+            starting point is{" "}
+            <span className="text-white font-semibold">around 512 tokens with ~10% overlap</span>;
+            from there, measure retrieval quality on your own data and adjust.
           </p>
         </div>
 

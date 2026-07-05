@@ -35,13 +35,16 @@ function fromSvgX(sx: number): number {
   return X_MIN + ((sx - PAD_L) / (W - PAD_L - PAD_R)) * (X_MAX - X_MIN);
 }
 
-// Build SVG path from 200 sampled points
+// Build SVG path from 200 sampled points.
+// No y-clamping: unbounded functions (ReLU, Leaky ReLU) must keep rising and
+// exit the visible area, clipped by the plot-area clipPath, instead of being
+// flattened into a fake saturation plateau.
 function buildPath(fn: (x: number) => number): string {
   const N = 200;
   let d = "";
   for (let i = 0; i <= N; i++) {
     const x = X_MIN + (i / N) * (X_MAX - X_MIN);
-    const y = Math.max(Y_MIN - 0.1, Math.min(Y_MAX + 0.1, fn(x)));
+    const y = fn(x);
     const sx = toSvgX(x);
     const sy = toSvgY(y);
     d += i === 0 ? `M${sx},${sy}` : ` L${sx},${sy}`;
@@ -125,6 +128,17 @@ export default function FunctionPlotter({
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
+        <defs>
+          <clipPath id="fn-plot-area">
+            <rect
+              x={PAD_L}
+              y={PAD_T}
+              width={W - PAD_L - PAD_R}
+              height={H - PAD_T - PAD_B}
+            />
+          </clipPath>
+        </defs>
+
         {/* Dead zone annotation (ReLU) */}
         {showDeadZone && (
           <rect
@@ -300,6 +314,7 @@ export default function FunctionPlotter({
         {/* Function curve with pathLength animation */}
         <motion.path
           key={pathKey}
+          clipPath="url(#fn-plot-area)"
           d={pathD}
           fill="none"
           stroke={properties.color}

@@ -18,7 +18,18 @@ const CONFOUNDER_DAG: DAG = {
   edges: [
     { id: "s-ic",  source: "summer",   target: "icecream" },
     { id: "s-dr",  source: "summer",   target: "drowning" },
-    { id: "ic-dr", source: "icecream", target: "drowning", spurious: true },
+    // NOT a causal arrow: the true effect of ice cream on drowning is 0.
+    // This dashed association is what the raw data shows, and it disappears
+    // once Summer is controlled (or once treatment/outcome are conditioned).
+    {
+      id: "ic-dr",
+      source: "icecream",
+      target: "drowning",
+      association: true,
+      hideWhenControlled: ["summer", "icecream", "drowning"],
+      associationColor: "#d4af37",
+      label: "spurious association (not causal)",
+    },
   ],
 };
 
@@ -44,6 +55,18 @@ const COLLIDER_DAG: DAG = {
   edges: [
     { id: "t-s", source: "talent", target: "success" },
     { id: "e-s", source: "effort", target: "success" },
+    // Appears ONLY while Success (the collider) is conditioned on: the
+    // induced, non-causal association between its parents.
+    {
+      id: "t-e-induced",
+      source: "talent",
+      target: "effort",
+      association: true,
+      showWhenControlled: ["success"],
+      hideWhenControlled: ["talent", "effort"],
+      associationColor: "#ef4444",
+      label: "induced association (collider opened)",
+    },
   ],
 };
 
@@ -59,7 +82,7 @@ function getConfounderBias(controlled: Set<string>): BiasResult {
       status: "blocked",
       label: "Blocked: controlled for outcome",
       explanation:
-        "Controlling for the outcome (Drowning Deaths) blocks all paths to it — you can no longer estimate any effect.",
+        "Conditioning on the outcome (Drowning Deaths) selects on the result you are trying to explain; the analysis no longer answers the causal question at all.",
       detail: "Never condition on your outcome variable unless you have a specific causal reason.",
       color: "#94a3b8",
     };
@@ -80,7 +103,7 @@ function getConfounderBias(controlled: Set<string>): BiasResult {
       label: "Unbiased: confounder blocked",
       explanation:
         "Blocking the path Summer → Ice Cream Sales → Drowning Deaths removes the spurious correlation. The true causal effect of Ice Cream on Drowning is exactly 0.",
-      detail: "By conditioning on Summer, you compare ice cream sales only within the same season. The dashed edge (spurious path) is now closed.",
+      detail: "By conditioning on Summer, you compare ice cream sales only within the same season. The dashed association edge is now gone from the graph: the spurious path is closed.",
       color: "#10b981",
     };
   }
@@ -105,8 +128,8 @@ function getMediatorBias(controlled: Set<string>): BiasResult {
       status: "blocked",
       label: "Blocked: controlling for outcome",
       explanation:
-        "Conditioning on the outcome (Income) closes all paths to it. You cannot estimate the causal effect of Education on Income.",
-      detail: "Controlling for a descendant of your outcome introduces severe collider bias in many DAGs.",
+        "Conditioning on the outcome (Income) selects on the very result you are trying to explain; it biases the estimate rather than 'closing paths'. You cannot estimate the causal effect of Education on Income this way.",
+      detail: "Conditioning on the outcome (or its descendants) distorts the estimand and can induce collider-style selection bias.",
       color: "#94a3b8",
     };
   }
@@ -162,7 +185,7 @@ function getColliderBias(controlled: Set<string>): BiasResult {
       status: "biased",
       label: "BIASED: collider conditioning!",
       explanation:
-        "Conditioning on Success (the collider) OPENS a spurious back-door path between Talent and Effort. They become negatively correlated even though they are causally independent.",
+        "Conditioning on Success (the collider) OPENS a spurious, non-causal path between Talent and Effort: the red dashed link now drawn in the graph. They become negatively correlated even though they are causally independent.",
       detail:
         "This is the 'explain-away' effect: among successful people, if someone is very talented, they may have needed less effort (and vice versa). This is purely a statistical artifact of conditioning on their shared effect.",
       color: "#ef4444",
@@ -207,7 +230,7 @@ const SCENARIOS: Record<ScenarioId, ScenarioConfig> = {
       { label: "Ice Cream Sales", description: "Treatment — the variable we (naively) study",    color: NODE_COLORS.treatment  },
       { label: "Drowning Deaths", description: "Outcome — what we are trying to explain",        color: NODE_COLORS.outcome    },
     ],
-    tip: 'Try checking "Summer" — watch the dashed spurious arrow vanish from the bias analysis.',
+    tip: 'Try checking "Summer": the dashed spurious association between Ice Cream and Drowning disappears from the graph.',
   },
   mediator: {
     id: "mediator",

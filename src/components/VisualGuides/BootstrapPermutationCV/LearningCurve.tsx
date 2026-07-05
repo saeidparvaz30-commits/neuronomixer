@@ -75,9 +75,11 @@ export default function LearningCurve() {
         <div className="inline-flex items-center gap-2 bg-[#1e5d8a]/20 border border-[#1e5d8a]/40 rounded-full px-3 py-1 mb-2">
           <span className="text-xs font-semibold text-[#3bb4a4] uppercase tracking-wider">Section 4</span>
         </div>
-        <h2 className="text-xl font-bold text-white">Bias-Variance Tradeoff & Learning Curves</h2>
+        <h2 className="text-xl font-bold text-white">Bias-Variance Tradeoff & the Validation Curve</h2>
         <p className="text-sm text-[#94a3b8] mt-1">
-          Understanding when your model is too simple (high bias) or too complex (high variance).
+          Error versus model complexity (a validation curve; a learning curve would
+          instead plot error versus training-set size). Understand when your model
+          is too simple (high bias) or too complex (high variance).
         </p>
       </div>
 

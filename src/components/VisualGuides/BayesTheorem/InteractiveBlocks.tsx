@@ -2,12 +2,15 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import type { ScenarioType } from "./types";
+import { SCENARIO_CONFIGS } from "./types";
 
 interface InteractiveBlocksProps {
   posterior: number;
   baseRate: number;
   sensitivity: number;
   specificity: number;
+  scenario: ScenarioType;
 }
 
 export default function InteractiveBlocks({
@@ -15,7 +18,9 @@ export default function InteractiveBlocks({
   baseRate,
   sensitivity,
   specificity,
+  scenario,
 }: InteractiveBlocksProps) {
+  const w = SCENARIO_CONFIGS[scenario].wording;
   const BLOCKS = 100;
   const truePositiveBlocks = Math.max(0, Math.min(BLOCKS, Math.round(posterior * BLOCKS)));
   const falsePositiveBlocks = BLOCKS - truePositiveBlocks;
@@ -35,7 +40,7 @@ export default function InteractiveBlocks({
           Visual Breakdown
         </p>
         <h2 className="text-[15px] font-bold text-white">
-          Of 100 people who test positive…
+          Of 100 {w.entityPlural} that {w.testPositive}…
         </h2>
       </div>
 
@@ -85,7 +90,7 @@ export default function InteractiveBlocks({
 
       {/* Your Risk highlight */}
       <div className="rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5 px-4 py-3 text-center">
-        <p className="text-[10px] uppercase tracking-[1.5px] text-[#94a3b8] mb-1">Your Risk</p>
+        <p className="text-[10px] uppercase tracking-[1.5px] text-[#94a3b8] mb-1">Posterior Probability</p>
         <p className="text-[36px] font-black text-[#d4af37] leading-none">
           {(posterior * 100).toFixed(1)}%
         </p>
@@ -96,14 +101,15 @@ export default function InteractiveBlocks({
         <div className="space-y-2">
           <p className="text-[10px] text-[#475569]">
             In a group of{" "}
-            <span className="text-white font-semibold">1,000,000</span> people who test positive:
+            <span className="text-white font-semibold">1,000,000</span> {w.entityPlural} tested,{" "}
+            <span className="text-white font-semibold">{total.toLocaleString()}</span> {w.testPositive}, split into:
           </p>
           <div className="flex gap-2 text-[11px] flex-wrap">
             <span className="px-2 py-1 rounded-md bg-[#3bb4a4]/15 text-[#3bb4a4] font-semibold">
-              ~{tp.toLocaleString()} actually have the disease
+              ~{tp.toLocaleString()} true positives (truly {w.hasCondition})
             </span>
             <span className="px-2 py-1 rounded-md bg-[#ef4444]/15 text-[#ef4444] font-semibold">
-              ~{fp.toLocaleString()} have a false positive
+              ~{fp.toLocaleString()} false positives ({w.lacksCondition})
             </span>
           </div>
 

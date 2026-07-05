@@ -21,7 +21,7 @@ function getInsightText(count: number): { text: string; color: string } {
   if (count < 1000)
     return { text: "The CLT in action! Converging to normal!", color: "#d4af37" };
   return {
-    text: "Perfect! Normal distribution regardless of population shape.",
+    text: "1000 samples: the distribution of means is now close to normal, whatever the population shape.",
     color: "#a855f7",
   };
 }

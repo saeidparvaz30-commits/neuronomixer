@@ -94,7 +94,8 @@ export default function DeadNeuronDetector({
               Dead Neuron Detector
             </h3>
             <p className="text-[11px] text-[#64748b] mt-0.5">
-              ReLU-only — neurons receiving always-negative inputs never fire
+              ReLU-only: neurons receiving always-negative inputs never fire.
+              Illustrative demo: counts are simulated, not from a trained network.
             </p>
           </div>
           <button

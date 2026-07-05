@@ -342,8 +342,10 @@ export default function BootstrapSection({ onBootstrapDone }: BootstrapSectionPr
           {/* Key insight */}
           <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-4">
             <p className="text-xs text-[#94a3b8] leading-relaxed">
-              <span className="text-white font-semibold">No assumptions needed.</span> Bootstrap works without
-              knowing the population distribution — it approximates the sampling distribution empirically.
+              <span className="text-white font-semibold">Few assumptions, not none.</span> Bootstrap
+              avoids assuming a particular population distribution, but it does assume your sample is
+              representative (i.i.d. draws), and it can struggle with very small samples or extreme
+              statistics like the maximum.
             </p>
           </div>
         </div>

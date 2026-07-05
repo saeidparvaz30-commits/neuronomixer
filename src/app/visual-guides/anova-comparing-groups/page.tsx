@@ -4,12 +4,12 @@ import AnovaGuideClient from "@/components/VisualGuides/AnovaGuide/AnovaGuideCli
 export const metadata: Metadata = {
   title: "ANOVA: Comparing Many Groups",
   description:
-    "Decompose variance across four groups. Run one-way ANOVA, visualize SS_Between and SS_Within, and explore post-hoc pairwise comparisons with Tukey HSD.",
+    "Decompose variance across four groups. Run one-way ANOVA, visualize SS_Between and SS_Within, and explore Bonferroni-corrected post-hoc pairwise comparisons.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/anova-comparing-groups" },
   openGraph: {
     title: "ANOVA: Comparing Many Groups — NeuroNomixer",
     description:
-      "Interactive ANOVA guide: box plots, variance decomposition, F-statistic, and Tukey HSD pairwise comparisons. Includes a repeated-measures explainer.",
+      "Interactive ANOVA guide: box plots, variance decomposition, F-statistic, and Bonferroni-corrected pairwise comparisons. Includes a repeated-measures explainer.",
     url: "https://www.neuronomixer.com/visual-guides/anova-comparing-groups",
     type: "article",
   },

@@ -1,10 +1,13 @@
 "use client";
 
 import React from "react";
+import type { ScenarioType } from "./types";
+import { SCENARIO_CONFIGS } from "./types";
 
 interface LikelihoodPanelProps {
   sensitivity: number;
   specificity: number;
+  scenario: ScenarioType;
   onSensitivityChange: (v: number) => void;
   onSpecificityChange: (v: number) => void;
 }
@@ -12,9 +15,11 @@ interface LikelihoodPanelProps {
 export default function LikelihoodPanel({
   sensitivity,
   specificity,
+  scenario,
   onSensitivityChange,
   onSpecificityChange,
 }: LikelihoodPanelProps) {
+  const w = SCENARIO_CONFIGS[scenario].wording;
   const falsePositiveRate = (1 - specificity) * 100;
   const falseNegativeRate = (1 - sensitivity) * 100;
 
@@ -34,7 +39,7 @@ export default function LikelihoodPanel({
         <div className="flex justify-between items-center">
           <div>
             <span className="text-[12px] text-white font-medium">Sensitivity</span>
-            <span className="text-[10px] text-[#475569] ml-1.5">P(Positive | Disease)</span>
+            <span className="text-[10px] text-[#475569] ml-1.5">{w.sensitivityFormula}</span>
           </div>
           <span className="text-[13px] font-mono font-bold text-[#3bb4a4]">
             {(sensitivity * 100).toFixed(0)}%
@@ -51,7 +56,7 @@ export default function LikelihoodPanel({
           style={{ accentColor: "#3bb4a4" }}
         />
         <p className="text-[10px] text-[#475569]">
-          The test correctly detects the disease{" "}
+          {w.sensitivityDesc}{" "}
           <span className="text-[#3bb4a4] font-semibold">
             {(sensitivity * 100).toFixed(0)}%
           </span>{" "}
@@ -64,7 +69,7 @@ export default function LikelihoodPanel({
         <div className="flex justify-between items-center">
           <div>
             <span className="text-[12px] text-white font-medium">Specificity</span>
-            <span className="text-[10px] text-[#475569] ml-1.5">P(Negative | No Disease)</span>
+            <span className="text-[10px] text-[#475569] ml-1.5">{w.specificityFormula}</span>
           </div>
           <span className="text-[13px] font-mono font-bold text-[#d4af37]">
             {(specificity * 100).toFixed(0)}%
@@ -81,7 +86,7 @@ export default function LikelihoodPanel({
           style={{ accentColor: "#d4af37" }}
         />
         <p className="text-[10px] text-[#475569]">
-          The test correctly rules out the disease{" "}
+          {w.specificityDesc}{" "}
           <span className="text-[#d4af37] font-semibold">
             {(specificity * 100).toFixed(0)}%
           </span>{" "}

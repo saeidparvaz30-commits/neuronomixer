@@ -11,7 +11,22 @@ export interface DAGEdge {
   id: string;
   source: string;
   target: string;
+  /** Legacy flag; association edges supersede it */
   spurious?: boolean;
+  /**
+   * Undirected, non-causal ASSOCIATION edge (dashed, no arrowhead).
+   * Not part of the DAG's causal structure; visualizes a spurious or
+   * induced correlation between two variables.
+   */
+  association?: boolean;
+  /** Association edge is hidden while ANY of these nodes are controlled */
+  hideWhenControlled?: string[];
+  /** Association edge is shown only while ALL of these nodes are controlled */
+  showWhenControlled?: string[];
+  /** Stroke color for association edges */
+  associationColor?: string;
+  /** Small caption drawn along association edges */
+  label?: string;
 }
 
 export interface DAG {

@@ -78,8 +78,9 @@ export default function BootstrapPermutationCVClient() {
             <span className="text-[#3bb4a4]">&amp; Cross-Validation</span>
           </h1>
           <p className="text-[#94a3b8] text-base max-w-2xl leading-relaxed">
-            Master modern resampling methods: build confidence intervals without distributional assumptions,
-            test significance by shuffling data, and evaluate models with K-fold cross-validation.
+            Master modern resampling methods: build confidence intervals without assuming a
+            particular distribution, test significance by shuffling data, and evaluate models
+            with K-fold cross-validation.
             Each demo animates live — watch the distributions emerge.
           </p>
         </motion.div>

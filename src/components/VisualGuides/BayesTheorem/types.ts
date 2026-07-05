@@ -16,6 +16,20 @@ export interface BayesState {
   stepsVisited: { 1: boolean; 2: boolean; 3: boolean };
 }
 
+export interface ScenarioWording {
+  entityPlural: string; // "people" | "emails" | "coins"
+  hasCondition: string; // "have the disease" | "are spam" | "are biased"
+  lacksCondition: string; // "do not" | "are legitimate" | "are fair"
+  testPositive: string; // "test positive" | "get flagged" | "show 7+ heads"
+  priorLabel: string; // slider label
+  priorSymbol: string; // "P(Disease)" etc.
+  sensitivityFormula: string; // "P(Positive | Disease)" etc.
+  specificityFormula: string;
+  sensitivityDesc: string;
+  specificityDesc: string;
+  testPhrase: string; // "the test" | "the filter" | "the 10-flip check"
+}
+
 export interface ScenarioConfig {
   id: ScenarioType;
   label: string;
@@ -28,6 +42,7 @@ export interface ScenarioConfig {
   positiveLabel: string;
   guessQuestion: string;
   guessSubtext: string;
+  wording: ScenarioWording;
 }
 
 export function computePosterior(
@@ -55,6 +70,19 @@ export const SCENARIO_CONFIGS: Record<ScenarioType, ScenarioConfig> = {
     positiveLabel: "POSITIVE",
     guessQuestion: "If the test is positive, what's the probability the person actually has the disease?",
     guessSubtext: "P(Has Disease | Test Positive)",
+    wording: {
+      entityPlural: "people",
+      hasCondition: "have the disease",
+      lacksCondition: "do not",
+      testPositive: "test positive",
+      priorLabel: "Disease Prevalence (Base Rate)",
+      priorSymbol: "P(Disease)",
+      sensitivityFormula: "P(Positive | Disease)",
+      specificityFormula: "P(Negative | No Disease)",
+      sensitivityDesc: "The test correctly detects the disease",
+      specificityDesc: "The test correctly rules out the disease",
+      testPhrase: "the test",
+    },
   },
   spam: {
     id: "spam",
@@ -69,20 +97,47 @@ export const SCENARIO_CONFIGS: Record<ScenarioType, ScenarioConfig> = {
     positiveLabel: "FLAGGED",
     guessQuestion: "If an email is flagged, what's the probability it's actually spam?",
     guessSubtext: "P(Is Spam | Flagged)",
+    wording: {
+      entityPlural: "emails",
+      hasCondition: "are spam",
+      lacksCondition: "are legitimate",
+      testPositive: "get flagged",
+      priorLabel: "Spam Rate (Base Rate)",
+      priorSymbol: "P(Spam)",
+      sensitivityFormula: "P(Flagged | Spam)",
+      specificityFormula: "P(Not Flagged | Legitimate)",
+      sensitivityDesc: "The filter correctly flags spam",
+      specificityDesc: "The filter correctly passes legitimate email",
+      testPhrase: "the spam filter",
+    },
   },
   fairness: {
     id: "fairness",
     label: "Coin Fairness",
     description:
       "A coin is biased (P(Heads)=0.7) with probability 0.1; fair (P(Heads)=0.5) with probability 0.9. You flip Heads 7 out of 10 times. Is it biased?",
+    // P(7+ heads in 10 | p=0.7) = 0.6496; P(7+ heads in 10 | p=0.5) = 176/1024 = 0.1719
     baseRate: 0.1,
-    sensitivity: 0.617,
-    specificity: 0.828,
+    sensitivity: 0.6496,
+    specificity: 0.8281,
     conditionName: "Biased Coin",
     testName: "7+ Heads in 10 flips",
     positiveLabel: "7 HEADS",
     guessQuestion: "If you observe 7+ heads in 10 flips, what's the probability the coin is biased?",
     guessSubtext: "P(Biased | 7+ Heads)",
+    wording: {
+      entityPlural: "coins",
+      hasCondition: "are biased",
+      lacksCondition: "are fair",
+      testPositive: "show 7+ heads in 10 flips",
+      priorLabel: "Share of Biased Coins (Base Rate)",
+      priorSymbol: "P(Biased)",
+      sensitivityFormula: "P(7+ Heads | Biased)",
+      specificityFormula: "P(<7 Heads | Fair)",
+      sensitivityDesc: "A biased coin shows 7+ heads in 10 flips",
+      specificityDesc: "A fair coin stays under 7 heads in 10 flips",
+      testPhrase: "the 10-flip check",
+    },
   },
 };
 

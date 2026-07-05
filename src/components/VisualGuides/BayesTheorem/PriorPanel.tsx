@@ -2,13 +2,17 @@
 
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
+import type { ScenarioType } from "./types";
+import { SCENARIO_CONFIGS } from "./types";
 
 interface PriorPanelProps {
   baseRate: number;
+  scenario: ScenarioType;
   onBaseRateChange: (v: number) => void;
 }
 
-export default function PriorPanel({ baseRate, onBaseRateChange }: PriorPanelProps) {
+export default function PriorPanel({ baseRate, scenario, onBaseRateChange }: PriorPanelProps) {
+  const w = SCENARIO_CONFIGS[scenario].wording;
   // We display "per 1000" to make the 0.1% base rate visible
   const POPULATION = 1000;
   const diseaseCount = Math.max(1, Math.round(POPULATION * baseRate));
@@ -38,10 +42,10 @@ export default function PriorPanel({ baseRate, onBaseRateChange }: PriorPanelPro
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <span className="text-[12px] text-white font-medium">
-            Disease Prevalence (Base Rate)
+            {w.priorLabel}
           </span>
           <span className="text-[13px] font-mono font-bold text-[#d4af37]">
-            P(Disease) = {(baseRate * 100).toFixed(1)}%
+            {w.priorSymbol} = {(baseRate * 100).toFixed(1)}%
           </span>
         </div>
         <input
@@ -63,20 +67,20 @@ export default function PriorPanel({ baseRate, onBaseRateChange }: PriorPanelPro
       {/* Summary */}
       <div className="flex items-center gap-2 flex-wrap">
         <span className="text-[12px] text-[#94a3b8]">
-          In 1,000 people:
+          In 1,000 {w.entityPlural}:
         </span>
         <span className="px-2 py-0.5 rounded-md bg-[#3bb4a4]/20 text-[#3bb4a4] text-[12px] font-semibold">
-          {diseaseCount} have this disease
+          {diseaseCount} {w.hasCondition}
         </span>
         <span className="px-2 py-0.5 rounded-md bg-[#1e293b] text-[#94a3b8] text-[12px]">
-          {healthyCount} do not
+          {healthyCount} {w.lacksCondition}
         </span>
       </div>
 
       {/* Population grid */}
       <div>
         <p className="text-[10px] text-[#475569] mb-2">
-          Each square = 1 person out of {POPULATION}. Blue = has disease.
+          Each square = 1 of {POPULATION} {w.entityPlural}. Teal = {w.hasCondition}.
         </p>
         <div
           className="grid gap-[2px]"
@@ -96,7 +100,7 @@ export default function PriorPanel({ baseRate, onBaseRateChange }: PriorPanelPro
           ))}
         </div>
         <p className="text-[10px] text-[#3bb4a4] mt-2 font-semibold">
-          {diseaseCount} in {POPULATION} ({(baseRate * 100).toFixed(1)}%) have this disease
+          {diseaseCount} in {POPULATION} ({(baseRate * 100).toFixed(1)}%) {w.hasCondition}
         </p>
       </div>
     </div>

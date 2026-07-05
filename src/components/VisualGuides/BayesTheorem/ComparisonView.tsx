@@ -6,9 +6,10 @@ import { motion } from "framer-motion";
 interface ComparisonViewProps {
   intuition: number; // 0-100
   posterior: number; // 0-1
+  sensitivity: number; // 0-1
 }
 
-export default function ComparisonView({ intuition, posterior }: ComparisonViewProps) {
+export default function ComparisonView({ intuition, posterior, sensitivity }: ComparisonViewProps) {
   const posteriorPct = parseFloat((posterior * 100).toFixed(2));
   const diff = Math.abs(intuition - posteriorPct);
   const isClose = diff <= 5;
@@ -92,9 +93,10 @@ export default function ComparisonView({ intuition, posterior }: ComparisonViewP
       <div className="rounded-xl border border-[#1e293b] p-3">
         <p className="text-[10px] text-[#94a3b8] leading-relaxed">
           <span className="text-[#d4af37] font-semibold">Why the gap?</span> When a condition is
-          rare, even an accurate test produces far more false positives than true positives. The test
-          accuracy ({(posterior > 0 ? (1 - (1 - posterior)) * 100 : 95).toFixed(0)}%) refers to how
-          often the test is correct — not the probability you have the condition.
+          rare, even an accurate test produces far more false positives than true positives. The
+          sensitivity ({(sensitivity * 100).toFixed(0)}%) describes how often the test catches
+          people who truly have the condition. It is NOT the probability that a positive result
+          means you have it. That probability is the posterior: {posteriorPct}%.
         </p>
       </div>
     </div>

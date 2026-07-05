@@ -76,13 +76,13 @@ const CONCEPT_CARDS = [
     title: "The Causal Hierarchy",
     color: "#d4af37",
     content:
-      "Judea Pearl's causal hierarchy: (1) Association — seeing patterns in data; (2) Intervention — changing variables; (3) Counterfactuals — reasoning about 'what if'. DAGs operate at levels 2 and 3.",
+      "Judea Pearl's causal hierarchy: (1) Association: seeing patterns in data; (2) Intervention: predicting what happens if you change a variable; (3) Counterfactuals: reasoning about 'what would have happened'. A causal DAG plus the right adjustments lets you answer level-2 questions from observational data; level 3 needs stronger assumptions (structural equations).",
   },
   {
     title: "d-separation",
     color: "#a855f7",
     content:
-      "Two variables are d-separated (conditionally independent) if every path between them is blocked by the conditioning set. Confounders block by being conditioned on; colliders block by NOT being conditioned on.",
+      "Two variables are d-separated by a conditioning set Z if every path between them is blocked. A chain or fork node (like a confounder) blocks its path when it IS in Z; a collider blocks its path when neither it nor any of its descendants is in Z. d-separation implies conditional independence in every distribution compatible with the DAG.",
   },
 ];
 

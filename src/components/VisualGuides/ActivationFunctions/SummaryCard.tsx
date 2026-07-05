@@ -66,7 +66,8 @@ export default function SummaryCard({ onReset }: SummaryCardProps) {
             often a safer choice when dead neurons are a concern.{" "}
             <span className="text-white font-semibold">Sigmoid</span> and{" "}
             <span className="text-white font-semibold">Tanh</span> remain
-            useful in specific roles like output layers and LSTM gates, where
+            useful in specific roles (sigmoid for binary output layers and
+            LSTM/GRU gates, tanh for bounded hidden and cell states) where
             bounded outputs matter more than training speed.
           </p>
         </div>

@@ -10,7 +10,7 @@ import {
   AnovaStatistics,
   PairwiseComparison,
   computeANOVA,
-  computeTukeyHSD,
+  computeBonferroniPairwise,
   getDefaultGroups,
 } from "./types";
 import DataBuilder from "./DataBuilder";
@@ -53,7 +53,7 @@ export default function AnovaGuideClient() {
 
   const runAnova = useCallback((currentGroups: GroupData[]) => {
     const stats = computeANOVA(currentGroups);
-    const pairs = computeTukeyHSD(currentGroups, stats);
+    const pairs = computeBonferroniPairwise(currentGroups, stats);
     setStatistics(stats);
     setPairwiseComparisons(pairs);
     setCompletion(prev => ({ ...prev, anovaRun: true }));
@@ -148,7 +148,7 @@ export default function AnovaGuideClient() {
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             Analyze whether means differ across groups. Decompose variance into between-group
-            and within-group components. Run post-hoc pairwise comparisons with Tukey HSD.
+            and within-group components. Run Bonferroni-corrected post-hoc pairwise comparisons.
           </p>
         </motion.section>
 

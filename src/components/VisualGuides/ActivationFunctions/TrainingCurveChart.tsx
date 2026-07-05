@@ -119,10 +119,11 @@ export default function TrainingCurveChart({
   return (
     <div className="bg-[#0f172a] rounded-xl border border-[#1e293b] p-4">
       <h3 className="text-sm font-semibold text-white mb-1">
-        Simulated Training Loss
+        Training Loss (Illustrative)
       </h3>
       <p className="text-[11px] text-[#64748b] mb-3">
-        Loss over 100 training iterations for each function
+        Stylized curves showing the typical convergence pattern of each
+        function; not data from a real training run
       </p>
 
       <svg viewBox={`0 0 ${CW} ${CH}`} className="w-full">
@@ -271,7 +272,8 @@ export default function TrainingCurveChart({
         <span className="text-[#1e5d8a] font-semibold" style={{ color: "#3b82f6" }}>
           Sigmoid
         </span>{" "}
-        struggles due to vanishing gradients, plateauing far from the optimum.
+        typically struggles in deep networks due to vanishing gradients. These
+        illustrative curves exaggerate the pattern for clarity.
       </p>
     </div>
   );

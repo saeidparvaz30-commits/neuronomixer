@@ -4,7 +4,10 @@ import { useMemo } from "react";
 import { FilterDefinition } from "./types";
 
 interface FeatureMapDisplayProps {
+  /** Min-max rescaled 0-255 values, used only for cell brightness */
   outputGrid: number[][];
+  /** True convolution responses (can be negative); used for all statistics */
+  rawGrid: number[][];
   filter: FilterDefinition;
 }
 
@@ -28,20 +31,22 @@ function activationColor(v: number): string {
   }
 }
 
-export default function FeatureMapDisplay({ outputGrid, filter }: FeatureMapDisplayProps) {
-  const { maxVal, minVal, activatedPct } = useMemo(() => {
-    if (!outputGrid.length) return { maxVal: 0, minVal: 0, activatedPct: 0 };
-    const flat = outputGrid.flat();
+export default function FeatureMapDisplay({ outputGrid, rawGrid, filter }: FeatureMapDisplayProps) {
+  // Statistics come from the RAW responses. Computing them on the min-max
+  // rescaled display grid would always yield 255 / 0 by construction.
+  const { maxVal, minVal, strongPct } = useMemo(() => {
+    if (!rawGrid.length) return { maxVal: "0", minVal: "0", strongPct: 0 };
+    const flat = rawGrid.flat();
     const max = Math.max(...flat);
     const min = Math.min(...flat);
-    const threshold = 128;
-    const activated = flat.filter((v) => v > threshold).length;
+    const strong =
+      max > 0 ? flat.filter((v) => v > max / 2).length : 0;
     return {
-      maxVal: Math.round(max),
-      minVal: Math.round(min),
-      activatedPct: Math.round((activated / flat.length) * 100),
+      maxVal: max.toFixed(2),
+      minVal: min.toFixed(2),
+      strongPct: Math.round((strong / flat.length) * 100),
     };
-  }, [outputGrid]);
+  }, [rawGrid]);
 
   if (!outputGrid.length) {
     return (
@@ -79,21 +84,24 @@ export default function FeatureMapDisplay({ outputGrid, filter }: FeatureMapDisp
           style={{ gridTemplateColumns: "repeat(6, 44px)" }}
         >
           {outputGrid.map((row, r) =>
-            row.map((val, c) => (
-              <div
-                key={`fm-${r}-${c}`}
-                className="w-11 h-11 rounded-md flex items-center justify-center transition-all"
-                style={{ background: activationColor(val) }}
-                title={`(${r},${c}): ${Math.round(val)}`}
-              >
-                <span
-                  className="text-[9px] font-mono font-semibold"
-                  style={{ color: val > 180 ? "#0f172a" : val > 80 ? "#e2e8f0" : "#475569" }}
+            row.map((val, c) => {
+              const raw = rawGrid[r]?.[c] ?? 0;
+              return (
+                <div
+                  key={`fm-${r}-${c}`}
+                  className="w-11 h-11 rounded-md flex items-center justify-center transition-all"
+                  style={{ background: activationColor(val) }}
+                  title={`(${r},${c}): response ${raw.toFixed(3)}`}
                 >
-                  {Math.round(val)}
-                </span>
-              </div>
-            ))
+                  <span
+                    className="text-[9px] font-mono font-semibold"
+                    style={{ color: val > 180 ? "#0f172a" : val > 80 ? "#e2e8f0" : "#475569" }}
+                  >
+                    {raw.toFixed(1)}
+                  </span>
+                </div>
+              );
+            })
           )}
         </div>
       </div>
@@ -101,9 +109,9 @@ export default function FeatureMapDisplay({ outputGrid, filter }: FeatureMapDisp
       {/* Stats */}
       <div className="grid grid-cols-3 gap-2">
         {[
-          { label: "Max activation", value: maxVal, color: filter.color },
-          { label: "Min activation", value: minVal, color: "#94a3b8" },
-          { label: "Activated cells", value: `${activatedPct}%`, color: "#3bb4a4" },
+          { label: "Max response", value: maxVal, color: filter.color },
+          { label: "Min response", value: minVal, color: "#94a3b8" },
+          { label: "Strong cells (>½ max)", value: `${strongPct}%`, color: "#3bb4a4" },
         ].map(({ label, value, color }) => (
           <div
             key={label}

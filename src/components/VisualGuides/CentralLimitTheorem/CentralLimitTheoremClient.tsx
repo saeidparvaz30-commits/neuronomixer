@@ -17,7 +17,7 @@ import SimulationControls from "./SimulationControls";
 import SamplingVisualization from "./SamplingVisualization";
 import ComparisonView from "./ComparisonView";
 import SummaryMetrics from "./SummaryMetrics";
-import GuideCelebration from "@/components/VisualGuides/GuideCelebration";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Initial data ──────────────────────────────────────────────────────────────
 
@@ -31,7 +31,6 @@ function makeInitialState() {
 
 export default function CentralLimitTheoremClient() {
   const { data: session } = useSession();
-  const completionFired = useRef(false);
 
   const initial = useMemo(() => makeInitialState(), []);
 
@@ -52,22 +51,17 @@ export default function CentralLimitTheoremClient() {
   const populationSD = useMemo(() => stdDev(populationData), [populationData]);
 
   // ── Completion tracking ───────────────────────────────────────────────────
+  // Sticky flag: set once the user has genuinely run the full 1000-sample
+  // simulation, and never reset (so resets / distribution switches cannot
+  // re-trigger the completion flow). GuideCompletion itself fires the API
+  // call exactly once.
+  const [hasCompleted, setHasCompleted] = useState(false);
 
   useEffect(() => {
-    if (
-      sampleMeans.length >= 1000 &&
-      !completionFired.current &&
-      session?.user
-    ) {
-      completionFired.current = true;
-      const score = Math.min(10, Math.floor(sampleMeans.length / 100));
-      fetch("/api/visual-guides/complete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "central-limit-theorem", score }),
-      }).catch(() => {});
+    if (sampleMeans.length >= 1000) {
+      setHasCompleted(true);
     }
-  }, [sampleMeans.length, session?.user]);
+  }, [sampleMeans.length]);
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
@@ -76,7 +70,6 @@ export default function CentralLimitTheoremClient() {
     setSelectedDistribution(type);
     setPopulationData(data);
     setSampleMeans([]);
-    completionFired.current = false;
   }
 
   function handleSampleSizeChange(n: number) {
@@ -132,7 +125,11 @@ export default function CentralLimitTheoremClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCelebration show={isComplete} />
+      <GuideCompletion
+        isComplete={hasCompleted}
+        guideSlug="central-limit-theorem"
+        score={100}
+      />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -278,17 +275,17 @@ export default function CentralLimitTheoremClient() {
             {[
               {
                 title: "Confidence Intervals",
-                desc: "Because sample means are normally distributed, we can compute exact confidence intervals even when the population is not normal.",
+                desc: "Because sample means become approximately normal, we can build confidence intervals even when the population is not normal. The intervals are approximations whose accuracy improves as n grows.",
                 color: "#3bb4a4",
               },
               {
                 title: "Hypothesis Testing",
-                desc: "t-tests, z-tests, and ANOVA all assume normality of sample means. The CLT is why this assumption holds for large n.",
+                desc: "t-tests, z-tests, and ANOVA rely on approximate normality of sample means. The CLT is why this approximation becomes good for large n.",
                 color: "#1e5d8a",
               },
               {
-                title: "The n ≥ 30 Rule",
-                desc: "For most distributions n = 30 is enough for the sampling distribution to be approximately normal. This is where the rule of thumb comes from.",
+                title: "The n ≥ 30 Rule of Thumb",
+                desc: "For mildly non-normal distributions, n = 30 often gives a reasonably normal sampling distribution. But it is a heuristic, not a law: heavy tails or extreme skew can need hundreds of observations, and distributions without finite variance never converge at all.",
                 color: "#d4af37",
               },
             ].map(({ title, desc, color }) => (

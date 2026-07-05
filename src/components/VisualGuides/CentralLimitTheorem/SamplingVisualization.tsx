@@ -45,7 +45,8 @@ export default function SamplingVisualization({
         </span>
       </div>
       <p className="text-[11px] text-[#475569] mb-3">
-        Each bar = a sample mean x̄. Red dashed curve = predicted normal (CLT).
+        Histogram of the sample means x̄ drawn so far (bar height = how many
+        means fall in that bin). Red dashed curve = predicted normal (CLT).
         SE = σ/√n = {theoreticalSE.toFixed(2)}
       </p>
 

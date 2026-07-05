@@ -25,6 +25,7 @@ export default function CNNsClient() {
   const [exploredFilters, setExploredFilters] = useState<Set<FilterId>>(new Set(["edge-h"]));
   const [hasViewedHierarchy, setHasViewedHierarchy] = useState(false);
   const [outputGrid, setOutputGrid] = useState<number[][]>([]);
+  const [rawOutputGrid, setRawOutputGrid] = useState<number[][]>([]);
 
   const selectedFilter = FILTERS.find((f) => f.id === selectedFilterId)!;
   const selectedImage = SAMPLE_IMAGES.find((img) => img.id === selectedImageId)!;
@@ -34,8 +35,9 @@ export default function CNNsClient() {
     setExploredFilters((prev) => new Set([...prev, id]));
   }
 
-  const handleOutputReady = useCallback((grid: number[][]) => {
-    setOutputGrid(grid);
+  const handleOutputReady = useCallback((display: number[][], raw: number[][]) => {
+    setOutputGrid(display);
+    setRawOutputGrid(raw);
   }, []);
 
   const progressPct = Math.round(
@@ -173,7 +175,11 @@ export default function CNNsClient() {
               image={selectedImage}
               onOutputReady={handleOutputReady}
             />
-            <FeatureMapDisplay outputGrid={outputGrid} filter={selectedFilter} />
+            <FeatureMapDisplay
+              outputGrid={outputGrid}
+              rawGrid={rawOutputGrid}
+              filter={selectedFilter}
+            />
           </div>
         </section>
 

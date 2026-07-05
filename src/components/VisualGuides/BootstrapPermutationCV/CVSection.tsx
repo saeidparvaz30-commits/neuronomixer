@@ -190,7 +190,8 @@ export default function CVSection({ onCvDone }: CVSectionProps) {
           </div>
           <h2 className="text-xl font-bold text-white">K-Fold Cross-Validation</h2>
           <p className="text-sm text-[#94a3b8] mt-1">
-            Watch how each fold serves as the test set in turn, building a robust error estimate.
+            Watch how each fold serves as the held-out validation set in turn, building an error
+            estimate from data the model never trained on.
           </p>
         </div>
         {isDone && (
@@ -240,7 +241,7 @@ export default function CVSection({ onCvDone }: CVSectionProps) {
               Data Split — {k} Folds ({DATASET.length} points)
               {currentFold >= 0 && (
                 <span className="ml-2 text-[#d4af37]">
-                  → Testing fold {currentFold + 1}
+                  → Validating on fold {currentFold + 1}
                 </span>
               )}
             </span>
@@ -269,13 +270,18 @@ export default function CVSection({ onCvDone }: CVSectionProps) {
             <div className="flex gap-4 mt-2 text-[10px]">
               <span className="flex items-center gap-1">
                 <span className="w-3 h-3 rounded" style={{ backgroundColor: FOLD_COLORS[0] }}></span>
-                <span className="text-[#94a3b8]">Current test fold</span>
+                <span className="text-[#94a3b8]">Current validation fold</span>
               </span>
               <span className="flex items-center gap-1">
                 <span className="w-3 h-3 rounded bg-[#1e293b]"></span>
                 <span className="text-[#475569]">Pending</span>
               </span>
             </div>
+            <p className="text-[10px] text-[#475569] mt-2 leading-relaxed">
+              Folds are assigned round-robin here (point i goes to fold i mod K), so each segment
+              of this strip represents a fold&apos;s points, not a contiguous slice of the dataset.
+              You can see the interleaving in the scatter plot colors below.
+            </p>
           </div>
 
           {/* Scatter plot */}
@@ -288,7 +294,7 @@ export default function CVSection({ onCvDone }: CVSectionProps) {
                   <span style={{ color: FOLD_COLORS[currentFold % FOLD_COLORS.length] }}>
                     {currentFold + 1}
                   </span>{" "}
-                  = test set
+                  = validation fold
                 </span>
               )}
             </div>
@@ -411,7 +417,7 @@ export default function CVSection({ onCvDone }: CVSectionProps) {
             <div className="grid grid-cols-3 gap-px bg-[#1e293b] text-xs">
               <div className="bg-[#0a0e1a] px-3 py-2 font-semibold text-[#94a3b8]">Fold</div>
               <div className="bg-[#0a0e1a] px-3 py-2 font-semibold text-[#94a3b8]">Train MSE</div>
-              <div className="bg-[#0a0e1a] px-3 py-2 font-semibold text-[#94a3b8]">Test MSE</div>
+              <div className="bg-[#0a0e1a] px-3 py-2 font-semibold text-[#94a3b8]">Val MSE</div>
             </div>
             <div className="divide-y divide-[#1e293b]">
               {Array.from({ length: k }, (_, fi) => {
@@ -452,7 +458,7 @@ export default function CVSection({ onCvDone }: CVSectionProps) {
                 {[
                   { label: "Avg Train MSE", value: avgTrainError.toFixed(4), color: "#d4af37" },
                   {
-                    label: "Avg Test MSE",
+                    label: "Avg Validation MSE",
                     value: `${avgTestError.toFixed(4)} ± ${stdTestError.toFixed(4)}`,
                     color: "#3bb4a4",
                   },
@@ -473,8 +479,10 @@ export default function CVSection({ onCvDone }: CVSectionProps) {
           <div className="rounded-xl border border-[#d4af37]/20 bg-[#d4af37]/5 p-4">
             <h3 className="text-xs font-semibold text-[#d4af37] uppercase tracking-wide mb-2">Key Insight</h3>
             <p className="text-xs text-[#94a3b8] leading-relaxed">
-              Every point appears in the test set exactly once. The average test MSE ± std gives a
-              reliable, low-variance estimate of generalization error.
+              Every point is held out exactly once, and the average validation MSE estimates
+              generalization error. Treat the ± std with care, though: the K fold errors are
+              correlated because their training sets overlap, so this spread understates the true
+              uncertainty of the estimate.
             </p>
           </div>
         </div>

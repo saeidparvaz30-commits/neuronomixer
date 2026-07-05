@@ -38,7 +38,7 @@ export default function PosteriorResult({
       "Important! Even though you tested positive, your actual risk is lower than the test accuracy suggests.";
   } else {
     interpretation =
-      `Surprising! The condition is so rare that even a ${(sensitivity * 100).toFixed(0)}% accurate test produces mostly false positives. A follow-up test is strongly recommended.`;
+      `Surprising! The condition is so rare that even a test with ${(sensitivity * 100).toFixed(0)}% sensitivity produces mostly false positives. A follow-up test is strongly recommended.`;
   }
 
   // In 1,000,000 positives
@@ -72,7 +72,7 @@ export default function PosteriorResult({
         transition={{ duration: 0.3 }}
       >
         <p className="text-[11px] text-[#94a3b8]">
-          Your risk if you test positive:
+          Probability given a positive result:
         </p>
         <p
           className="text-[52px] font-black leading-none"
@@ -117,11 +117,11 @@ export default function PosteriorResult({
       {total > 0 && (
         <div className="space-y-2">
           <p className="text-[10px] text-[#475569]">
-            In 1,000,000 people who test positive:
+            In 1,000,000 {sc.wording.entityPlural} tested, {total.toLocaleString()} {sc.wording.testPositive}:
           </p>
           <div className="flex gap-2 flex-wrap text-[10px]">
             <span className="px-2 py-1 rounded-md bg-[#3bb4a4]/15 text-[#3bb4a4] font-semibold">
-              ~{tp.toLocaleString()} actually have it
+              ~{tp.toLocaleString()} truly {sc.wording.hasCondition}
             </span>
             <span className="px-2 py-1 rounded-md bg-[#ef4444]/15 text-[#ef4444] font-semibold">
               ~{fp.toLocaleString()} false positives
