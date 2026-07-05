@@ -2,29 +2,34 @@
 
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { EMBEDDED_POINTS, DIGIT_COLORS, MethodType } from "./data";
+import { DIGIT_COLORS } from "./data";
 
 const W = 560, H = 400, PAD = 32;
 
-function normalize(vals: number[], low: number, high: number, padded: number) {
-  return vals.map(v => PAD + ((v - low) / (high - low)) * (padded));
+export interface ScatterPoint {
+  x: number;
+  y: number;
+  digit: number;
 }
 
 export default function Scatter2D({
-  method,
+  points,
+  xLabel,
+  yLabel,
   hoveredDigit,
   onHoverDigit,
 }: {
-  method: MethodType;
+  points: ScatterPoint[];
+  xLabel: string;
+  yLabel: string;
   hoveredDigit: number | null;
   onHoverDigit: (d: number | null) => void;
 }) {
   const [tooltip, setTooltip] = useState<{ x: number; y: number; digit: number; cx: number; cy: number } | null>(null);
 
   const { xs, ys } = useMemo(() => {
-    const coords = EMBEDDED_POINTS.map(p => p[method]);
-    const allX = coords.map(c => c[0]);
-    const allY = coords.map(c => c[1]);
+    const allX = points.map(p => p.x);
+    const allY = points.map(p => p.y);
     const xMin = Math.min(...allX), xMax = Math.max(...allX);
     const yMin = Math.min(...allY), yMax = Math.max(...allY);
     const xPad = (xMax - xMin) * 0.08 || 1;
@@ -33,7 +38,7 @@ export default function Scatter2D({
     const xs = allX.map(v => PAD + ((v - xMin + xPad) / (xMax - xMin + 2 * xPad)) * innerW);
     const ys = allY.map(v => PAD + (1 - (v - yMin + yPad) / (yMax - yMin + 2 * yPad)) * innerH);
     return { xs, ys };
-  }, [method]);
+  }, [points]);
 
   return (
     <div className="relative w-full">
@@ -58,14 +63,14 @@ export default function Scatter2D({
         <line x1={PAD} y1={PAD} x2={PAD} y2={H - PAD} stroke="#334155" strokeWidth="1" />
 
         {/* Points */}
-        {EMBEDDED_POINTS.map((pt, i) => {
+        {points.map((pt, i) => {
           const color = DIGIT_COLORS[pt.digit];
           const isHovered = hoveredDigit === pt.digit;
           const isDimmed = hoveredDigit !== null && !isHovered;
 
           return (
             <motion.circle
-              key={pt.id}
+              key={i}
               animate={{ cx: xs[i], cy: ys[i] }}
               transition={{ type: "spring", stiffness: 120, damping: 20 }}
               r={isHovered ? 7 : 5}
@@ -74,13 +79,12 @@ export default function Scatter2D({
               stroke={isHovered ? "#fff" : "transparent"}
               strokeWidth={1.5}
               style={{ cursor: "pointer" }}
-              onMouseEnter={(e) => {
+              onMouseEnter={() => {
                 onHoverDigit(pt.digit);
-                const rect = (e.currentTarget as SVGCircleElement).closest("svg")!.getBoundingClientRect();
                 setTooltip({
                   digit: pt.digit,
-                  x: pt[method][0],
-                  y: pt[method][1],
+                  x: pt.x,
+                  y: pt.y,
                   cx: xs[i],
                   cy: ys[i],
                 });
@@ -127,11 +131,11 @@ export default function Scatter2D({
 
       {/* Axis labels */}
       <div className="absolute bottom-0 left-0 right-0 flex justify-center">
-        <span className="text-[10px] text-[#475569]">Component 1</span>
+        <span className="text-[10px] text-[#475569]">{xLabel}</span>
       </div>
       <div className="absolute top-0 bottom-0 left-0 flex items-center">
         <span className="text-[10px] text-[#475569]" style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}>
-          Component 2
+          {yLabel}
         </span>
       </div>
     </div>

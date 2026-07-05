@@ -1,19 +1,35 @@
 "use client";
 
 import React from "react";
-import { MethodType, METHOD_META } from "./data";
+import { MethodType, METHOD_META, DIGIT_COLORS } from "./data";
+import { INPUT_DIM, N_POINTS } from "./digitsDataset";
+import { PC_PAIRS } from "./ParameterSliders";
+
+// All values derived from the actual dataset constants, not hardcoded:
+// 64 -> 2 dims removes 1 - 2/64 = 96.9%; 64/2 = 32x fewer numbers per image.
+const REDUCTION_PCT = ((1 - 2 / INPUT_DIM) * 100).toFixed(1);
+const COMPRESSION = INPUT_DIM / 2;
+const MNIST_DIM = 28 * 28;
+const MNIST_REDUCTION_PCT = ((1 - 2 / MNIST_DIM) * 100).toFixed(1);
 
 const STATS = [
-  { label: "Original dims", value: "784D", note: "28×28 pixel MNIST image" },
+  { label: "Original dims", value: `${INPUT_DIM}D`, note: "8×8 pixel digit image" },
   { label: "Reduced dims", value: "2D", note: "Viewable in a scatter plot" },
-  { label: "Reduction", value: "98.1%", note: "Of dimensions removed" },
-  { label: "Compression", value: "392×", note: "Fewer numbers to store" },
+  { label: "Reduction", value: `${REDUCTION_PCT}%`, note: "Of dimensions removed" },
+  { label: "Compression", value: `${COMPRESSION}×`, note: "Fewer numbers per image" },
 ];
 
-interface Props { method: MethodType }
+interface Props {
+  method: MethodType;
+  /** live explained-variance ratios from the in-browser PCA (PC1..PC3) */
+  explainedRatio: number[];
+  /** index into PC_PAIRS: which component pair is currently on screen */
+  pairIndex: number;
+}
 
-export default function DimensionInfo({ method }: Props) {
+export default function DimensionInfo({ method, explainedRatio, pairIndex }: Props) {
   const meta = METHOD_META[method];
+  const [pcA, pcB] = PC_PAIRS[pairIndex];
   return (
     <div className="space-y-3">
       <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569]">
@@ -29,22 +45,32 @@ export default function DimensionInfo({ method }: Props) {
         ))}
       </div>
 
+      {method === "pca" && explainedRatio.length >= 3 && (
+        <p className="text-[10px] text-[#94a3b8] leading-relaxed">
+          PC{pcA + 1} + PC{pcB + 1} on screen capture{" "}
+          <span className="font-semibold" style={{ color: meta.color }}>
+            {((explainedRatio[pcA] + explainedRatio[pcB]) * 100).toFixed(1)}%
+          </span>{" "}
+          of the total variance of these {N_POINTS} digits (computed live). The rest is lost
+          in the projection, which is why classes overlap.
+        </p>
+      )}
+
+      <p className="text-[9px] text-[#475569] leading-relaxed">
+        This guide uses scikit-learn&apos;s 8×8 digits dataset. Full-size MNIST images are
+        28×28 = {MNIST_DIM}D, so reducing those to 2D removes {MNIST_REDUCTION_PCT}% of dimensions.
+      </p>
+
       {/* Digit legend */}
       <div>
         <p className="text-[10px] font-semibold uppercase tracking-[1px] text-[#475569] mb-2">Digit Classes</p>
         <div className="flex flex-wrap gap-1.5">
-          {Array.from({ length: 10 }, (_, i) => {
-            const colors = [
-              "#ef4444","#f97316","#eab308","#22c55e","#14b8a6",
-              "#3b82f6","#8b5cf6","#ec4899","#f43f5e","#06b6d4",
-            ];
-            return (
-              <div key={i} className="flex items-center gap-1">
-                <div className="w-2.5 h-2.5 rounded-full" style={{ background: colors[i] }} />
-                <span className="text-[10px] text-[#94a3b8]">{i}</span>
-              </div>
-            );
-          })}
+          {Array.from({ length: 10 }, (_, i) => (
+            <div key={i} className="flex items-center gap-1">
+              <div className="w-2.5 h-2.5 rounded-full" style={{ background: DIGIT_COLORS[i] }} />
+              <span className="text-[10px] text-[#94a3b8]">{i}</span>
+            </div>
+          ))}
         </div>
         <p className="text-[9px] text-[#334155] mt-2">Hover points to highlight a digit class</p>
       </div>

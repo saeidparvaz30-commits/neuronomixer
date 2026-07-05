@@ -1,31 +1,65 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { MethodType } from "./data";
-import Scatter2D from "./Scatter2D";
+import { DIGIT_PIXELS, DIGIT_LABELS, N_POINTS, TSNE_EMBEDDINGS, UMAP_EMBEDDINGS } from "./digitsDataset";
+import { computePca, addGaussianNoise } from "./pca";
+import Scatter2D, { ScatterPoint } from "./Scatter2D";
 import MethodSelector from "./MethodSelector";
-import ParameterSliders from "./ParameterSliders";
+import ParameterSliders, { PcaParams, PC_PAIRS } from "./ParameterSliders";
 import ExplanationPanel from "./ExplanationPanel";
 import DimensionInfo from "./DimensionInfo";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
-const DEFAULT_PARAMS: Record<MethodType, Record<string, number>> = {
-  pca:  { components: 2 },
-  tsne: { perplexity: 30, lr: 200 },
-  umap: { neighbors: 15, min_dist: 0.1 },
-};
+const NOISE_SEED = 42;
 
 export default function DimensionalityReductionClient() {
   const { data: session } = useSession();
-  const [method, setMethod]         = useState<MethodType>("pca");
+  const [method, setMethod] = useState<MethodType>("pca");
   const [hoveredDigit, setHoveredDigit] = useState<number | null>(null);
-  const [params, setParams]         = useState(DEFAULT_PARAMS);
-  const [explored, setExplored]     = useState<Set<MethodType>>(new Set(["pca"]));
+  const [pcaParams, setPcaParams] = useState<PcaParams>({ nPoints: N_POINTS, noiseSigma: 0, pairIndex: 0 });
+  const [tsnePerplexity, setTsnePerplexity] = useState(30);
+  const [umapNeighbors, setUmapNeighbors] = useState(15);
+  const [explored, setExplored] = useState<Set<MethodType>>(new Set(["pca"]));
   const [adjustedParams, setAdjustedParams] = useState(false);
   const completionFired = useRef(false);
+
+  // Real PCA, recomputed in the browser whenever the inputs change.
+  // The dataset is interleaved round-robin by class, so a prefix slice stays balanced.
+  const pcaResult = useMemo(() => {
+    const rows = DIGIT_PIXELS.slice(0, pcaParams.nPoints);
+    const inputs = addGaussianNoise(rows, pcaParams.noiseSigma, NOISE_SEED);
+    return computePca(inputs, 3);
+  }, [pcaParams.nPoints, pcaParams.noiseSigma]);
+
+  const { points, xLabel, yLabel } = useMemo((): {
+    points: ScatterPoint[]; xLabel: string; yLabel: string;
+  } => {
+    if (method === "pca") {
+      const [a, b] = PC_PAIRS[pcaParams.pairIndex];
+      const pct = (i: number) => (pcaResult.explainedRatio[i] * 100).toFixed(1);
+      return {
+        points: pcaResult.projection.map((p, i) => ({ x: p[a], y: p[b], digit: DIGIT_LABELS[i] })),
+        xLabel: `PC${a + 1} (${pct(a)}% of variance)`,
+        yLabel: `PC${b + 1} (${pct(b)}% of variance)`,
+      };
+    }
+    if (method === "tsne") {
+      return {
+        points: TSNE_EMBEDDINGS[tsnePerplexity].map(([x, y], i) => ({ x, y, digit: DIGIT_LABELS[i] })),
+        xLabel: "t-SNE dimension 1 (arbitrary units)",
+        yLabel: "t-SNE dimension 2 (arbitrary units)",
+      };
+    }
+    return {
+      points: UMAP_EMBEDDINGS[umapNeighbors].map(([x, y], i) => ({ x, y, digit: DIGIT_LABELS[i] })),
+      xLabel: "UMAP dimension 1 (arbitrary units)",
+      yLabel: "UMAP dimension 2 (arbitrary units)",
+    };
+  }, [method, pcaParams.pairIndex, pcaResult, tsnePerplexity, umapNeighbors]);
 
   const allComplete = explored.size >= 3 && adjustedParams;
 
@@ -45,11 +79,18 @@ export default function DimensionalityReductionClient() {
     setExplored(prev => new Set([...prev, m]));
   }
 
-  function handleParamChange(key: string, value: number) {
-    setParams(prev => ({
-      ...prev,
-      [method]: { ...prev[method], [key]: value },
-    }));
+  function handlePcaParams(patch: Partial<PcaParams>) {
+    setPcaParams(prev => ({ ...prev, ...patch }));
+    setAdjustedParams(true);
+  }
+
+  function handleTsnePerplexity(v: number) {
+    setTsnePerplexity(v);
+    setAdjustedParams(true);
+  }
+
+  function handleUmapNeighbors(v: number) {
+    setUmapNeighbors(v);
     setAdjustedParams(true);
   }
 
@@ -86,8 +127,11 @@ export default function DimensionalityReductionClient() {
             <span className="text-[var(--color-accent)]">PCA, t-SNE & UMAP</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[620px]">
-            MNIST digits live in 784-dimensional space — one dimension per pixel.
-            Watch how three algorithms compress that into 2D, and see which digits cluster together (and why).
+            Every point below is a real handwritten digit from scikit-learn&apos;s 8×8 digits
+            dataset: 64 pixel values, so a point in 64-dimensional space. The PCA view is
+            computed live in your browser; the t-SNE and UMAP views are real embeddings of the
+            same digits, precomputed offline. See which digits cluster together, and why the
+            three methods disagree.
           </p>
         </section>
 
@@ -131,7 +175,9 @@ export default function DimensionalityReductionClient() {
                 <span className="text-[11px] text-[#475569]">Hover points to highlight a digit class</span>
               </div>
               <Scatter2D
-                method={method}
+                points={points}
+                xLabel={xLabel}
+                yLabel={yLabel}
                 hoveredDigit={hoveredDigit}
                 onHoverDigit={setHoveredDigit}
               />
@@ -146,12 +192,17 @@ export default function DimensionalityReductionClient() {
             <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
               <ParameterSliders
                 method={method}
-                values={params[method]}
-                onChange={handleParamChange}
+                pcaParams={pcaParams}
+                onPcaParams={handlePcaParams}
+                tsnePerplexity={tsnePerplexity}
+                onTsnePerplexity={handleTsnePerplexity}
+                umapNeighbors={umapNeighbors}
+                onUmapNeighbors={handleUmapNeighbors}
+                explainedRatio={pcaResult.explainedRatio}
               />
             </div>
             <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
-              <DimensionInfo method={method} />
+              <DimensionInfo method={method} explainedRatio={pcaResult.explainedRatio} pairIndex={pcaParams.pairIndex} />
             </div>
           </div>
         </div>
