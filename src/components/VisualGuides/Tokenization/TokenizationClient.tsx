@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Tokenizer ──────────────────────────────────────────────────────────────
@@ -98,7 +99,7 @@ function splitWordCore(word: string): string[] {
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
-const TOKEN_PALETTE = ["#3bb4a4","#1e5d8a","#d4af37","#a855f7","#ef4444","#ec4899"];
+const TOKEN_PALETTE = ["#3bb4a4","#1e5d8a","var(--color-accent)","#a855f7","#ef4444","#ec4899"];
 
 const DEFAULT_TEXT = "The quick brown fox jumps over the lazy dog.";
 
@@ -139,13 +140,13 @@ const BPE_STEPS = [
     label: "Pass 1: merge most frequent pair",
     tokens: [["l","o"],["w"]],
     merge: ["l","o"],
-    explanation: 'The pair ("l","o") appeared most often in the corpus — merge it.',
+    explanation: 'The pair ("l","o") appeared most often in the corpus, so merge it.',
   },
   {
     label: "Pass 2: merge next frequent pair",
     tokens: [["lo","w"]],
     merge: ["lo","w"],
-    explanation: 'Now ("lo","w") is the top pair — merge to form "low".',
+    explanation: 'Now ("lo","w") is the top pair: merge to form "low".',
   },
   {
     label: "Result: vocabulary entry",
@@ -168,6 +169,7 @@ function estimateCost(tokenCount: number): string {
 
 export default function TokenizationClient() {
   const { data: session } = useSession();
+  const { fadeUp, card } = useGuideMotion();
 
   const [inputText, setInputText] = useState(DEFAULT_TEXT);
   const [tokens, setTokens] = useState<string[]>(() => tokenize(DEFAULT_TEXT));
@@ -223,35 +225,37 @@ export default function TokenizationClient() {
   const charCount = inputText.length;
   const currentStep = BPE_STEPS[bpeStep];
 
+  function handleReset() {
+    setInputText(DEFAULT_TEXT);
+    setTokens(tokenize(DEFAULT_TEXT));
+    setBpeStep(0);
+    hasTyped.current = false;
+    hasFinishedBpe.current = false;
+    setIsComplete(false);
+  }
+
   return (
     <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="tokenization" score={100} />
-      <div className="max-w-[860px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
-          <span className="text-white/20">/</span>
-          <span
-            className="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider"
-            style={{ background: "#ef444422", color: "#ef4444" }}
-          >
-            LLMs
-          </span>
-          <span className="text-white/20">/</span>
-          <span className="text-white">Tokenization: How AI Reads Text</span>
+          <span>/</span>
+          <span className="text-[#94a3b8]">Tokenization: How AI Reads Text</span>
         </nav>
 
         {/* Hero */}
         <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#ef4444]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#ef4444]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               LLMs
             </span>
-            <span className="w-6 h-px bg-[#ef4444]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Tokenization:{" "}
@@ -268,7 +272,7 @@ export default function TokenizationClient() {
           <div className="relative h-1.5 rounded-full bg-[#1e293b] overflow-hidden">
             <motion.div
               className="absolute left-0 top-0 h-full rounded-full"
-              style={{ background: "linear-gradient(90deg, #1e5d8a, #3bb4a4, #d4af37)" }}
+              style={{ background: "linear-gradient(90deg, #1e5d8a, #3bb4a4, var(--color-accent))" }}
               initial={{ width: "0%" }}
               animate={{ width: `${Math.round(((bpeStep + (hasTyped.current ? 1 : 0)) / (BPE_STEPS.length)) * 100)}%` }}
               transition={{ duration: 0.5, ease: "easeOut" }}
@@ -288,12 +292,13 @@ export default function TokenizationClient() {
         <section className="mb-10">
           <h2 className="text-xl font-bold text-white mb-1">The Interactive Tokenizer</h2>
           <p className="text-[13px] text-[#94a3b8] mb-4">
-            Type anything. Each coloured block is one token — roughly what a language model sees.
+            Type anything. Each coloured block is one token, roughly what a language model sees.
           </p>
 
           <textarea
             value={inputText}
             onChange={handleTextChange}
+            aria-label="Text to tokenize"
             rows={3}
             placeholder="Type something…"
             className="w-full rounded-xl px-4 py-3 text-[14px] text-white bg-[#1e293b] border border-white/10 focus:outline-none focus:border-[#3bb4a4] resize-none transition-colors placeholder:text-[#475569]"
@@ -335,7 +340,7 @@ export default function TokenizationClient() {
             <span className="text-white/20">|</span>
             <span>
               Cost estimate:{" "}
-              <span className="text-[#d4af37] font-semibold">{estimateCost(tokens.length)}</span>
+              <span className="text-[var(--color-accent)] font-semibold">{estimateCost(tokens.length)}</span>
               <span className="text-[#475569] ml-1">(GPT-4o pricing)</span>
             </span>
           </div>
@@ -398,25 +403,25 @@ export default function TokenizationClient() {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {INSIGHT_CARDS.map((card, i) => (
+            {INSIGHT_CARDS.map((insightCard) => (
               <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.1, ease: "easeOut" }}
+                key={insightCard.title}
+                variants={fadeUp}
+                initial="hidden"
+                animate="visible"
                 className="rounded-2xl p-5 border"
                 style={{
-                  background: `${card.color}0d`,
-                  borderColor: `${card.color}33`,
+                  background: `${insightCard.color}0d`,
+                  borderColor: `${insightCard.color}33`,
                 }}
               >
                 <p
                   className="text-[11px] font-bold uppercase tracking-widest mb-2"
-                  style={{ color: card.color }}
+                  style={{ color: insightCard.color }}
                 >
-                  {card.title}
+                  {insightCard.title}
                 </p>
-                <p className="text-[13px] text-[#94a3b8] leading-relaxed">{card.body}</p>
+                <p className="text-[13px] text-[#94a3b8] leading-relaxed">{insightCard.body}</p>
               </motion.div>
             ))}
           </div>
@@ -438,7 +443,7 @@ export default function TokenizationClient() {
                   key={si}
                   className="h-1.5 flex-1 rounded-full transition-all duration-300"
                   style={{
-                    background: si <= bpeStep ? "#d4af37" : "#334155",
+                    background: si <= bpeStep ? "var(--color-accent)" : "#334155",
                   }}
                 />
               ))}
@@ -467,7 +472,7 @@ export default function TokenizationClient() {
                           const isMerged = currentStep.merge !== null &&
                             currentStep.merge.length === group.length &&
                             group.every((c, idx) => c === currentStep.merge![idx]);
-                          const color = isMerged ? "#d4af37" : TOKEN_PALETTE[gi % TOKEN_PALETTE.length];
+                          const color = isMerged ? "var(--color-accent)" : TOKEN_PALETTE[gi % TOKEN_PALETTE.length];
                           return (
                             <motion.span
                               key={ci}
@@ -494,12 +499,12 @@ export default function TokenizationClient() {
               {bpeStep < BPE_STEPS.length - 1 ? (
                 <button
                   onClick={handleNextBpeStep}
-                  className="px-5 py-2 rounded-xl text-[13px] font-semibold text-[#0f172a] bg-[#d4af37] hover:bg-[#e5c348] transition-colors"
+                  className="px-5 py-2 rounded-xl text-[13px] font-semibold text-[#0a0e1a] bg-[var(--color-accent)] hover:opacity-90 transition-opacity"
                 >
                   Next Step →
                 </button>
               ) : (
-                <span className="px-5 py-2 rounded-xl text-[13px] font-semibold text-[#d4af37] border border-[#d4af37]/40">
+                <span className="px-5 py-2 rounded-xl text-[13px] font-semibold text-[var(--color-accent)] border border-[#d4af37]/40">
                   Complete
                 </span>
               )}
@@ -520,12 +525,12 @@ export default function TokenizationClient() {
 
         {/* Gold insight box */}
         <div className="mb-10 rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 px-6 py-5">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-[#d4af37] mb-2">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-accent)] mb-2">
             Insight
           </p>
           <p className="text-[14px] text-[#94a3b8] leading-relaxed">
             The word <span className="text-white font-mono">&ldquo;tokenize&rdquo;</span> splits as{" "}
-            <span className="font-mono text-[#3bb4a4]">[&ldquo;token&rdquo;, &ldquo;ize&rdquo;]</span> — 2 tokens.
+            <span className="font-mono text-[#3bb4a4]">[&ldquo;token&rdquo;, &ldquo;ize&rdquo;]</span>, just 2 tokens.
             But{" "}
             <span className="text-white font-mono">&ldquo;détokeniser&rdquo;</span> (French) splits into
             6+ tokens. Inefficient tokenization is one reason models handle non-English text worse:
@@ -534,30 +539,107 @@ export default function TokenizationClient() {
           </p>
         </div>
 
-        {/* Summary card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
-          className="rounded-2xl border border-white/10 bg-[#1e293b] p-6"
-        >
-          <p className="text-[11px] font-bold uppercase tracking-widest text-[#3bb4a4] mb-1">
-            Up Next
-          </p>
-          <h3 className="text-lg font-bold text-white mb-2">
-            From Tokens to Meaning: Embeddings
-          </h3>
-          <p className="text-[13px] text-[#94a3b8] leading-relaxed mb-4">
-            Tokens are just integer IDs. Embeddings turn them into vectors in high-dimensional
-            space — where similar words cluster together. Learn how in the next guide.
-          </p>
-          <Link
-            href="/visual-guides/embeddings"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-[#0f172a] bg-[#3bb4a4] hover:bg-[#4fcfbe] transition-colors"
-          >
-            Explore Embeddings →
-          </Link>
-        </motion.div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  Tokenization Mastered!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You tokenized your own text and stepped through the full BPE merge process.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Your last input</p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">
+                      {tokens.length} tokens
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">BPE steps walked</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {bpeStep + 1} / {BPE_STEPS.length}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Cost estimate</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      {estimateCost(tokens.length)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Models never see words, only tokens. Token count drives cost, context
+                    usage, and cross-language performance, so what looks like one word to you can
+                    be six tokens to the model.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href="/visual-guides/embeddings"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← All Guides
+            </Link>
+            <Link
+              href="/visual-guides/embeddings"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next Guide →
+            </Link>
+          </div>
+        )}
 
       </div>
     </div>

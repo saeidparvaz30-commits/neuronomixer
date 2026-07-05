@@ -69,7 +69,7 @@ export default function ExplanationPanel({ content }: Props) {
 
           {/* Formula */}
           {content.formula && (
-            <div className="bg-[#0f172a] rounded-lg p-3 font-mono text-[12px] text-[#d4af37] border border-[#334155] overflow-x-auto whitespace-nowrap">
+            <div className="bg-[#0f172a] rounded-lg p-3 font-mono text-[12px] text-[var(--color-accent)] border border-[#334155] overflow-x-auto whitespace-nowrap">
               {content.formula}
             </div>
           )}

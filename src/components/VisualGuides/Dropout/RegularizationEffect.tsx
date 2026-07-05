@@ -205,7 +205,7 @@ export default function RegularizationEffect() {
     >
       <h3 className="text-lg font-bold text-white mb-1">Does Dropout Actually Help?</h3>
       <p className="text-sm text-[#94a3b8] mb-6">
-        Training and validation losses on the same dataset — with and without dropout.
+        Training and validation losses on the same dataset, with and without dropout.
         Illustrative curves showing the typical qualitative pattern, not a logged training run.
       </p>
 
@@ -245,7 +245,7 @@ export default function RegularizationEffect() {
       {/* Insight */}
       <div className="mt-4 p-3 bg-[#1e5d8a]/15 border border-[#1e5d8a]/30 rounded-xl text-xs text-[#94a3b8] leading-relaxed">
         <span className="font-semibold text-white">Key observation: </span>
-        Without dropout, the training loss decreases faster but the validation loss starts to diverge after epoch 10 —
+        Without dropout, the training loss decreases faster but the validation loss starts to diverge after epoch 10,
         a clear sign of overfitting. With dropout, both curves track closely together, indicating better generalization.
       </div>
     </div>

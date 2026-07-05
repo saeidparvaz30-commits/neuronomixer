@@ -39,7 +39,7 @@ function getNeuronColor(layer: Neuron["layer"]): string {
     case "hidden2":
       return "#3bb4a4"; // turquoise
     case "output":
-      return "#d4af37"; // gold
+      return "var(--color-accent)"; // gold
   }
 }
 
@@ -281,7 +281,7 @@ export default function NetworkVisualizer({ config }: NetworkVisualizerProps) {
           <span>Hidden</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-[#d4af37]" />
+          <div className="w-3 h-3 rounded-full bg-[var(--color-accent)]" />
           <span>Output</span>
         </div>
         <div className="flex items-center gap-1.5">

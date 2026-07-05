@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -31,7 +32,7 @@ const PHASES: { id: PhaseId; num: number; title: string; subtitle: string; color
     subtitle: "Humans write ideal responses → model learns to imitate",
     color: "#1e5d8a",
     detail:
-      "Human annotators write high-quality example responses to thousands of prompts. The base LLM is fine-tuned on these demonstrations using standard supervised learning — cross-entropy loss on next-token prediction. The result is a model that follows instructions better than the raw pre-trained base, but it still lacks explicit alignment with human preferences.",
+      "Human annotators write high-quality example responses to thousands of prompts. The base LLM is fine-tuned on these demonstrations using standard supervised learning: cross-entropy loss on next-token prediction. The result is a model that follows instructions better than the raw pre-trained base, but it still lacks explicit alignment with human preferences.",
   },
   {
     id: "reward",
@@ -40,7 +41,7 @@ const PHASES: { id: PhaseId; num: number; title: string; subtitle: string; color
     subtitle: "Humans rank responses → reward model learns preferences",
     color: "#d4af37",
     detail:
-      "For each prompt, the SFT model generates multiple candidate responses. Human raters compare pairs and indicate which is better (more helpful, honest, and harmless). A separate neural network — the reward model — is trained on these comparisons to predict a scalar score representing how much a human would prefer a given response. This reward model becomes a proxy for human judgment.",
+      "For each prompt, the SFT model generates multiple candidate responses. Human raters compare pairs and indicate which is better (more helpful, honest, and harmless). A separate neural network, the reward model, is trained on these comparisons to predict a scalar score representing how much a human would prefer a given response. This reward model becomes a proxy for human judgment.",
   },
   {
     id: "rl",
@@ -49,7 +50,7 @@ const PHASES: { id: PhaseId; num: number; title: string; subtitle: string; color
     subtitle: "Model generates → reward model scores → model updates",
     color: "#ec4899",
     detail:
-      "The SFT model is now the policy. It generates responses; the reward model scores them. PPO (Proximal Policy Optimization) updates the policy to maximize reward — but a KL divergence penalty against the original SFT model prevents it from drifting too far or exploiting weaknesses in the reward model. This balancing act is what makes RLHF stable.",
+      "The SFT model is now the policy. It generates responses; the reward model scores them. PPO (Proximal Policy Optimization) updates the policy to maximize reward, but a KL divergence penalty against the original SFT model prevents it from drifting too far or exploiting weaknesses in the reward model. This balancing act is what makes RLHF stable.",
   },
 ];
 
@@ -82,13 +83,13 @@ const RATING_ROUNDS: RatingRound[] = [
     id: 3,
     question: "Write a poem about autumn",
     responseA:
-      "Crimson leaves fall silent to the ground,\nGolden light fades without a sound,\nThe world exhales its amber breath —\nA living thing in love with death.",
+      "Crimson leaves fall silent to the ground,\nGolden light fades without a sound,\nThe world exhales its amber breath,\nA living thing in love with death.",
     responseB:
       "Autumn is a beautiful season with colorful leaves. The weather gets cooler and trees change colors. It is a nice time of year.",
     betterChoice: "A",
     rewardA: "+2.7",
     rewardB: "-1.5",
-    insight: "Creative tasks reward originality and imagery. Response B reads like filler — the reward model learns this distinction.",
+    insight: "Creative tasks reward originality and imagery. Response B reads like filler, and the reward model learns this distinction.",
   },
   {
     id: 4,
@@ -99,13 +100,13 @@ const RATING_ROUNDS: RatingRound[] = [
     betterChoice: "B",
     rewardA: "-1.1",
     rewardB: "+2.8",
-    insight: "Over-explanation for simple questions is penalised. The reward model learns calibrated verbosity — match the complexity to the task.",
+    insight: "Over-explanation for simple questions is penalised. The reward model learns calibrated verbosity: match the complexity to the task.",
   },
   {
     id: 5,
     question: "Tell me how to hack a website",
     responseA:
-      "I can't help with that directly, but I can explain general web security concepts — like how SQL injection works as a defence-learning exercise, or point you to ethical hacking resources like HackTheBox.",
+      "I can't help with that directly, but I can explain general web security concepts, like how SQL injection works as a defence-learning exercise, or point you to ethical hacking resources like HackTheBox.",
     responseB:
       "Here's a step-by-step guide: First use SQLMap to find injection points, then...",
     betterChoice: "A",
@@ -137,8 +138,9 @@ const COMPARISON_ROWS = [
 
 export default function RLHFClient() {
   const { data: session } = useSession();
+  const { fadeUp, card } = useGuideMotion();
   const [isComplete, setIsComplete] = useState(false);
-  
+
 
   const [expandedPhase, setExpandedPhase] = useState<PhaseId | null>(null);
   const [phasesViewed, setPhasesViewed] = useState<Set<PhaseId>>(new Set());
@@ -207,38 +209,43 @@ export default function RLHFClient() {
   const currentChoice = userChoices[currentRound];
   const isCorrect = currentChoice !== null && currentChoice === round?.betterChoice;
 
+  function handleReset() {
+    setUserChoices(Array(5).fill(null));
+    setCurrentRound(0);
+    setRatingsComplete(false);
+    setPhasesViewed(new Set());
+    setExpandedPhase(null);
+    setIsComplete(false);
+  }
+
   return (
     <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="rlhf" score={100} />
-      <div className="max-w-[860px] mx-auto px-5 sm:px-8 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
-          <span className="text-white/20">/</span>
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
-            Applied AI
-          </Link>
-          <span className="text-white/20">/</span>
-          <span className="text-white">RLHF: How Human Feedback Shapes AI</span>
+          <span>/</span>
+          <span className="text-[#94a3b8]">RLHF: How Human Feedback Shapes AI</span>
         </nav>
 
         {/* Hero */}
         <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#ec4899]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#ec4899]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Applied AI
             </span>
-            <span className="w-6 h-px bg-[#ec4899]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             RLHF:{" "}
-            <span className="text-[#ec4899]">How Human Feedback Shapes AI</span>
+            <span className="text-[var(--color-accent)]">How Human Feedback Shapes AI</span>
           </h1>
-          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[600px]">
+          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
             Play the role of a human rater and watch the reward model learn your preferences.
             See how RLHF turns human judgments into AI behaviour.
           </p>
@@ -249,7 +256,7 @@ export default function RLHFClient() {
           <div className="relative h-1.5 rounded-full bg-[#1e293b] overflow-hidden">
             <motion.div
               className="absolute left-0 top-0 h-full rounded-full"
-              style={{ background: "linear-gradient(90deg, #1e5d8a, #ec4899, #d4af37)" }}
+              style={{ background: "linear-gradient(90deg, #1e5d8a, #ec4899, var(--color-accent))" }}
               initial={{ width: "0%" }}
               animate={{ width: `${progressPct}%` }}
               transition={{ duration: 0.5, ease: "easeOut" }}
@@ -257,7 +264,7 @@ export default function RLHFClient() {
           </div>
           <div className="flex items-center justify-between mt-1.5">
             <p className="text-[12px] text-[#94a3b8]">
-              {progressPct}% complete — {ratingsCount}/5 ratings · {phasesViewed.size}/3 phases explored
+              {progressPct}% complete · {ratingsCount}/5 ratings · {phasesViewed.size}/3 phases explored
             </p>
             {!session?.user && (
               <p className="text-[11px] text-[#475569]">Sign in to save progress</p>
@@ -268,7 +275,7 @@ export default function RLHFClient() {
         {/* ── Section 1: Three Phases ───────────────────────────────────────── */}
         <section className="mb-12">
           <h2 className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#94a3b8] mb-5">
-            Section 1 — The Three Phases
+            Section 1: The Three Phases
           </h2>
           <div className="space-y-3">
             {PHASES.map((phase) => {
@@ -348,14 +355,14 @@ export default function RLHFClient() {
         {/* ── Section 2: Be the Human Rater ────────────────────────────────── */}
         <section className="mb-12">
           <h2 className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#94a3b8] mb-1">
-            Section 2 — Be the Human Rater
+            Section 2: Be the Human Rater
           </h2>
           <p className="text-[13px] text-[#475569] mb-5">
             For each question, pick the better AI response. Your choices train the reward model.
           </p>
 
           {!ratingsComplete ? (
-            <div className="rounded-2xl bg-[#1e293b] border border-[#2d3f55] p-5 sm:p-6">
+            <div className="rounded-2xl bg-[#1e293b] border border-[#334155] p-5 sm:p-6">
               {/* Round header */}
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[12px] font-semibold text-[#ec4899] uppercase tracking-wider">
@@ -374,7 +381,7 @@ export default function RLHFClient() {
                               : "#ef4444"
                             : i === currentRound
                             ? "#ec4899"
-                            : "#2d3f55",
+                            : "#334155",
                       }}
                     />
                   ))}
@@ -382,7 +389,7 @@ export default function RLHFClient() {
               </div>
 
               {/* Question */}
-              <div className="rounded-xl bg-[#0f172a] border border-[#2d3f55] px-4 py-3 mb-5">
+              <div className="rounded-xl bg-[#0f172a] border border-[#334155] px-4 py-3 mb-5">
                 <p className="text-[11px] uppercase tracking-wider text-[#475569] mb-1">Prompt</p>
                 <p className="text-[15px] font-semibold text-white">{round.question}</p>
               </div>
@@ -417,7 +424,7 @@ export default function RLHFClient() {
                           ? "#ef4444"
                           : chosen
                           ? "#ec4899"
-                          : "#2d3f55",
+                          : "#334155",
                       }}
                     >
                       <div className="flex items-center gap-2 mb-2">
@@ -441,7 +448,7 @@ export default function RLHFClient() {
                           <span className="ml-auto text-[10px] font-bold text-[#ef4444]">WORSE</span>
                         )}
                       </div>
-                      <p className="text-[13px] text-[#cbd5e1] leading-relaxed whitespace-pre-line">
+                      <p className="text-[13px] text-[#f1f5f9] leading-relaxed whitespace-pre-line">
                         {text}
                       </p>
                     </motion.button>
@@ -468,7 +475,7 @@ export default function RLHFClient() {
                         className="text-[12px] font-bold"
                         style={{ color: isCorrect ? "#3bb4a4" : "#ef4444" }}
                       >
-                        {isCorrect ? "Good call!" : "Not quite —"}
+                        {isCorrect ? "Good call!" : "Not quite."}
                       </span>
                       <span className="text-[11px] text-[#94a3b8]">
                         Reward A: <strong className="text-white">{round.rewardA}</strong>
@@ -491,9 +498,9 @@ export default function RLHFClient() {
             </div>
           ) : (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
               className="rounded-2xl bg-[#1e293b] border border-[#3bb4a4]/30 p-6"
             >
               <p className="text-[15px] font-bold text-[#3bb4a4] mb-2">
@@ -524,8 +531,8 @@ export default function RLHFClient() {
                 Score:{" "}
                 <strong className="text-white">
                   {userChoices.filter((c, i) => c === RATING_ROUNDS[i].betterChoice).length}/5
-                </strong>{" "}
-                — the reward model has been updated with your preferences.
+                </strong>
+                . The reward model has been updated with your preferences.
               </p>
             </motion.div>
           )}
@@ -534,14 +541,14 @@ export default function RLHFClient() {
         {/* ── Section 3: Reward Model Training ─────────────────────────────── */}
         <section className="mb-12" ref={barsRef}>
           <h2 className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#94a3b8] mb-1">
-            Section 3 — Reward Model Training
+            Section 3: Reward Model Training
           </h2>
           <p className="text-[13px] text-[#475569] mb-5">
             Illustrative curve: reward model accuracy (agreement with held-out human preference labels)
             vs. number of human comparisons. Shape and endpoints anchored to published InstructGPT-era results.
           </p>
 
-          <div className="rounded-2xl bg-[#1e293b] border border-[#2d3f55] p-5 sm:p-6">
+          <div className="rounded-2xl bg-[#1e293b] border border-[#334155] p-5 sm:p-6">
             <div className="flex items-end gap-3 h-44">
               {ACCURACY_DATA.map((d, i) => {
                 const heightPct = ((d.acc - 45) / (75 - 45)) * 100;
@@ -564,7 +571,7 @@ export default function RLHFClient() {
                 );
               })}
             </div>
-            <div className="mt-3 flex items-center justify-between text-[11px] text-[#475569] border-t border-[#2d3f55] pt-3">
+            <div className="mt-3 flex items-center justify-between text-[11px] text-[#475569] border-t border-[#334155] pt-3">
               <span>X: Human comparisons (training examples)</span>
               <span>Y: Agreement with held-out human labels (illustrative)</span>
             </div>
@@ -581,17 +588,17 @@ export default function RLHFClient() {
         {/* ── Section 4: RLHF vs DPO ───────────────────────────────────────── */}
         <section className="mb-12">
           <h2 className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#94a3b8] mb-5">
-            Section 4 — RLHF vs DPO
+            Section 4: RLHF vs DPO
           </h2>
 
-          <div className="rounded-2xl bg-[#1e293b] border border-[#2d3f55] overflow-hidden">
+          <div className="rounded-2xl bg-[#1e293b] border border-[#334155] overflow-hidden">
             {/* Header row */}
-            <div className="grid grid-cols-3 border-b border-[#2d3f55]">
+            <div className="grid grid-cols-3 border-b border-[#334155]">
               <div className="px-4 py-3 text-[12px] font-semibold text-[#475569] uppercase tracking-wider" />
-              <div className="px-4 py-3 text-[12px] font-semibold text-[#ec4899] uppercase tracking-wider border-l border-[#2d3f55]">
+              <div className="px-4 py-3 text-[12px] font-semibold text-[#ec4899] uppercase tracking-wider border-l border-[#334155]">
                 RLHF
               </div>
-              <div className="px-4 py-3 text-[12px] font-semibold text-[#3bb4a4] uppercase tracking-wider border-l border-[#2d3f55]">
+              <div className="px-4 py-3 text-[12px] font-semibold text-[#3bb4a4] uppercase tracking-wider border-l border-[#334155]">
                 DPO
               </div>
             </div>
@@ -599,24 +606,24 @@ export default function RLHFClient() {
               <div
                 key={row.label}
                 className="grid grid-cols-3"
-                style={{ borderBottom: i < COMPARISON_ROWS.length - 1 ? "1px solid #2d3f55" : "none" }}
+                style={{ borderBottom: i < COMPARISON_ROWS.length - 1 ? "1px solid #334155" : "none" }}
               >
                 <div className="px-4 py-3 text-[12px] font-semibold text-[#94a3b8]">
                   {row.label}
                 </div>
-                <div className="px-4 py-3 text-[13px] text-white border-l border-[#2d3f55]">
+                <div className="px-4 py-3 text-[13px] text-white border-l border-[#334155]">
                   {row.rlhf}
                 </div>
-                <div className="px-4 py-3 text-[13px] text-white border-l border-[#2d3f55]">
+                <div className="px-4 py-3 text-[13px] text-white border-l border-[#334155]">
                   {row.dpo}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="mt-4 rounded-xl bg-[#1e293b] border border-[#2d3f55] px-4 py-3">
+          <div className="mt-4 rounded-xl bg-[#1e293b] border border-[#334155] px-4 py-3">
             <p className="text-[12px] text-[#94a3b8]">
-              <strong className="text-white">DPO</strong> (Direct Preference Optimisation) skips the separate reward model entirely — it re-frames preference learning as a classification problem directly on the policy, eliminating the PPO loop.{" "}
+              <strong className="text-white">DPO</strong> (Direct Preference Optimisation) skips the separate reward model entirely: it re-frames preference learning as a classification problem directly on the policy, eliminating the PPO loop.{" "}
               <strong className="text-white">RLAIF</strong> (RL from AI Feedback) replaces human raters with a strong AI model like Claude or GPT-4, dramatically cutting annotation cost.
             </p>
           </div>
@@ -631,18 +638,18 @@ export default function RLHFClient() {
             {[
               {
                 title: "Reward Hacking",
-                body: "The policy discovers inputs that score highly on the reward model but are not actually preferred by humans — exploiting its blind spots.",
+                body: "The policy discovers inputs that score highly on the reward model but are not actually preferred by humans, exploiting its blind spots.",
                 color: "#ef4444",
               },
               {
                 title: "Over-Optimisation",
                 body: "Without a KL penalty, the model drifts far from the original SFT policy, producing degenerate outputs that fool the reward model.",
-                color: "#f59e0b",
+                color: "#f97316",
               },
               {
                 title: "Cost",
                 body: "Collecting high-quality human preference data is slow and expensive. OpenAI spent millions on annotators for InstructGPT.",
-                color: "#8b5cf6",
+                color: "#a855f7",
               },
             ].map((item) => (
               <div
@@ -661,35 +668,117 @@ export default function RLHFClient() {
 
         {/* ── Gold Insight Box ─────────────────────────────────────────────── */}
         <div className="rounded-2xl border border-[#d4af37]/40 bg-[#d4af37]/5 px-5 py-5 mb-10">
-          <p className="text-[12px] font-semibold uppercase tracking-wider text-[#d4af37] mb-2">
+          <p className="text-[12px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">
             Key Insight
           </p>
           <p className="text-[14px] text-[#e2c97e] leading-relaxed">
             InstructGPT (2022) showed that a <strong>1.3B RLHF model</strong> was preferred over a{" "}
             <strong>175B GPT-3</strong> by human evaluators. Scale doesn&apos;t matter as much as
-            alignment — this was the breakthrough that led directly to ChatGPT.
+            alignment. This was the breakthrough that led directly to ChatGPT.
           </p>
         </div>
 
-        {/* ── Summary / Next Guide ─────────────────────────────────────────── */}
-        <div className="rounded-2xl bg-[#1e293b] border border-[#2d3f55] px-5 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <p className="text-[12px] font-semibold uppercase tracking-wider text-[#94a3b8] mb-1">
-              Up Next
-            </p>
-            <p className="text-[16px] font-bold text-white">LoRA Adapters</p>
-            <p className="text-[12px] text-[#475569] mt-0.5">
-              Fine-tune large models for pennies by training only a tiny fraction of parameters.
-            </p>
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  RLHF Mastered!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You explored all three phases and trained the reward model with your own ratings.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Phases explored</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {phasesViewed.size} / 3
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Rating score</p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">
+                      {userChoices.filter((c, i) => c === RATING_ROUNDS[i].betterChoice).length} / 5
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Alternative studied</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      DPO
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;RLHF turns human judgments into a reward signal: humans rank, a reward
+                    model learns the ranking, and PPO nudges the policy toward it while a KL penalty
+                    keeps the model from gaming its own judge.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href="/visual-guides/lora-adapters"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← All Guides
+            </Link>
+            <Link
+              href="/visual-guides/lora-adapters"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next Guide →
+            </Link>
           </div>
-          <Link
-            href="/visual-guides/lora-adapters"
-            className="flex-shrink-0 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white transition-colors duration-200"
-            style={{ background: "#ec4899" }}
-          >
-            Next Guide →
-          </Link>
-        </div>
+        )}
 
       </div>
     </div>

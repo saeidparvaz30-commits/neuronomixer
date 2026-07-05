@@ -139,7 +139,7 @@ function MiniNetwork({
       </div>
       <span
         className="text-[10px] font-semibold"
-        style={{ color: isFull ? "#d4af37" : "#a855f7" }}
+        style={{ color: isFull ? "var(--color-accent)" : "#a855f7" }}
       >
         {label}
       </span>
@@ -152,7 +152,7 @@ export default function EnsembleIntuition() {
     <div className="bg-[#1e293b]/60 border border-white/[0.07] rounded-2xl p-6">
       <h3 className="text-lg font-bold text-white mb-1">Why This Works: Ensemble Intuition</h3>
       <p className="text-sm text-[#94a3b8] mb-6">
-        Each training step uses a different random subset of neurons — effectively training a unique
+        Each training step uses a different random subset of neurons, effectively training a unique
         sub-network. At inference, the full network approximates the average of all sub-networks.
       </p>
 
@@ -176,10 +176,10 @@ export default function EnsembleIntuition() {
           transition={{ delay: 0.6, duration: 0.4 }}
           className="flex flex-col items-center gap-1"
         >
-          <svg viewBox="0 0 40 40" className="w-10 h-10 text-[#d4af37]">
+          <svg viewBox="0 0 40 40" className="w-10 h-10 text-[var(--color-accent)]">
             <path
               d="M4 20 H34 M28 13 L36 20 L28 27"
-              stroke="#d4af37"
+              stroke="var(--color-accent)"
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"

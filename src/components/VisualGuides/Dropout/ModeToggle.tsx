@@ -12,13 +12,13 @@ const MODES = [
     id: "training" as const,
     label: "Training Mode",
     color: "#a855f7",
-    desc: "Neurons randomly dropped each forward pass — forces robust representations",
+    desc: "Neurons randomly dropped each forward pass, forcing robust representations",
   },
   {
     id: "inference" as const,
     label: "Inference Mode",
     color: "#3bb4a4",
-    desc: "All neurons active — weights implicitly scaled by (1 − p) to match expected output",
+    desc: "All neurons active; weights implicitly scaled by (1 − p) to match expected output",
   },
 ];
 
@@ -28,10 +28,12 @@ export default function ModeToggle({ value, onChange }: ModeToggleProps) {
   return (
     <div className="flex flex-col gap-3">
       {/* Toggle buttons */}
-      <div className="relative flex bg-[#0f172a] border border-white/[0.07] rounded-xl p-1 w-fit">
+      <div className="relative flex bg-[#0f172a] border border-white/[0.07] rounded-xl p-1 w-fit" role="radiogroup" aria-label="Dropout mode">
         {MODES.map((mode) => (
           <button
             key={mode.id}
+            role="radio"
+            aria-checked={value === mode.id}
             onClick={() => onChange(mode.id)}
             className="relative z-10 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
             style={{ color: value === mode.id ? "white" : "#94a3b8" }}

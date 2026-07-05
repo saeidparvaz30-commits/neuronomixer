@@ -4,13 +4,23 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
+// ── Seeded RNG (deterministic: identical on server and client) ────────────────
+function createRng(seed: number): () => number {
+  let s = seed >>> 0;
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 0xffffffff;
+  };
+}
+
 // ── Gaussian helper ────────────────────────────────────────────────────────────
-function gaussRand() {
+function gaussRand(rand: () => number) {
   let u = 0, v = 0;
-  while (u === 0) u = Math.random();
-  while (v === 0) v = Math.random();
+  while (u === 0) u = rand();
+  while (v === 0) v = rand();
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
 }
 
@@ -35,14 +45,15 @@ const MODELS: ModelConfig[] = [
 
 interface Sample { actual: 0 | 1; score: number }
 
-function generateSamples(cfg: ModelConfig, n = 500): Sample[] {
+function generateSamples(cfg: ModelConfig, seed: number, n = 500): Sample[] {
+  const rand = createRng(seed);
   const nPos = Math.round(n * 0.3);
   const samples: Sample[] = [];
   for (let i = 0; i < nPos; i++) {
-    samples.push({ actual: 1, score: Math.min(1, Math.max(0, cfg.posCenter + gaussRand() * cfg.spread)) });
+    samples.push({ actual: 1, score: Math.min(1, Math.max(0, cfg.posCenter + gaussRand(rand) * cfg.spread)) });
   }
   for (let i = 0; i < n - nPos; i++) {
-    samples.push({ actual: 0, score: Math.min(1, Math.max(0, cfg.negCenter + gaussRand() * cfg.spread)) });
+    samples.push({ actual: 0, score: Math.min(1, Math.max(0, cfg.negCenter + gaussRand(rand) * cfg.spread)) });
   }
   return samples;
 }
@@ -96,6 +107,7 @@ function ry(tpr: number) { return RH - RP - tpr * (RH - 2 * RP); }
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function ROCCurvesClient() {
   const { data: session } = useSession();
+  const { fadeIn, card } = useGuideMotion();
   const [selectedModels, setSelectedModels] = useState<Set<string>>(new Set(["excellent"]));
   const [threshold, setThreshold] = useState(0.5);
   const [modelsExplored, setModelsExplored] = useState<Set<string>>(new Set(["excellent"]));
@@ -104,7 +116,7 @@ export default function ROCCurvesClient() {
 
   const allSamples = useMemo(() => {
     const map = new Map<string, Sample[]>();
-    for (const m of MODELS) map.set(m.id, generateSamples(m));
+    MODELS.forEach((m, i) => map.set(m.id, generateSamples(m, 42 + i * 1000)));
     return map;
   }, []);
 
@@ -159,7 +171,7 @@ export default function ROCCurvesClient() {
         fetch("/api/visual-guides/complete", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ guideSlug: "roc-curves", score: 8 }),
+          body: JSON.stringify({ guideSlug: "roc-curves", score: 100 }),
         }).catch(() => {});
       }
     }
@@ -168,31 +180,43 @@ export default function ROCCurvesClient() {
   // Score distribution SVG
   const DW = 380; const DH = 120; const DP = 30;
 
+  function handleReset() {
+    setSelectedModels(new Set(["excellent"]));
+    setModelsExplored(new Set(["excellent"]));
+    setThreshold(0.5);
+    setThresholdChanges(0);
+  }
+
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
-      <GuideCompletion isComplete={isComplete} guideSlug="roc-curves" score={8} />
-      <div className="max-w-[1300px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+    <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="roc-curves" score={100} />
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">Visual Guides</Link>
           <span>/</span>
-          <span className="text-white">ROC Curves & AUC: Threshold Tuning</span>
+          <span className="text-[#94a3b8]">ROC Curves & AUC: Threshold Tuning</span>
         </nav>
 
         {/* Hero */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-[#1e5d8a]/20 border border-[#1e5d8a]/40 rounded-full px-3 py-1 mb-4">
-            <span className="text-xs font-semibold text-[#3bb4a4] uppercase tracking-wider">Machine Learning</span>
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
+              Machine Learning
+            </span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            ROC Curves & AUC: Threshold Tuning Visualized
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
+            ROC Curves & AUC:{" "}
+            <span className="text-[var(--color-accent)]">Threshold Tuning Visualized</span>
           </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl">
+          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
             The ROC curve shows every possible tradeoff between false positive rate and true positive rate.
             The AUC summarizes overall performance in a single number. Drag the threshold and compare models.
           </p>
-        </div>
+        </section>
 
         {/* Progress */}
         <div className="mb-8 bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
@@ -210,13 +234,13 @@ export default function ROCCurvesClient() {
             />
           </div>
           {isComplete && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 text-xs text-[#3bb4a4] font-semibold">
+            <motion.div variants={fadeIn} initial="hidden" animate="visible" className="mt-2 text-xs text-[#3bb4a4] font-semibold">
               Guide complete!
             </motion.div>
           )}
           {!session?.user && (
             <p className="mt-2 text-xs text-[#94a3b8]">
-              <Link href="/auth/sign-in" className="text-[#d4af37] hover:underline">Sign in</Link> to save your progress.
+              <Link href="/auth/sign-in" className="text-[var(--color-accent)] hover:underline">Sign in</Link> to save your progress.
             </p>
           )}
         </div>
@@ -228,7 +252,7 @@ export default function ROCCurvesClient() {
               <div className="p-3 border-b border-[#1e293b] text-xs flex items-center gap-4 flex-wrap">
                 <span className="text-white font-semibold">ROC Curve</span>
                 <span className="text-[#94a3b8]">FPR → x axis · TPR → y axis</span>
-                <span className="ml-auto text-[#94a3b8]">threshold = <span className="text-[#d4af37] font-semibold">{threshold.toFixed(2)}</span></span>
+                <span className="ml-auto text-[#94a3b8]">threshold = <span className="text-[var(--color-accent)] font-semibold">{threshold.toFixed(2)}</span></span>
               </div>
               <svg viewBox={`0 0 ${RW} ${RH}`} className="w-full">
                 {/* Grid */}
@@ -300,7 +324,7 @@ export default function ROCCurvesClient() {
             <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-2xl overflow-hidden">
               <div className="p-3 border-b border-[#1e293b] text-xs">
                 <span className="text-white font-semibold">Score Distribution</span>
-                <span className="text-[#94a3b8] ml-2">— {primaryModel.label}</span>
+                <span className="text-[#94a3b8] ml-2">· {primaryModel.label}</span>
               </div>
               <svg viewBox={`0 0 ${DW} ${DH}`} className="w-full">
                 {hist.map((b, i) => {
@@ -312,7 +336,7 @@ export default function ROCCurvesClient() {
                     <g key={i}>
                       {/* Overlaid (not stacked) so the visual overlap matches the real class overlap */}
                       <rect x={bx} y={DH - DP - negH} width={bw - 1} height={negH}
-                        fill="#d4af37" opacity={0.5} />
+                        fill="var(--color-accent)" opacity={0.5} />
                       <rect x={bx} y={DH - DP - posH} width={bw - 1} height={posH}
                         fill="#3bb4a4" opacity={0.5} />
                     </g>
@@ -323,13 +347,13 @@ export default function ROCCurvesClient() {
                   const tx = DP + threshold * (DW - 2 * DP);
                   return (
                     <>
-                      <line x1={tx} y1={DP} x2={tx} y2={DH - DP} stroke="#d4af37" strokeWidth="2" />
-                      <text x={tx + 3} y={DP + 12} fill="#d4af37" fontSize="9">threshold={threshold.toFixed(2)}</text>
+                      <line x1={tx} y1={DP} x2={tx} y2={DH - DP} stroke="var(--color-accent)" strokeWidth="2" />
+                      <text x={tx + 3} y={DP + 12} fill="var(--color-accent)" fontSize="9">threshold={threshold.toFixed(2)}</text>
                     </>
                   );
                 })()}
                 <text x={DP} y={DH - 5} fill="#3bb4a4" fontSize="9">■ Positive class</text>
-                <text x={DP + 100} y={DH - 5} fill="#d4af37" fontSize="9">■ Negative class</text>
+                <text x={DP + 100} y={DH - 5} fill="var(--color-accent)" fontSize="9">■ Negative class</text>
               </svg>
             </div>
           </div>
@@ -344,6 +368,7 @@ export default function ROCCurvesClient() {
                   const selected = selectedModels.has(m.id);
                   return (
                     <button key={m.id} onClick={() => toggleModel(m.id)}
+                      aria-pressed={selected}
                       className="px-3 py-2 rounded-lg text-xs font-medium text-left border transition-all flex items-center gap-2"
                       style={{
                         backgroundColor: selected ? `${m.color}15` : "transparent",
@@ -363,12 +388,13 @@ export default function ROCCurvesClient() {
             <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
               <div className="flex items-center justify-between mb-1">
                 <h3 className="text-sm font-semibold text-white">Threshold</h3>
-                <span className="text-sm font-bold text-[#d4af37]">{threshold.toFixed(2)}</span>
+                <span className="text-sm font-bold text-[var(--color-accent)]">{threshold.toFixed(2)}</span>
               </div>
               <input
                 type="range" min="0.05" max="0.95" step="0.01" value={threshold}
+                aria-label="Decision threshold"
                 onChange={e => { setThreshold(parseFloat(e.target.value)); setThresholdChanges(p => p + 1); }}
-                className="w-full accent-[#d4af37]"
+                className="w-full accent-[var(--color-accent)]"
               />
               <div className="mt-3 text-xs space-y-1">
                 <div className="flex justify-between text-[#94a3b8]">
@@ -403,30 +429,121 @@ export default function ROCCurvesClient() {
             </div>
 
             <div className="bg-[#1e293b]/60 border border-[#d4af37]/20 rounded-xl p-4">
-              <h3 className="text-xs font-semibold text-[#d4af37] uppercase tracking-wide mb-2">Key Insight</h3>
+              <h3 className="text-xs font-semibold text-[var(--color-accent)] uppercase tracking-wide mb-2">Key Insight</h3>
               <p className="text-xs text-[#94a3b8] leading-relaxed">
                 AUC is the probability that the model ranks a random positive sample higher than a random negative.
-                It's threshold-independent — a single number for the entire curve.
+                It's threshold-independent: a single number for the entire curve.
               </p>
               <p className="text-xs text-[#94a3b8] leading-relaxed mt-2">
                 Caveat: with heavily imbalanced classes, ROC curves can look deceptively good because FPR is
                 diluted by the large negative class. Precision-recall curves are often more informative there.
-                See the <Link href="/visual-guides/class-imbalance" className="text-[#d4af37] hover:underline">class imbalance guide</Link>.
+                See the <Link href="/visual-guides/class-imbalance" className="text-[var(--color-accent)] hover:underline">class imbalance guide</Link>.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between mt-10 pt-6 border-t border-[#1e293b]">
-          <Link href="/visual-guides/confusion-matrix" className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors">
-            <span>←</span><span>Confusion Matrix</span>
-          </Link>
-          <Link href="/visual-guides" className="text-sm text-[#94a3b8] hover:text-white transition-colors">All Guides</Link>
-          <Link href="/visual-guides/neural-network" className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors">
-            <span>Neural Network</span><span>→</span>
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  ROC Curves Mastered!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You compared model curves and explored the threshold tradeoff between TPR and FPR.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Models explored</p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">
+                      {modelsExplored.size} / {MODELS.length}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Threshold changes</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {thresholdChanges}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Best AUC on screen</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      {Math.max(...MODELS.map(m => aucData.get(m.id) || 0)).toFixed(3)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;The ROC curve is every threshold at once: AUC tells you how well the model
+                    ranks, but the threshold you ship is a business decision about which error hurts
+                    more.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href="/visual-guides/neural-network"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← All Guides
+            </Link>
+            <Link
+              href="/visual-guides/neural-network"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next Guide →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

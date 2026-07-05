@@ -128,7 +128,7 @@ export const STEP_CONTENTS: StepContent[] = [
     description:
       "These are the four input features the network receives. Each value is fed into the input layer and passed forward without any transformation.",
     keyPoints: [
-      "Input neurons don't apply any activation — they simply relay their values.",
+      "Input neurons don't apply any activation; they simply relay their values.",
       "Here: x = [0.5, 0.8, 0.2, 0.9]",
       "In practice these could be pixel values, sensor readings, or normalized features.",
     ],
@@ -141,7 +141,7 @@ export const STEP_CONTENTS: StepContent[] = [
       "Each hidden neuron computes a weighted sum of the inputs plus a bias, then applies the ReLU activation. Values below zero are clamped to zero.",
     formula: "h = ReLU(W·x + b)",
     keyPoints: [
-      "ReLU(z) = max(0, z) — introduces non-linearity cheaply.",
+      "ReLU(z) = max(0, z) introduces non-linearity cheaply.",
       "Pre-activation z = w₁x₁ + w₂x₂ + w₃x₃ + w₄x₄ + b",
       "Neurons with z ≤ 0 output exactly 0 (they become inactive).",
     ],
@@ -208,7 +208,7 @@ export const STEP_CONTENTS: StepContent[] = [
     keyPoints: [
       `Input gradients ∂L/∂x = (W_IH)ᵀ · ∂L/∂z_h = [${FORWARD_DATA.dX.map(v => v.toFixed(3)).join(", ")}], showing how the loss would change if each input feature moved.`,
       "Weight gradients = outer product of upstream gradient × layer input.",
-      "All gradients are now ready — the update step can begin.",
+      "All gradients are now ready, so the update step can begin.",
     ],
     phase: "backward",
   },
@@ -219,7 +219,7 @@ export const STEP_CONTENTS: StepContent[] = [
       "Gradient descent subtracts a fraction of each weight's gradient, nudging the network to produce a lower loss on the next forward pass. Repeat over millions of examples.",
     formula: "w_new = w_old − α · ∂L/∂w",
     keyPoints: [
-      "Learning rate α = 0.1 here — a typical starting value.",
+      "Learning rate α = 0.1 here, a typical starting value.",
       "Small α → slow but stable. Large α → fast but may oscillate.",
       "After many iterations this process minimises the loss across the training set.",
     ],

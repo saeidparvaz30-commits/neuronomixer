@@ -58,6 +58,7 @@ export default function DropoutRateSlider({ value, onChange }: DropoutRateSlider
           max={0.9}
           step={0.05}
           value={value}
+          aria-label="Dropout probability"
           onChange={(e) => onChange(parseFloat(e.target.value))}
           className="w-full h-2 rounded-full appearance-none cursor-pointer"
           style={{

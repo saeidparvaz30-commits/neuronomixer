@@ -42,7 +42,7 @@ export default function StepControlPanel({
           className="h-full rounded-full transition-all duration-500 ease-in-out"
           style={{
             width: `${progress}%`,
-            background: "linear-gradient(90deg, #d4af37, #d4af37cc)",
+            background: "linear-gradient(90deg, var(--color-accent), #d4af37cc)",
           }}
         />
       </div>
@@ -61,11 +61,11 @@ export default function StepControlPanel({
                 width: isCurrent ? 10 : 7,
                 height: isCurrent ? 10 : 7,
                 background: isCurrent
-                  ? "#d4af37"
+                  ? "var(--color-accent)"
                   : isDone
                   ? "#d4af3799"
                   : "#334155",
-                boxShadow: isCurrent ? "0 0 6px #d4af37" : undefined,
+                boxShadow: isCurrent ? "0 0 6px var(--color-accent)" : undefined,
               }}
             />
           );
@@ -134,7 +134,7 @@ export default function StepControlPanel({
       <div className="mt-5 pt-4 border-t border-[#334155]/50 grid grid-cols-2 gap-y-1.5 gap-x-3">
         {[
           { color: "#3bb4a4", label: "Forward Pass", steps: "1–3" },
-          { color: "#d4af37", label: "Compute Loss", steps: "4" },
+          { color: "var(--color-accent)", label: "Compute Loss", steps: "4" },
           { color: "#f87171", label: "Backward Pass", steps: "5–7" },
           { color: "#4ade80", label: "Weight Update", steps: "8" },
         ].map(({ color, label, steps }) => (

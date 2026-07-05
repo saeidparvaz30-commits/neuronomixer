@@ -123,7 +123,7 @@ function getConnectionOpacity(
     if (fromLayer === "ho") return { stroke: "#3bb4a4", opacity: 0.45, strokeWidth: 1.0 };
   }
   if (step === 4) {
-    return { stroke: "#d4af37", opacity: 0.3, strokeWidth: 0.8 };
+    return { stroke: "var(--color-accent)", opacity: 0.3, strokeWidth: 0.8 };
   }
   if (step === 5) {
     if (fromLayer === "ho") return { stroke: "#f87171", opacity: 0.55, strokeWidth: 1.0 };
@@ -453,7 +453,7 @@ export default function NetworkVisualization({ step }: Props) {
                   <text
                     x={LAYER_X[2] + R + 8}
                     y={cy + 4}
-                    fill="#d4af37"
+                    fill="var(--color-accent)"
                     fontSize="9"
                     fontWeight="600"
                   >
@@ -543,7 +543,7 @@ export default function NetworkVisualization({ step }: Props) {
                 <text
                   x={tx + 8}
                   y={clampedTy + 14}
-                  fill="#d4af37"
+                  fill="var(--color-accent)"
                   fontSize="10"
                   fontWeight="700"
                 >

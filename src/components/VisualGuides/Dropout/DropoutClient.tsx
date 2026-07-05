@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 
 import DropoutRateSlider from "./DropoutRateSlider";
 import NetworkVisualizer from "./NetworkVisualizer";
@@ -39,6 +40,7 @@ function useIntersectionOnce(threshold = 0.3) {
 
 export default function DropoutClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
 
   // Core state
@@ -91,6 +93,15 @@ export default function DropoutClient() {
     if (modesTriedRef.current.size >= 2) setHasToggledMode(true);
   }
 
+  function handleReset() {
+    setDropoutRate(0.5);
+    setMode("training");
+    setSeed(42);
+    setHasChangedRate(false);
+    setHasToggledMode(false);
+    modesTriedRef.current = new Set(["training"]);
+  }
+
   // Progress percentage
   const progress =
     (hasChangedRate ? 34 : 0) +
@@ -98,38 +109,37 @@ export default function DropoutClient() {
     (hasViewedComparison ? 33 : 0);
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
+    <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="dropout" score={100} />
-      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
           <span>/</span>
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
-            Deep Learning
-          </Link>
-          <span>/</span>
-          <span className="text-white">Dropout: Training with Missing Neurons</span>
+          <span className="text-[#94a3b8]">Dropout: Training with Missing Neurons</span>
         </nav>
 
         {/* Hero */}
-        <div className="mb-6">
-          <div className="inline-flex items-center gap-2 bg-[#a855f7]/20 border border-[#a855f7]/40 rounded-full px-3 py-1 mb-4">
-            <span className="text-xs font-semibold text-[#a855f7] uppercase tracking-wider">
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Deep Learning
             </span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Dropout: Training with Missing Neurons
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
+            Dropout:{" "}
+            <span className="text-[var(--color-accent)]">Training with Missing Neurons</span>
           </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl leading-relaxed">
+          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
             Slide the dropout probability and watch neurons randomly deactivate. Understand how
             dropout prevents overfitting by training an ensemble of thinned networks simultaneously.
           </p>
-        </div>
+        </section>
 
         {/* Progress bar */}
         <div className="mb-8 bg-[#1e293b]/60 border border-white/[0.07] rounded-xl p-4">
@@ -167,7 +177,7 @@ export default function DropoutClient() {
           {/* Sign-in nudge */}
           {!session?.user && (
             <p className="text-[11px] text-[#475569] mt-2">
-              <Link href="/auth/sign-in" className="text-[#d4af37] hover:underline">
+              <Link href="/auth/sign-in" className="text-[var(--color-accent)] hover:underline">
                 Sign in
               </Link>{" "}
               to save your progress
@@ -301,7 +311,7 @@ export default function DropoutClient() {
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-lg bg-[#d4af37]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
               <svg
-                className="w-4 h-4 text-[#d4af37]"
+                className="w-4 h-4 text-[var(--color-accent)]"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -315,7 +325,7 @@ export default function DropoutClient() {
               </svg>
             </div>
             <div>
-              <div className="text-sm font-bold text-[#d4af37] mb-1">Modern Implementation: Inverted Dropout</div>
+              <div className="text-sm font-bold text-[var(--color-accent)] mb-1">Modern Implementation: Inverted Dropout</div>
               <p className="text-sm text-[#94a3b8] leading-relaxed">
                 Modern frameworks use{" "}
                 <span className="text-white font-semibold">inverted dropout</span>: multiply
@@ -324,55 +334,113 @@ export default function DropoutClient() {
                   1/(1−p)
                 </code>{" "}
                 during training so no rescaling is needed at inference time. This means the same
-                network weights work unchanged at test time — cleaner and faster.
+                network weights work unchanged at test time, cleaner and faster.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Summary card (shown when complete) */}
-        {isComplete && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="p-6 bg-gradient-to-br from-[#a855f7]/10 to-[#3bb4a4]/10 border border-[#a855f7]/30 rounded-2xl"
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-8 h-8 rounded-full bg-[#3bb4a4]/20 border border-[#3bb4a4]/40 flex items-center justify-center">
-                <svg
-                  className="w-4 h-4 text-[#3bb4a4]"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.5}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  Dropout Mastered!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You explored the dropout rate, both modes, and the regularization effect on
+                  training curves.
+                </p>
               </div>
-              <span className="font-bold text-white">Guide Complete!</span>
-            </div>
-            <p className="text-sm text-[#94a3b8] leading-relaxed mb-5">
-              You understand how dropout works — from the probabilistic deactivation of neurons to
-              its role as an implicit ensemble method. Next, see how Batch Normalization stabilizes
-              training from a different angle.
-            </p>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Final dropout rate</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      p = {dropoutRate.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Active neurons</p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">
+                      {totalActive} / {totalNeurons}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Modes tried</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      Training + Inference
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Dropout trains an implicit ensemble: every step drops a different random
+                    subset of neurons, so no neuron can rely on a specific partner, and the full
+                    network at inference approximates the average of all thinned networks.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href="/visual-guides/batch-normalization"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← All Guides
+            </Link>
             <Link
               href="/visual-guides/batch-normalization"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#a855f7] hover:bg-[#9333ea] text-white font-semibold text-sm rounded-xl transition-colors"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
             >
-              Next: Batch Normalization
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
+              Next Guide →
             </Link>
-          </motion.div>
+          </div>
         )}
       </div>
     </div>
