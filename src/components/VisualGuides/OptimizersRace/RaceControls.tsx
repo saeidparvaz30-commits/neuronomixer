@@ -34,7 +34,7 @@ export default function RaceControls({
           <span className="text-[#475569]"> / {MAX_STEPS}</span>
         </span>
         {raceComplete && (
-          <span className="text-[#d4af37] font-semibold text-sm animate-pulse">
+          <span className="text-[var(--color-accent)] font-semibold text-sm animate-pulse">
             Race Complete!
           </span>
         )}
@@ -79,15 +79,17 @@ export default function RaceControls({
         </button>
 
         {/* Speed */}
-        <div className="flex items-center gap-1 ml-auto">
+        <div className="flex items-center gap-1 ml-auto" role="radiogroup" aria-label="Race speed">
           <span className="text-[11px] text-[#475569] mr-1">Speed:</span>
           {([0.5, 1, 2] as const).map((s) => (
             <button
               key={s}
+              role="radio"
+              aria-checked={speed === s}
               onClick={() => onSpeedChange(s)}
               className={`px-2.5 py-1 rounded text-xs font-semibold border transition-all ${
                 speed === s
-                  ? "bg-[#d4af37]/20 border-[#d4af37]/60 text-[#d4af37]"
+                  ? "bg-[#d4af37]/20 border-[#d4af37]/60 text-[var(--color-accent)]"
                   : "border-[#334155] text-[#475569] hover:border-[#475569] hover:text-[#94a3b8]"
               }`}
             >

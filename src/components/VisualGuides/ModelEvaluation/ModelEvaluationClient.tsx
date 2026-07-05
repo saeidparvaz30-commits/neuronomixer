@@ -2,9 +2,13 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion, GUIDE_VIEWPORT } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+
+const GUIDE_TITLE = "Model Evaluation: Beyond Accuracy";
+const NEXT_GUIDE_SLUG = "rlhf";
 
 // ── Metric helpers ─────────────────────────────────────────────────────────────
 
@@ -74,7 +78,7 @@ function wordOverlap(
 
 function scoreColor(val: number): string {
   if (val >= 0.5) return "#3bb4a4";
-  if (val >= 0.3) return "#d4af37";
+  if (val >= 0.3) return "var(--color-accent)";
   return "#ef4444";
 }
 
@@ -127,7 +131,7 @@ const FRAMEWORKS = [
   {
     name: "HumanEval",
     full: "HumanEval",
-    tests: "Code generation — 164 Python problems",
+    tests: "Code generation: 164 Python problems",
     detail: "Pass@1 rate: model writes a function, tests run against hidden test cases",
     leader: "GPT-4o (2024): 90.2%",
     color: "#1e5d8a",
@@ -221,7 +225,7 @@ function MetricCalculator({ onEdited }: { onEdited: () => void }) {
           <label className="text-[11px] font-semibold uppercase tracking-wider text-[#3bb4a4]">
             Model output{" "}
             <span className="text-[#475569] normal-case font-normal tracking-normal">
-              — edit me
+              (edit me)
             </span>
           </label>
           <textarea
@@ -319,15 +323,20 @@ function MetricFailureCards() {
 }
 
 function FrameworkCards({ containerRef }: { containerRef: React.RefObject<HTMLDivElement | null> }) {
-  const isInView = useInView(containerRef, { once: true, margin: "-80px" });
+  const { stagger, card } = useGuideMotion();
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" ref={containerRef}>
-      {FRAMEWORKS.map((fw, i) => (
+    <motion.div
+      className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+      ref={containerRef}
+      variants={stagger}
+      initial="hidden"
+      whileInView="visible"
+      viewport={GUIDE_VIEWPORT}
+    >
+      {FRAMEWORKS.map((fw) => (
         <motion.div
           key={fw.name}
-          initial={{ opacity: 0, y: 16 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: i * 0.1, duration: 0.4 }}
+          variants={card}
           className="rounded-2xl border bg-[#0f172a] p-5 space-y-3"
           style={{ borderColor: `${fw.color}30` }}
         >
@@ -358,7 +367,7 @@ function FrameworkCards({ containerRef }: { containerRef: React.RefObject<HTMLDi
           </div>
         </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 }
 
@@ -419,14 +428,23 @@ function HumanVsAutomated() {
 
 export default function ModelEvaluationClient() {
   const { data: session } = useSession();
+  const { fadeUp, card } = useGuideMotion();
 
   const [hasEdited, setHasEdited] = useState(false);
   const [hasScrolledToFrameworks, setHasScrolledToFrameworks] = useState(false);
+  const [calcKey, setCalcKey] = useState(0);
   const completionFired = useRef(false);
 
   const frameworksRef = useRef<HTMLDivElement>(null);
 
   const allComplete = hasEdited && hasScrolledToFrameworks;
+
+  function handleResetGuide() {
+    setHasEdited(false);
+    setHasScrolledToFrameworks(false);
+    setCalcKey((k) => k + 1);
+    completionFired.current = false;
+  }
 
   // Detect scroll to frameworks section
   useEffect(() => {
@@ -465,38 +483,47 @@ export default function ModelEvaluationClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+      <GuideCompletion isComplete={allComplete} guideSlug="model-evaluation" score={100} />
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
-          <span className="text-white/20">/</span>
-          <span className="text-[#ec4899]">Applied AI</span>
-          <span className="text-white/20">/</span>
-          <span className="text-white">Model Evaluation: Beyond Accuracy</span>
+          <span>/</span>
+          <span className="text-[#94a3b8]">{GUIDE_TITLE}</span>
         </nav>
 
         {/* Hero */}
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#ec4899]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#ec4899]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Applied AI
             </span>
-            <span className="w-6 h-px bg-[#ec4899]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
+          >
             Model Evaluation:{" "}
-            <span className="text-[#ec4899]">Beyond Accuracy</span>
-          </h1>
-          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
-            For LLMs, standard metrics don&apos;t work — you can&apos;t just check
+            <span className="text-[var(--color-accent)]">Beyond Accuracy</span>
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]"
+          >
+            For LLMs, standard metrics don&apos;t work: you can&apos;t just check
             exact match. BLEU, ROUGE, perplexity, and BERTScore each capture
             different aspects of quality. Edit outputs below and see the scores
             update live.
-          </p>
+          </motion.p>
         </section>
 
         {/* Progress bar */}
@@ -545,7 +572,7 @@ export default function ModelEvaluationClient() {
         {/* Section 1 */}
         <section className="mb-12">
           <h2 className="text-[18px] font-bold text-white mb-1">
-            Section 1 — Interactive Metric Calculator
+            Section 1: Interactive Metric Calculator
           </h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">
             Edit the model output and watch BLEU, ROUGE-1, ROUGE-2, and word overlap update in
@@ -557,7 +584,7 @@ export default function ModelEvaluationClient() {
             {[
               { name: "BLEU", desc: "Clipped n-gram precision + brevity penalty (computed here up to bigrams)", color: "#3bb4a4" },
               { name: "ROUGE-1", desc: "Unigram recall overlap", color: "#1e5d8a" },
-              { name: "ROUGE-2", desc: "Bigram recall overlap", color: "#d4af37" },
+              { name: "ROUGE-2", desc: "Bigram recall overlap", color: "#d4af37" }, // raw hex kept: concatenated with alpha suffix below
               { name: "BERTScore", desc: "Semantic similarity via embeddings", color: "#a855f7" },
             ].map((m) => (
               <div
@@ -573,13 +600,13 @@ export default function ModelEvaluationClient() {
             ))}
           </div>
 
-          <MetricCalculator onEdited={handleEdited} />
+          <MetricCalculator key={calcKey} onEdited={handleEdited} />
         </section>
 
         {/* Section 2 */}
         <section className="mb-12">
           <h2 className="text-[18px] font-bold text-white mb-1">
-            Section 2 — When Metrics Lie
+            Section 2: When Metrics Lie
           </h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">
             Three classic failure modes where automated metrics mislead you. Live scores are
@@ -591,10 +618,10 @@ export default function ModelEvaluationClient() {
         {/* Section 3 */}
         <section className="mb-12">
           <h2 className="text-[18px] font-bold text-white mb-1">
-            Section 3 — Evaluation Frameworks
+            Section 3: Evaluation Frameworks
           </h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">
-            The four benchmarks every LLM paper cites — and what they actually measure.
+            The four benchmarks every LLM paper cites, and what they actually measure.
           </p>
           <FrameworkCards containerRef={frameworksRef} />
         </section>
@@ -602,10 +629,10 @@ export default function ModelEvaluationClient() {
         {/* Section 4 */}
         <section className="mb-12">
           <h2 className="text-[18px] font-bold text-white mb-1">
-            Section 4 — Human vs Automated Eval
+            Section 4: Human vs Automated Eval
           </h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">
-            Each approach has trade-offs. The emerging winner is LLM-as-judge — using a stronger
+            Each approach has trade-offs. The emerging winner is LLM-as-judge: using a stronger
             model to score a weaker one.
           </p>
           <HumanVsAutomated />
@@ -614,9 +641,9 @@ export default function ModelEvaluationClient() {
         {/* Gold insight */}
         <div className="rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-6 mb-12">
           <div className="flex items-start gap-3">
-            <span className="text-[#d4af37] text-xl mt-0.5">&#128161;</span>
+            <span className="text-[var(--color-accent)] text-xl mt-0.5">&#128161;</span>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#d4af37] mb-2">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">
                 Key Insight
               </p>
               <p className="text-[13px] text-white leading-relaxed">
@@ -630,43 +657,100 @@ export default function ModelEvaluationClient() {
           </div>
         </div>
 
-        {/* Summary card */}
-        <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 mb-10 flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8] mb-1">
-              Up Next
-            </p>
-            <p className="text-[15px] font-bold text-white">RLHF</p>
-            <p className="text-[12px] text-[#94a3b8] mt-1">
-              How human feedback is used to align language models.
-            </p>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 mb-10 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  Evaluation Skeptic Unlocked!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You edited model outputs, watched BLEU and ROUGE react, and saw where automated metrics mislead.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Metric calculator</p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">Explored</p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Failure modes</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">3 seen</p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Benchmarks</p>
+                    <p className="text-[14px] font-mono font-bold text-white">4 reviewed</p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Every automated metric is a proxy. BLEU counts n-grams, not meaning; a benchmark score can be gamed. Trust a metric only as far as you understand what it fails to measure.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleResetGuide}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!allComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← All Guides
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next Guide →
+            </Link>
           </div>
-          <Link
-            href="/visual-guides/rlhf"
-            className="px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-[#ec4899] text-white hover:opacity-90 transition-opacity whitespace-nowrap"
-          >
-            Next Guide →
-          </Link>
-        </div>
-
-        {/* Nav */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link
-            href="/visual-guides/fine-tuning-vs-prompting"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
-          >
-            ← Fine-Tuning vs Prompting
-          </Link>
-          <Link
-            href="/visual-guides/rlhf"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#ec4899] text-white hover:opacity-90 transition-opacity"
-          >
-            RLHF →
-          </Link>
-        </div>
-
-        <GuideCompletion isComplete={allComplete} guideSlug="model-evaluation" score={100} />
-
+        )}
       </div>
     </div>
   );

@@ -130,7 +130,7 @@ export default function LossLandscape({ currentStep, configs, trajectories }: Pr
         style={{ minWidth: 320 }}
       >
         {/* Background */}
-        <rect x={PAD_L} y={PAD_T} width={PLOT_W} height={PLOT_H} fill="#0a1628" />
+        <rect x={PAD_L} y={PAD_T} width={PLOT_W} height={PLOT_H} fill="#0f172a" />
 
         {/* Heatmap */}
         {heatCells.map((c, i) => (
@@ -253,15 +253,15 @@ export default function LossLandscape({ currentStep, configs, trajectories }: Pr
             <>
               <polygon
                 points={points}
-                fill="#d4af37"
-                stroke="#d4af37"
+                fill="var(--color-accent)"
+                stroke="var(--color-accent)"
                 strokeWidth={0.5}
                 opacity={0.95}
               />
               <text
                 x={toSvgX(0) + 10}
                 y={toSvgY(0) + 4}
-                fill="#d4af37"
+                fill="var(--color-accent)"
                 fontSize="9"
                 fontFamily="monospace"
               >
@@ -313,7 +313,7 @@ export default function LossLandscape({ currentStep, configs, trajectories }: Pr
         <text
           x={PAD_L + PLOT_W / 2}
           y={SVG_H - 4}
-          fill="#64748b"
+          fill="#475569"
           fontSize="10"
           textAnchor="middle"
         >
@@ -322,7 +322,7 @@ export default function LossLandscape({ currentStep, configs, trajectories }: Pr
         <text
           x={9}
           y={PAD_T + PLOT_H / 2}
-          fill="#64748b"
+          fill="#475569"
           fontSize="10"
           textAnchor="middle"
           transform={`rotate(-90, 9, ${PAD_T + PLOT_H / 2})`}

@@ -23,7 +23,7 @@ export default function LearningRateSliders({ configs, onChange }: Props) {
             </div>
             <div className="flex items-center gap-2">
               {cfg.lr > 0.3 && (
-                <span className="text-[10px] text-[#f59e0b] font-medium">
+                <span className="text-[10px] text-[var(--color-warning)] font-medium">
                   High LR may diverge
                 </span>
               )}
@@ -41,6 +41,7 @@ export default function LearningRateSliders({ configs, onChange }: Props) {
             max="0.5"
             step="0.001"
             value={cfg.lr}
+            aria-label={`${cfg.label} learning rate`}
             disabled={!cfg.enabled}
             onChange={(e) => onChange(cfg.id, parseFloat(e.target.value))}
             className="w-full h-1.5 rounded-full appearance-none cursor-pointer disabled:cursor-not-allowed"

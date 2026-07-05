@@ -43,6 +43,7 @@ export default function OptimizerToggle({ configs, onToggle }: Props) {
               {/* Toggle on/off */}
               <button
                 onClick={() => onToggle(cfg.id)}
+                aria-pressed={cfg.enabled}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-medium transition-all ${
                   cfg.enabled
                     ? "border-white/20 bg-[#1e293b]/80 text-white"
@@ -59,6 +60,8 @@ export default function OptimizerToggle({ configs, onToggle }: Props) {
               {/* Info button */}
               <button
                 onClick={() => handleSelect(cfg.id)}
+                aria-expanded={selected === cfg.id}
+                aria-label={`Show ${cfg.label} formula`}
                 className={`w-6 h-6 rounded-full border text-[10px] font-bold transition-all flex items-center justify-center ${
                   selected === cfg.id
                     ? "border-white/30 bg-white/10 text-white"

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useGuideMotion } from "@/lib/guideMotion";
 import { BiasResult } from "./types";
 
 interface BiasAnalyzerProps {
@@ -18,6 +19,7 @@ const STATUS_ICONS: Record<BiasResult["status"], string> = {
 };
 
 export default function BiasAnalyzer({ result, controlled, nodeLabels }: BiasAnalyzerProps) {
+  const { fadeUp } = useGuideMotion();
   const borderColor =
     result.status === "unbiased"
       ? "border-emerald-500/40"
@@ -62,10 +64,10 @@ export default function BiasAnalyzer({ result, controlled, nodeLabels }: BiasAna
     <AnimatePresence mode="wait">
       <motion.div
         key={result.label}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -8 }}
-        transition={{ duration: 0.3 }}
+        variants={fadeUp}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
         className={`rounded-xl border p-4 space-y-3 ${borderColor} ${bgColor}`}
       >
         {/* Header row */}
@@ -85,7 +87,7 @@ export default function BiasAnalyzer({ result, controlled, nodeLabels }: BiasAna
         <p className="text-sm text-[#94a3b8] leading-relaxed">{result.explanation}</p>
 
         {/* Detail */}
-        <p className="text-xs text-[#64748b] italic">{result.detail}</p>
+        <p className="text-xs text-[#475569] italic">{result.detail}</p>
 
         {/* Currently controlled */}
         <div className="pt-1 border-t border-white/5">

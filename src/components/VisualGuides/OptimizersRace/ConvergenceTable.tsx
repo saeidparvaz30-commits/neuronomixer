@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useGuideMotion } from "@/lib/guideMotion";
 import type { OptimizerConfig, TrajectoryPoint } from "./types";
 import { stepsToConverge, CONVERGE_THRESHOLD } from "./optimizerLogic";
 
@@ -10,15 +11,17 @@ interface Props {
   trajectories: Record<string, TrajectoryPoint[]>;
 }
 
+// Raw hexes required here: values are concatenated with alpha suffixes below.
 function speedLabel(steps: number | null): { label: string; color: string } {
   if (steps === null) return { label: "Did not converge", color: "#ef4444" };
   if (steps <= 8) return { label: "Very Fast", color: "#3bb4a4" };
   if (steps <= 18) return { label: "Fast", color: "#d4af37" };
-  if (steps <= 30) return { label: "Moderate", color: "#f59e0b" };
+  if (steps <= 30) return { label: "Moderate", color: "#f97316" };
   return { label: "Slow", color: "#ef4444" };
 }
 
 export default function ConvergenceTable({ configs, trajectories }: Props) {
+  const { stagger, fadeUp } = useGuideMotion();
   const rows = configs.map((cfg) => {
     const traj = trajectories[cfg.id] ?? [];
     const steps = stepsToConverge(traj);
@@ -57,13 +60,11 @@ export default function ConvergenceTable({ configs, trajectories }: Props) {
             </th>
           </tr>
         </thead>
-        <tbody>
+        <motion.tbody variants={stagger} initial="hidden" animate="visible">
           {sorted.map((row, i) => (
             <motion.tr
               key={row.cfg.id}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.1, duration: 0.3 }}
+              variants={fadeUp}
               className="border-b border-[#1e293b]/60 hover:bg-[#1e293b]/30 transition-colors"
             >
               <td className="py-2.5 pr-3">
@@ -104,7 +105,7 @@ export default function ConvergenceTable({ configs, trajectories }: Props) {
               </td>
             </motion.tr>
           ))}
-        </tbody>
+        </motion.tbody>
       </table>
     </div>
   );

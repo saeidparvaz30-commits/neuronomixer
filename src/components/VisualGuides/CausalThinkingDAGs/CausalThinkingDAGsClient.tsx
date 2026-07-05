@@ -4,10 +4,14 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion, GUIDE_VIEWPORT } from "@/lib/guideMotion";
 import ScenarioSection from "./ScenarioSection";
 import CustomDAGBuilder from "./CustomDAGBuilder";
 import { ScenarioId } from "./types";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+
+const GUIDE_TITLE = "Causal Thinking: Confounders, Mediators & DAGs";
+const NEXT_GUIDE_SLUG = "time-series-forecasting";
 
 // ── Tab definitions ────────────────────────────────────────────────────────────
 
@@ -28,8 +32,8 @@ const TABS: Tab[] = [
     label: "Confounders",
     shortLabel: "Confounders",
     icon: "⟨C⟩",
-    conceptColor: "#d4af37",
-    description: "A hidden variable that causes both treatment and outcome — the most common source of spurious correlation.",
+    conceptColor: "#d4af37", // raw hex kept: concatenated with alpha suffixes below
+    description: "A hidden variable that causes both treatment and outcome: the most common source of spurious correlation.",
   },
   {
     id: "mediator",
@@ -37,7 +41,7 @@ const TABS: Tab[] = [
     shortLabel: "Mediators",
     icon: "→M→",
     conceptColor: "#a855f7",
-    description: "A variable on the causal path between treatment and outcome — controls the indirect effect.",
+    description: "A variable on the causal path between treatment and outcome: controls the indirect effect.",
   },
   {
     id: "collider",
@@ -45,7 +49,7 @@ const TABS: Tab[] = [
     shortLabel: "Colliders",
     icon: "⟨⟩",
     conceptColor: "#ef4444",
-    description: "A variable caused by two others — conditioning on it OPENS a spurious path (collider bias).",
+    description: "A variable caused by two others: conditioning on it OPENS a spurious path (collider bias).",
   },
   {
     id: "build",
@@ -64,7 +68,7 @@ const CONCEPT_CARDS = [
     title: "What is a DAG?",
     color: "#1e5d8a",
     content:
-      "A Directed Acyclic Graph (DAG) is a causal diagram where nodes represent variables and directed edges (arrows) represent causal relationships. 'Acyclic' means no variable can cause itself — no feedback loops.",
+      "A Directed Acyclic Graph (DAG) is a causal diagram where nodes represent variables and directed edges (arrows) represent causal relationships. 'Acyclic' means no variable can cause itself: no feedback loops.",
   },
   {
     title: "Why DAGs Matter",
@@ -74,7 +78,7 @@ const CONCEPT_CARDS = [
   },
   {
     title: "The Causal Hierarchy",
-    color: "#d4af37",
+    color: "var(--color-accent)",
     content:
       "Judea Pearl's causal hierarchy: (1) Association: seeing patterns in data; (2) Intervention: predicting what happens if you change a variable; (3) Counterfactuals: reasoning about 'what would have happened'. A causal DAG plus the right adjustments lets you answer level-2 questions from observational data; level 3 needs stronger assumptions (structural equations).",
   },
@@ -93,13 +97,13 @@ function BackDoorCriterion() {
     <div className="bg-[#0a0e1a] rounded-2xl border border-[#1e293b] p-6 space-y-4">
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-lg bg-[#d4af37]/20 border border-[#d4af37]/40 flex items-center justify-center shrink-0">
-          <span className="text-[#d4af37] text-sm font-bold">⊗</span>
+          <span className="text-[var(--color-accent)] text-sm font-bold">⊗</span>
         </div>
         <h3 className="text-base font-bold text-white">The Back-Door Criterion</h3>
       </div>
       <p className="text-sm text-[#94a3b8] leading-relaxed">
         To estimate the causal effect of <strong className="text-white">X → Y</strong>, you need to block all{" "}
-        <em className="text-[#d4af37]">back-door paths</em> — paths that go from X to Y via arrows entering X.
+        <em className="text-[var(--color-accent)]">back-door paths</em>: paths that go from X to Y via arrows entering X.
         A valid adjustment set <strong className="text-white">Z</strong> satisfies:
       </p>
       <div className="grid sm:grid-cols-2 gap-3">
@@ -107,12 +111,12 @@ function BackDoorCriterion() {
           {
             rule: "Rule 1",
             text: "Z blocks all back-door paths from X to Y",
-            color: "#10b981",
+            color: "var(--color-success)",
           },
           {
             rule: "Rule 2",
             text: "Z contains no descendant of X (no mediators or colliders on the causal path)",
-            color: "#10b981",
+            color: "var(--color-success)",
           },
         ].map((r) => (
           <div
@@ -137,9 +141,16 @@ function BackDoorCriterion() {
 
 export default function CausalThinkingDAGsClient() {
   const { data: session } = useSession();
+  const { fadeUp, fadeIn, stagger, card } = useGuideMotion();
   const completionFired = useRef(false);
   const [activeTab, setActiveTab] = useState<TabId>("confounder");
   const [scenariosExplored, setScenariosExplored] = useState<Set<ScenarioId>>(new Set());
+
+  function handleResetGuide() {
+    setActiveTab("confounder");
+    setScenariosExplored(new Set<ScenarioId>(["confounder"]));
+    completionFired.current = false;
+  }
 
   // Mark a scenario as explored when its tab is first clicked
   function selectTab(id: TabId) {
@@ -176,42 +187,42 @@ export default function CausalThinkingDAGsClient() {
   const activeTabMeta = TABS.find((t) => t.id === activeTab)!;
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
+    <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="causal-thinking-dags" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* ── Breadcrumb ── */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
-          <span className="text-[#334155]">/</span>
-          <span className="text-white">Causal Thinking: Confounders, Mediators &amp; DAGs</span>
+          <span>/</span>
+          <span className="text-[#94a3b8]">{GUIDE_TITLE}</span>
         </nav>
 
         {/* ── Hero ── */}
         <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
           className="mb-10"
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Unit 12: Experimental Design
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4">
             Causal Thinking:{" "}
-            <span className="text-[#d4af37]">Confounders, Mediators &amp; DAGs</span>
+            <span className="text-[var(--color-accent)]">Confounders, Mediators &amp; DAGs</span>
           </h1>
-          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-2xl mb-6">
-            Correlation isn&apos;t causation — but how do you figure out what actually causes what?
+          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px] mb-6">
+            Correlation isn&apos;t causation, but how do you figure out what actually causes what?
             Directed Acyclic Graphs (DAGs) give you a rigorous visual language for causal reasoning.
             Explore the three fundamental variable types and see how controlling the wrong variable
-            can introduce — not remove — bias.
+            can introduce bias instead of removing it.
           </p>
 
           {/* Progress tracker */}
@@ -258,40 +269,46 @@ export default function CausalThinkingDAGsClient() {
 
         {/* ── Intro: Correlation vs Causation ── */}
         <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={GUIDE_VIEWPORT}
           className="mb-10"
         >
           <h2 className="text-xl font-bold text-white mb-4">
             From Correlation to Causation
           </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {CONCEPT_CARDS.map((card, i) => (
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="visible"
+            viewport={GUIDE_VIEWPORT}
+            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
+          >
+            {CONCEPT_CARDS.map((c) => (
               <motion.div
-                key={card.title}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.12 + i * 0.06 }}
+                key={c.title}
+                variants={card}
                 className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5 space-y-2"
               >
                 <div
                   className="w-1 h-6 rounded-full mb-3"
-                  style={{ backgroundColor: card.color }}
+                  style={{ backgroundColor: c.color }}
                 />
-                <h3 className="text-sm font-bold text-white">{card.title}</h3>
-                <p className="text-xs text-[#94a3b8] leading-relaxed">{card.content}</p>
+                <h3 className="text-sm font-bold text-white">{c.title}</h3>
+                <p className="text-xs text-[#94a3b8] leading-relaxed">{c.content}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
           <BackDoorCriterion />
         </motion.section>
 
         {/* ── Scenario tabs ── */}
         <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={GUIDE_VIEWPORT}
           className="mb-6"
         >
           <h2 className="text-xl font-bold text-white mb-4">
@@ -299,7 +316,7 @@ export default function CausalThinkingDAGsClient() {
           </h2>
 
           {/* Tab bar */}
-          <div className="flex gap-2 flex-wrap mb-2">
+          <div className="flex gap-2 flex-wrap mb-2" role="radiogroup" aria-label="Causal scenario">
             {TABS.map((tab) => {
               const isActive = activeTab === tab.id;
               const isExplored =
@@ -307,6 +324,8 @@ export default function CausalThinkingDAGsClient() {
               return (
                 <button
                   key={tab.id}
+                  role="radio"
+                  aria-checked={isActive}
                   onClick={() => selectTab(tab.id)}
                   className={`relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${
                     isActive
@@ -337,17 +356,17 @@ export default function CausalThinkingDAGsClient() {
           </div>
 
           {/* Tab description */}
-          <p className="text-xs text-[#64748b] italic mb-5">{activeTabMeta.description}</p>
+          <p className="text-xs text-[#475569] italic mb-5">{activeTabMeta.description}</p>
 
           {/* Tab content */}
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTab}
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.25 }}
+                variants={fadeIn}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
               >
                 {activeTab === "build" ? (
                   <CustomDAGBuilder />
@@ -361,9 +380,10 @@ export default function CausalThinkingDAGsClient() {
 
         {/* ── Common Mistakes ── */}
         <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.25 }}
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={GUIDE_VIEWPORT}
           className="mb-8"
         >
           <h2 className="text-xl font-bold text-white mb-4">Common Causal Mistakes</h2>
@@ -382,7 +402,7 @@ export default function CausalThinkingDAGsClient() {
                 icon: "→M→",
                 color: "#a855f7",
                 description:
-                  'Controlling for a mediator blocks the indirect causal effect. Your estimate becomes "direct effect only" — which is valid only if that\'s your goal.',
+                  'Controlling for a mediator blocks the indirect causal effect. Your estimate becomes "direct effect only", which is valid only if that\'s your goal.',
                 fix: "Explicitly decide: do you want total effect or direct effect?",
               },
               {
@@ -414,7 +434,7 @@ export default function CausalThinkingDAGsClient() {
                 <p className="text-xs text-[#94a3b8] leading-relaxed">{card.description}</p>
                 <div className="flex items-start gap-1.5 pt-1">
                   <span className="text-[#3bb4a4] text-xs font-bold shrink-0">Fix:</span>
-                  <span className="text-xs text-[#64748b]">{card.fix}</span>
+                  <span className="text-xs text-[#475569]">{card.fix}</span>
                 </div>
               </div>
             ))}
@@ -423,57 +443,38 @@ export default function CausalThinkingDAGsClient() {
 
         {/* ── Key Takeaways ── */}
         <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={GUIDE_VIEWPORT}
           className="bg-[#0a0e1a] rounded-2xl border border-[#d4af37]/20 p-6 space-y-3 mb-8"
         >
-          <h2 className="text-lg font-bold text-[#d4af37]">Key Takeaways</h2>
+          <h2 className="text-lg font-bold text-[var(--color-accent)]">Key Takeaways</h2>
           <ul className="space-y-2.5 text-sm text-[#94a3b8]">
             <li className="flex gap-2">
-              <span className="text-[#d4af37] font-bold shrink-0">1.</span>
-              A <strong className="text-white">confounder</strong> causes both treatment and outcome — it must be controlled to remove spurious correlations.
+              <span className="text-[var(--color-accent)] font-bold shrink-0">1.</span>
+              A <strong className="text-white">confounder</strong> causes both treatment and outcome; it must be controlled to remove spurious correlations.
             </li>
             <li className="flex gap-2">
-              <span className="text-[#d4af37] font-bold shrink-0">2.</span>
-              A <strong className="text-white">mediator</strong> lies on the causal path — controlling it gives you the direct effect only (and blocks the indirect effect).
+              <span className="text-[var(--color-accent)] font-bold shrink-0">2.</span>
+              A <strong className="text-white">mediator</strong> lies on the causal path; controlling it gives you the direct effect only (and blocks the indirect effect).
             </li>
             <li className="flex gap-2">
-              <span className="text-[#d4af37] font-bold shrink-0">3.</span>
-              A <strong className="text-white">collider</strong> is caused by two variables — conditioning on it OPENS a spurious path between its causes.
+              <span className="text-[var(--color-accent)] font-bold shrink-0">3.</span>
+              A <strong className="text-white">collider</strong> is caused by two variables; conditioning on it OPENS a spurious path between its causes.
             </li>
             <li className="flex gap-2">
-              <span className="text-[#d4af37] font-bold shrink-0">4.</span>
+              <span className="text-[var(--color-accent)] font-bold shrink-0">4.</span>
               Draw the DAG <em>before</em> choosing your adjustment set. Use the{" "}
               <strong className="text-white">back-door criterion</strong> to find the minimal sufficient set.
             </li>
             <li className="flex gap-2">
-              <span className="text-[#d4af37] font-bold shrink-0">5.</span>
+              <span className="text-[var(--color-accent)] font-bold shrink-0">5.</span>
               Selection bias, publication bias, and survivor bias are all examples of{" "}
               <strong className="text-white">collider conditioning</strong> in disguise.
             </li>
           </ul>
         </motion.section>
-
-        {/* ── Completion banner ── */}
-        <AnimatePresence>
-          {isComplete && session?.user && (
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="mb-8 rounded-2xl border border-[#3bb4a4]/40 bg-[#3bb4a4]/5 p-5 flex items-center gap-4"
-            >
-              <span className="text-2xl">🎯</span>
-              <div>
-                <p className="text-sm font-bold text-white">Guide Complete!</p>
-                <p className="text-xs text-[#94a3b8]">
-                  You&apos;ve explored all three causal structures. Progress saved.
-                </p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* ── Sign-in prompt ── */}
         {!session?.user && (
@@ -486,28 +487,109 @@ export default function CausalThinkingDAGsClient() {
             </div>
             <Link
               href="/auth/sign-in"
-              className="shrink-0 bg-[#d4af37] text-[#0a0e1a] rounded-xl font-semibold hover:opacity-90 px-5 py-2.5 text-sm transition-opacity"
+              className="shrink-0 bg-[var(--color-accent)] text-[#0a0e1a] rounded-xl font-semibold hover:opacity-90 px-5 py-2.5 text-sm transition-opacity"
             >
               Sign in
             </Link>
           </div>
         )}
 
-        {/* ── Navigation ── */}
-        <div className="flex items-center justify-between pt-6 border-t border-[#1e293b]">
-          <Link
-            href="/visual-guides/sources-of-bias"
-            className="text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            ← Sources of Bias
-          </Link>
-          <Link
-            href="/visual-guides/time-series-forecasting"
-            className="text-sm px-4 py-2 rounded-lg bg-[#d4af37]/10 text-[#d4af37] border border-[#d4af37]/30 hover:bg-[#d4af37]/20 transition-colors"
-          >
-            Next: Time Series Fundamentals & Forecasting →
-          </Link>
-        </div>
+        {/* ── Completion card ── */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  Causal Structures Explored!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You worked through confounders, mediators, and colliders, and saw what conditioning does to each.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Scenarios explored</p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">
+                      {scenariosExplored.size} / 3
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Key tool</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">Back-door criterion</p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Bonus</p>
+                    <p className="text-[14px] font-mono font-bold text-white">Build-your-own DAG</p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Controlling for a variable is not automatically safe. Draw the DAG first: control confounders, leave mediators alone when you want the total effect, and never condition on a collider.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleResetGuide}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── Footer nav (pre-completion) ── */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← All Guides
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next Guide →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -4,7 +4,11 @@ import React, { useState, useRef, useEffect, useMemo, useCallback } from "react"
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+
+const GUIDE_TITLE = "Gradient Descent: Rolling Down the Hill";
+const NEXT_GUIDE_SLUG = "overfitting-underfitting";
 
 // ── Loss landscape functions ───────────────────────────────────────────────────
 type LandscapeId = "bowl" | "ravine" | "plateau" | "multimodal";
@@ -21,19 +25,19 @@ interface Landscape {
 
 const LANDSCAPES: Record<LandscapeId, Landscape> = {
   bowl: {
-    id: "bowl", label: "Simple Bowl", desc: "Convex — one global minimum, GD always converges",
+    id: "bowl", label: "Simple Bowl", desc: "Convex: one global minimum, GD always converges",
     loss: (w, b) => 0.5 * w * w + 0.5 * b * b,
     gradW: (w, _b) => w, gradB: (_w, b) => b,
     minW: 0, minB: 0,
   },
   ravine: {
-    id: "ravine", label: "Ravine", desc: "Elongated valley — slow along one direction, oscillates across",
+    id: "ravine", label: "Ravine", desc: "Elongated valley: slow along one direction, oscillates across",
     loss: (w, b) => 0.05 * w * w + 5 * b * b,
     gradW: (w, _b) => 0.1 * w, gradB: (_w, b) => 10 * b,
     minW: 0, minB: 0,
   },
   plateau: {
-    id: "plateau", label: "Plateau", desc: "Near-zero gradient region — GD stalls before reaching minimum",
+    id: "plateau", label: "Plateau", desc: "Near-zero gradient region: GD stalls before reaching minimum",
     loss: (w, b) => {
       const r = Math.sqrt(w * w + b * b);
       return 1 / (1 + Math.exp(-r + 3)) + 0.05;
@@ -51,7 +55,7 @@ const LANDSCAPES: Record<LandscapeId, Landscape> = {
     minW: 0, minB: 0,
   },
   multimodal: {
-    id: "multimodal", label: "Multiple Minima", desc: "Non-convex — GD may get stuck in a local minimum",
+    id: "multimodal", label: "Multiple Minima", desc: "Non-convex: GD may get stuck in a local minimum",
     loss: (w, b) => {
       return 2 - Math.cos(w * 1.5) - Math.cos(b * 1.5) + 0.1 * (w * w + b * b) * 0.05;
     },
@@ -114,8 +118,8 @@ function LossCurve({ history }: { history: GDState[] }) {
       <text x={LCW - rp} y={LCH - 4} fill="#94a3b8" fontSize="9" textAnchor="end">Step</text>
       <line x1={lp} y1={tp} x2={lp} y2={LCH - bp} stroke="#334155" strokeWidth="1" />
       <line x1={lp} y1={LCH - bp} x2={LCW - rp} y2={LCH - bp} stroke="#334155" strokeWidth="1" />
-      <path d={pathD} fill="none" stroke="#d4af37" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={x(history.length - 1)} cy={y(history[history.length - 1].loss)} r={3} fill="#d4af37" />
+      <path d={pathD} fill="none" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={x(history.length - 1)} cy={y(history[history.length - 1].loss)} r={3} fill="var(--color-accent)" />
       <text x={lp} y={LCH - bp + 12} fill="#94a3b8" fontSize="8">0</text>
       <text x={LCW - rp} y={LCH - bp + 12} fill="#94a3b8" fontSize="8" textAnchor="end">{history.length - 1}</text>
     </svg>
@@ -134,6 +138,7 @@ function lossColor(normalized: number): string {
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function GradientDescentClient() {
   const { data: session } = useSession();
+  const { fadeUp, card } = useGuideMotion();
   const [landscapeId, setLandscapeId] = useState<LandscapeId>("bowl");
   const [lr, setLr] = useState(0.1);
   const [history, setHistory] = useState<GDState[]>([]);
@@ -158,7 +163,7 @@ export default function GradientDescentClient() {
         fetch("/api/visual-guides/complete", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ guideSlug: "gradient-descent", score: 7 }),
+          body: JSON.stringify({ guideSlug: "gradient-descent", score: 100 }),
         }).catch(() => {});
       }
     }
@@ -230,36 +235,62 @@ export default function GradientDescentClient() {
     setStartPos(null);
   }
 
+  function handleResetGuide() {
+    reset();
+    setLandscapeId("bowl");
+    setLr(0.1);
+    setLandscapesExplored(new Set());
+    setRunsCompleted(0);
+    completionFired.current = false;
+  }
+
   const current = history[history.length - 1];
 
   const cellW = (CW - 2 * PAD) / GRID_RES;
   const cellH = (CH - 2 * PAD) / GRID_RES;
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
-      <GuideCompletion isComplete={isComplete} guideSlug="gradient-descent" score={7} />
-      <div className="max-w-[1300px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+    <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="gradient-descent" score={100} />
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
+            Visual Guides
+          </Link>
           <span>/</span>
-          <span className="text-white">Gradient Descent: Rolling Down the Hill</span>
+          <span className="text-[#94a3b8]">{GUIDE_TITLE}</span>
         </nav>
 
         {/* Hero */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-[#1e5d8a]/20 border border-[#1e5d8a]/40 rounded-full px-3 py-1 mb-4">
-            <span className="text-xs font-semibold text-[#3bb4a4] uppercase tracking-wider">Machine Learning</span>
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
+              Machine Learning
+            </span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Gradient Descent: Rolling Down the Hill
-          </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl">
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
+          >
+            Gradient Descent:{" "}
+            <span className="text-[var(--color-accent)]">Rolling Down the Hill</span>
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]"
+          >
             Click anywhere on the loss landscape to drop a ball, then watch it roll toward the minimum.
             Experiment with different learning rates and landscapes to see convergence, oscillation, and getting stuck.
-          </p>
-        </div>
+          </motion.p>
+        </section>
 
         {/* Progress */}
         <div className="mb-8 bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
@@ -283,7 +314,7 @@ export default function GradientDescentClient() {
           )}
           {!session?.user && (
             <p className="mt-2 text-xs text-[#94a3b8]">
-              <Link href="/auth/sign-in" className="text-[#d4af37] hover:underline">Sign in</Link> to save your progress.
+              <Link href="/auth/sign-in" className="text-[var(--color-accent)] hover:underline">Sign in</Link> to save your progress.
             </p>
           )}
         </div>
@@ -294,9 +325,9 @@ export default function GradientDescentClient() {
             <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-2xl overflow-hidden">
               <div className="p-3 border-b border-[#1e293b] flex items-center gap-2 text-xs text-[#94a3b8]">
                 <span className="text-white font-semibold">Loss landscape</span>
-                <span>— click to set starting position</span>
+                <span>(click to set starting position)</span>
                 {current && (
-                  <span className="ml-auto text-[#d4af37] font-semibold">
+                  <span className="ml-auto text-[var(--color-accent)] font-semibold">
                     Loss: {current.loss.toFixed(4)} · Step: {current.step}
                   </span>
                 )}
@@ -346,7 +377,7 @@ export default function GradientDescentClient() {
                 {current && (
                   <motion.circle
                     cx={toSVG_contour(current.w)} cy={toSVG_contourY(current.b)} r={7}
-                    fill="#d4af37" stroke="white" strokeWidth="2"
+                    fill="var(--color-accent)" stroke="white" strokeWidth="2"
                     animate={{ cx: toSVG_contour(current.w), cy: toSVG_contourY(current.b) }}
                     transition={{ duration: 0.05 }}
                   />
@@ -378,10 +409,12 @@ export default function GradientDescentClient() {
             {/* Landscape selector */}
             <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
               <h3 className="text-sm font-semibold text-white mb-3">Landscape</h3>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2" role="radiogroup" aria-label="Loss landscape">
                 {(Object.values(LANDSCAPES) as Landscape[]).map(ls => (
                   <button
                     key={ls.id}
+                    role="radio"
+                    aria-checked={landscapeId === ls.id}
                     onClick={() => { setLandscapeId(ls.id); reset(); setLandscapesExplored(prev => new Set([...prev, ls.id])); }}
                     className={`px-3 py-2 rounded-lg text-xs font-medium text-left border transition-all ${landscapeId === ls.id ? "bg-[#1e5d8a]/20 border-[#1e5d8a]/60 text-white" : "border-[#334155] text-[#94a3b8] hover:border-[#475569]"}`}
                   >
@@ -396,20 +429,23 @@ export default function GradientDescentClient() {
             <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
               <div className="flex items-center justify-between mb-1">
                 <h3 className="text-sm font-semibold text-white">Learning Rate α</h3>
-                <span className="text-sm font-bold text-[#d4af37]">{lr.toFixed(3)}</span>
+                <span className="text-sm font-bold text-[var(--color-accent)]">{lr.toFixed(3)}</span>
               </div>
               <p className="text-xs text-[#94a3b8] mb-3">
                 Too small → slow. Too large → oscillates or diverges.
               </p>
               <input
                 type="range" min="0.001" max="0.8" step="0.001" value={lr}
+                aria-label="Learning rate"
                 onChange={e => setLr(parseFloat(e.target.value))}
-                className="w-full accent-[#d4af37]"
+                className="w-full accent-[var(--color-accent)]"
               />
-              <div className="flex gap-2 mt-3 flex-wrap">
+              <div className="flex gap-2 mt-3 flex-wrap" role="radiogroup" aria-label="Preset learning rates">
                 {[0.01, 0.1, 0.3, 0.7].map(val => (
                   <button key={val} onClick={() => setLr(val)}
-                    className={`px-2.5 py-1 rounded text-xs border transition-all ${Math.abs(lr - val) < 0.005 ? "bg-[#d4af37]/20 border-[#d4af37]/60 text-[#d4af37]" : "border-[#334155] text-[#94a3b8]"}`}
+                    role="radio"
+                    aria-checked={Math.abs(lr - val) < 0.005}
+                    className={`px-2.5 py-1 rounded text-xs border transition-all ${Math.abs(lr - val) < 0.005 ? "bg-[#d4af37]/20 border-[#d4af37]/60 text-[var(--color-accent)]" : "border-[#334155] text-[#94a3b8]"}`}
                   >
                     {val}
                   </button>
@@ -465,25 +501,111 @@ export default function GradientDescentClient() {
 
             {/* Key insight */}
             <div className="bg-[#1e293b]/60 border border-[#d4af37]/20 rounded-xl p-4">
-              <h3 className="text-xs font-semibold text-[#d4af37] uppercase tracking-wide mb-2">Key Insight</h3>
+              <h3 className="text-xs font-semibold text-[var(--color-accent)] uppercase tracking-wide mb-2">Key Insight</h3>
               <p className="text-xs text-[#94a3b8] leading-relaxed">
                 The gradient points <span className="text-white">uphill</span>, so subtracting it moves downhill.
-                The learning rate controls step size — too large and you overshoot the valley.
+                The learning rate controls step size: too large and you overshoot the valley.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between mt-10 pt-6 border-t border-[#1e293b]">
-          <Link href="/visual-guides/random-forests" className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors">
-            <span>←</span><span>Random Forests</span>
-          </Link>
-          <Link href="/visual-guides" className="text-sm text-[#94a3b8] hover:text-white transition-colors">All Guides</Link>
-          <Link href="/visual-guides/overfitting-underfitting" className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors">
-            <span>Overfitting Playground</span><span>→</span>
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  Gradient Descent Explored!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You dropped the ball on multiple landscapes and watched learning rate decide between convergence, oscillation, and getting stuck.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Landscapes explored</p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">
+                      {landscapesExplored.size} / 4
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Descent runs</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">{runsCompleted}</p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Current α</p>
+                    <p className="text-[14px] font-mono font-bold text-white">{lr.toFixed(3)}</p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Gradient descent only ever sees the slope under its feet. The learning rate decides whether that local information becomes steady progress, wild oscillation, or a permanent stall.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleResetGuide}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← All Guides
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next Guide →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

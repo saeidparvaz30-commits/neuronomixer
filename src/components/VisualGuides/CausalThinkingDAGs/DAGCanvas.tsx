@@ -64,7 +64,7 @@ function EdgeArrow({
     }
     const aStart = startPoint(from, to, NODE_R + 2);
     const aEnd = borderPoint(from, to, NODE_R + 2);
-    const color = edge.associationColor ?? "#d4af37";
+    const color = edge.associationColor ?? "var(--color-accent)";
     const midX = (aStart.x + aEnd.x) / 2;
     const midY = (aStart.y + aEnd.y) / 2;
     return (
@@ -169,7 +169,7 @@ function NodeCircle({
           dominantBaseline="middle"
           fontSize={arr.length > 1 ? "9" : "10"}
           fontWeight="600"
-          fill={isControlled ? "#3bb4a4" : "#ffffff"}
+          fill={isControlled ? "#3bb4a4" : "#f1f5f9"}
           style={{ pointerEvents: "none", transition: "fill 0.3s ease" }}
         >
           {word}
@@ -240,7 +240,7 @@ export default function DAGCanvas({
           refY="3.5"
           orient="auto"
         >
-          <polygon points="0 0, 10 3.5, 0 7" fill="#d4af37" />
+          <polygon points="0 0, 10 3.5, 0 7" fill="var(--color-accent)" />
         </marker>
       </defs>
 

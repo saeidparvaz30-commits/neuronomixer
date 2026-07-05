@@ -21,9 +21,9 @@ const ROLE_LABELS: Record<DAGNode["role"], string> = {
 const ROLE_TIPS: Record<DAGNode["role"], string> = {
   treatment:  "The variable whose causal effect we want to estimate.",
   outcome:    "The result we are trying to explain.",
-  confounder: "Causes both treatment and outcome — must be controlled.",
-  mediator:   "Lies on the causal path — controlling it blocks the indirect effect.",
-  collider:   "Is caused by two other variables — controlling it OPENS a spurious path!",
+  confounder: "Causes both treatment and outcome; must be controlled.",
+  mediator:   "Lies on the causal path; controlling it blocks the indirect effect.",
+  collider:   "Is caused by two other variables; controlling it OPENS a spurious path!",
   cause:      "An upstream cause of another variable.",
 };
 
@@ -103,7 +103,7 @@ export default function ControlPanel({ nodes, controlled, onChange }: ControlPan
                   {ROLE_LABELS[node.role]}
                 </span>
               </div>
-              <p className="text-[10px] text-[#64748b] leading-relaxed">
+              <p className="text-[10px] text-[#475569] leading-relaxed">
                 {ROLE_TIPS[node.role]}
               </p>
             </div>

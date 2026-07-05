@@ -54,6 +54,7 @@ export interface Scenario {
 }
 
 // ── Node colour constants ─────────────────────────────────────────────────────
+// Raw hexes required: values are concatenated with alpha suffixes (e.g. `${color}22`).
 export const NODE_COLORS: Record<DAGNode["role"], string> = {
   treatment:  "#1e5d8a",
   outcome:    "#3bb4a4",
