@@ -21,6 +21,16 @@ export default function LotteryEVBreakdown() {
   const totalEV =
     tiers.reduce((s, t) => s + t.evContrib, 0) + noWinEVContrib;
 
+  // Breakeven jackpot, computed from the same tier table:
+  // totalEV = sum(prize_i * p_i) - ticketCost, so EV = 0 when
+  // jackpot * p_jackpot = ticketCost - sum(non-jackpot prize_i * p_i)
+  const nonJackpotPrizeEV = LOTTERY_TIERS.slice(1).reduce(
+    (s, t) => s + t.prize * t.probability,
+    0
+  );
+  const breakevenJackpot =
+    (ticketCost - nonJackpotPrizeEV) / LOTTERY_TIERS[0].probability;
+
   return (
     <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5 sm:p-6">
       <div className="flex items-start justify-between mb-2">
@@ -121,7 +131,8 @@ export default function LotteryEVBreakdown() {
             {Math.abs(totalEV / ticketCost * 100).toFixed(0)}¢
           </strong>
           . The jackpot prize would need to exceed{" "}
-          <strong className="text-white">~$585M</strong> before the EV turns positive — and
+          <strong className="text-white">~${(breakevenJackpot / 1_000_000).toFixed(0)}M</strong>{" "}
+          (computed from this prize table) before the EV turns positive, and
           even then, taxes and lump-sum penalties reduce the real EV further.
         </p>
       </div>
@@ -129,19 +140,22 @@ export default function LotteryEVBreakdown() {
       {/* EV bar visualization */}
       <div className="mt-4">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-[#475569] mb-2">
-          EV contribution by tier
+          EV contribution by tier (log scale)
         </p>
         <div className="space-y-1.5">
           {tiers.map((tier) => {
-            // Scale bars: jackpot EV is largest contributor, use log scale for display
-            const jackpotEV = tiers[0].evContrib;
+            // Log-scale mapping: smallest tier EV -> 2% width, largest -> 100% width.
+            // (Dividing two logs of numbers < 1 previously pushed every bar past 100%.)
+            const magnitudes = tiers
+              .map((t) => Math.abs(t.evContrib))
+              .filter((v) => v > 0);
+            const maxMag = Math.max(...magnitudes);
+            const minMag = Math.min(...magnitudes);
+            const logSpan = Math.log10(maxMag) - Math.log10(minMag) || 1;
+            const mag = Math.abs(tier.evContrib);
             const barWidth =
-              jackpotEV === 0
-                ? 0
-                : Math.abs(tier.evContrib) > 0
-                ? Math.max(2, (Math.log10(Math.abs(tier.evContrib) + 1e-8) /
-                    Math.log10(Math.abs(jackpotEV) + 1e-8)) *
-                    100)
+              mag > 0
+                ? 2 + 98 * ((Math.log10(mag) - Math.log10(minMag)) / logSpan)
                 : 0;
 
             return (

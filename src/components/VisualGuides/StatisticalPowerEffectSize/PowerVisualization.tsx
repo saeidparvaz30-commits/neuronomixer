@@ -101,12 +101,18 @@ export default function PowerVisualization({
   cohensD,
   alpha,
   twoTailed,
+  sampleSizePerGroup,
   computedPower,
 }: Props) {
   const paths = useMemo(() => {
+    // Draw the SAMPLING DISTRIBUTIONS of the test statistic (z scale), not the
+    // raw effect-size scale. Under H1 the z statistic is centered at the
+    // noncentrality ncp = d * sqrt(n/2) with SD 1 (same formula computePower
+    // uses), so the shaded green area IS the printed power and n matters.
     const d = Math.max(0.01, cohensD);
+    const ncp = d * Math.sqrt(Math.max(2, sampleSizePerGroup) / 2);
     const xMin = -4;
-    const xMax = d + 4;
+    const xMax = ncp + 4;
     const range = xMax - xMin;
 
     // Scale so peak height fills ~70% of IH
@@ -119,25 +125,27 @@ export default function PowerVisualization({
 
     // Curves
     const nullCurve = buildCurvePath(0, xMin, xMax, scale);
-    const altCurve = buildCurvePath(d, xMin, xMax, scale);
+    const altCurve = buildCurvePath(ncp, xMin, xMax, scale);
 
     // Alpha region: right tail of null (and left tail if two-tailed)
     const alphaFillRight = buildFillRight(0, critRight, xMin, xMax, scale);
     const alphaFillLeft = twoTailed ? buildFillLeft(0, critLeft, xMin, xMax, scale) : "";
 
-    // Power region: right tail of alternative (beyond critRight)
-    const powerFill = buildFillRight(d, critRight, xMin, xMax, scale);
+    // Power region: alternative beyond the critical value(s)
+    const powerFill = buildFillRight(ncp, critRight, xMin, xMax, scale);
+    const powerFillLeft = twoTailed ? buildFillLeft(ncp, critLeft, xMin, xMax, scale) : "";
 
-    // Beta region: left body of alternative (below critRight)
-    const betaFill = buildFillLeft(d, critRight, xMin, xMax, scale);
+    // Beta region: alternative between the critical values
+    const betaFill = buildFillLeft(ncp, critRight, xMin, xMax, scale);
 
     // Critical value lines
     const critRightX = xToSvg(critRight, xMin, xMax);
     const critLeftX = twoTailed ? xToSvg(critLeft, xMin, xMax) : null;
 
-    // X-axis tick marks
+    // X-axis tick marks (thin out labels when the range gets wide)
+    const tickStep = range > 14 ? 2 : 1;
     const ticks: { x: number; label: string }[] = [];
-    for (let v = Math.ceil(xMin); v <= Math.floor(xMax); v++) {
+    for (let v = Math.ceil(xMin); v <= Math.floor(xMax); v += tickStep) {
       ticks.push({ x: xToSvg(v, xMin, xMax), label: String(v) });
     }
 
@@ -147,6 +155,7 @@ export default function PowerVisualization({
       alphaFillRight,
       alphaFillLeft,
       powerFill,
+      powerFillLeft,
       betaFill,
       critRightX,
       critLeftX,
@@ -154,9 +163,9 @@ export default function PowerVisualization({
       range,
       xMin,
       xMax,
-      d,
+      ncp,
     };
-  }, [cohensD, alpha, twoTailed]);
+  }, [cohensD, alpha, twoTailed, sampleSizePerGroup]);
 
   const beta = 1 - computedPower;
 
@@ -207,6 +216,16 @@ export default function PowerVisualization({
           animate={{ d: paths.powerFill }}
           transition={{ duration: 0.35 }}
         />
+        {/* Power fill in far left tail (two-tailed only; usually negligible) */}
+        {paths.powerFillLeft && (
+          <motion.path
+            d={paths.powerFillLeft}
+            fill="#3bb4a4"
+            fillOpacity="0.45"
+            animate={{ d: paths.powerFillLeft }}
+            transition={{ duration: 0.35 }}
+          />
+        )}
 
         {/* Alpha fill right (red) — null curve right tail */}
         <motion.path
@@ -288,14 +307,19 @@ export default function PowerVisualization({
           H₀ (μ=0)
         </text>
         <text
-          x={Math.min(xToSvg(paths.d, paths.xMin, paths.xMax), W - 36)}
+          x={Math.min(xToSvg(paths.ncp, paths.xMin, paths.xMax), W - 56)}
           y={PAD.t + 9}
           textAnchor="middle"
           fill="#d4af37"
           fontSize="7.5"
           fontWeight="600"
         >
-          H₁ (μ=d)
+          H₁ (μ = d·√(n/2) = {paths.ncp.toFixed(2)})
+        </text>
+
+        {/* Axis caption: this is the test-statistic (z) scale */}
+        <text x={PAD.l + IW / 2} y={PAD.t + IH + 24} textAnchor="middle" fill="#334155" fontSize="7">
+          z (test statistic scale)
         </text>
 
         {/* Numeric labels below axis */}

@@ -42,7 +42,11 @@ export function generatePopulation(n: number = 1000): PopulationUnit[] {
       group: isA ? "A" : "B",
       value: gaussianRandom(isA ? 55 : 75, 8),
       x: Math.random(),
-      y: Math.random(),
+      // Group A concentrates in low-y "neighborhoods", group B in high-y ones,
+      // so the y-band clusters used by cluster sampling are internally similar.
+      // That is what makes the design effect (higher variance across cluster
+      // draws than SRS) genuinely visible in the repeated-draws chart.
+      y: isA ? Math.random() * 0.6 : 0.4 + Math.random() * 0.6,
     };
   });
 }

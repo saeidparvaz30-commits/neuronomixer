@@ -71,7 +71,7 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
           animate={{ opacity: 0.7 }}
           transition={{ duration: 0.4 }}
         />
-        <text x="10" y="50" fill="#d4af37" fontSize="9" textAnchor="middle">C</text>
+        <text x="20" y="48" fill="#d4af37" fontSize="9" textAnchor="start">Cₜ₋₁</text>
         <text x="508" y="50" fill="#d4af37" fontSize="9" textAnchor="start">Cₜ</text>
         <text x="256" y="42" fill="#d4af37" fontSize="8" textAnchor="middle">Cell State (memory highway)</text>
 
@@ -137,23 +137,19 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
           c̃={gates.cell[0].toFixed(2)}
         </text>
 
-        {/* i ⊙ C̃ multiply node */}
-        <circle cx="240" cy="55" r="9" fill="#1e293b" stroke="#22c55e" strokeWidth="1.5" />
-        <text x="240" y="59" fill="#22c55e" fontSize="10" textAnchor="middle" fontWeight="700">⊙</text>
+        {/* i ⊙ C̃ multiply node, below the highway */}
+        <circle cx="240" cy="84" r="9" fill="#1e293b" stroke="#22c55e" strokeWidth="1.5" />
+        <text x="240" y="88" fill="#22c55e" fontSize="10" textAnchor="middle" fontWeight="700">⊙</text>
 
-        {/* Lines from i and C̃ up to ⊙ */}
-        <line x1="215" y1="100" x2="215" y2="75" stroke="#22c55e" strokeWidth="1.5" opacity="0.7" />
-        <line x1="215" y1="75" x2="240" y2="64" stroke="#22c55e" strokeWidth="1.5" opacity="0.7" markerEnd="url(#lstmArrow)" />
-        <line x1="285" y1="100" x2="285" y2="75" stroke="#3bb4a4" strokeWidth="1.5" opacity="0.7" />
-        <line x1="285" y1="75" x2="249" y2="64" stroke="#3bb4a4" strokeWidth="1.5" opacity="0.7" markerEnd="url(#lstmArrow)" />
+        {/* Lines from i and C̃ into ⊙ */}
+        <line x1="215" y1="100" x2="233" y2="91" stroke="#22c55e" strokeWidth="1.5" opacity="0.7" markerEnd="url(#lstmArrow)" />
+        <line x1="285" y1="100" x2="247" y2="91" stroke="#3bb4a4" strokeWidth="1.5" opacity="0.7" markerEnd="url(#lstmArrow)" />
 
-        {/* ⊕ add node on highway */}
-        <circle cx="240" cy="55" r="0" fill="none" />
-        {/* Replace ⊙ with ⊕ for adding i*C̃ to cell */}
-        <circle cx="170" cy="55" r="9" fill="#1e293b" stroke="#d4af37" strokeWidth="1.5" />
-        <text x="170" y="59" fill="#d4af37" fontSize="10" textAnchor="middle" fontWeight="700">⊕</text>
-        {/* Arrow from ⊙(i*C̃) to ⊕ */}
-        <line x1="240" y1="55" x2="179" y2="55" stroke="#22c55e" strokeWidth="1.5" markerEnd="url(#lstmArrow)" />
+        {/* ⊕ add node on the highway, directly above ⊙ */}
+        <circle cx="240" cy="55" r="9" fill="#1e293b" stroke="#d4af37" strokeWidth="1.5" />
+        <text x="240" y="59" fill="#d4af37" fontSize="10" textAnchor="middle" fontWeight="700">⊕</text>
+        {/* i·C̃ flows upward into ⊕, joining the left-to-right highway */}
+        <line x1="240" y1="75" x2="240" y2="66" stroke="#22c55e" strokeWidth="1.5" markerEnd="url(#lstmArrow)" />
 
         {/* ─── Output Gate (o) ─── */}
         <motion.rect

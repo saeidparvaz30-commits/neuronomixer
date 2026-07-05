@@ -211,8 +211,10 @@ function ConsistencyTab() {
   return (
     <div>
       <p className="text-[12px] text-[#94a3b8] mb-4 leading-relaxed">
-        A <span className="text-white font-semibold">consistent</span> estimator converges to the true value as n increases.
-        SE → 0 as n → ∞.
+        A <span className="text-white font-semibold">consistent</span> estimator converges in probability to the
+        true value as n grows. For the sample mean this holds because it is unbiased AND its SE → 0 as n → ∞.
+        A shrinking SE alone is not enough: an estimator that stays biased is not consistent no matter how
+        small its SE gets.
       </p>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
@@ -283,7 +285,7 @@ function EfficiencyTab({
   sampleMedians: number[];
 }) {
   const seMean = computeSE(20, sampleSize);
-  const seMedian = 1.2533 * computeSE(20, sampleSize); // π/2 ≈ 1.2533
+  const seMedian = 1.2533 * computeSE(20, sampleSize); // √(π/2) ≈ 1.2533
 
   const relativePct = ((seMedian - seMean) / seMean) * 100;
 
@@ -363,11 +365,14 @@ function EfficiencyTab({
       </div>
 
       <p className="text-[10px] text-[#3bb4a4] leading-relaxed">
-        For normal data, the sample mean is{" "}
-        <span className="font-semibold">~{relativePct.toFixed(0)}% more efficient</span> than the median.
-        The mean has{" "}
-        <span className="font-mono font-bold">ARE = {(seMean / seMedian * 100).toFixed(0)}%</span>{" "}
-        (asymptotic relative efficiency).
+        For normal data, the median&apos;s SE is{" "}
+        <span className="font-semibold">~{relativePct.toFixed(0)}% larger</span> than the mean&apos;s at the same n.
+        Efficiency compares VARIANCES, not SEs: the median&apos;s asymptotic relative efficiency is{" "}
+        <span className="font-mono font-bold">
+          ARE = (SE ratio)² = {((seMean / seMedian) ** 2 * 100).toFixed(0)}%
+        </span>{" "}
+        (exactly 2/π ≈ 63.7%), so the median needs about {(1 / ((seMean / seMedian) ** 2)).toFixed(2)}× as many
+        observations to match the mean&apos;s precision.
       </p>
     </div>
   );

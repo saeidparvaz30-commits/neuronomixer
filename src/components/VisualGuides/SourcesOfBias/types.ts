@@ -73,12 +73,12 @@ export const CASE_STUDIES: CaseStudy[] = [
     biasLabel: "Selection Bias",
     biasColor: "#d4af37",
     context:
-      "Two hospitals publish their 5-year survival rates for complex surgeries. Hospital X reports 50%; Hospital Y reports 25%. Patients conclude Hospital X is twice as good.",
-    observedHeadline: "Hospital X: 50% survival · Hospital Y: 25% survival",
+      "Two hospitals publish their 5-year survival rates for complex surgeries. Hospital X reports 50% (450 of 900 patients); Hospital Y reports 34% (342 of 1,000). Patients conclude Hospital X is far better.",
+    observedHeadline: "Hospital X: 50% survival · Hospital Y: 34% survival",
     falseConclusion:
-      "Hospital X is far superior — it has twice the survival rate.",
+      "Hospital X is far superior: its survival rate is 16 points higher.",
     hiddenExplanation:
-      "Hospital X only accepts low-risk patients for complex procedures. Hospital Y treats all comers, including high-risk cases. When you stratify by patient risk level, Hospital Y actually has better outcomes within each risk group — it's doing harder work and still matching Hospital X's performance on comparable patients.",
+      "Hospital X only accepts low-risk patients for complex procedures. Hospital Y treats all comers, including high-risk cases. Stratify by risk and the gap vanishes: on low-risk patients Hospital Y survives 51% (102/200) versus X's 50% (450/900), and Y additionally carries 800 high-risk patients at 30% survival that X never touches. Y's lower overall number comes entirely from its harder caseload.",
     lessonText:
       "Selection bias in patient assignment makes Hospital X look better. This is also Simpson's Paradox: the group averages are misleading because the groups have different compositions. Case mix adjustment is required before comparing outcomes across hospitals.",
     conceptTerms: [
@@ -130,7 +130,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     falseConclusion:
       "This advisor consistently beats the market — worth paying for.",
     hiddenExplanation:
-      "Out of 30 total picks the advisor made that year, you were shown only the 5 best. The full list includes 15 losers (avg −4%) and 10 neutral picks (avg +2%). The true average across all 30 picks: +1% — well below the market. The advisor curated winners to confirm your impression of their skill.",
+      "Out of 30 total picks the advisor made that year, you were shown only the 5 best. The full list includes 15 losers (avg −4%) and 10 neutral picks (avg +2%). The true average across all 30 picks is roughly +1%, well below the market's +7%. The advisor curated winners to confirm your impression of their skill.",
     lessonText:
       "Confirmation bias shapes both what we look for and what we share. The advisor remembers — and highlights — their winners. You remember the impressive slide deck, not the full track record you never saw. Always ask for the full distribution, not the highlight reel.",
     conceptTerms: [

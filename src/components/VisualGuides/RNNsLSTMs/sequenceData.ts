@@ -21,15 +21,25 @@ function hiddenStateForStep(t: number): number[] {
   ];
 }
 
-// RNN: gradient magnitude decays by factor 0.6 per step (starting from step 0 = 1.0)
-// Step 0 is the most recent in backprop terms; gradient at step t from end = 0.6^t
-// We display timesteps 0→5 (forward), so gradient at t=0 is 1.0 (backprop starts here),
-// and gradient at t=5 (oldest) = 0.6^5 ≈ 0.078
+// RNN gradient flow, computed as a real chain product.
+// The loss sits at the LAST timestep (t=5). Backprop multiplies one Jacobian
+// factor |diag(tanh')·Wh| per step it travels backward, so:
+//   grad(t) = Π_{k=t+1..5} RNN_JACOBIAN_FACTORS[k]
+// grad(5) = 1.0 at the loss; earlier tokens get progressively smaller gradients.
+const RNN_JACOBIAN_FACTORS = [1.0, 0.55, 0.45, 0.6, 0.5, 0.4]; // index k = transition into step k
+
+function chainProduct(factors: number[], t: number): number {
+  let g = 1;
+  for (let k = t + 1; k < factors.length; k++) g *= factors[k];
+  return g;
+}
+
 export const RNN_SEQUENCE: SequenceStep[] = SENTENCE_TOKENS.map((token, t) => ({
   t,
   inputToken: token,
   hiddenState: hiddenStateForStep(t),
-  gradientMagnitude: Math.pow(0.6, t), // step 0 = 1.0, step 5 ≈ 0.078
+  // t=5 → 1.0 (loss), t=0 → 0.55·0.45·0.6·0.5·0.4 ≈ 0.030 (vanished)
+  gradientMagnitude: chainProduct(RNN_JACOBIAN_FACTORS, t),
 }));
 
 // LSTM: gate values are realistic
@@ -83,12 +93,21 @@ const LSTM_GATE_PRESETS: Array<{ forget: number[]; input: number[]; output: numb
   },
 ];
 
+// LSTM gradient flow, computed from the SAME forget gates shown in the diagram.
+// Along the cell-state path, dC_k/dC_{k-1} = f_k (the forget gate), so:
+//   grad(t) = Π_{k=t+1..5} mean(forget gate at step k)
+// Gradients shrink ONLY where the network chooses to forget (low f), instead of
+// shrinking by a small Jacobian factor at every single step like the RNN.
+const meanGate = (v: number[]) => v.reduce((a, b) => a + b, 0) / v.length;
+const LSTM_FORGET_MEANS = LSTM_GATE_PRESETS.map((g) => meanGate(g.forget));
+
 export const LSTM_SEQUENCE: SequenceStep[] = SENTENCE_TOKENS.map((token, t) => ({
   t,
   inputToken: token,
   hiddenState: hiddenStateForStep(t + 10), // offset seed so different from RNN
   gateValues: LSTM_GATE_PRESETS[t],
-  gradientMagnitude: 0.92 + lcg(t + 20) * 0.06, // stays near 0.95±0.03
+  // t=5 → 1.0 (loss), t=0 ≈ 0.145: shrinks only through the forget gates
+  gradientMagnitude: chainProduct(LSTM_FORGET_MEANS, t),
 }));
 
 // Gradient flow data for the chart (both lines)

@@ -28,10 +28,13 @@ function majorityClass(pts: DataPt[]): 0 | 1 {
   return pts.filter(p => p.cls === 1).length >= pts.length / 2 ? 1 : 0;
 }
 
-function buildTree(pts: DataPt[], depth: number, maxDepth: number, featureSubset: number[]): TreeNode {
+function buildTree(pts: DataPt[], depth: number, maxDepth: number): TreeNode {
   if (depth >= maxDepth || pts.length < 4 || gini(pts) < 0.05) {
     return { isLeaf: true, label: majorityClass(pts) };
   }
+  // Random forest samples candidate features at EACH SPLIT (mtry), not once per tree.
+  // With 2 features and the usual mtry = sqrt(n_features) = 1, each split considers 1 random feature.
+  const featureSubset = splitFeatureCandidates();
   let bestGain = -1, bestFeat = 0, bestThresh = 0;
   for (const feat of featureSubset) {
     const vals = pts.map(p => feat === 0 ? p.x : p.y).sort((a, b) => a - b);
@@ -49,8 +52,8 @@ function buildTree(pts: DataPt[], depth: number, maxDepth: number, featureSubset
   const right = pts.filter(p => (bestFeat === 0 ? p.x : p.y) > bestThresh);
   return {
     isLeaf: false, feature: bestFeat as 0 | 1, threshold: bestThresh,
-    left: buildTree(left, depth + 1, maxDepth, featureSubset),
-    right: buildTree(right, depth + 1, maxDepth, featureSubset),
+    left: buildTree(left, depth + 1, maxDepth),
+    right: buildTree(right, depth + 1, maxDepth),
   };
 }
 
@@ -60,21 +63,17 @@ function treePredict(tree: TreeNode, x: number, y: number): 0 | 1 {
   return val <= tree.threshold! ? treePredict(tree.left!, x, y) : treePredict(tree.right!, x, y);
 }
 
-// Bootstrap sample + random feature subset
+// Bootstrap sample per tree + random candidate features per split
 function bootstrapSample(pts: DataPt[]): DataPt[] {
   return Array.from({ length: pts.length }, () => pts[Math.floor(Math.random() * pts.length)]);
 }
 
-function randomFeatures(): number[] {
-  return Math.random() < 0.5 ? [0, 1] : (Math.random() < 0.5 ? [0] : [1]);
+function splitFeatureCandidates(): number[] {
+  return Math.random() < 0.5 ? [0] : [1];
 }
 
 function buildForest(pts: DataPt[], nTrees: number, maxDepth: number): TreeNode[] {
-  return Array.from({ length: nTrees }, () => {
-    const sample = bootstrapSample(pts);
-    const feats = randomFeatures();
-    return buildTree(sample, 0, maxDepth, feats);
-  });
+  return Array.from({ length: nTrees }, () => buildTree(bootstrapSample(pts), 0, maxDepth));
 }
 
 function forestPredict(forest: TreeNode[], x: number, y: number): { cls: 0 | 1; confidence: number } {
@@ -305,7 +304,7 @@ export default function RandomForestsClient() {
                 </div>
               )}
               <div className="ml-auto flex items-center gap-2">
-                <span className="text-xs text-[#94a3b8]">Accuracy:</span>
+                <span className="text-xs text-[#94a3b8]">Training accuracy:</span>
                 <span className="text-sm font-bold text-[#3bb4a4]">{(acc * 100).toFixed(1)}%</span>
               </div>
             </div>
@@ -422,7 +421,7 @@ export default function RandomForestsClient() {
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { label: "Trees", value: nTrees },
-                  { label: "Accuracy", value: `${(acc * 100).toFixed(1)}%` },
+                  { label: "Train Acc.", value: `${(acc * 100).toFixed(1)}%` },
                   { label: "Max Depth", value: maxDepth },
                   { label: "Points", value: pts.length },
                 ].map(({ label, value }) => (
@@ -438,9 +437,10 @@ export default function RandomForestsClient() {
             <div className="bg-[#1e293b]/60 border border-[#d4af37]/20 rounded-xl p-4">
               <h3 className="text-xs font-semibold text-[#d4af37] uppercase tracking-wide mb-2">Key Insight</h3>
               <p className="text-xs text-[#94a3b8] leading-relaxed">
-                Each tree sees a random <span className="text-white">bootstrap sample</span> and random
-                feature subset — so they make different errors. When their votes are combined,
-                individual errors cancel out, leaving a smoother, more accurate boundary.
+                Each tree trains on a random <span className="text-white">bootstrap sample</span>, and at
+                every split it considers only a random subset of features (the &ldquo;mtry&rdquo; trick), so
+                trees make different errors. When their votes are combined, individual errors cancel out,
+                leaving a smoother, more accurate boundary.
               </p>
             </div>
           </div>

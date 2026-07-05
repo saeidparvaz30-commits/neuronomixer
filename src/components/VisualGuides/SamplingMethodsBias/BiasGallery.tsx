@@ -19,7 +19,7 @@ const CASE_STUDIES: CaseStudy[] = [
       "The Literary Digest mailed 10 million questionnaires to readers selected from telephone directories and car registration lists, predicting a landslide victory for Alf Landon over FDR. FDR won by a historic margin.",
     rootCause: "Convenience Bias",
     lesson:
-      "Convenience sampling caused an 18-point prediction error. Wealthy readers (with phones and cars) had different preferences than the general electorate.",
+      "The prediction missed by roughly 19-20 percentage points. Two biases compounded: the sampling frame (phone and car owners in 1936) skewed wealthy, and only about 2.4 million of the 10 million ballots were returned, adding non-response bias on top.",
   },
   {
     title: "WWII Survivorship Bias",

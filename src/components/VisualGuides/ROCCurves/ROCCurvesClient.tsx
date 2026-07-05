@@ -24,11 +24,13 @@ interface ModelConfig {
   spread: number;     // std dev for both
 }
 
+// AUC shown next to each label is computed live from the generated samples,
+// so the number on the button always matches the curve on the chart.
 const MODELS: ModelConfig[] = [
-  { id: "excellent", label: "Excellent (AUC ≈ 0.95)", color: "#3bb4a4", posCenter: 0.78, negCenter: 0.28, spread: 0.12 },
-  { id: "good", label: "Good (AUC ≈ 0.82)", color: "#d4af37", posCenter: 0.65, negCenter: 0.38, spread: 0.18 },
-  { id: "random", label: "Random (AUC ≈ 0.50)", color: "#94a3b8", posCenter: 0.5, negCenter: 0.5, spread: 0.2 },
-  { id: "poor", label: "Poor (AUC ≈ 0.65)", color: "#f97316", posCenter: 0.58, negCenter: 0.42, spread: 0.2 },
+  { id: "excellent", label: "Excellent", color: "#3bb4a4", posCenter: 0.78, negCenter: 0.28, spread: 0.12 },
+  { id: "good", label: "Good", color: "#d4af37", posCenter: 0.65, negCenter: 0.38, spread: 0.18 },
+  { id: "random", label: "Random baseline", color: "#94a3b8", posCenter: 0.5, negCenter: 0.5, spread: 0.2 },
+  { id: "poor", label: "Poor", color: "#f97316", posCenter: 0.58, negCenter: 0.42, spread: 0.2 },
 ];
 
 interface Sample { actual: 0 | 1; score: number }
@@ -308,10 +310,11 @@ export default function ROCCurvesClient() {
                   const negH = (b.neg / (maxHistBin + 1)) * (DH - 2 * DP);
                   return (
                     <g key={i}>
+                      {/* Overlaid (not stacked) so the visual overlap matches the real class overlap */}
                       <rect x={bx} y={DH - DP - negH} width={bw - 1} height={negH}
-                        fill="#d4af37" opacity={0.6} />
-                      <rect x={bx} y={DH - DP - negH - posH} width={bw - 1} height={posH}
-                        fill="#3bb4a4" opacity={0.7} />
+                        fill="#d4af37" opacity={0.5} />
+                      <rect x={bx} y={DH - DP - posH} width={bw - 1} height={posH}
+                        fill="#3bb4a4" opacity={0.5} />
                     </g>
                   );
                 })}
@@ -349,7 +352,7 @@ export default function ROCCurvesClient() {
                       }}
                     >
                       <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: m.color, opacity: selected ? 1 : 0.3 }} />
-                      {m.label}
+                      {m.label} (AUC = {(aucData.get(m.id) || 0).toFixed(2)})
                     </button>
                   );
                 })}
@@ -404,6 +407,11 @@ export default function ROCCurvesClient() {
               <p className="text-xs text-[#94a3b8] leading-relaxed">
                 AUC is the probability that the model ranks a random positive sample higher than a random negative.
                 It's threshold-independent — a single number for the entire curve.
+              </p>
+              <p className="text-xs text-[#94a3b8] leading-relaxed mt-2">
+                Caveat: with heavily imbalanced classes, ROC curves can look deceptively good because FPR is
+                diluted by the large negative class. Precision-recall curves are often more informative there.
+                See the <Link href="/visual-guides/class-imbalance" className="text-[#d4af37] hover:underline">class imbalance guide</Link>.
               </p>
             </div>
           </div>

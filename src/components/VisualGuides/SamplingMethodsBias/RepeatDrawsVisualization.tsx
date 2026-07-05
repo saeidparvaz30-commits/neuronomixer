@@ -171,21 +171,38 @@ export default function RepeatDrawsVisualization({ repeatedMeans, populationMean
 
       {/* Insight */}
       <p className="text-[11px] text-[#334155] mt-3 leading-relaxed">
-        Each dot = one sample mean. The spread of dots shows sampling variability.{" "}
-        <span className="text-[#94a3b8]">Smaller spread = better method.</span>{" "}
+        Each dot = one sample mean. The spread of dots shows sampling variability (precision).{" "}
+        <span className="text-[#94a3b8]">
+          A good method needs both a small spread AND dots centered on the true mean (low bias).
+          A tight cluster in the wrong place is precisely wrong: try the convenience method to see it.
+        </span>{" "}
         The red dashed line marks the true population mean.
       </p>
 
-      {repeatedMeans.length >= 10 && sdOfMeans < 3 && (
-        <p className="text-[11px] text-[#3bb4a4] mt-1.5">
-          Low SD of means ({sdOfMeans.toFixed(2)}) — this method produces consistent estimates.
-        </p>
-      )}
-      {repeatedMeans.length >= 10 && sdOfMeans >= 3 && (
-        <p className="text-[11px] text-[#d4af37] mt-1.5">
-          High SD of means ({sdOfMeans.toFixed(2)}) — high variability across draws. Try a larger sample size.
-        </p>
-      )}
+      {repeatedMeans.length >= 10 && (() => {
+        const bias = meanOfMeans - populationMean;
+        const biased = Math.abs(bias) >= 2;
+        if (sdOfMeans < 3 && !biased) {
+          return (
+            <p className="text-[11px] text-[#3bb4a4] mt-1.5">
+              Low SD of means ({sdOfMeans.toFixed(2)}) and centered near true μ (off by {Math.abs(bias).toFixed(2)}): precise and accurate.
+            </p>
+          );
+        }
+        if (sdOfMeans < 3 && biased) {
+          return (
+            <p className="text-[11px] text-[#ef4444] mt-1.5">
+              Low SD of means ({sdOfMeans.toFixed(2)}) but centered {Math.abs(bias).toFixed(1)} away from true μ:
+              consistent yet biased. More draws or bigger samples will not fix bias.
+            </p>
+          );
+        }
+        return (
+          <p className="text-[11px] text-[#d4af37] mt-1.5">
+            High SD of means ({sdOfMeans.toFixed(2)}): high variability across draws. Try a larger sample size.
+          </p>
+        );
+      })()}
     </div>
   );
 }

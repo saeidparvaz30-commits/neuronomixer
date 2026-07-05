@@ -143,12 +143,20 @@ function ScatterPlot({
 }
 
 // ── Arrow plot: mean shift ────────────────────────────────────────────────────
-function MeanArrow({ group, label, color }: { group: Student[]; label: string; color: string }) {
+function MeanArrow({ group, label, color, overallMean }: { group: Student[]; label: string; color: string; overallMean: number }) {
   if (group.length === 0) return null;
   const m1 = mean(group.map(s => s.test1));
   const m2 = mean(group.map(s => s.test2));
   const diff = m2 - m1;
   const pct = diff.toFixed(1);
+  const towardMean = (m1 > overallMean && diff < 0) || (m1 < overallMean && diff > 0);
+  const arrow = diff < 0 ? "↓" : "↑";
+  const shiftLabel =
+    Math.abs(diff) < 0.5
+      ? "No change"
+      : towardMean
+        ? `Regressed toward mean ${arrow}`
+        : `Moved away from mean ${arrow} (sampling noise)`;
 
   return (
     <div className="rounded-xl border border-[#1e293b] p-4">
@@ -175,7 +183,7 @@ function MeanArrow({ group, label, color }: { group: Student[]; label: string; c
         </div>
       </div>
       <p className="text-[10px] text-[#475569] text-center">
-        {Math.abs(diff) < 0.5 ? "No change" : diff < 0 ? "Regressed toward mean ↓" : "Improved ↑"}
+        {shiftLabel}
       </p>
     </div>
   );
@@ -403,8 +411,8 @@ export default function RegressionToMeanClient() {
 
             {/* Mean shift arrows */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <MeanArrow group={topStudents} label={`Top performers (T1 ≥ ${threshold})`} color="#d4af37" />
-              <MeanArrow group={bottomStudents} label={`Low performers (T1 < ${100 - threshold})`} color="#ef4444" />
+              <MeanArrow group={topStudents} label={`Top performers (T1 ≥ ${threshold})`} color="#d4af37" overallMean={overallMean} />
+              <MeanArrow group={bottomStudents} label={`Low performers (T1 < ${100 - threshold})`} color="#ef4444" overallMean={overallMean} />
             </div>
 
             {/* Insight box */}

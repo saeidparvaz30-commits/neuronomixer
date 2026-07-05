@@ -200,14 +200,23 @@ export default function GradientFlowChart() {
             />
           ))}
 
-          {/* Annotation for RNN last point */}
+          {/* Annotation: loss position (right) and vanished RNN gradient at the earliest token (left) */}
           <text
-            x={xPos(5) + 6}
-            y={yPos(RNN_GRADIENT_FLOW[5].magnitude) - 4}
+            x={xPos(5)}
+            y={yPos(1) - 6}
+            fill="#94a3b8"
+            fontSize="8"
+            textAnchor="end"
+          >
+            loss computed here
+          </text>
+          <text
+            x={xPos(0) + 6}
+            y={yPos(RNN_GRADIENT_FLOW[0].magnitude) - 5}
             fill="#1e5d8a"
             fontSize="8"
           >
-            {RNN_GRADIENT_FLOW[5].magnitude.toFixed(3)}
+            {RNN_GRADIENT_FLOW[0].magnitude.toFixed(3)}
           </text>
         </svg>
       </div>

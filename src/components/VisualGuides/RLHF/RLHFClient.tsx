@@ -115,11 +115,14 @@ const RATING_ROUNDS: RatingRound[] = [
   },
 ];
 
+// Illustrative learning curve. Anchors: 50% = chance on pairwise comparisons;
+// InstructGPT-scale reward models reported roughly 69-73% agreement with
+// held-out labelers (Ouyang et al. 2022), near the ~73% human-human agreement ceiling.
 const ACCURACY_DATA = [
-  { label: "100", acc: 50 },
-  { label: "1K", acc: 65 },
-  { label: "10K", acc: 78 },
-  { label: "100K", acc: 85 },
+  { label: "100", acc: 52 },
+  { label: "1K", acc: 61 },
+  { label: "10K", acc: 67 },
+  { label: "100K", acc: 71 },
 ];
 
 const COMPARISON_ROWS = [
@@ -127,7 +130,7 @@ const COMPARISON_ROWS = [
   { label: "Stability",    rlhf: "Lower",               dpo: "Higher" },
   { label: "Performance",  rlhf: "Comparable",          dpo: "Comparable" },
   { label: "Compute",      rlhf: "2–3× more",           dpo: "1×" },
-  { label: "Used by",      rlhf: "InstructGPT",         dpo: "Llama 2, Mistral" },
+  { label: "Used by",      rlhf: "InstructGPT, Llama 2-Chat", dpo: "Zephyr, Tulu 2" },
 ];
 
 // ── Component ──────────────────────────────────────────────────────────────────
@@ -534,13 +537,14 @@ export default function RLHFClient() {
             Section 3 — Reward Model Training
           </h2>
           <p className="text-[13px] text-[#475569] mb-5">
-            Reward model accuracy (correlation with human preferences) vs. number of human comparisons.
+            Illustrative curve: reward model accuracy (agreement with held-out human preference labels)
+            vs. number of human comparisons. Shape and endpoints anchored to published InstructGPT-era results.
           </p>
 
           <div className="rounded-2xl bg-[#1e293b] border border-[#2d3f55] p-5 sm:p-6">
             <div className="flex items-end gap-3 h-44">
               {ACCURACY_DATA.map((d, i) => {
-                const heightPct = ((d.acc - 45) / (90 - 45)) * 100;
+                const heightPct = ((d.acc - 45) / (75 - 45)) * 100;
                 return (
                   <div key={i} className="flex-1 flex flex-col items-center gap-2">
                     <span className="text-[11px] font-bold text-white">{d.acc}%</span>
@@ -562,10 +566,14 @@ export default function RLHFClient() {
             </div>
             <div className="mt-3 flex items-center justify-between text-[11px] text-[#475569] border-t border-[#2d3f55] pt-3">
               <span>X: Human comparisons (training examples)</span>
-              <span>Y: Correlation with human preferences</span>
+              <span>Y: Agreement with held-out human labels (illustrative)</span>
             </div>
             <p className="text-[12px] text-[#94a3b8] mt-3">
-              At 100 comparisons the reward model is barely better than chance. At 100K comparisons it reaches ~85% correlation — still imperfect, which is why reward hacking remains a problem.
+              At 100 comparisons the reward model is barely better than chance (50% on pairwise picks).
+              With large comparison datasets, InstructGPT-scale reward models reached roughly 69-73% agreement
+              with held-out labelers (Ouyang et al. 2022), close to the ~73% rate at which labelers agree with
+              each other. That ceiling is real: the reward model stays imperfect, which is why reward hacking
+              remains a problem.
             </p>
           </div>
         </section>

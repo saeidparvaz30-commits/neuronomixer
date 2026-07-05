@@ -252,10 +252,13 @@ export default function RNNsLSTMsClient() {
           </h2>
           <div className="bg-[#1e293b]/50 border border-[#1e293b] rounded-2xl p-5 flex flex-col gap-4">
             <p className="text-sm text-[#94a3b8] leading-relaxed">
-              During backpropagation, gradients are multiplied at every timestep. In RNNs, multiplying
-              by values &lt;1 repeatedly causes them to shrink to near-zero over long sequences — the network
-              &ldquo;forgets&rdquo; early inputs. LSTMs use their cell state highway to pass gradients
-              through without shrinking.
+              During backpropagation, gradients are multiplied at every timestep, starting from the loss
+              at the end of the sequence. In RNNs, multiplying by values &lt;1 repeatedly causes them to
+              shrink to near-zero by the time they reach the earliest tokens, so the network struggles to
+              learn from early inputs. Along the LSTM cell-state highway, the gradient is scaled only by
+              the forget gate at each step: when the network chooses to keep its memory (forget gate near 1),
+              gradients pass back almost unchanged, and they shrink mainly where the network deliberately
+              forgets. The LSTM line below is computed from the same forget-gate values shown in the cell diagram.
             </p>
             <GradientFlowChart />
           </div>

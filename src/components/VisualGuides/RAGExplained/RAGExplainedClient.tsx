@@ -9,7 +9,7 @@ import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 const STEPS = [
   { id: "documents", label: "Documents", icon: "📄", color: "#3bb4a4", group: "ingest", desc: "Your knowledge base: PDFs, wikis, internal docs — any unstructured text." },
   { id: "chunking", label: "Chunking", icon: "✂️", color: "#1e5d8a", group: "ingest", desc: "Split docs into ~500-token chunks with overlap so context isn't lost at boundaries." },
-  { id: "embeddings", label: "Embeddings", icon: "🔢", color: "#a855f7", group: "ingest", desc: "Each chunk → 768-dim vector via an embedding model (e.g. text-embedding-3-small)." },
+  { id: "embeddings", label: "Embeddings", icon: "🔢", color: "#a855f7", group: "ingest", desc: "Each chunk → 1536-dim vector via an embedding model (e.g. text-embedding-3-small)." },
   { id: "vector-store", label: "Vector Store", icon: "🗄️", color: "#d4af37", group: "ingest", desc: "All chunk vectors indexed in a vector DB — Pinecone, Weaviate, Chroma, or pgvector." },
   { id: "query-embed", label: "Query Embedding", icon: "🔍", color: "#ec4899", group: "retrieve", desc: "User query → same embedding model → query vector. Must use identical model as indexing." },
   { id: "similarity", label: "Similarity Search", icon: "📐", color: "#ec4899", group: "retrieve", desc: "Cosine similarity between query vector and all stored vectors. Top-K chunks returned." },
@@ -256,9 +256,9 @@ export default function RAGExplainedClient() {
                   <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${stage === "embedding" ? "bg-[#ec4899] animate-pulse" : "bg-[#ec4899]"}`}>
                     {stage === "embedding" ? "⟳" : "✓"}
                   </div>
-                  <p className="text-[12px] font-bold text-white">Query embedding computed</p>
+                  <p className="text-[12px] font-bold text-white">Query embedding (illustrative)</p>
                 </div>
-                <p className="text-[11px] text-[#475569] font-mono ml-7">&ldquo;{query}&rdquo; → [0.12, -0.87, 0.34, … 768 dims]</p>
+                <p className="text-[11px] text-[#475569] font-mono ml-7">&ldquo;{query}&rdquo; → [0.12, -0.87, 0.34, … 1536 dims]</p>
               </motion.div>
 
               {/* Step 2: Scores */}
@@ -266,7 +266,7 @@ export default function RAGExplainedClient() {
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-5 h-5 rounded-full bg-[#ec4899] flex items-center justify-center text-[10px] font-bold">✓</div>
-                    <p className="text-[12px] font-bold text-white">Similarity scores — top-2 retrieved</p>
+                    <p className="text-[12px] font-bold text-white">Similarity scores — top-2 retrieved <span className="font-normal text-[#475569]">(demo scores from keyword overlap, standing in for cosine similarity)</span></p>
                   </div>
                   <div className="space-y-2 ml-7">
                     {DOCS.map((doc, i) => {

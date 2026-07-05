@@ -20,7 +20,7 @@ const OPTIONS: { value: AlphaValue; label: string }[] = [
 const DESCRIPTIONS: Record<string, string> = {
   "0.05": "Standard significance threshold — 5% false positive rate",
   "0.01": "Stricter threshold — 1% false positive rate",
-  "0.001": "Very strict — used in genome-wide association studies",
+  "0.001": "Very strict: guards against false positives when many tests are run (genome-wide association studies conventionally go much further, to 5×10⁻⁸)",
 };
 
 export default function AlphaControl({

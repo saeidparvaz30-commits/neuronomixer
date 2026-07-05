@@ -11,16 +11,19 @@ interface Props {
 // ── Per-case after-reveal visualizations ─────────────────────────────────────
 
 function SurvivorshipReveal() {
-  const bars = [
-    { label: "Wings",    returned: 30, all: 12, color: "#3b82f6" },
-    { label: "Fuselage", returned: 28, all: 11, color: "#3b82f6" },
-    { label: "Tail",     returned: 3,  all: 2,  color: "#3b82f6" },
-    { label: "Engines",  returned: 2,  all: 31, color: "#ef4444" },
+  // Illustrative counts. "All" is computed as returned + crashed, so the full
+  // fleet can never show fewer hits than the survivors alone.
+  const raw = [
+    { label: "Wings",    returned: 30, crashed: 3,  color: "#3b82f6" },
+    { label: "Fuselage", returned: 28, crashed: 2,  color: "#3b82f6" },
+    { label: "Tail",     returned: 3,  crashed: 2,  color: "#3b82f6" },
+    { label: "Engines",  returned: 2,  crashed: 29, color: "#ef4444" },
   ];
-  const max = 31;
+  const bars = raw.map((b) => ({ ...b, all: b.returned + b.crashed }));
+  const max = Math.max(...bars.map((b) => b.all));
   return (
     <div className="space-y-3">
-      <p className="text-[11px] text-[#94a3b8] mb-1">Estimated damage: returned planes vs. ALL planes (incl. crashed)</p>
+      <p className="text-[11px] text-[#94a3b8] mb-1">Hits by section (illustrative counts): returned planes vs. ALL planes (returned + crashed)</p>
       {bars.map(({ label, returned, all, color }) => (
         <div key={label}>
           <div className="flex items-center justify-between mb-0.5">
@@ -50,10 +53,14 @@ function SurvivorshipReveal() {
 }
 
 function NonresponseReveal() {
+  const respondents = { share: 0.15, pct: 78 };
+  const nonRespondents = { share: 0.85, pct: 35 };
+  // Weighted average computed from the two groups: 0.15*78 + 0.85*35 = 41.45
+  const trueAvg = respondents.share * respondents.pct + nonRespondents.share * nonRespondents.pct;
   const groups = [
-    { label: "Respondents (15%)", pct: 78, color: "#d4af37" },
-    { label: "Non-respondents (85%)", pct: 35, color: "#ef4444" },
-    { label: "True average (weighted)", pct: 48, color: "#3bb4a4" },
+    { label: "Respondents (15%)", pct: respondents.pct, color: "#d4af37" },
+    { label: "Non-respondents (85%)", pct: nonRespondents.pct, color: "#ef4444" },
+    { label: "True average (weighted)", pct: trueAvg, color: "#3bb4a4" },
   ];
   return (
     <div className="space-y-3">
@@ -62,7 +69,7 @@ function NonresponseReveal() {
         <div key={label}>
           <div className="flex items-center justify-between mb-0.5">
             <span className="text-[11px]" style={{ color }}>{label}</span>
-            <span className="text-[11px] font-bold" style={{ color }}>{pct}%</span>
+            <span className="text-[11px] font-bold" style={{ color }}>{pct.toFixed(pct % 1 === 0 ? 0 : 1)}%</span>
           </div>
           <div className="bg-[#1e293b] rounded-full h-3 overflow-hidden">
             <motion.div
@@ -75,44 +82,65 @@ function NonresponseReveal() {
           </div>
         </div>
       ))}
-      <p className="text-[11px] text-[#94a3b8] mt-2">True satisfaction is 48%, not 78%.</p>
+      <p className="text-[11px] text-[#94a3b8] mt-2">
+        True satisfaction is {trueAvg.toFixed(1)}% (0.15 × 78 + 0.85 × 35), not 78%.
+      </p>
     </div>
   );
 }
 
 function SelectionReveal() {
-  const rows = [
-    { hospital: "X", risk: "Low",  pct: 50, available: true },
-    { hospital: "X", risk: "High", pct: null, available: false },
-    { hospital: "Y", risk: "Low",  pct: 51, available: true },
-    { hospital: "Y", risk: "High", pct: 30, available: true },
-  ];
+  // Counts are the source of truth; every percentage below is computed from them.
+  const strata = [
+    { hospital: "X", risk: "Low",  survived: 450, total: 900 },  // 50%
+    { hospital: "X", risk: "High", survived: null, total: null }, // not accepted
+    { hospital: "Y", risk: "Low",  survived: 102, total: 200 },  // 51%
+    { hospital: "Y", risk: "High", survived: 240, total: 800 },  // 30%
+  ] as const;
+  const aggFor = (h: "X" | "Y") => {
+    const rows = strata.filter((r) => r.hospital === h && r.total !== null);
+    const survived = rows.reduce((s, r) => s + (r.survived ?? 0), 0);
+    const total = rows.reduce((s, r) => s + (r.total ?? 0), 0);
+    return { survived, total, pct: total > 0 ? (survived / total) * 100 : 0 };
+  };
+  const aggX = aggFor("X");
+  const aggY = aggFor("Y");
   return (
     <div>
       <p className="text-[11px] text-[#94a3b8] mb-3">Survival stratified by patient risk</p>
       <div className="grid grid-cols-2 gap-2">
-        {rows.map(({ hospital, risk, pct, available }) => (
-          <div key={`${hospital}-${risk}`} className="rounded-xl border border-[#1e293b] p-3">
-            <p className="text-[10px] text-[#94a3b8] mb-1">Hospital {hospital} · {risk} Risk</p>
-            {available && pct !== null ? (
-              <>
-                <div className="bg-[#1e293b] rounded-full h-2 overflow-hidden">
-                  <motion.div
-                    className="h-2 rounded-full bg-[#3bb4a4]"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${pct}%` }}
-                    transition={{ duration: 0.6 }}
-                  />
-                </div>
-                <p className="text-[12px] font-bold text-[#3bb4a4] mt-1">{pct}%</p>
-              </>
-            ) : (
-              <p className="text-[11px] text-[#475569] italic mt-1">Not accepted</p>
-            )}
-          </div>
-        ))}
+        {strata.map(({ hospital, risk, survived, total }) => {
+          const pct = total !== null && survived !== null ? (survived / total) * 100 : null;
+          return (
+            <div key={`${hospital}-${risk}`} className="rounded-xl border border-[#1e293b] p-3">
+              <p className="text-[10px] text-[#94a3b8] mb-1">Hospital {hospital} · {risk} Risk</p>
+              {pct !== null ? (
+                <>
+                  <div className="bg-[#1e293b] rounded-full h-2 overflow-hidden">
+                    <motion.div
+                      className="h-2 rounded-full bg-[#3bb4a4]"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${pct}%` }}
+                      transition={{ duration: 0.6 }}
+                    />
+                  </div>
+                  <p className="text-[12px] font-bold text-[#3bb4a4] mt-1">
+                    {pct.toFixed(0)}% ({survived}/{total})
+                  </p>
+                </>
+              ) : (
+                <p className="text-[11px] text-[#475569] italic mt-1">Not accepted</p>
+              )}
+            </div>
+          );
+        })}
       </div>
-      <p className="text-[11px] text-[#94a3b8] mt-3">Within each risk group, hospitals perform comparably. Hospital X simply avoids high-risk cases.</p>
+      <p className="text-[11px] text-[#94a3b8] mt-3">
+        Overall (computed from the strata above): Hospital X {aggX.pct.toFixed(0)}% ({aggX.survived}/{aggX.total}) vs
+        Hospital Y {aggY.pct.toFixed(0)}% ({aggY.survived}/{aggY.total}). On the comparable low-risk patients the
+        hospitals perform about the same (51% vs 50%). Hospital X simply avoids high-risk cases, and Y&apos;s lower
+        overall rate comes entirely from carrying that high-risk caseload.
+      </p>
     </div>
   );
 }
@@ -153,6 +181,8 @@ function MeasurementReveal() {
 }
 
 function ConfirmationReveal() {
+  // 30 picks total, matching the case narrative: 5 winners (avg +13%),
+  // 10 neutral (avg +2%), 15 losers (avg -4%). All averages below are computed.
   const all = [
     { label: "W1", ret: 12, type: "win" },
     { label: "W2", ret: 18, type: "win" },
@@ -161,9 +191,14 @@ function ConfirmationReveal() {
     { label: "W5", ret: 11, type: "win" },
     { label: "N1", ret: 5,  type: "neutral" },
     { label: "N2", ret: 3,  type: "neutral" },
-    { label: "N3", ret: 7,  type: "neutral" },
+    { label: "N3", ret: 0,  type: "neutral" },
     { label: "N4", ret: 1,  type: "neutral" },
     { label: "N5", ret: 2,  type: "neutral" },
+    { label: "N6", ret: 4,  type: "neutral" },
+    { label: "N7", ret: 0,  type: "neutral" },
+    { label: "N8", ret: 2,  type: "neutral" },
+    { label: "N9", ret: 1,  type: "neutral" },
+    { label: "N10", ret: 2, type: "neutral" },
     { label: "L1", ret: -6, type: "loss" },
     { label: "L2", ret: -2, type: "loss" },
     { label: "L3", ret: -8, type: "loss" },
@@ -174,20 +209,27 @@ function ConfirmationReveal() {
     { label: "L8", ret: -7, type: "loss" },
     { label: "L9", ret: -2, type: "loss" },
     { label: "L10", ret: -4, type: "loss" },
+    { label: "L11", ret: -3, type: "loss" },
+    { label: "L12", ret: -5, type: "loss" },
+    { label: "L13", ret: -6, type: "loss" },
+    { label: "L14", ret: -2, type: "loss" },
+    { label: "L15", ret: -2, type: "loss" },
   ];
   const colorMap: Record<string, string> = { win: "#3bb4a4", neutral: "#475569", loss: "#ef4444" };
-  const trueAvg = Math.round(all.reduce((s, x) => s + x.ret, 0) / all.length);
+  const avgOf = (items: { ret: number }[]) => items.reduce((s, x) => s + x.ret, 0) / items.length;
+  const shownAvg = avgOf(all.filter((x) => x.type === "win"));
+  const trueAvg = avgOf(all);
 
   return (
     <div>
-      <p className="text-[11px] text-[#94a3b8] mb-2">All 20 advisor picks (simplified)</p>
+      <p className="text-[11px] text-[#94a3b8] mb-2">All {all.length} advisor picks (simplified)</p>
       <div className="flex flex-wrap gap-1">
-        {all.map(({ label, ret, type }) => (
+        {all.map(({ label, ret, type }, idx) => (
           <motion.div
             key={label}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: all.indexOf({ label, ret, type }) * 0.02 }}
+            transition={{ duration: 0.3, delay: idx * 0.02 }}
             className="px-1.5 py-0.5 rounded text-[9px] font-bold"
             style={{ background: `${colorMap[type]}20`, color: colorMap[type], border: `1px solid ${colorMap[type]}40` }}
           >
@@ -196,8 +238,8 @@ function ConfirmationReveal() {
         ))}
       </div>
       <div className="mt-3 flex gap-4 text-[11px]">
-        <span className="text-[#475569]">5 shown: <span className="text-[#3bb4a4] font-bold">avg +13%</span></span>
-        <span className="text-[#475569]">All 20: <span className="text-[#ef4444] font-bold">avg {trueAvg}%</span></span>
+        <span className="text-[#475569]">5 shown: <span className="text-[#3bb4a4] font-bold">avg +{shownAvg.toFixed(0)}%</span></span>
+        <span className="text-[#475569]">All {all.length}: <span className="text-[#ef4444] font-bold">avg {trueAvg >= 0 ? "+" : ""}{trueAvg.toFixed(1)}%</span></span>
         <span className="text-[#475569]">Market: <span className="font-bold text-white">+7%</span></span>
       </div>
     </div>

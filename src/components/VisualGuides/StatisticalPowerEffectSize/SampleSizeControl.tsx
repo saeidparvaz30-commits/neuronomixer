@@ -85,7 +85,9 @@ export default function SampleSizeControl({ value, computedPower, onChange }: Pr
       </div>
 
       <p className="mt-3 text-[10px] text-[#475569] leading-relaxed">
-        Total participants = n × 2 (two groups). For a one-sample test, n is the total.
+        Total participants = n × 2 (two groups). Every power number in this guide is for the
+        two-sample comparison; a one-sample test with the same n has different power, so do not
+        reuse these values for it.
       </p>
     </div>
   );

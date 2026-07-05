@@ -202,19 +202,27 @@ export default function ConvergenceChart({
           />
         )}
 
-        {/* Convergence annotation */}
-        {isComplete && history.length > 0 && (
-          <text
-            x={PAD.left + IW * 0.5}
-            y={PAD.top + 12}
-            textAnchor="middle"
-            fill="#3bb4a4"
-            fontSize={10}
-            fontWeight="600"
-          >
-            Converging to EV = {theoreticalEV.toFixed(3)}
-          </text>
-        )}
+        {/* Convergence annotation, computed from the actual final gap to EV */}
+        {isComplete && history.length > 0 && (() => {
+          const finalAvg = history[history.length - 1].avg;
+          const gap = Math.abs(finalAvg - theoreticalEV);
+          const tol = 0.05 * Math.max(Math.abs(theoreticalEV), maxAvg - minAvg, 0.1);
+          const converged = gap <= tol;
+          return (
+            <text
+              x={PAD.left + IW * 0.5}
+              y={PAD.top + 12}
+              textAnchor="middle"
+              fill={converged ? "#3bb4a4" : "#f97316"}
+              fontSize={10}
+              fontWeight="600"
+            >
+              {converged
+                ? `Converged near EV = ${theoreticalEV.toFixed(3)}`
+                : `Average ${finalAvg.toFixed(3)} still differs from EV = ${theoreticalEV.toFixed(3)}: rare outcomes need many more trials`}
+            </text>
+          );
+        })()}
       </svg>
 
       {/* Legend */}

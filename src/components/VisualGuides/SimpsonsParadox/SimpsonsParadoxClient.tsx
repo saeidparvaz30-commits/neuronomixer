@@ -175,6 +175,24 @@ function CaseStudiesTab({
 
   const caseStudy: CaseStudy = selectedCase === "berkeley" ? UC_BERKELEY : KIDNEY_STONES;
 
+  // Everything below is computed from the case-study counts, never hardcoded.
+  const aggAWins = caseStudy.aggregateRateA > caseStudy.aggregateRateB;
+  const aggWinner = {
+    label: aggAWins ? caseStudy.groupALabel : caseStudy.groupBLabel,
+    color: aggAWins ? COL_A : COL_B,
+    rate: aggAWins ? caseStudy.aggregateRateA : caseStudy.aggregateRateB,
+  };
+  const aggLoser = {
+    label: aggAWins ? caseStudy.groupBLabel : caseStudy.groupALabel,
+    color: aggAWins ? COL_B : COL_A,
+    rate: aggAWins ? caseStudy.aggregateRateB : caseStudy.aggregateRateA,
+  };
+  const subgroupRates = caseStudy.subgroups.map(computeSubgroupRates);
+  const loserSubgroupWins = subgroupRates.filter((r) =>
+    aggAWins ? r.rateB > r.rateA : r.rateA > r.rateB
+  ).length;
+  const nSubgroups = caseStudy.subgroups.length;
+
   function handleCaseChange(id: "berkeley" | "kidney") {
     setSelectedCase(id);
     setShowSubgroups(false);
@@ -273,16 +291,16 @@ function CaseStudiesTab({
                   <AggregateBarChart caseStudy={caseStudy} />
                 </div>
 
-                {/* Misleading label */}
+                {/* Misleading label (leader computed from the data) */}
                 <div className="rounded-xl bg-[#1e293b]/60 border border-[#1e293b] px-4 py-3 mb-4 flex items-center gap-2">
                   <span className="text-[13px] text-[#94a3b8]">
                     Based on overall data,{" "}
-                    <span style={{ color: COL_A }} className="font-bold">
-                      {caseStudy.groupALabel}
+                    <span style={{ color: aggWinner.color }} className="font-bold">
+                      {aggWinner.label}
                     </span>{" "}
                     appears to have a higher success rate (
-                    {(caseStudy.aggregateRateA * 100).toFixed(0)}% vs{" "}
-                    {(caseStudy.aggregateRateB * 100).toFixed(0)}%)
+                    {(aggWinner.rate * 100).toFixed(0)}% vs{" "}
+                    {(aggLoser.rate * 100).toFixed(0)}%)
                   </span>
                 </div>
 
@@ -312,10 +330,12 @@ function CaseStudiesTab({
                       DIRECTION REVERSES!
                     </p>
                     <p className="text-[12px] text-[#94a3b8]">
-                      <span style={{ color: COL_B }} className="font-semibold">
-                        {caseStudy.groupBLabel}
-                      </span>{" "}
-                      performs better (or equal) in every subgroup, yet appears worse in the aggregate!
+                      <span style={{ color: aggLoser.color }} className="font-semibold">
+                        {aggLoser.label}
+                      </span>
+                      : ahead in {loserSubgroupWins} of {nSubgroups} subgroups (check the badges below),
+                      yet behind in the aggregate ({(aggLoser.rate * 100).toFixed(0)}% vs{" "}
+                      {(aggWinner.rate * 100).toFixed(0)}%)!
                     </p>
                   </div>
                 </div>
@@ -718,13 +738,13 @@ const CONCEPT_CARDS: ConceptCard[] = [
       "Ice cream sales (X) and drowning rates (Y) are correlated. The lurking variable Z = summer temperature drives both. Remove summer and the correlation disappears.",
   },
   {
-    title: "Selection Bias",
+    title: "Confounding by Indication",
     icon: "🎯",
-    summary: "Who ends up in each group isn't random — sicker patients choose surgery, self-selecting into treatment.",
+    summary: "Treatment assignment isn't random: the severity of a case influences which treatment it gets AND how it turns out.",
     detail:
-      "When group membership is determined by the participant (or their severity of condition), the groups are not comparable. Observational data is especially prone to this. Randomized controlled trials are designed to prevent it.",
+      "When doctors (or any decision process) assign harder cases to one treatment, severity confounds the comparison: it drives both the treatment choice and the outcome, so the groups are not comparable. This is distinct from selection bias, which distorts WHO enters your dataset in the first place. Observational data is especially prone to both; randomized controlled trials are designed to break the link between severity and assignment.",
     example:
-      "In the kidney stone study, doctors assigned surgery to harder large-stone cases. Surgery's overall success rate looks lower because it treats tougher patients — not because surgery is worse.",
+      "In the kidney stone study, doctors sent the harder large-stone cases to open surgery. Surgery's overall success rate looks lower because it treats tougher patients, not because surgery is worse.",
   },
   {
     title: "Ecological Fallacy",

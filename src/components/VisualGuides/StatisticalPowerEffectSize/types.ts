@@ -34,14 +34,21 @@ export const INITIAL_STATE: StatisticalPowerState = {
 
 // ── Math helpers ───────────────────────────────────────────────────────────────
 
-/** Abramowitz & Stegun normal CDF approximation */
+/**
+ * Standard normal CDF: Phi(z) = 0.5 * (1 + erf(z / sqrt(2))).
+ * erf approximated via Abramowitz & Stegun 7.1.26, evaluated at |z|/sqrt(2)
+ * with exp(-z^2/2). (Evaluating the erf polynomial at z directly with
+ * exp(-z^2) computes ~Phi(z*sqrt(2)), which inflated every printed power.)
+ */
 export function normalCDF(z: number): number {
   const p = 0.3275911;
   const a = [0.254829592, -0.284496736, 1.421413741, -1.453152027, 1.061405429];
   const sign = z < 0 ? -1 : 1;
-  const t = 1 / (1 + p * Math.abs(z));
+  const x = Math.abs(z) / Math.SQRT2;
+  const t = 1 / (1 + p * x);
   const poly = t * (a[0] + t * (a[1] + t * (a[2] + t * (a[3] + t * a[4]))));
-  return 0.5 * (1 + sign * (1 - poly * Math.exp(-z * z)));
+  const erf = 1 - poly * Math.exp(-x * x);
+  return 0.5 * (1 + sign * erf);
 }
 
 /** Beasley-Springer-Moro inverse normal CDF */

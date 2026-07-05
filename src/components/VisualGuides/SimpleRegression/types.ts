@@ -10,7 +10,7 @@ export interface OLSFit {
   slope: number;       // b = Cov(X,Y)/Var(X)
   intercept: number;   // a = ȳ - b*x̄
   rSquared: number;    // 1 - SSE/SST
-  rmse: number;        // sqrt(SSE/(n-2))
+  rmse: number;        // residual standard error: sqrt(SSE/(n-2))
   pearsonR: number;    // Cov(X,Y)/(sdX*sdY)
   sse: number;         // Σ(yi - ŷi)²
   sst: number;         // Σ(yi - ȳ)²
@@ -86,6 +86,25 @@ export function computeOLS(points: DataPoint[]): OLSFit | null {
 
 // ── Prediction with CI / PI ────────────────────────────────────────────────────
 
+/**
+ * Two-sided 95% critical value of Student's t (i.e. the 0.975 quantile) via the
+ * Cornish-Fisher expansion around z = 1.959964. Accurate to ~1e-4 for df >= 3
+ * (t(13) -> 2.1603 vs exact 2.1604).
+ */
+export function tQuantile975(df: number): number {
+  if (df <= 0) return NaN;
+  const z = 1.959963985;
+  const z3 = z ** 3;
+  const z5 = z ** 5;
+  const z7 = z ** 7;
+  return (
+    z +
+    (z3 + z) / (4 * df) +
+    (5 * z5 + 16 * z3 + 3 * z) / (96 * df * df) +
+    (3 * z7 + 19 * z5 + 17 * z3 - 15 * z) / (384 * df ** 3)
+  );
+}
+
 export function computePrediction(
   fit: OLSFit,
   xInput: number
@@ -108,8 +127,9 @@ export function computePrediction(
   // SE for individual prediction
   const seInd = Math.sqrt(mse * (1 + 1 / n + (xDev * xDev) / sxx));
 
-  // t ≈ 1.96 (large-sample approximation for 95%)
-  const t = 1.96;
+  // 97.5% t quantile with df = n - 2 (z = 1.96 would make small-sample
+  // intervals about 9% too narrow at n = 15; t(13) = 2.160)
+  const t = tQuantile975(n - 2);
 
   return {
     yHat,
@@ -185,42 +205,43 @@ export function normalQuantile(p: number): number {
 
 // ── Hardcoded presets ──────────────────────────────────────────────────────────
 // All points are deterministic (no Math.random at module level).
-// y ≈ 2x + 3 + small fixed deviations for STRONG (~r 0.95)
+// Deviations were searched offline so the COMPUTED Pearson r matches the label:
+// PRESET_STRONG r = 0.951, PRESET_MODERATE r = 0.650 (verified by recomputation).
 
 export const PRESET_STRONG: DataPoint[] = [
-  { id: "s01", x: 1.0,  y: 5.2  },
-  { id: "s02", x: 1.8,  y: 6.9  },
-  { id: "s03", x: 2.5,  y: 7.6  },
-  { id: "s04", x: 3.2,  y: 9.5  },
-  { id: "s05", x: 4.0,  y: 11.2 },
-  { id: "s06", x: 4.8,  y: 12.4 },
-  { id: "s07", x: 5.5,  y: 14.1 },
-  { id: "s08", x: 6.0,  y: 15.3 },
-  { id: "s09", x: 6.8,  y: 16.8 },
-  { id: "s10", x: 7.5,  y: 18.1 },
-  { id: "s11", x: 8.2,  y: 19.4 },
-  { id: "s12", x: 8.9,  y: 21.0 },
-  { id: "s13", x: 9.5,  y: 22.2 },
-  { id: "s14", x: 10.1, y: 23.5 },
-  { id: "s15", x: 10.8, y: 24.7 },
+  { id: "s01", x: 1.0,  y: 8.5  },
+  { id: "s02", x: 1.8,  y: 7.0  },
+  { id: "s03", x: 2.5,  y: 8.8  },
+  { id: "s04", x: 3.2,  y: 9.6  },
+  { id: "s05", x: 4.0,  y: 11.0 },
+  { id: "s06", x: 4.8,  y: 13.0 },
+  { id: "s07", x: 5.5,  y: 13.6 },
+  { id: "s08", x: 6.0,  y: 15.4 },
+  { id: "s09", x: 6.8,  y: 17.6 },
+  { id: "s10", x: 7.5,  y: 15.6 },
+  { id: "s11", x: 8.2,  y: 24.7 },
+  { id: "s12", x: 8.9,  y: 21.4 },
+  { id: "s13", x: 9.5,  y: 22.7 },
+  { id: "s14", x: 10.1, y: 22.5 },
+  { id: "s15", x: 10.8, y: 22.2 },
 ];
 
 export const PRESET_MODERATE: DataPoint[] = [
-  { id: "m01", x: 1.0,  y: 7.1  },
-  { id: "m02", x: 1.9,  y: 4.8  },
-  { id: "m03", x: 2.7,  y: 9.3  },
-  { id: "m04", x: 3.5,  y: 11.5 },
-  { id: "m05", x: 4.2,  y: 8.0  },
-  { id: "m06", x: 4.9,  y: 13.8 },
-  { id: "m07", x: 5.6,  y: 10.2 },
-  { id: "m08", x: 6.3,  y: 16.1 },
-  { id: "m09", x: 7.0,  y: 12.7 },
-  { id: "m10", x: 7.8,  y: 18.4 },
-  { id: "m11", x: 8.4,  y: 15.9 },
-  { id: "m12", x: 9.0,  y: 21.2 },
-  { id: "m13", x: 9.7,  y: 17.5 },
-  { id: "m14", x: 10.2, y: 24.0 },
-  { id: "m15", x: 10.9, y: 19.8 },
+  { id: "m01", x: 1.0,  y: 19.8 },
+  { id: "m02", x: 1.9,  y: 11.5 },
+  { id: "m03", x: 2.7,  y: 9.4  },
+  { id: "m04", x: 3.5,  y: 14.2 },
+  { id: "m05", x: 4.2,  y: 26.8 },
+  { id: "m06", x: 4.9,  y: 16.0 },
+  { id: "m07", x: 5.6,  y: 28.5 },
+  { id: "m08", x: 6.3,  y: 21.0 },
+  { id: "m09", x: 7.0,  y: 22.8 },
+  { id: "m10", x: 7.8,  y: 29.3 },
+  { id: "m11", x: 8.4,  y: 34.0 },
+  { id: "m12", x: 9.0,  y: 12.2 },
+  { id: "m13", x: 9.7,  y: 24.9 },
+  { id: "m14", x: 10.2, y: 29.9 },
+  { id: "m15", x: 10.9, y: 42.1 },
 ];
 
 export const PRESET_WEAK: DataPoint[] = [

@@ -39,7 +39,7 @@ type PresetKey = "strong" | "moderate" | "weak" | "nonlinear" | "outlier";
 const PRESETS: Record<PresetKey, { label: string; points: DataPoint[] }> = {
   strong:    { label: "Strong Linear (r ≈ 0.95)",    points: PRESET_STRONG },
   moderate:  { label: "Moderate Linear (r ≈ 0.65)",  points: PRESET_MODERATE },
-  weak:      { label: "Weak Linear (r ≈ 0.25)",      points: PRESET_WEAK },
+  weak:      { label: "Weak Linear (r ≈ 0.28)",      points: PRESET_WEAK },
   nonlinear: { label: "Nonlinear (Quadratic)",        points: PRESET_NONLINEAR },
   outlier:   { label: "Outliers Present",             points: PRESET_OUTLIER },
 };
@@ -559,11 +559,36 @@ function QQPlot({ fit }: { fit: OLSFit }) {
     return P.t + (1 - (r - rMin) / rRange) * IH;
   }
 
-  // Reference diagonal: map tMin→rMin, tMax→rMax
-  const diagX1 = tx(tMin);
-  const diagY1 = ty(rMin);
-  const diagX2 = tx(tMax);
-  const diagY2 = ty(rMax);
+  // Reference line through the quartiles (standard robust qqline), not through
+  // the extremes: the largest and smallest residuals are the noisiest quantiles.
+  function quantileOf(arr: number[], p: number): number {
+    const idx = (arr.length - 1) * p;
+    const lo = Math.floor(idx);
+    const hi = Math.ceil(idx);
+    return arr[lo] + (arr[hi] - arr[lo]) * (idx - lo);
+  }
+  const rQ1 = quantileOf(sorted, 0.25);
+  const rQ3 = quantileOf(sorted, 0.75);
+  const tQ1 = normalQuantile(0.25);
+  const tQ3 = normalQuantile(0.75);
+  const qqSlope = (rQ3 - rQ1) / (tQ3 - tQ1 || 1);
+  const qqIntercept = rQ1 - qqSlope * tQ1;
+  // Clip the line to the visible residual range so it stays inside the plot
+  const lineYAt = (t: number) => qqIntercept + qqSlope * t;
+  let lineT1 = tMin;
+  let lineT2 = tMax;
+  if (qqSlope !== 0) {
+    const tAtRMin = (rMin - qqIntercept) / qqSlope;
+    const tAtRMax = (rMax - qqIntercept) / qqSlope;
+    const lo = Math.min(tAtRMin, tAtRMax);
+    const hi = Math.max(tAtRMin, tAtRMax);
+    lineT1 = Math.max(tMin, lo);
+    lineT2 = Math.min(tMax, hi);
+  }
+  const diagX1 = tx(lineT1);
+  const diagY1 = ty(lineYAt(lineT1));
+  const diagX2 = tx(lineT2);
+  const diagY2 = ty(lineYAt(lineT2));
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} width="100%">
@@ -994,8 +1019,8 @@ export default function SimpleRegressionClient() {
                       note={`For each unit ↑ in x, y changes by ${fit.slope.toFixed(3)}`}
                     />
                     <StatRow label="Intercept (a)" value={fit.intercept.toFixed(4)} color="#d4af37" />
-                    <StatRow label="RMSE" value={`±${rmse.toFixed(3)}`} color="#ef4444"
-                      note={`Average prediction error: ±${rmse.toFixed(3)}`}
+                    <StatRow label="Residual SE" value={`±${rmse.toFixed(3)}`} color="#ef4444"
+                      note={`Typical residual size: ±${rmse.toFixed(3)} (sqrt of SSE/(n−2))`}
                     />
                     <StatRow label="Pearson r" value={fit.pearsonR.toFixed(4)} color="#a855f7" />
                     <StatRow label="n" value={`${fit.n} data points`} color="#475569" />
@@ -1127,7 +1152,7 @@ export default function SimpleRegressionClient() {
                         <SummaryCard label="Max Residual" value={residualStats.max.toFixed(3)} color="#3bb4a4" />
                         <SummaryCard label="Mean Residual" value={residualStats.mean.toFixed(4)} color="#94a3b8" />
                         <SummaryCard label="Std Dev" value={residualStats.stdev.toFixed(3)} color="#d4af37" />
-                        <SummaryCard label="RMSE" value={rmse.toFixed(3)} color="#a855f7" />
+                        <SummaryCard label="Residual SE" value={rmse.toFixed(3)} color="#a855f7" />
                         <SummaryCard
                           label="Outliers (|r|>2σ)"
                           value={`${residualStats.outlierCount} / ${fit.n}`}
