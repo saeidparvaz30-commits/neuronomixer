@@ -3,7 +3,6 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSession } from "next-auth/react";
 import {
   SCENARIOS,
   FITTED_MODELS,
@@ -13,6 +12,7 @@ import {
   poissonPMF,
   computeOverdispersion,
 } from "./types";
+import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Colour palette ────────────────────────────────────────────────────────────
 const COL_GOLD   = "#d4af37";
@@ -206,15 +206,22 @@ function MetricBadge({ label, value, best, fmt }: { label: string; value: number
 
 // ── Main component ────────────────────────────────────────────────────────────
 export default function CountModelsPoissonClient() {
-  const { data: session } = useSession();
-
   const [scenario, setScenario] = useState<ScenarioId>("complaints");
   const [showModel, setShowModel] = useState<"linear" | "poisson" | "negbinom" | "all">("all");
   const [lambda, setLambda] = useState(8);
 
+  // Completion gates: genuine engagement with the three interactive controls
+  const [scenariosExplored, setScenariosExplored] = useState<Set<ScenarioId>>(
+    () => new Set<ScenarioId>(["complaints"])
+  );
+  const [modelViewChanged, setModelViewChanged] = useState(false);
+  const [lambdaAdjusted, setLambdaAdjusted] = useState(false);
+  const isComplete =
+    scenariosExplored.size >= 2 && modelViewChanged && lambdaAdjusted;
+
   const sc = SCENARIOS[scenario];
   const fit = FITTED_MODELS[scenario];
-  const overdispersion = useMemo(() => computeOverdispersion(sc.data, sc), [scenario, sc]);
+  const overdispersion = useMemo(() => computeOverdispersion(scenario), [scenario]);
 
   const scenarios: { id: ScenarioId; label: string; emoji: string }[] = [
     { id: "complaints", label: "Customer Complaints", emoji: "🛒" },
@@ -232,6 +239,11 @@ export default function CountModelsPoissonClient() {
 
   return (
     <div className="space-y-10 text-white">
+      <GuideCompletion
+        isComplete={isComplete}
+        guideSlug="count-models-poisson"
+        score={100}
+      />
 
       {/* ── Header ── */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
@@ -242,7 +254,7 @@ export default function CountModelsPoissonClient() {
           Count Models: Poisson &amp; Negative Binomial
         </h1>
         <p className="text-[var(--color-text-muted)] text-base max-w-2xl">
-          Linear regression predicts real numbers — but counts can&apos;t be negative or fractional.
+          Linear regression predicts real numbers, but counts can&apos;t be negative or fractional.
           GLMs with a <strong className="text-white">log link</strong> fix this and model count
           distributions correctly.
         </p>
@@ -263,7 +275,14 @@ export default function CountModelsPoissonClient() {
           {scenarios.map(s => (
             <button
               key={s.id}
-              onClick={() => setScenario(s.id)}
+              onClick={() => {
+                setScenario(s.id);
+                setScenariosExplored(prev => {
+                  const next = new Set(prev);
+                  next.add(s.id);
+                  return next;
+                });
+              }}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all ${scenario === s.id ? "bg-[var(--color-accent)]/20 border-[var(--color-accent)]/50 text-[var(--color-accent)]" : "bg-white/[0.02] border-white/10 text-gray-400 hover:text-white"}`}
             >
               {s.emoji} {s.label}
@@ -277,7 +296,10 @@ export default function CountModelsPoissonClient() {
           {(["all", "linear", "poisson", "negbinom"] as const).map(m => (
             <button
               key={m}
-              onClick={() => setShowModel(m)}
+              onClick={() => {
+                if (m !== showModel) setModelViewChanged(true);
+                setShowModel(m);
+              }}
               className={`px-2.5 py-1 rounded text-xs font-medium border transition-all ${showModel === m ? "border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10 text-[var(--color-accent)]" : "border-white/10 text-gray-400 hover:text-white"}`}
             >
               {m === "all" ? "All models" : m === "linear" ? "Linear only" : m === "poisson" ? "Poisson only" : "Neg. Binomial only"}
@@ -315,10 +337,14 @@ export default function CountModelsPoissonClient() {
       <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} className="space-y-4">
         <h2 className="text-xl font-bold text-white">Overdispersion: When Poisson Isn&apos;t Enough</h2>
         <p className="text-sm text-[var(--color-text-muted)] max-w-2xl">
-          Poisson assumes <strong className="text-white">Var(Y) = E[Y]</strong>. Real data often has
-          higher variance (<em>overdispersion</em>). When the dispersion ratio
+          Poisson assumes <strong className="text-white">Var(Y) = E[Y]</strong>{" "}
+          <em>conditional on the predictors</em>. The raw
           <code className="bg-white/5 px-1.5 py-0.5 rounded text-xs mx-1 text-[var(--color-accent)]">Var/Mean</code>
-          is well above 1, switch to negative binomial.
+          ratio of the counts only tests this when the mean is flat: any trend in the data
+          inflates the marginal variance, which is why every scenario here shows Var/Mean above 1.
+          With a fitted model, the honest diagnostic is the Pearson statistic
+          <code className="bg-white/5 px-1.5 py-0.5 rounded text-xs mx-1 text-[var(--color-accent)]">X²/df</code>:
+          values well above 1 signal true overdispersion.
         </p>
 
         <AnimatePresence mode="wait">
@@ -328,34 +354,45 @@ export default function CountModelsPoissonClient() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"
           >
             <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4 text-center">
               <div className="text-2xl font-bold text-[var(--color-secondary)]">{sc.mean.toFixed(1)}</div>
-              <div className="text-xs text-gray-400 mt-1">Mean (E[Y])</div>
+              <div className="text-xs text-gray-400 mt-1">Mean of counts</div>
             </div>
             <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4 text-center">
               <div className="text-2xl font-bold text-[var(--color-secondary)]">{sc.variance.toFixed(1)}</div>
-              <div className="text-xs text-gray-400 mt-1">Variance</div>
+              <div className="text-xs text-gray-400 mt-1">Variance of counts</div>
+            </div>
+            <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4 text-center">
+              <div className="text-2xl font-bold text-gray-300">
+                {overdispersion.marginalDispersion.toFixed(2)}
+              </div>
+              <div className="text-xs text-gray-400 mt-1">Var/Mean (marginal)</div>
+              <div className="text-[9px] text-gray-500 mt-0.5">inflated by the trend</div>
             </div>
             <div className={`rounded-xl border p-4 text-center ${overdispersion.isOverdispersed ? "border-amber-400/30 bg-amber-400/5" : "border-emerald-400/30 bg-emerald-400/5"}`}>
               <div className={`text-2xl font-bold ${overdispersion.isOverdispersed ? "text-amber-400" : "text-emerald-400"}`}>
-                {overdispersion.dispersion.toFixed(2)}
+                {overdispersion.phi.toFixed(2)}
               </div>
-              <div className="text-xs text-gray-400 mt-1">Dispersion (Var/Mean)</div>
+              <div className="text-xs text-gray-400 mt-1">Pearson X²/df (model)</div>
+              <div className="text-[9px] text-gray-500 mt-0.5">from the Poisson fit</div>
             </div>
             <div className={`rounded-xl border p-4 text-center ${overdispersion.isOverdispersed ? "border-amber-400/30 bg-amber-400/5" : "border-emerald-400/30 bg-emerald-400/5"}`}>
               <div className={`text-lg font-bold ${overdispersion.isOverdispersed ? "text-amber-400" : "text-emerald-400"}`}>
-                {overdispersion.isOverdispersed ? "⚠ Overdispersed" : "✓ Equidispersed"}
+                {overdispersion.isOverdispersed ? "⚠ Overdispersed" : "✓ No overdispersion"}
               </div>
-              <div className="text-xs text-gray-400 mt-1">Verdict</div>
+              <div className="text-xs text-gray-400 mt-1">Verdict (by X²/df)</div>
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Variance vs Mean visual bar */}
+        {/* Marginal vs model-based dispersion bars */}
         <div className="bg-[#0a0e1a] rounded-xl border border-white/5 p-4 space-y-2">
-          <div className="text-xs text-gray-400 mb-3">Variance vs. Mean (Poisson expects equal length)</div>
+          <div className="text-xs text-gray-400 mb-3">
+            Marginal check: variance vs. mean of the raw counts. A trend in the data stretches
+            the variance bar even when the counts are perfectly Poisson around that trend.
+          </div>
           <div className="space-y-2.5">
             <div>
               <div className="flex justify-between text-xs text-gray-400 mb-1">
@@ -381,6 +418,40 @@ export default function CountModelsPoissonClient() {
                   style={{ background: sc.variance > sc.mean ? COL_RED : COL_TEAL }}
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.min(100, (sc.variance / Math.max(sc.mean, sc.variance)) * 100)}%` }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="text-xs text-gray-400 mb-3 pt-4">
+            Model-based check: Pearson X² vs. residual degrees of freedom for the fitted
+            Poisson model. Poisson expects X² ≈ df; X² far beyond df means overdispersion.
+          </div>
+          <div className="space-y-2.5">
+            <div>
+              <div className="flex justify-between text-xs text-gray-400 mb-1">
+                <span>df (n − 2)</span><span>{overdispersion.df}</span>
+              </div>
+              <div className="h-4 bg-[#0f172a] rounded overflow-hidden">
+                <motion.div
+                  className="h-full rounded"
+                  style={{ background: COL_TEAL }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(100, (overdispersion.df / Math.max(overdispersion.df, overdispersion.pearsonX2)) * 100)}%` }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-xs text-gray-400 mb-1">
+                <span>Pearson X²</span><span>{overdispersion.pearsonX2.toFixed(1)}</span>
+              </div>
+              <div className="h-4 bg-[#0f172a] rounded overflow-hidden">
+                <motion.div
+                  className="h-full rounded"
+                  style={{ background: overdispersion.isOverdispersed ? COL_RED : COL_TEAL }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(100, (overdispersion.pearsonX2 / Math.max(overdispersion.df, overdispersion.pearsonX2)) * 100)}%` }}
                   transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
                 />
               </div>
@@ -462,10 +533,21 @@ export default function CountModelsPoissonClient() {
         </AnimatePresence>
 
         <p className="text-xs text-gray-500">
-          Dispersion parameter θ ={" "}
-          <span className="font-mono text-[var(--color-accent)]">{fit.negativeBinomial.dispersion.toFixed(1)}</span>{" "}
-          for the negative binomial on this dataset.
-          {fit.negativeBinomial.dispersion > 10 ? " (Large θ → NB ≈ Poisson)" : " (Small θ → strong overdispersion)"}
+          {fit.negativeBinomial.thetaAtBound ? (
+            <>
+              The negative binomial size parameter θ (from Var(Y) = μ + μ²/θ) grows without
+              bound on this dataset: with no overdispersion left once the trend is fitted,
+              the NB collapses into the Poisson model and its extra parameter only costs AIC.
+            </>
+          ) : (
+            <>
+              Negative binomial size parameter θ ={" "}
+              <span className="font-mono text-[var(--color-accent)]">{fit.negativeBinomial.theta.toFixed(1)}</span>{" "}
+              (from Var(Y) = μ + μ²/θ). Small θ means strong overdispersion; as θ grows,
+              the NB approaches the Poisson model. Note the direction: θ is the inverse of
+              how overdispersed the data is, unlike the X²/df ratio above.
+            </>
+          )}
         </p>
       </motion.section>
 
@@ -488,7 +570,10 @@ export default function CountModelsPoissonClient() {
               max={30}
               step={1}
               value={lambda}
-              onChange={e => setLambda(Number(e.target.value))}
+              onChange={e => {
+                setLambda(Number(e.target.value));
+                setLambdaAdjusted(true);
+              }}
               className="flex-1 accent-[var(--color-accent)]"
             />
           </div>
@@ -540,14 +625,14 @@ export default function CountModelsPoissonClient() {
               color: COL_GOLD,
               badge: "✓ Default start",
               badgeColor: "text-emerald-400 bg-emerald-400/10",
-              points: ["Dispersion ≈ 1", "Count data, no excess zeros", "Interpretable: exp(β) = rate ratio"],
+              points: ["Pearson X²/df ≈ 1", "Count data, no excess zeros", "Interpretable: exp(β) = rate ratio"],
             },
             {
               title: "Negative Binomial",
               color: COL_PURPLE,
               badge: "✓ When overdispersed",
               badgeColor: "text-purple-400 bg-purple-400/10",
-              points: ["Dispersion >> 1", "High-variance counts", "Adds free dispersion parameter θ"],
+              points: ["Pearson X²/df well above 1", "High-variance counts", "Adds a size parameter θ (Var = μ + μ²/θ)"],
             },
           ].map(card => (
             <div key={card.title} className="bg-[#0a0e1a] rounded-xl border border-white/5 p-4 space-y-3">
@@ -573,7 +658,7 @@ export default function CountModelsPoissonClient() {
         <h2 className="text-lg font-bold text-[var(--color-accent)]">Key Takeaways</h2>
         <ul className="space-y-2 text-sm text-[var(--color-text-muted)]">
           <li className="flex gap-2"><span className="text-[var(--color-accent)] font-bold shrink-0">1.</span>Use <strong className="text-white">Poisson GLM</strong> (log link) instead of linear regression for count outcomes.</li>
-          <li className="flex gap-2"><span className="text-[var(--color-accent)] font-bold shrink-0">2.</span>Poisson requires <strong className="text-white">Var = Mean</strong>. Check the dispersion ratio — if &gt; 1.3, suspect overdispersion.</li>
+          <li className="flex gap-2"><span className="text-[var(--color-accent)] font-bold shrink-0">2.</span>Poisson requires <strong className="text-white">Var = Mean conditional on the predictors</strong>. Raw Var/Mean of the counts is only a valid check when there is no trend; with a fitted model, check Pearson X²/df instead.</li>
           <li className="flex gap-2"><span className="text-[var(--color-accent)] font-bold shrink-0">3.</span>Switch to <strong className="text-white">Negative Binomial</strong> when overdispersion is confirmed via AIC or Pearson χ² test.</li>
           <li className="flex gap-2"><span className="text-[var(--color-accent)] font-bold shrink-0">4.</span>Coefficients from Poisson/NB GLMs are on the <strong className="text-white">log scale</strong>: exp(β) gives the multiplicative rate ratio.</li>
         </ul>

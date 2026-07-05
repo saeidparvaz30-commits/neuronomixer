@@ -1,4 +1,9 @@
 // ── Types & data for Count Models: Poisson & Negative Binomial ─────────────────
+//
+// All displayed statistics (marginal moments, OLS fit, Poisson GLM fit, negative
+// binomial fit, Pearson dispersion) are COMPUTED from the data arrays below at
+// module load. Nothing shown on screen is hardcoded. The data itself is
+// illustrative (constructed for teaching), and the guide labels it as such.
 
 export type ScenarioId = "complaints" | "accidents" | "website";
 
@@ -15,9 +20,8 @@ export interface Scenario {
   countLabel: string;
   description: string;
   data: CountPoint[];
-  mean: number;
-  variance: number;
-  isOverdispersed: boolean;
+  mean: number;     // computed marginal mean of counts
+  variance: number; // computed marginal sample variance of counts (n - 1)
 }
 
 export interface PoissonFit {
@@ -28,10 +32,20 @@ export interface PoissonFit {
   deviance: number;
 }
 
-// ── Hardcoded data ──────────────────────────────────────────────────────────────
+export interface PoissonFitFull extends PoissonFit {
+  pearsonX2: number; // sum (y - mu)^2 / mu over all points
+  df: number;        // n - 2 (intercept + slope)
+  phi: number;       // pearsonX2 / df, the model-based dispersion estimate
+}
 
-// Scenario 1: Customer complaints vs store size
-// 30 points, Poisson-distributed (mean ≈ 12, variance ≈ 13) — NOT overdispersed
+export interface NegBinomFit extends PoissonFit {
+  theta: number;        // NB2 size parameter: Var(Y) = mu + mu^2 / theta
+  thetaAtBound: boolean; // true when theta ran to the search bound (NB ~ Poisson)
+}
+
+// ── Illustrative data ───────────────────────────────────────────────────────────
+
+// Scenario 1: Customer complaints vs store size (30 points)
 const COMPLAINTS_DATA: CountPoint[] = [
   { id: "c01", x: 120,  count: 2  },
   { id: "c02", x: 250,  count: 4  },
@@ -65,8 +79,7 @@ const COMPLAINTS_DATA: CountPoint[] = [
   { id: "c30", x: 2000, count: 19 },
 ];
 
-// Scenario 2: Traffic accidents per year vs traffic volume
-// 25 points, overdispersed (mean ≈ 8, variance ≈ 35) — negative binomial needed
+// Scenario 2: Traffic accidents per year vs traffic volume (25 points)
 const ACCIDENTS_DATA: CountPoint[] = [
   { id: "a01", x: 12,  count: 1  },
   { id: "a02", x: 18,  count: 0  },
@@ -95,8 +108,7 @@ const ACCIDENTS_DATA: CountPoint[] = [
   { id: "a25", x: 98,  count: 25 },
 ];
 
-// Scenario 3: Website visits per hour vs ad spend
-// 35 points, slight overdispersion (mean ≈ 15, variance ≈ 18)
+// Scenario 3: Website visits per hour vs ad spend (35 points)
 const WEBSITE_DATA: CountPoint[] = [
   { id: "w01", x: 0,   count: 2  },
   { id: "w02", x: 15,  count: 4  },
@@ -135,124 +147,34 @@ const WEBSITE_DATA: CountPoint[] = [
   { id: "w35", x: 500, count: 23 },
 ];
 
-export const SCENARIOS: Record<ScenarioId, Scenario> = {
-  complaints: {
-    id: "complaints",
-    label: "Customer Complaints",
-    xLabel: "Store Size (m²)",
-    countLabel: "Complaints",
-    description:
-      "Complaint counts at retail stores of varying sizes. Count data follows a Poisson distribution with variance ≈ mean.",
-    data: COMPLAINTS_DATA,
-    mean: 12.1,
-    variance: 13.2,
-    isOverdispersed: false,
-  },
-  accidents: {
-    id: "accidents",
-    label: "Traffic Accidents",
-    xLabel: "Traffic Volume (K/day)",
-    countLabel: "Accidents/Year",
-    description:
-      "Annual accident counts at intersections with varying traffic volumes. High variance indicates overdispersion — negative binomial fits better.",
-    data: ACCIDENTS_DATA,
-    mean: 8.6,
-    variance: 38.4,
-    isOverdispersed: true,
-  },
-  website: {
-    id: "website",
-    label: "Website Visits",
-    xLabel: "Ad Spend ($)",
-    countLabel: "Visits/Hour",
-    description:
-      "Hourly website visit counts as a function of advertising spend. Slight overdispersion present.",
-    data: WEBSITE_DATA,
-    mean: 13.7,
-    variance: 34.8,
-    isOverdispersed: true,
-  },
-};
-
-// ── Pre-fitted model values ─────────────────────────────────────────────────────
-
-export const FITTED_MODELS: Record<
-  ScenarioId,
-  {
-    simpleLinear: { slope: number; intercept: number; rSquared: number };
-    poisson: PoissonFit;
-    negativeBinomial: PoissonFit & { dispersion: number };
-  }
-> = {
-  complaints: {
-    simpleLinear: {
-      slope: 0.0092,
-      intercept: 0.72,
-      rSquared: 0.987,
-    },
-    poisson: {
-      intercept: 1.18,
-      slope: 0.00095,
-      logLikelihood: -71.3,
-      aic: 146.6,
-      deviance: 28.4,
-    },
-    negativeBinomial: {
-      intercept: 1.17,
-      slope: 0.00094,
-      logLikelihood: -71.1,
-      aic: 148.2,
-      deviance: 28.1,
-      dispersion: 48.2,
-    },
-  },
-  accidents: {
-    simpleLinear: {
-      slope: 0.31,
-      intercept: -5.2,
-      rSquared: 0.71,
-    },
-    poisson: {
-      intercept: 0.42,
-      slope: 0.031,
-      logLikelihood: -98.7,
-      aic: 201.4,
-      deviance: 87.6,
-    },
-    negativeBinomial: {
-      intercept: 0.38,
-      slope: 0.032,
-      logLikelihood: -82.4,
-      aic: 170.8,
-      deviance: 22.3,
-      dispersion: 2.1,
-    },
-  },
-  website: {
-    simpleLinear: {
-      slope: 0.042,
-      intercept: 4.8,
-      rSquared: 0.968,
-    },
-    poisson: {
-      intercept: 1.52,
-      slope: 0.00198,
-      logLikelihood: -108.3,
-      aic: 220.6,
-      deviance: 41.2,
-    },
-    negativeBinomial: {
-      intercept: 1.51,
-      slope: 0.00197,
-      logLikelihood: -98.6,
-      aic: 203.2,
-      deviance: 20.8,
-      dispersion: 5.8,
-    },
-  },
-};
-
 // ── Math helpers ────────────────────────────────────────────────────────────────
+
+/** Log-gamma via the Lanczos approximation (g = 7, n = 9). Accurate to ~1e-13 for x > 0. */
+const LANCZOS_COEFFS = [
+  676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059,
+  12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7,
+];
+
+export function lgamma(x: number): number {
+  if (x <= 0) return Infinity;
+  if (x < 0.5) {
+    // Reflection formula
+    return Math.log(Math.PI / Math.sin(Math.PI * x)) - lgamma(1 - x);
+  }
+  const z = x - 1;
+  let a = 0.99999999999980993;
+  for (let i = 0; i < LANCZOS_COEFFS.length; i++) {
+    a += LANCZOS_COEFFS[i] / (z + i + 1);
+  }
+  const t = z + 7.5;
+  return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(a);
+}
+
+/** ln(k!) = lgamma(k + 1) */
+function lnFactorial(k: number): number {
+  if (k <= 1) return 0;
+  return lgamma(k + 1);
+}
 
 /** Poisson mean prediction from log-link GLM */
 export function poissonMean(x: number, fit: PoissonFit): number {
@@ -268,82 +190,275 @@ export function linearMean(
   return intercept + slope * x;
 }
 
-/** Log-gamma using Stirling approximation (for k > 1) */
-export function lgamma(n: number): number {
-  if (n <= 0) return 0;
-  if (n === 1 || n === 2) return 0;
-  // Stirling: ln Γ(n) ≈ 0.5*ln(2π/n) + n*ln(n/e)  for n >> 0
-  // More accurate: Lanczos-like using log
-  const x2 = n - 1; // Γ(n) = (n-1)!
-  if (x2 <= 0) return 0;
-  if (x2 === 1) return 0;
-  // Use the recurrence + Stirling for x2 >= 2
-  let result = 0;
-  let xn = x2;
-  while (xn < 10) {
-    result += Math.log(xn);
-    xn++;
-  }
-  // Stirling series for xn
-  const LOG2PI = Math.log(2 * Math.PI);
-  const s =
-    0.5 * LOG2PI +
-    (xn - 0.5) * Math.log(xn) -
-    xn +
-    1 / (12 * xn) -
-    1 / (360 * xn * xn * xn);
-  return result + s - result; // simplify: Stirling directly
-}
-
-/** Stirling-based ln(k!) = lgamma(k+1) */
-function lnFactorial(k: number): number {
-  if (k <= 1) return 0;
-  // Use Stirling for moderate k, exact for small k
-  const exact = [0, 0, 0.693147, 1.791759, 3.178054, 4.787492, 6.579251, 8.525162, 10.60460, 12.80182, 15.10441];
-  if (k < exact.length) return exact[k];
-  return 0.5 * Math.log(2 * Math.PI * k) + k * Math.log(k) - k + 1 / (12 * k);
-}
-
 /** Poisson PMF: P(Y = k | λ) */
 export function poissonPMF(k: number, lambda: number): number {
   if (lambda <= 0) return k === 0 ? 1 : 0;
   if (k < 0) return 0;
-  // log P = -lambda + k*log(lambda) - ln(k!)
   const logP = -lambda + k * Math.log(lambda) - lnFactorial(k);
   return Math.exp(logP);
 }
 
-// ── Overdispersion stats ─────────────────────────────────────────────────────────
+// ── Model fitting (runs once at module load; all deterministic) ─────────────────
 
-export interface OverdispersionStats {
-  mean: number;
-  variance: number;
-  dispersion: number;
-  isOverdispersed: boolean;
-  pearsonX2: number;
+function marginalStats(data: CountPoint[]): { mean: number; variance: number } {
+  const n = data.length;
+  const mean = data.reduce((s, d) => s + d.count, 0) / n;
+  const variance =
+    data.reduce((s, d) => s + (d.count - mean) ** 2, 0) / (n - 1);
+  return { mean, variance };
 }
 
-export function computeOverdispersion(
-  data: CountPoint[],
-  scenario: Scenario
-): OverdispersionStats {
+/** Ordinary least squares for y = intercept + slope * x, with R². */
+function fitOLS(data: CountPoint[]): {
+  slope: number;
+  intercept: number;
+  rSquared: number;
+} {
   const n = data.length;
-  const mean = scenario.mean;
-  const variance = scenario.variance;
-  const dispersion = variance / mean;
-
-  // Pearson X² / n (using fitted mean as constant approximation)
-  const pearsonX2 =
-    data.reduce((sum, p) => {
-      const mu = poissonMean(p.x, FITTED_MODELS[scenario.id].poisson);
-      return sum + (p.count - mu) ** 2 / Math.max(mu, 0.001);
-    }, 0) / n;
-
+  const mx = data.reduce((s, d) => s + d.x, 0) / n;
+  const my = data.reduce((s, d) => s + d.count, 0) / n;
+  let sxy = 0, sxx = 0, syy = 0;
+  for (const d of data) {
+    sxy += (d.x - mx) * (d.count - my);
+    sxx += (d.x - mx) ** 2;
+    syy += (d.count - my) ** 2;
+  }
+  const slope = sxy / sxx;
   return {
-    mean,
-    variance,
-    dispersion,
-    isOverdispersed: dispersion > 1.3,
+    slope,
+    intercept: my - slope * mx,
+    rSquared: (sxy * sxy) / (sxx * syy),
+  };
+}
+
+/** Weighted least squares for the design [1, x]; returns [b0, b1]. */
+function wlsSolve(data: CountPoint[], w: number[], z: number[]): [number, number] {
+  let s0 = 0, s1 = 0, s2 = 0, t0 = 0, t1 = 0;
+  for (let i = 0; i < data.length; i++) {
+    const x = data[i].x;
+    s0 += w[i];
+    s1 += w[i] * x;
+    s2 += w[i] * x * x;
+    t0 += w[i] * z[i];
+    t1 += w[i] * z[i] * x;
+  }
+  const det = s0 * s2 - s1 * s1;
+  return [(s2 * t0 - s1 * t1) / det, (s0 * t1 - s1 * t0) / det];
+}
+
+/** Poisson GLM (log link) fitted by IRLS. */
+function fitPoissonGLM(data: CountPoint[]): PoissonFitFull {
+  const n = data.length;
+  let b0 = Math.log(Math.max(1e-3, data.reduce((s, d) => s + d.count, 0) / n));
+  let b1 = 0;
+  for (let it = 0; it < 100; it++) {
+    const mu = data.map((d) => Math.exp(b0 + b1 * d.x));
+    const w = mu.map((m) => Math.max(m, 1e-10));
+    const z = data.map((d, i) => b0 + b1 * d.x + (d.count - mu[i]) / w[i]);
+    const [nb0, nb1] = wlsSolve(data, w, z);
+    const converged = Math.abs(nb0 - b0) < 1e-12 && Math.abs(nb1 - b1) < 1e-14;
+    b0 = nb0;
+    b1 = nb1;
+    if (converged) break;
+  }
+  const mu = data.map((d) => Math.exp(b0 + b1 * d.x));
+  let logLik = 0, deviance = 0, pearsonX2 = 0;
+  data.forEach((d, i) => {
+    const y = d.count;
+    logLik += -mu[i] + y * Math.log(mu[i]) - lnFactorial(y);
+    deviance += 2 * ((y > 0 ? y * Math.log(y / mu[i]) : 0) - (y - mu[i]));
+    pearsonX2 += (y - mu[i]) ** 2 / mu[i];
+  });
+  const df = n - 2;
+  return {
+    intercept: b0,
+    slope: b1,
+    logLikelihood: logLik,
+    aic: -2 * logLik + 2 * 2,
+    deviance,
     pearsonX2,
+    df,
+    phi: pearsonX2 / df,
+  };
+}
+
+/** NB2 log-likelihood given coefficients and theta. */
+function negBinomLogLik(
+  data: CountPoint[],
+  b0: number,
+  b1: number,
+  theta: number
+): number {
+  let ll = 0;
+  for (const d of data) {
+    const mu = Math.exp(b0 + b1 * d.x);
+    ll +=
+      lgamma(d.count + theta) - lgamma(theta) - lnFactorial(d.count) +
+      theta * Math.log(theta / (theta + mu)) +
+      d.count * Math.log(mu / (theta + mu));
+  }
+  return ll;
+}
+
+/** NB2 IRLS for the regression coefficients at fixed theta. */
+function fitNegBinomBeta(
+  data: CountPoint[],
+  theta: number,
+  start0: number,
+  start1: number
+): [number, number] {
+  let b0 = start0, b1 = start1;
+  for (let it = 0; it < 200; it++) {
+    const mu = data.map((d) => Math.exp(b0 + b1 * d.x));
+    const w = mu.map((m) => m / (1 + m / theta));
+    const z = data.map((d, i) => b0 + b1 * d.x + (d.count - mu[i]) / mu[i]);
+    const [nb0, nb1] = wlsSolve(data, w, z);
+    const converged = Math.abs(nb0 - b0) < 1e-12 && Math.abs(nb1 - b1) < 1e-14;
+    b0 = nb0;
+    b1 = nb1;
+    if (converged) break;
+  }
+  return [b0, b1];
+}
+
+const THETA_BOUND = 1e5; // above this the NB is numerically indistinguishable from Poisson
+
+/**
+ * NB2 regression: theta by profile likelihood (golden-section search on
+ * log-theta), coefficients by IRLS at each candidate theta.
+ */
+function fitNegBinomGLM(data: CountPoint[], start: PoissonFitFull): NegBinomFit {
+  const profile = (logTheta: number) => {
+    const theta = Math.exp(logTheta);
+    const [b0, b1] = fitNegBinomBeta(data, theta, start.intercept, start.slope);
+    return { theta, b0, b1, ll: negBinomLogLik(data, b0, b1, theta) };
+  };
+  let lo = Math.log(0.05);
+  let hi = Math.log(1e7);
+  const gr = (Math.sqrt(5) - 1) / 2;
+  let c = hi - gr * (hi - lo);
+  let d = lo + gr * (hi - lo);
+  let fc = profile(c);
+  let fd = profile(d);
+  for (let i = 0; i < 80; i++) {
+    if (fc.ll > fd.ll) {
+      hi = d; d = c; fd = fc;
+      c = hi - gr * (hi - lo);
+      fc = profile(c);
+    } else {
+      lo = c; c = d; fc = fd;
+      d = lo + gr * (hi - lo);
+      fd = profile(d);
+    }
+  }
+  const best = fc.ll > fd.ll ? fc : fd;
+  const { theta, b0, b1, ll } = best;
+  const mu = data.map((p) => Math.exp(b0 + b1 * p.x));
+  let deviance = 0;
+  data.forEach((p, i) => {
+    const y = p.count;
+    const t1 = y > 0 ? y * Math.log(y / mu[i]) : 0;
+    deviance += 2 * (t1 - (y + theta) * Math.log((y + theta) / (mu[i] + theta)));
+  });
+  return {
+    intercept: b0,
+    slope: b1,
+    logLikelihood: ll,
+    aic: -2 * ll + 2 * 3, // three parameters: intercept, slope, theta
+    deviance,
+    theta,
+    thetaAtBound: theta > THETA_BOUND,
+  };
+}
+
+// ── Scenarios (marginal stats computed from the data) ───────────────────────────
+
+const COMPLAINTS_STATS = marginalStats(COMPLAINTS_DATA);
+const ACCIDENTS_STATS = marginalStats(ACCIDENTS_DATA);
+const WEBSITE_STATS = marginalStats(WEBSITE_DATA);
+
+export const SCENARIOS: Record<ScenarioId, Scenario> = {
+  complaints: {
+    id: "complaints",
+    label: "Customer Complaints",
+    xLabel: "Store Size (m²)",
+    countLabel: "Complaints",
+    description:
+      "Complaint counts at retail stores of varying sizes (illustrative data). After fitting the trend, the Poisson model leaves no excess variation: Pearson X²/df is well below 1, so there is no overdispersion.",
+    data: COMPLAINTS_DATA,
+    ...COMPLAINTS_STATS,
+  },
+  accidents: {
+    id: "accidents",
+    label: "Traffic Accidents",
+    xLabel: "Traffic Volume (K/day)",
+    countLabel: "Accidents/Year",
+    description:
+      "Annual accident counts at intersections with varying traffic volumes (illustrative data). Even after fitting the trend, Pearson X²/df stays far above 1: genuine overdispersion, so the negative binomial fits better.",
+    data: ACCIDENTS_DATA,
+    ...ACCIDENTS_STATS,
+  },
+  website: {
+    id: "website",
+    label: "Website Visits",
+    xLabel: "Ad Spend ($)",
+    countLabel: "Visits/Hour",
+    description:
+      "Hourly website visit counts versus advertising spend (illustrative data). The raw Var/Mean ratio looks high, but that is the trend talking: after fitting it, Pearson X²/df drops below 1 and no real overdispersion remains.",
+    data: WEBSITE_DATA,
+    ...WEBSITE_STATS,
+  },
+};
+
+// ── Fitted models (computed, not hardcoded) ─────────────────────────────────────
+
+function fitScenario(data: CountPoint[]) {
+  const poisson = fitPoissonGLM(data);
+  return {
+    simpleLinear: fitOLS(data),
+    poisson,
+    negativeBinomial: fitNegBinomGLM(data, poisson),
+  };
+}
+
+export const FITTED_MODELS: Record<
+  ScenarioId,
+  {
+    simpleLinear: { slope: number; intercept: number; rSquared: number };
+    poisson: PoissonFitFull;
+    negativeBinomial: NegBinomFit;
+  }
+> = {
+  complaints: fitScenario(COMPLAINTS_DATA),
+  accidents: fitScenario(ACCIDENTS_DATA),
+  website: fitScenario(WEBSITE_DATA),
+};
+
+// ── Dispersion diagnostics ──────────────────────────────────────────────────────
+
+export interface OverdispersionStats {
+  mean: number;               // marginal mean of the counts
+  variance: number;           // marginal sample variance of the counts
+  marginalDispersion: number; // variance / mean of the raw counts (trend-inflated)
+  pearsonX2: number;          // Pearson X² of the fitted Poisson model
+  df: number;                 // residual degrees of freedom (n - 2)
+  phi: number;                // X² / df, the model-based dispersion estimate
+  isOverdispersed: boolean;   // based on phi, NOT on the marginal ratio
+}
+
+/** phi substantially above 1 signals overdispersion relative to the fitted Poisson model. */
+const PHI_OVERDISPERSION_THRESHOLD = 1.5;
+
+export function computeOverdispersion(scenarioId: ScenarioId): OverdispersionStats {
+  const scenario = SCENARIOS[scenarioId];
+  const poisson = FITTED_MODELS[scenarioId].poisson;
+  return {
+    mean: scenario.mean,
+    variance: scenario.variance,
+    marginalDispersion: scenario.variance / scenario.mean,
+    pearsonX2: poisson.pearsonX2,
+    df: poisson.df,
+    phi: poisson.phi,
+    isOverdispersed: poisson.phi > PHI_OVERDISPERSION_THRESHOLD,
   };
 }
