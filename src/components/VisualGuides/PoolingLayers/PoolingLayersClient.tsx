@@ -76,7 +76,7 @@ export default function PoolingLayersClient() {
             Pooling Layers: Shrinking Without Losing
           </h1>
           <p className="text-[#94a3b8] text-base max-w-2xl leading-relaxed">
-            Watch max, average, min, and L2-norm pooling slide across a pixel grid in real
+            Watch max, average, min, and RMS pooling slide across a pixel grid in real
             time. Understand how CNNs reduce spatial dimensions while preserving the features
             that matter.
           </p>
@@ -194,10 +194,11 @@ export default function PoolingLayersClient() {
           <p className="text-sm text-[#94a3b8] leading-relaxed">
             In modern CNNs like{" "}
             <span className="text-white font-semibold">ResNet</span>, Global Average
-            Pooling replaces fully-connected layers entirely &mdash; reducing a feature map
-            to a{" "}
-            <span className="text-white font-semibold">single value per channel</span>{" "}
-            before classification. This dramatically reduces parameters and overfitting.
+            Pooling collapses each feature map to a{" "}
+            <span className="text-white font-semibold">single value per channel</span>,
+            replacing the huge flattened fully-connected stacks of older architectures
+            like VGG; only one small final classifier layer remains. This dramatically
+            reduces parameters and overfitting.
           </p>
         </div>
 

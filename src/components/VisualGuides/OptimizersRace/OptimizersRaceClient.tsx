@@ -159,7 +159,7 @@ export default function OptimizersRaceClient() {
           <span>/</span>
           <span className="text-[#94a3b8]">Deep Learning</span>
           <span>/</span>
-          <span className="text-white">Optimizers Race: SGD vs Adam vs RMSProp</span>
+          <span className="text-white">Optimizers Race: SGD, Momentum, RMSProp &amp; Adam</span>
         </nav>
 
         {/* Hero */}
@@ -171,10 +171,10 @@ export default function OptimizersRaceClient() {
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Optimizers Race: SGD vs Adam vs RMSProp
+            Optimizers Race: SGD, Momentum, RMSProp &amp; Adam
           </h1>
           <p className="text-[#94a3b8] text-base max-w-2xl leading-relaxed">
-            Watch SGD, Adam, and RMSProp descend the same loss landscape simultaneously.
+            Watch SGD, Momentum, RMSProp, and Adam descend the same loss landscape simultaneously.
             See why adaptive optimizers converge faster on non-uniform loss surfaces — and
             tune learning rates to explore their trade-offs.
           </p>
@@ -332,9 +332,13 @@ export default function OptimizersRaceClient() {
             <section className="bg-[#1e293b]/60 border border-[#1e293b] rounded-2xl p-5">
               <h2 className="text-sm font-semibold text-white mb-3">Loss Surface</h2>
               <p className="text-xs text-[#94a3b8] leading-relaxed mb-3">
-                The landscape is <code className="text-[#3bb4a4]">L(x,y) = 0.1x² + 2y²</code> — an
-                elongated bowl. The steep y-axis causes SGD to oscillate while adaptive
-                optimizers glide smoothly.
+                The landscape is <code className="text-[#3bb4a4]">L(x,y) = 0.1x² + 2y²</code>, an
+                elongated bowl. At the default learning rate (0.1), SGD settles the steep
+                y-direction fast (y shrinks 40% per step) but crawls along the shallow x-axis
+                (x shrinks only 2% per step): that slow x-progress is what loses the race.
+                Push SGD&apos;s learning rate above 0.25 and the steep y-axis starts to
+                oscillate; above 0.5 it diverges. Adaptive optimizers rescale each axis, so
+                they make even progress in both directions.
               </p>
               <div className="flex flex-col gap-2 text-xs text-[#94a3b8]">
                 <div className="flex items-center gap-2">

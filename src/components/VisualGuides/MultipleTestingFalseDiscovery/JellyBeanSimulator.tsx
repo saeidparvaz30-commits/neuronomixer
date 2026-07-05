@@ -43,8 +43,8 @@ export default function JellyBeanSimulator({
         <p className="text-[12px] text-[#94a3b8] leading-relaxed">
           A researcher tests whether eating jelly beans of each of{" "}
           <span className="text-[#d4af37] font-semibold">{numberOfTests} colors</span> is
-          associated with acne. Each test compares an acne rate between a jelly-bean group
-          and a control group — but{" "}
+          associated with acne. Each test compares the mean acne-severity score of a
+          jelly-bean group against a control group (a two-sample test of means), but{" "}
           <span className="text-white font-semibold">there is no real effect</span>. All
           differences are pure noise.
         </p>

@@ -465,13 +465,8 @@ export default function MultipleRegressionClient() {
   // Track mode changes for progress
   useEffect(() => {
     if (mode === "simple") setSimpleViewed(true);
-    if (mode === "multiple") {
-      setMultipleViewed(true);
-      setInterpretedCoeff(true);
-    }
-    if (mode === "interaction") {
-      setInteractionViewed(true);
-    }
+    if (mode === "multiple") setMultipleViewed(true);
+    if (mode === "interaction") setInteractionViewed(true);
   }, [mode]);
 
   // Confounding identified when user has seen both multiple + interaction
@@ -508,7 +503,9 @@ export default function MultipleRegressionClient() {
     { label: "Confounding identified", done: confoundingIdentified },
   ];
 
-  const tempDiff = multiple.tempCoeff - simple.slope;
+  // Omitted-variable bias of the simple model: how much the temp-only slope
+  // is inflated by absorbing the weekend effect (simple minus multiple).
+  const biasDelta = simple.slope - multiple.tempCoeff;
 
   const interactionR2Improvement = interaction.rSquared - multiple.rSquared;
 
@@ -769,9 +766,10 @@ export default function MultipleRegressionClient() {
                       Note
                     </p>
                     <p className="text-[11px] text-[#94a3b8] leading-relaxed">
-                      This model ignores whether it&apos;s a weekend. If weekends
-                      are both hotter AND more sales-prone, the temperature slope
-                      may absorb that effect.
+                      This model ignores whether it&apos;s a weekend. In this
+                      dataset, weekend days are both hotter AND more sales-prone,
+                      so the temperature slope absorbs part of the weekend effect
+                      and comes out inflated.
                     </p>
                   </div>
                 </motion.div>
@@ -870,20 +868,21 @@ export default function MultipleRegressionClient() {
                         <p
                           className="text-[14px] font-mono font-bold"
                           style={{
-                            color: Math.abs(tempDiff) > 0.05 ? "#ef4444" : "#3bb4a4",
+                            color: Math.abs(biasDelta) > 0.05 ? "#ef4444" : "#3bb4a4",
                           }}
                         >
-                          {tempDiff >= 0 ? "+" : ""}
-                          {fmt(tempDiff, 3)}
+                          {biasDelta >= 0 ? "+" : ""}
+                          {fmt(biasDelta, 3)}
                         </p>
                       </div>
                     </div>
                     <p className="text-[10px] text-[#94a3b8] leading-relaxed">
-                      Δβ ={" "}
-                      <span className="font-mono">{fmt(tempDiff, 3)}</span>: the
+                      Δβ = simple slope minus multiple slope ={" "}
+                      <span className="font-mono">{fmt(biasDelta, 3)}</span>: the
                       omitted-variable bias introduced by ignoring weekend status.
-                      Positive = simple model over-attributed weekend footfall to
-                      temperature.
+                      In this sample, weekend days are also the hottest days, so the
+                      simple model over-attributes weekend footfall to temperature
+                      and its slope comes out too high.
                     </p>
                   </div>
                 </motion.div>
@@ -1100,14 +1099,16 @@ export default function MultipleRegressionClient() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
+          onMouseEnter={() => setInterpretedCoeff(true)}
+          onClick={() => setInterpretedCoeff(true)}
         >
           <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569]">
               Coefficient Comparison Table
             </p>
-            {Math.abs(tempDiff) > 0.01 && (
+            {Math.abs(biasDelta) > 0.1 && (
               <span className="text-[10px] font-semibold text-[#ef4444] border border-[#ef4444]/30 bg-[#ef4444]/8 rounded-full px-2.5 py-1">
-                Temperature coefficient changes across models — confounding effect!
+                Temperature coefficient shifts across models: confounding effect!
               </span>
             )}
           </div>

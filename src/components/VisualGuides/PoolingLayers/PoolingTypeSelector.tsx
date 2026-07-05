@@ -34,15 +34,15 @@ const TABS: Tab[] = [
     color: "#a855f7",
     tagline: "Takes the weakest signal",
     description:
-      "Picks the smallest value in each window. Useful in specific architectures where suppressing dominant activations is desired.",
+      "Picks the smallest value in each window. Rarely used in real CNNs; it is shown here for contrast with max pooling (it equals max pooling applied to the negated input).",
   },
   {
     id: "l2",
-    label: "L2-Norm",
+    label: "RMS",
     color: "#d4af37",
     tagline: "Root mean square",
     description:
-      "Computes the L2 norm (root mean square) of the patch. Captures overall energy in the window and is used in some specialized architectures.",
+      "Computes the root mean square of the patch: the square root of the mean of the squared values. Closely related to the L2 norm, which uses the sum instead of the mean (L2 = RMS × √n). Captures the overall energy of the window.",
   },
 ];
 

@@ -22,7 +22,7 @@ function fmt(v: number, unit: string) {
 }
 
 export default function DescriptiveStats({ stats, unit }: DescriptiveStatsProps) {
-  const { min, q1, median, q3, max, iqr, whiskerLower, whiskerUpper, outliers, mean, sd } = stats;
+  const { min, q1, median, q3, max, iqr, lowerFence, upperFence, whiskerLower, whiskerUpper, outliers, mean, sd } = stats;
 
   return (
     <div
@@ -53,10 +53,12 @@ export default function DescriptiveStats({ stats, unit }: DescriptiveStatsProps)
         <StatItem label="Outliers" value={String(outliers.length)} />
       </div>
 
-      {/* Whisker bounds */}
+      {/* Fences (outlier cutoffs) and whisker ends (extreme inliers) */}
       <div className="grid grid-cols-2 gap-3">
-        <StatItem label="Lower Fence" value={fmt(whiskerLower, unit)} />
-        <StatItem label="Upper Fence" value={fmt(whiskerUpper, unit)} />
+        <StatItem label="Lower Fence" value={fmt(lowerFence, unit)} />
+        <StatItem label="Upper Fence" value={fmt(upperFence, unit)} />
+        <StatItem label="Lower Whisker" value={fmt(whiskerLower, unit)} />
+        <StatItem label="Upper Whisker" value={fmt(whiskerUpper, unit)} />
       </div>
 
       {/* Outlier values */}

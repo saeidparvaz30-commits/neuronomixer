@@ -92,9 +92,15 @@ export default function MultipleTestingFalseDiscoveryClient() {
 
   // ── Correction handlers ──────────────────────────────────────────────────────
 
+  // The M used by corrections and displays MUST be the number of tests actually
+  // simulated (testResults.length), not the live slider value, which the user may
+  // have changed without re-running. Falls back to the slider before any run.
+  const testsRun =
+    state.testResults.length > 0 ? state.testResults.length : state.numberOfTests;
+
   const handleApplyBonferroni = useCallback(() => {
     if (state.testResults.length === 0) return;
-    const adjusted = applyBonferroni(state.testResults, state.numberOfTests);
+    const adjusted = applyBonferroni(state.testResults, state.testResults.length);
     setState(prev => {
       const newSet = new Set(prev.correctionsApplied);
       newSet.add("Bonferroni");
@@ -107,11 +113,11 @@ export default function MultipleTestingFalseDiscoveryClient() {
         correctionsApplied: newSet,
       };
     });
-  }, [state.testResults, state.numberOfTests]);
+  }, [state.testResults]);
 
   const handleApplyFDR = useCallback(() => {
     if (state.testResults.length === 0) return;
-    const adjusted = applyFDR(state.testResults, state.numberOfTests);
+    const adjusted = applyFDR(state.testResults, state.testResults.length);
     setState(prev => {
       const newSet = new Set(prev.correctionsApplied);
       newSet.add("FDR");
@@ -124,11 +130,11 @@ export default function MultipleTestingFalseDiscoveryClient() {
         correctionsApplied: newSet,
       };
     });
-  }, [state.testResults, state.numberOfTests]);
+  }, [state.testResults]);
 
   const handleApplyHolm = useCallback(() => {
     if (state.testResults.length === 0) return;
-    const adjusted = applyHolm(state.testResults, state.numberOfTests);
+    const adjusted = applyHolm(state.testResults, state.testResults.length);
     setState(prev => {
       const newSet = new Set(prev.correctionsApplied);
       newSet.add("Holm");
@@ -141,7 +147,7 @@ export default function MultipleTestingFalseDiscoveryClient() {
         correctionsApplied: newSet,
       };
     });
-  }, [state.testResults, state.numberOfTests]);
+  }, [state.testResults]);
 
   // ── Config handlers ──────────────────────────────────────────────────────────
 
@@ -292,7 +298,7 @@ export default function MultipleTestingFalseDiscoveryClient() {
 
             <FalseDiscoveryVisualization
               testResults={state.testResults}
-              numberOfTests={state.numberOfTests}
+              numberOfTests={testsRun}
             />
           </div>
 
@@ -300,7 +306,7 @@ export default function MultipleTestingFalseDiscoveryClient() {
           <div className="space-y-5">
             <MultipleComparisonCorrectionPanel
               testResults={state.testResults}
-              numberOfTests={state.numberOfTests}
+              numberOfTests={testsRun}
               bonferroniApplied={state.bonferroniApplied}
               fdrApplied={state.fdrApplied}
               holmApplied={state.holmApplied}
@@ -311,7 +317,7 @@ export default function MultipleTestingFalseDiscoveryClient() {
 
             <CorrectionComparison
               testResults={state.testResults}
-              numberOfTests={state.numberOfTests}
+              numberOfTests={testsRun}
               bonferroniApplied={state.bonferroniApplied}
               fdrApplied={state.fdrApplied}
               holmApplied={state.holmApplied}

@@ -1,7 +1,14 @@
 "use client";
 
 import React from "react";
-import { type CompoundEvent, SINGLE_P, labelFor } from "./types";
+import {
+  type CompoundEvent,
+  SINGLE_P,
+  labelFor,
+  countMatching,
+  countMatchingBoth,
+  sampleSpaceSize,
+} from "./types";
 
 interface TheoreticalCalculatorProps {
   event: CompoundEvent;
@@ -110,20 +117,43 @@ function buildExplanation(event: CompoundEvent): {
 
   const pB = SINGLE_P[secondType]?.[secondOutcome] ?? 0;
   const bLabel = `P(${labelFor(secondType)}: ${secondOutcome})`;
+  const sameSpace = firstType === secondType;
+
+  if (sameSpace) {
+    // One draw decides both events: they are overlapping sets in the same
+    // sample space (exactly the Venn diagram picture).
+    const N = sampleSpaceSize(firstType);
+    const both = countMatchingBoth(firstType, firstOutcome, secondOutcome);
+    const mA = countMatching(firstType, firstOutcome);
+    const mB = countMatching(firstType, secondOutcome);
+
+    if (operator === "AND") {
+      return {
+        ruleName: "Intersection of Events (Same Draw)",
+        formula: `P(A AND B)\n= |A ∩ B| / N\n= ${both}/${N}\n≈ ${p.toFixed(3)}`,
+        sampleSpace: `Both events are decided by the SAME ${labelFor(firstType).toLowerCase()}: ${both} of the ${N} possible outcomes satisfy both, like the overlap region of a Venn diagram.`,
+      };
+    }
+    return {
+      ruleName: "Addition Rule (Same Draw, Inclusion-Exclusion)",
+      formula: `P(A OR B)\n= |A ∪ B| / N\n= (${mA} + ${mB} − ${both})/${N}\n≈ ${p.toFixed(3)}`,
+      sampleSpace: `Both events are decided by the SAME ${labelFor(firstType).toLowerCase()}: we count outcomes in either set, subtracting the ${both} counted twice, like the union of two Venn circles.`,
+    };
+  }
 
   if (operator === "AND") {
     return {
       ruleName: "Multiplication Rule for Independent Events",
       formula: `P(A AND B)\n= ${aLabel} × ${bLabel}\n= ${fmt(pA)} × ${fmt(pB)}\n≈ ${p.toFixed(3)}`,
-      sampleSpace: `Events are independent (separate trials). P(both) = product of individual probabilities.`,
+      sampleSpace: `The two events come from different experiments (independent draws). P(both) = product of individual probabilities.`,
     };
   }
 
-  // OR
+  // OR (independent draws)
   const pAB = pA * pB;
   return {
     ruleName: "Addition Rule (Inclusion-Exclusion)",
     formula: `P(A OR B)\n= ${aLabel} + ${bLabel} − P(A AND B)\n= ${fmt(pA)} + ${fmt(pB)} − ${pAB.toFixed(3)}\n≈ ${p.toFixed(3)}`,
-    sampleSpace: `We subtract the overlap P(A AND B) to avoid double-counting outcomes where both events occur.`,
+    sampleSpace: `We subtract the overlap P(A AND B) = ${fmt(pA)} × ${fmt(pB)} (independent draws) to avoid double-counting trials where both events occur.`,
   };
 }

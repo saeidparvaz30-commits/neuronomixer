@@ -30,7 +30,9 @@ const TABS: { id: TabId; label: string }[] = [
 interface TabContent {
   scenario: string;
   steps: string[];
-  run: (data: NonparametricData) => TestResult;
+  // Returns null when the test is not applicable to the current dataset
+  // (paired tests must not be run on independent groups).
+  run: (data: NonparametricData) => TestResult | null;
 }
 
 const TAB_CONTENT: Record<TabId, TabContent> = {
@@ -75,20 +77,10 @@ const TAB_CONTENT: Record<TabId, TabContent> = {
       "8. z = (T − μₜ) / σₜ,  p = 2·Φ(z)",
     ],
     run: (data) => {
-      const before = data.before ?? data.group1;
-      const after = data.after ?? data.group2;
-      if (!before || !after) {
-        return {
-          testName: "Wilcoxon Signed-Rank",
-          statistic: 0,
-          statisticLabel: "T",
-          pValue: 1,
-          significant: false,
-          assumptionsMet: true,
-          reliable: true,
-        };
-      }
-      return wilcoxonSignedRank(before, after);
+      // Only genuinely paired data may be used; pairing up two independent
+      // groups would be statistically invalid.
+      if (!data.before || !data.after) return null;
+      return wilcoxonSignedRank(data.before, data.after);
     },
   },
   "kruskal-wallis": {
@@ -127,20 +119,10 @@ const TAB_CONTENT: Record<TabId, TabContent> = {
       "6. p = 2·(1 − Φ(|z|))",
     ],
     run: (data) => {
-      const before = data.before ?? data.group1;
-      const after = data.after ?? data.group2;
-      if (!before || !after) {
-        return {
-          testName: "Sign Test",
-          statistic: 0,
-          statisticLabel: "S",
-          pValue: 1,
-          significant: false,
-          assumptionsMet: true,
-          reliable: true,
-        };
-      }
-      return signTest(before, after);
+      // Only genuinely paired data may be used; pairing up two independent
+      // groups would be statistically invalid.
+      if (!data.before || !data.after) return null;
+      return signTest(data.before, data.after);
     },
   },
 };
@@ -195,6 +177,7 @@ function ResultCard({ result }: { result: TestResult }) {
 
 export default function ResultsComparison({ currentData, activeTab, onTabChange }: Props) {
   const [result, setResult] = useState<TestResult | null>(null);
+  const [notApplicable, setNotApplicable] = useState(false);
   const [dataKey, setDataKey] = useState("");
 
   const currentKey = `${currentData.id}-${activeTab}`;
@@ -202,13 +185,16 @@ export default function ResultsComparison({ currentData, activeTab, onTabChange 
   React.useEffect(() => {
     if (currentKey !== dataKey) {
       setResult(null);
+      setNotApplicable(false);
       setDataKey(currentKey);
     }
   }, [currentKey, dataKey]);
 
   const handleRun = () => {
     const content = TAB_CONTENT[activeTab];
-    setResult(content.run(currentData));
+    const r = content.run(currentData);
+    setResult(r);
+    setNotApplicable(r === null);
   };
 
   const content = TAB_CONTENT[activeTab];
@@ -303,6 +289,24 @@ export default function ResultsComparison({ currentData, activeTab, onTabChange 
           <AnimatePresence>
             {result && <ResultCard result={result} />}
           </AnimatePresence>
+          {notApplicable && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 rounded-xl border border-[#f59e0b]/30 bg-[#f59e0b]/5 p-4"
+            >
+              <p className="text-[11px] font-bold text-[#f59e0b] mb-1">
+                Not applicable to this dataset
+              </p>
+              <p className="text-[10px] text-[#94a3b8] leading-relaxed">
+                This test requires paired before/after measurements from the same
+                subjects. The current dataset contains two independent groups, so
+                running it here would be statistically invalid. Load the{" "}
+                <span className="text-white font-semibold">Small Sample</span> dataset
+                (paired, n=12) to try it.
+              </p>
+            </motion.div>
+          )}
         </motion.div>
       </AnimatePresence>
     </div>

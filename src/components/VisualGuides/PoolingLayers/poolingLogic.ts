@@ -12,7 +12,10 @@ export function minPool(values: number[]): number {
   return Math.min(...values);
 }
 
-export function l2Pool(values: number[]): number {
+// Root mean square: sqrt(mean(v^2)). NOTE: this is RMS, not the L2 norm
+// (the L2 norm is sqrt(SUM(v^2)) = RMS * sqrt(n)). The "l2" id is kept for
+// state compatibility, but all UI labels say RMS.
+export function rmsPool(values: number[]): number {
   return Math.sqrt(values.reduce((s, v) => s + v * v, 0) / values.length);
 }
 
@@ -25,7 +28,7 @@ function applyPoolFn(values: number[], config: PoolingConfig): number {
     case "min":
       return minPool(values);
     case "l2":
-      return l2Pool(values);
+      return rmsPool(values);
   }
 }
 

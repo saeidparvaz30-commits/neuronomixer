@@ -94,6 +94,62 @@ export function labelFor(type: EventType): string {
   return "Card Draw";
 }
 
+// ── Sample-space machinery ───────────────────────────────────────────────────
+// Each event type is a finite sample space; outcomes are subsets of it.
+// Compound events on the SAME type are evaluated on ONE draw from that space
+// ("Roll a 1 OR 2" is a single roll: 2/6), exactly like overlapping sets in
+// the Venn diagram section. Events on DIFFERENT types are independent draws.
+
+export function sampleSpaceSize(type: EventType): number {
+  return type === "coin_flip" ? 2 : type === "die_roll" ? 6 : 52;
+}
+
+/** Does elementary outcome `index` of the sample space satisfy `outcome`? */
+function matchesOutcome(type: EventType, index: number, outcome: string): boolean {
+  if (type === "coin_flip") {
+    return (index === 0 ? "Heads" : "Tails") === outcome;
+  }
+  if (type === "die_roll") {
+    const n = index + 1;
+    if (outcome === "Even number") return n % 2 === 0;
+    if (outcome === "Odd number") return n % 2 !== 0;
+    if (outcome === "> 3") return n > 3;
+    return String(n) === outcome;
+  }
+  // card_draw: 0–12 Hearts, 13–25 Spades, 26–38 Diamonds, 39–51 Clubs;
+  // rank within suit: 0 = Ace, 10 = J, 11 = Q, 12 = K
+  const suitIndex = Math.floor(index / 13);
+  const rank = index % 13;
+  const isRed = suitIndex === 0 || suitIndex === 2;
+  if (outcome === "Heart") return suitIndex === 0;
+  if (outcome === "Spade") return suitIndex === 1;
+  if (outcome === "Diamond") return suitIndex === 2;
+  if (outcome === "Club") return suitIndex === 3;
+  if (outcome === "Red card") return isRed;
+  if (outcome === "Black card") return !isRed;
+  if (outcome === "Face card") return rank >= 10 && rank <= 12;
+  if (outcome === "Ace") return rank === 0;
+  return false;
+}
+
+/** Number of elementary outcomes satisfying `outcome`. */
+export function countMatching(type: EventType, outcome: string): number {
+  const N = sampleSpaceSize(type);
+  let c = 0;
+  for (let i = 0; i < N; i++) if (matchesOutcome(type, i, outcome)) c++;
+  return c;
+}
+
+/** Number of elementary outcomes satisfying BOTH outcomes (same sample space). */
+export function countMatchingBoth(type: EventType, o1: string, o2: string): number {
+  const N = sampleSpaceSize(type);
+  let c = 0;
+  for (let i = 0; i < N; i++) {
+    if (matchesOutcome(type, i, o1) && matchesOutcome(type, i, o2)) c++;
+  }
+  return c;
+}
+
 /** Compute theoretical probability of a CompoundEvent. */
 export function calcTheoretical(
   firstType: EventType,
@@ -102,7 +158,7 @@ export function calcTheoretical(
   secondType: EventType | null,
   secondOutcome: string | null,
 ): number {
-  const pA = SINGLE_P[firstType]?.[firstOutcome] ?? 0;
+  const pA = countMatching(firstType, firstOutcome) / sampleSpaceSize(firstType);
 
   if (operator === "none") return pA;
 
@@ -110,8 +166,17 @@ export function calcTheoretical(
 
   if (!secondType || !secondOutcome) return pA;
 
-  const pB = SINGLE_P[secondType]?.[secondOutcome] ?? 0;
+  const pB = countMatching(secondType, secondOutcome) / sampleSpaceSize(secondType);
 
+  if (firstType === secondType) {
+    // Same sample space: one draw decides both events (overlapping sets).
+    const pBoth =
+      countMatchingBoth(firstType, firstOutcome, secondOutcome) /
+      sampleSpaceSize(firstType);
+    return operator === "AND" ? pBoth : pA + pB - pBoth;
+  }
+
+  // Different sample spaces: independent draws.
   if (operator === "AND") return pA * pB;
 
   // OR: P(A) + P(B) - P(A AND B)
@@ -133,126 +198,75 @@ export interface TrialResult {
 
 // ── Simulation helpers ───────────────────────────────────────────────────────
 
-/** Simulate whether a single EventType/outcome pair occurred. */
-function checkSingleEvent(type: EventType, outcome: string): boolean {
-  if (type === "coin_flip") {
-    const result = Math.random() < 0.5 ? "Heads" : "Tails";
-    return result === outcome;
-  }
-
-  if (type === "die_roll") {
-    const n = Math.floor(Math.random() * 6) + 1;
-    if (outcome === "Even number") return n % 2 === 0;
-    if (outcome === "Odd number") return n % 2 !== 0;
-    if (outcome === "> 3") return n > 3;
-    return String(n) === outcome;
-  }
-
-  // card_draw — draw a card from a 52-card deck
-  // Suits: 0–12 = Hearts, 13–25 = Spades, 26–38 = Diamonds, 39–51 = Clubs
-  // Rank within suit: 0 = Ace, 1–9 = 2–10, 10 = Jack, 11 = Queen, 12 = King
-  const card = Math.floor(Math.random() * 52);
-  const suitIndex = Math.floor(card / 13); // 0=Hearts, 1=Spades, 2=Diamonds, 3=Clubs
-  const rank = card % 13; // 0=Ace, 10=J, 11=Q, 12=K
-  const isRed = suitIndex === 0 || suitIndex === 2;
-
-  if (outcome === "Heart") return suitIndex === 0;
-  if (outcome === "Spade") return suitIndex === 1;
-  if (outcome === "Diamond") return suitIndex === 2;
-  if (outcome === "Club") return suitIndex === 3;
-  if (outcome === "Red card") return isRed;
-  if (outcome === "Black card") return !isRed;
-  if (outcome === "Face card") return rank >= 10 && rank <= 12;
-  if (outcome === "Ace") return rank === 0;
-  return false;
+/** Draw one elementary outcome index uniformly from the sample space. */
+function sampleIndex(type: EventType): number {
+  return Math.floor(Math.random() * sampleSpaceSize(type));
 }
 
-/** Simulate a single trial; returns true if the compound event occurred. */
+/** Human-readable label for an elementary outcome index. */
+function indexLabel(type: EventType, index: number): string {
+  if (type === "coin_flip") return index === 0 ? "Heads" : "Tails";
+  if (type === "die_roll") return String(index + 1);
+  const RANKS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+  const SUIT_SYMBOLS = ["♥", "♠", "♦", "♣"];
+  return `${RANKS[index % 13]}${SUIT_SYMBOLS[Math.floor(index / 13)]}`;
+}
+
+/**
+ * Simulate a single trial; returns true if the compound event occurred.
+ * Same-type compounds use ONE draw evaluated against both outcomes
+ * (matching calcTheoretical); different types draw independently.
+ */
 export function simulateTrial(event: CompoundEvent): boolean {
   const { firstType, firstOutcome, operator, secondType, secondOutcome } = event;
 
-  const aHit = checkSingleEvent(firstType, firstOutcome);
+  const aIndex = sampleIndex(firstType);
+  const aHit = matchesOutcome(firstType, aIndex, firstOutcome);
 
   if (operator === "none") return aHit;
   if (operator === "NOT") return !aHit;
 
-  const bHit =
-    secondType && secondOutcome
-      ? checkSingleEvent(secondType, secondOutcome)
-      : false;
+  let bHit = false;
+  if (secondType && secondOutcome) {
+    const bIndex = secondType === firstType ? aIndex : sampleIndex(secondType);
+    bHit = matchesOutcome(secondType, bIndex, secondOutcome);
+  }
 
   if (operator === "AND") return aHit && bHit;
   // OR
   return aHit || bHit;
 }
 
-/** Like checkSingleEvent but also returns the human-readable sampled label. */
-function checkSingleEventDetailed(
-  type: EventType,
-  outcome: string,
-): { hit: boolean; label: string } {
-  if (type === "coin_flip") {
-    const label = Math.random() < 0.5 ? "Heads" : "Tails";
-    return { hit: label === outcome, label };
-  }
-
-  if (type === "die_roll") {
-    const n = Math.floor(Math.random() * 6) + 1;
-    const label = String(n);
-    let hit: boolean;
-    if (outcome === "Even number") hit = n % 2 === 0;
-    else if (outcome === "Odd number") hit = n % 2 !== 0;
-    else if (outcome === "> 3") hit = n > 3;
-    else hit = label === outcome;
-    return { hit, label };
-  }
-
-  // card_draw
-  const RANKS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-  const SUIT_SYMBOLS = ["♥", "♠", "♦", "♣"];
-  const card = Math.floor(Math.random() * 52);
-  const suitIndex = Math.floor(card / 13);
-  const rank = card % 13;
-  const isRed = suitIndex === 0 || suitIndex === 2;
-  const label = `${RANKS[rank]}${SUIT_SYMBOLS[suitIndex]}`;
-
-  let hit: boolean;
-  if (outcome === "Heart") hit = suitIndex === 0;
-  else if (outcome === "Spade") hit = suitIndex === 1;
-  else if (outcome === "Diamond") hit = suitIndex === 2;
-  else if (outcome === "Club") hit = suitIndex === 3;
-  else if (outcome === "Red card") hit = isRed;
-  else if (outcome === "Black card") hit = !isRed;
-  else if (outcome === "Face card") hit = rank >= 10 && rank <= 12;
-  else if (outcome === "Ace") hit = rank === 0;
-  else hit = false;
-
-  return { hit, label };
-}
-
 /** Simulate a single trial and return full detail for the live visualizer. */
 export function simulateTrialDetailed(event: CompoundEvent): TrialResult {
   const { firstType, firstOutcome, operator, secondType, secondOutcome } = event;
-  const a = checkSingleEventDetailed(firstType, firstOutcome);
+
+  const aIndex = sampleIndex(firstType);
+  const aHit = matchesOutcome(firstType, aIndex, firstOutcome);
+  const aLabel = indexLabel(firstType, aIndex);
 
   if (operator === "none") {
-    return { hit: a.hit, typeA: firstType, rawA: a.label, hitA: a.hit, operator };
+    return { hit: aHit, typeA: firstType, rawA: aLabel, hitA: aHit, operator };
   }
   if (operator === "NOT") {
-    return { hit: !a.hit, typeA: firstType, rawA: a.label, hitA: a.hit, operator };
+    return { hit: !aHit, typeA: firstType, rawA: aLabel, hitA: aHit, operator };
   }
 
-  const b =
-    secondType && secondOutcome
-      ? checkSingleEventDetailed(secondType, secondOutcome)
-      : { hit: false, label: "?" };
+  let bHit = false;
+  let bLabel = "?";
+  if (secondType && secondOutcome) {
+    // Same type: the SAME draw decides both events (one roll, one card, ...).
+    const bIndex = secondType === firstType ? aIndex : sampleIndex(secondType);
+    bHit = matchesOutcome(secondType, bIndex, secondOutcome);
+    bLabel = indexLabel(secondType, bIndex);
+  }
 
-  const hit = operator === "AND" ? a.hit && b.hit : a.hit || b.hit;
+  const hit = operator === "AND" ? aHit && bHit : aHit || bHit;
   return {
     hit,
-    typeA: firstType, rawA: a.label, hitA: a.hit,
+    typeA: firstType, rawA: aLabel, hitA: aHit,
     operator,
-    typeB: secondType ?? undefined, rawB: b.label, hitB: b.hit,
+    typeB: secondType ?? undefined, rawB: bLabel, hitB: bHit,
   };
 }
 

@@ -47,7 +47,7 @@ export default function TestTypeToggle({ testType, onChange }: Props) {
       <p className="text-[10px] text-[#475569] mt-3 leading-relaxed">
         {isTwoTailed
           ? "Two-tailed: Are the groups different in either direction? Divides α between both tails. Use this when you have no prior directional hypothesis."
-          : "One-tailed: Is Group A specifically larger (or smaller) than Group B? Uses the full α in one tail. Only valid when direction is pre-specified."}
+          : "One-tailed: Is Group B specifically larger than Group A? Uses the full α in the right tail. Only valid because the direction was fixed before seeing the data (the simulation gives Group B the true effect)."}
       </p>
     </div>
   );

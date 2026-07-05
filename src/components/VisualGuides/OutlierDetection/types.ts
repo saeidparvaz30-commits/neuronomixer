@@ -63,18 +63,34 @@ export function regression(pts: Point[]): { slope: number; intercept: number } {
 
 // ── Detection ──────────────────────────────────────────────────────────────
 
+// Both detectors are applied to EACH axis separately (this is a 2D scatter):
+// a point is flagged if either its x or its y coordinate is an outlier on
+// that axis. Purely x-based detection would never flag a vertical drag.
+
 export function detectZScore(pts: Point[], threshold = 3): Set<number> {
-  const xs = pts.map((p) => p.x);
-  const m  = mean(xs);
-  const s  = stdDev(xs, m);
-  if (s === 0) return new Set();
-  return new Set(pts.filter((p) => Math.abs((p.x - m) / s) > threshold).map((p) => p.id));
+  const flagged = new Set<number>();
+  for (const axis of ["x", "y"] as const) {
+    const vals = pts.map((p) => p[axis]);
+    const m = mean(vals);
+    const s = stdDev(vals, m);
+    if (s === 0) continue;
+    for (const p of pts) {
+      if (Math.abs((p[axis] - m) / s) > threshold) flagged.add(p.id);
+    }
+  }
+  return flagged;
 }
 
 export function detectIQR(pts: Point[]): Set<number> {
-  const xs = pts.map((p) => p.x);
-  const { q1, q3, iqr } = quartiles(xs);
-  const lo = q1 - 1.5 * iqr;
-  const hi = q3 + 1.5 * iqr;
-  return new Set(pts.filter((p) => p.x < lo || p.x > hi).map((p) => p.id));
+  const flagged = new Set<number>();
+  for (const axis of ["x", "y"] as const) {
+    const vals = pts.map((p) => p[axis]);
+    const { q1, q3, iqr } = quartiles(vals);
+    const lo = q1 - 1.5 * iqr;
+    const hi = q3 + 1.5 * iqr;
+    for (const p of pts) {
+      if (p[axis] < lo || p[axis] > hi) flagged.add(p.id);
+    }
+  }
+  return flagged;
 }

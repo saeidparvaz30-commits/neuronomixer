@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import { computeShapiroW, mean, AssumptionResult } from "./types";
+import { checkNormalityQQ, mean, AssumptionResult } from "./types";
 
 interface Props {
   data: number[];
@@ -198,7 +198,7 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
   }, [dataKey]);
 
   const handleCheck = () => {
-    const r = computeShapiroW(data);
+    const r = checkNormalityQQ(data);
     setResult(r);
     setHasRun(true);
     onChecked(!r.isNormal);
@@ -250,9 +250,9 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
           className="mt-4 space-y-2"
         >
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[11px] text-[#94a3b8] font-medium">Shapiro-Wilk</span>
+            <span className="text-[11px] text-[#94a3b8] font-medium">Q-Q correlation</span>
             <span className="font-mono text-[12px] text-white font-bold">
-              W = {result.shapiroW.toFixed(4)}
+              r = {result.qqCorrelation.toFixed(4)}
             </span>
             <span className="font-mono text-[11px] text-[#94a3b8]">
               skewness = {result.skewness.toFixed(2)}
@@ -262,11 +262,11 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
           <div className="flex items-center gap-2 flex-wrap">
             {result.isNormal ? (
               <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/30">
-                Normality met (W &gt; 0.90)
+                Normality met (r &gt; 0.95)
               </span>
             ) : (
               <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#ec4899]/20 text-[#ec4899] border border-[#ec4899]/30">
-                Normality violated (W ≤ 0.90)
+                Normality violated (r ≤ 0.95)
               </span>
             )}
           </div>
@@ -282,7 +282,8 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
 
       {!hasRun && (
         <p className="mt-3 text-[10px] text-[#475569]">
-          Click "Run Assumption Check" to test for normality using the Shapiro-Wilk statistic.
+          Click "Run Assumption Check" to test for normality using the Q-Q plot correlation
+          (how closely the sorted data track normal quantiles).
         </p>
       )}
     </div>

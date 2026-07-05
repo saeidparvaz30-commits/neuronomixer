@@ -114,15 +114,21 @@ export function applyFDR(results: TestResult[], numTests: number, alpha = 0.05):
     cutoffRank >= 0 ? sorted.slice(0, cutoffRank + 1).map(r => r.testName) : []
   );
 
-  return results.map(r => {
-    const rank = sorted.findIndex(s => s.testName === r.testName) + 1;
-    const adjustedPValue = Math.min((r.pValue * numTests) / rank, 1);
-    return {
-      ...r,
-      adjustedPValue,
-      adjustedSignificant: significantNames.has(r.testName),
-    };
-  });
+  // BH adjusted p-values with the monotonicity (step-up) enforcement:
+  // q(k) = min( p(k)*m/k, q(k+1) ), computed from the largest rank down.
+  const adjusted: number[] = new Array(sorted.length);
+  let runningMin = 1;
+  for (let k = sorted.length - 1; k >= 0; k--) {
+    runningMin = Math.min(runningMin, (sorted[k].pValue * numTests) / (k + 1));
+    adjusted[k] = runningMin;
+  }
+  const adjustedByName = new Map(sorted.map((r, i) => [r.testName, adjusted[i]]));
+
+  return results.map(r => ({
+    ...r,
+    adjustedPValue: adjustedByName.get(r.testName) ?? 1,
+    adjustedSignificant: significantNames.has(r.testName),
+  }));
 }
 
 export function applyHolm(results: TestResult[], numTests: number): TestResult[] {

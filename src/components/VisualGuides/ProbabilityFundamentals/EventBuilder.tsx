@@ -247,6 +247,15 @@ export default function EventBuilder({ event, onChange, onReset }: EventBuilderP
         {buildEventLabel(event)}
       </div>
 
+      {/* Same-draw note: both events share one sample space */}
+      {showSecond && event.secondType === event.firstType && (
+        <p className="text-[11px] text-[#94a3b8] leading-relaxed">
+          Both events use the same {labelFor(event.firstType).toLowerCase()}, so ONE draw
+          decides both, like overlapping regions in a Venn diagram. Pick a different second
+          event type if you want two independent experiments.
+        </p>
+      )}
+
       {/* Reset */}
       <button
         onClick={onReset}

@@ -201,7 +201,7 @@ export default function PValuesClient() {
               <p className="text-[12px] font-bold text-white mb-1">Null Hypothesis Distribution</p>
               <p className="text-[10px] text-[#475569] mb-3">
                 {state.pValue !== null
-                  ? `You would observe this result by chance ${(state.pValue * 100).toFixed(1)}% of the time.`
+                  ? `If the null hypothesis were true (no real difference), a result at least this extreme would occur in ${(state.pValue * 100).toFixed(1)}% of experiments.`
                   : "Run an experiment to see the t-distribution."}
               </p>
               <DistributionCurve

@@ -66,10 +66,13 @@ export default function DistributionCurve({ df, tStat, alpha, testType, hasResul
 
   let pValuePath = "";
   if (hasResult && tStat !== null) {
-    const abst = Math.abs(tStat);
-    pValuePath = buildAreaPath(abst, T_RANGE);
     if (testType === "two-tailed") {
-      pValuePath += " " + buildAreaPath(-T_RANGE, -abst);
+      const abst = Math.abs(tStat);
+      pValuePath = buildAreaPath(abst, T_RANGE) + " " + buildAreaPath(-T_RANGE, -abst);
+    } else {
+      // One-tailed (H1: B > A, pre-specified): the p-value region is the
+      // right tail beyond the OBSERVED t, keeping its sign.
+      pValuePath = buildAreaPath(Math.max(tStat, -T_RANGE), T_RANGE);
     }
   }
 

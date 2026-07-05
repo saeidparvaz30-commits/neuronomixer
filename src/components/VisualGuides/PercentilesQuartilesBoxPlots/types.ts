@@ -16,6 +16,10 @@ export interface StatsResult {
   q3: number;
   max: number;
   iqr: number;
+  /** Tukey fences: the outlier cutoffs at Q1/Q3 ± 1.5×IQR */
+  lowerFence: number;
+  upperFence: number;
+  /** Whisker ends: the most extreme data points still inside the fences */
   whiskerLower: number;
   whiskerUpper: number;
   mean: number;
@@ -67,21 +71,34 @@ export const DATASETS: DatasetInfo[] = [
   },
 ];
 
+/** Linear-interpolation quantile (type 7, the default in NumPy/Excel/R) on sorted data */
+function quantileSorted(sorted: number[], p: number): number {
+  const idx = (sorted.length - 1) * p;
+  const lo = Math.floor(idx);
+  const hi = Math.ceil(idx);
+  if (lo === hi) return sorted[lo];
+  return sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo);
+}
+
 export function calcStats(data: number[]): StatsResult {
   const sorted = [...data].sort((a, b) => a - b);
   const n = sorted.length;
-  const median = n % 2 === 0
-    ? (sorted[n / 2 - 1] + sorted[n / 2]) / 2
-    : sorted[Math.floor(n / 2)];
-  const q1 = sorted[Math.floor(n * 0.25)];
-  const q3 = sorted[Math.floor(n * 0.75)];
+  const median = quantileSorted(sorted, 0.5);
+  const q1 = quantileSorted(sorted, 0.25);
+  const q3 = quantileSorted(sorted, 0.75);
   const iqr = q3 - q1;
-  const whiskerLower = Math.max(sorted[0], q1 - 1.5 * iqr);
-  const whiskerUpper = Math.min(sorted[n - 1], q3 + 1.5 * iqr);
+  // Tukey fences are the OUTLIER CUTOFFS at Q1/Q3 ± 1.5×IQR ...
+  const lowerFence = q1 - 1.5 * iqr;
+  const upperFence = q3 + 1.5 * iqr;
+  // ... while whiskers extend to the most extreme data points INSIDE the fences
+  // (they are not drawn at the fences themselves).
+  const inliers = sorted.filter((v) => v >= lowerFence && v <= upperFence);
+  const whiskerLower = inliers[0];
+  const whiskerUpper = inliers[inliers.length - 1];
   const mean = sorted.reduce((a, b) => a + b, 0) / n;
   const sd = Math.sqrt(sorted.reduce((s, x) => s + (x - mean) ** 2, 0) / n);
-  const outliers = sorted.filter((v) => v < whiskerLower || v > whiskerUpper);
-  return { min: sorted[0], q1, median, q3, max: sorted[n - 1], iqr, whiskerLower, whiskerUpper, mean, sd, outliers, sorted, n };
+  const outliers = sorted.filter((v) => v < lowerFence || v > upperFence);
+  return { min: sorted[0], q1, median, q3, max: sorted[n - 1], iqr, lowerFence, upperFence, whiskerLower, whiskerUpper, mean, sd, outliers, sorted, n };
 }
 
 /** Seeded pseudo-random for consistent jitter — lcg xorshift */

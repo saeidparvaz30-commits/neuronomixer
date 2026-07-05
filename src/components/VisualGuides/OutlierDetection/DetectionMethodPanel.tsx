@@ -17,11 +17,17 @@ export default function DetectionMethodPanel({
   method, onMethodChange, threshold, onThresholdChange, outlierIds, points,
 }: Props) {
   const xs  = points.map(p => p.x);
+  const ys  = points.map(p => p.y);
   const mx  = xs.length > 0 ? mean(xs) : 0;
+  const my  = ys.length > 0 ? mean(ys) : 0;
   const sd  = xs.length > 1 ? stdDev(xs, mx) : 0;
+  const sdY = ys.length > 1 ? stdDev(ys, my) : 0;
   const { q1, q3, iqr } = xs.length > 3 ? quartiles(xs) : { q1: 0, q3: 0, iqr: 0 };
+  const { q1: q1y, q3: q3y, iqr: iqrY } = ys.length > 3 ? quartiles(ys) : { q1: 0, q3: 0, iqr: 0 };
   const lo  = method === "zscore" ? mx - threshold * sd : q1 - 1.5 * iqr;
   const hi  = method === "zscore" ? mx + threshold * sd : q3 + 1.5 * iqr;
+  const loY = method === "zscore" ? my - threshold * sdY : q1y - 1.5 * iqrY;
+  const hiY = method === "zscore" ? my + threshold * sdY : q3y + 1.5 * iqrY;
 
   const outlierList  = points.filter(p => outlierIds.has(p.id));
   const outlierColor = method === "zscore" ? "#ef4444" : "#f97316";
@@ -74,10 +80,10 @@ export default function DetectionMethodPanel({
               />
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {[
-                  { label: "Mean X",      value: mx.toFixed(1),  color: "#3bb4a4" },
-                  { label: "Std Dev X",   value: sd.toFixed(1),  color: "#3b82f6" },
-                  { label: "Lower fence", value: lo.toFixed(1),  color: "#ef4444" },
-                  { label: "Upper fence", value: hi.toFixed(1),  color: "#ef4444" },
+                  { label: "Mean (X / Y)",     value: `${mx.toFixed(1)} / ${my.toFixed(1)}`,  color: "#3bb4a4" },
+                  { label: "Std Dev (X / Y)",  value: `${sd.toFixed(1)} / ${sdY.toFixed(1)}`, color: "#3b82f6" },
+                  { label: "X fences",         value: `${lo.toFixed(1)} to ${hi.toFixed(1)}`,   color: "#ef4444" },
+                  { label: "Y fences",         value: `${loY.toFixed(1)} to ${hiY.toFixed(1)}`, color: "#ef4444" },
                 ].map(({ label, value, color }) => (
                   <div key={label} className="rounded-lg bg-[#1e293b]/60 p-2">
                     <p className="text-[9px] text-[#475569] mb-0.5">{label}</p>
@@ -86,19 +92,20 @@ export default function DetectionMethodPanel({
                 ))}
               </div>
               <p className="text-[10px] text-[#475569] mt-2 leading-relaxed">
-                Flags points where |x − μ| &gt; {threshold.toFixed(1)}σ. Assumes a normal distribution.
+                Flags points more than {threshold.toFixed(1)}σ from the mean on either axis.
+                Assumes a roughly normal distribution per axis.
               </p>
             </div>
           ) : (
             <div className="mb-4">
               <div className="grid grid-cols-2 gap-2 mb-3">
                 {[
-                  { label: "Q1",          value: q1.toFixed(1),         color: "#f97316" },
-                  { label: "Q3",          value: q3.toFixed(1),         color: "#f97316" },
-                  { label: "IQR (Q3−Q1)", value: iqr.toFixed(1),        color: "#f97316" },
-                  { label: "1.5 × IQR",   value: (1.5*iqr).toFixed(1), color: "#94a3b8" },
-                  { label: "Lower fence", value: lo.toFixed(1),         color: "#f97316" },
-                  { label: "Upper fence", value: hi.toFixed(1),         color: "#f97316" },
+                  { label: "Q1 (X / Y)",          value: `${q1.toFixed(1)} / ${q1y.toFixed(1)}`,   color: "#f97316" },
+                  { label: "Q3 (X / Y)",          value: `${q3.toFixed(1)} / ${q3y.toFixed(1)}`,   color: "#f97316" },
+                  { label: "IQR (X / Y)",         value: `${iqr.toFixed(1)} / ${iqrY.toFixed(1)}`, color: "#f97316" },
+                  { label: "1.5 × IQR (X / Y)",   value: `${(1.5*iqr).toFixed(1)} / ${(1.5*iqrY).toFixed(1)}`, color: "#94a3b8" },
+                  { label: "X fences",            value: `${lo.toFixed(1)} to ${hi.toFixed(1)}`,     color: "#f97316" },
+                  { label: "Y fences",            value: `${loY.toFixed(1)} to ${hiY.toFixed(1)}`,   color: "#f97316" },
                 ].map(({ label, value, color }) => (
                   <div key={label} className="rounded-lg bg-[#1e293b]/60 p-2">
                     <p className="text-[9px] text-[#475569] mb-0.5">{label}</p>
@@ -107,7 +114,7 @@ export default function DetectionMethodPanel({
                 ))}
               </div>
               <p className="text-[10px] text-[#475569] leading-relaxed">
-                Flags points outside Q1 − 1.5×IQR or Q3 + 1.5×IQR. No normality assumption needed.
+                Flags points outside the 1.5×IQR fences on either axis. No normality assumption needed.
               </p>
             </div>
           )}
@@ -133,14 +140,21 @@ export default function DetectionMethodPanel({
         ) : (
           <div className="flex flex-col gap-1">
             {outlierList.map(p => {
-              const zScore = sd > 0 ? Math.abs((p.x - mx) / sd) : 0;
+              const zx = sd > 0 ? Math.abs((p.x - mx) / sd) : 0;
+              const zy = sdY > 0 ? Math.abs((p.y - my) / sdY) : 0;
+              const flaggedAxes = method === "zscore"
+                ? [zx > threshold ? "x" : null, zy > threshold ? "y" : null]
+                : [p.x < lo || p.x > hi ? "x" : null, p.y < loY || p.y > hiY ? "y" : null];
+              const axisLabel = flaggedAxes.filter(Boolean).join(",") || "x";
               return (
                 <div key={p.id} className="flex items-center justify-between rounded-lg bg-[#1e293b]/40 px-2.5 py-1.5">
                   <span className="text-[11px] font-medium text-white">
                     #{p.id} ({p.x}, {p.y})
                   </span>
                   <span className="text-[10px] font-semibold" style={{ color: outlierColor }}>
-                    {method === "zscore" ? `z = ${zScore.toFixed(2)}` : `x = ${p.x}`}
+                    {method === "zscore"
+                      ? `max z = ${Math.max(zx, zy).toFixed(2)} (${axisLabel})`
+                      : `outside ${axisLabel} fence`}
                   </span>
                 </div>
               );

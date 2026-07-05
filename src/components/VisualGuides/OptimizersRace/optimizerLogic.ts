@@ -1,6 +1,7 @@
 import type { TrajectoryPoint } from "./types";
 
-// Loss function: elongated bowl — causes SGD to oscillate
+// Loss function: elongated bowl. At default lr SGD is slow along the shallow
+// x-axis (2% shrink/step); the steep y-axis only oscillates when lr > 0.25.
 export function loss(x: number, y: number): number {
   return 0.1 * x * x + 2 * y * y;
 }

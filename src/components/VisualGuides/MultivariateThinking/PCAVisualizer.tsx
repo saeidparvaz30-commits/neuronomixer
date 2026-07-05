@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 
 // Generate 15 correlated 2D points deterministically
 function generateCorrelatedData(): { x: number; y: number }[] {
@@ -86,9 +86,24 @@ interface Props {
 export default function PCAVisualizer({ onPcaViewed }: Props) {
   const points = useMemo(() => generateCorrelatedData(), []);
   const pca = useMemo(() => computePCA(points), [points]);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
+  // Fire "PCA viewed" only when the section actually scrolls into view,
+  // not on mount (the component may start below the fold).
   useEffect(() => {
-    onPcaViewed();
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          onPcaViewed();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
   }, [onPcaViewed]);
 
   // Original scatter bounds
@@ -113,7 +128,7 @@ export default function PCAVisualizer({ onPcaViewed }: Props) {
   const centerY = scaleY(pca.my, yMin, yMax);
 
   return (
-    <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
+    <div ref={containerRef} className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
       <h2 className="text-xl font-bold text-white mb-1">
         PCA Visualizer
       </h2>

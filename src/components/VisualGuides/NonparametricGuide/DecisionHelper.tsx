@@ -54,7 +54,7 @@ const QUESTIONS: Question[] = [
     id: "normality",
     text: "Is your data approximately normally distributed?",
     options: [
-      { value: "yes", label: "Yes — Shapiro-Wilk W > 0.95" },
+      { value: "yes", label: "Yes, roughly normal (straight Q-Q plot, r > 0.95)" },
       { value: "no", label: "No — significant departure from normality" },
       { value: "unsure", label: "Unsure / not checked" },
     ],
@@ -71,14 +71,60 @@ interface Recommendation {
 function getRecommendation(answers: DecisionAnswer): Recommendation {
   const { numGroups, design, variableType, normality } = answers;
 
-  // Binary/ordinal → rank-based regardless
+  // Binary outcomes: the right test depends on the design, not just the type
   if (variableType === "binary") {
+    if (numGroups === "one") {
+      return {
+        test: "Exact Binomial Test",
+        color: "gold",
+        reason:
+          "One group with a binary outcome: compare the observed proportion against a hypothesized value with the exact binomial test.",
+      };
+    }
+    if (design === "paired") {
+      return {
+        test: "McNemar's Test",
+        color: "gold",
+        reason:
+          "Paired binary outcomes (the same subjects measured twice) call for McNemar's test, which compares the discordant pairs.",
+        note: "The sign test is the same idea applied to the direction of paired differences.",
+      };
+    }
+    if (numGroups === "many") {
+      return {
+        test: "Chi-Square Test of Independence",
+        color: "gold",
+        reason:
+          "A binary outcome across three or more independent groups: compare proportions with a chi-square test on the contingency table.",
+      };
+    }
     return {
-      test: "Sign Test",
+      test: "Chi-Square / Fisher's Exact Test",
       color: "gold",
-      reason: "Binary outcomes are best handled by the sign test, which counts the direction of differences.",
+      reason:
+        "A binary outcome in two independent groups: compare proportions with a chi-square test, or Fisher's exact test when expected counts are small.",
     };
   }
+
+  // One group (continuous or ordinal): compare against a hypothesized value
+  if (numGroups === "one") {
+    if (variableType === "continuous" && normality === "yes") {
+      return {
+        test: "One-Sample t-test (Parametric)",
+        color: "teal",
+        reason:
+          "One group of approximately normal continuous data: test the mean against a hypothesized value with a one-sample t-test.",
+      };
+    }
+    return {
+      test: "Wilcoxon Signed-Rank Test (One-Sample)",
+      color: "gold",
+      reason:
+        "One group without a normality guarantee: test the median against a hypothesized value with the one-sample Wilcoxon signed-rank test.",
+      note: "The sign test is a simpler alternative that uses only the direction of each difference.",
+    };
+  }
+
   if (variableType === "ordinal") {
     if (design === "paired") {
       return {

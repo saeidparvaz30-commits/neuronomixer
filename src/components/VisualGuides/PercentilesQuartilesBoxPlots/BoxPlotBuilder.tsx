@@ -481,10 +481,11 @@ function StepInfoBox({ step, stats, showZScores, unit, fmt }: InfoBoxProps) {
         return (
           <>
             <span className="font-semibold text-[#94a3b8]">
-              Whiskers extend to 1.5×IQR from each quartile.
+              Whiskers extend to the most extreme data points still within 1.5×IQR of the box.
             </span>{" "}
             <span className="text-[#94a3b8]">
-              Lower fence: {fmt(stats.whiskerLower)} {unit}, Upper fence: {fmt(stats.whiskerUpper)} {unit}.{" "}
+              Whisker ends: {fmt(stats.whiskerLower)} / {fmt(stats.whiskerUpper)} {unit}. Fences
+              (outlier cutoffs at Q1/Q3 ± 1.5×IQR): {fmt(stats.lowerFence)} / {fmt(stats.upperFence)} {unit}.{" "}
             </span>
             {stats.outliers.length > 0 ? (
               <span className="text-[#ef4444]">

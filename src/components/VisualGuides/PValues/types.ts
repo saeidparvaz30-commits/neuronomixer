@@ -50,14 +50,15 @@ export function stdDev(arr: number[]): number {
   return Math.sqrt(arr.reduce((a, v) => a + (v - m) ** 2, 0) / (arr.length - 1));
 }
 
-// ── Unpaired t-statistic (pooled SD) ─────────────────────────────────────────
+// ── Unpaired t-statistic (pooled SD). Positive t = Group B above Group A,
+// matching the direction of the simulated effect. ────────────────────────────
 export function computeTStatistic(groupA: number[], groupB: number[]): number {
   const ma = mean(groupA), mb = mean(groupB);
   const sa = stdDev(groupA), sb = stdDev(groupB);
   const n = groupA.length;
   const pooled = Math.sqrt(((n - 1) * sa ** 2 + (n - 1) * sb ** 2) / (2 * n - 2));
   if (pooled === 0) return 0;
-  return (ma - mb) / (pooled * Math.sqrt(2 / n));
+  return (mb - ma) / (pooled * Math.sqrt(2 / n));
 }
 
 // ── t-distribution CDF (lgamma + incomplete beta via Lentz continued fraction)
@@ -106,8 +107,17 @@ export function tPDF(t: number, df: number): number {
 }
 
 export function computePValue(tStat: number, df: number, testType: TestType): number {
-  const p = 1 - tCDF(Math.abs(tStat), df);
-  return testType === "two-tailed" ? Math.min(2 * p, 1) : p;
+  if (testType === "two-tailed") {
+    const p = 1 - tCDF(Math.abs(tStat), df);
+    return Math.min(2 * p, 1);
+  }
+  // One-tailed with the direction fixed BEFORE seeing the data: H1 is
+  // "Group B > Group A" (the direction built into the simulation), so the
+  // p-value is the right-tail probability P(T >= t). Using |t| here would
+  // secretly pick the tail after looking at the result and halve the p-value.
+  if (tStat >= 0) return 1 - tCDF(tStat, df);
+  // Observed effect points the wrong way: p is greater than 0.5.
+  return tCDF(-tStat, df);
 }
 
 // Critical value (binary search)

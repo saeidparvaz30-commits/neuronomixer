@@ -160,7 +160,7 @@ export default function ComparisonPanel({
               </div>
               <div className="pt-1">
                 <span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/30">
-                  No normality assumption; result is valid
+                  No normality assumption needed (still assumes independent observations)
                 </span>
               </div>
             </div>

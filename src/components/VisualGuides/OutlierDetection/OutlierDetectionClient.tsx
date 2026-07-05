@@ -88,8 +88,9 @@ export default function OutlierDetectionClient() {
             <span className="text-[var(--color-accent)]">Spot the Odd One Out</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[600px]">
-            Drag data points and watch the mean, median, and regression line react in real time.
-            Toggle between Z-Score and IQR methods to see which points get flagged — and why the answers can differ.
+            Drag, add, or remove data points and watch the mean, median, and trend lines update
+            when you drop them. Toggle between Z-Score and IQR methods to see which points get
+            flagged, and why the answers can differ.
           </p>
         </section>
 
@@ -138,8 +139,8 @@ export default function OutlierDetectionClient() {
             style={{ borderColor: methodColor + "44", background: methodColor + "0d", color: methodColor }}>
             <strong>{method === "zscore" ? "Z-Score" : "IQR"} Method</strong> —{" "}
             {method === "zscore"
-              ? `flagging points where |x − mean| > ${threshold}σ`
-              : "flagging points outside Q1 − 1.5×IQR and Q3 + 1.5×IQR"}
+              ? `flagging points more than ${threshold}σ from the mean on either axis`
+              : "flagging points outside the 1.5×IQR fences on either axis"}
             {" · "}{outlierIds.size} outlier{outlierIds.size !== 1 ? "s" : ""} detected
           </motion.div>
         </AnimatePresence>
@@ -181,8 +182,8 @@ export default function OutlierDetectionClient() {
                 </p>
                 <p className="text-[12px] text-[#94a3b8] leading-relaxed mb-3">
                   {method === "zscore"
-                    ? "Measures how many standard deviations a point's X value is from the mean. Assumes a roughly normal distribution. A key limitation: extreme outliers inflate the standard deviation, which can actually mask themselves."
-                    : "Uses the interquartile range (Q3 − Q1) to set fences. Entirely distribution-free — no normality assumption. More robust because outliers don't influence Q1, Q3, or the IQR itself."}
+                    ? "Measures how many standard deviations each coordinate is from that axis mean, applied to X and Y separately. Assumes a roughly normal distribution. A key limitation: extreme outliers inflate the standard deviation, which can actually mask themselves."
+                    : "Uses the interquartile range (Q3 − Q1) of each axis to set fences, applied to X and Y separately. Entirely distribution-free — no normality assumption. More robust because outliers barely influence Q1, Q3, or the IQR itself."}
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   {(method === "zscore" ? [

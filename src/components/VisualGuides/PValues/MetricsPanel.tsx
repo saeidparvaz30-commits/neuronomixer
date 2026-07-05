@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { mean, stdDev } from "./types";
+import { mean, stdDev, criticalValue } from "./types";
 
 interface Props {
   groupA: number[];
@@ -26,7 +26,8 @@ export default function MetricsPanel({ groupA, groupB, tStatistic, pValue, alpha
   const sB = stdDev(groupB);
   const pooledSD = Math.sqrt(((n - 1) * sA ** 2 + (n - 1) * sB ** 2) / df);
   const se = pooledSD * Math.sqrt(2 / n);
-  const tCrit = df > 30 ? 1.96 : 2.0;
+  // Exact two-sided t critical value for this df (not a hardcoded 1.96/2.0)
+  const tCrit = criticalValue(0.05, df, "two-tailed");
   const ciLow = diff - tCrit * se;
   const ciHigh = diff + tCrit * se;
 

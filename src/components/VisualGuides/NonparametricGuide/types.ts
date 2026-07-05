@@ -15,7 +15,7 @@ export interface NonparametricData {
 }
 
 export interface AssumptionResult {
-  shapiroW: number;
+  qqCorrelation: number;
   isNormal: boolean;
   skewness: number;
   interpretation: string;
@@ -207,7 +207,14 @@ function normalInvCDF(p: number): number {
   return p < 0.5 ? -x : x;
 }
 
-export function computeShapiroW(arr: number[]): AssumptionResult {
+/**
+ * Normality check via the Q-Q plot correlation coefficient: the Pearson
+ * correlation between the sorted data and the corresponding normal quantiles
+ * (a Shapiro-Francia style statistic, NOT the true Shapiro-Wilk W).
+ * Rule of thumb used throughout this guide: r > 0.95 = consistent with
+ * normality for these sample sizes (n = 12 to 20).
+ */
+export function checkNormalityQQ(arr: number[]): AssumptionResult {
   const sorted = [...arr].sort((a, b) => a - b);
   const n = sorted.length;
   const m = mean(sorted);
@@ -218,17 +225,17 @@ export function computeShapiroW(arr: number[]): AssumptionResult {
   const denomB = Math.sqrt(normalScores.reduce((s, v) => s + (v - nsMean) ** 2, 0));
   const denom = denomA * denomB;
   const corr = denom === 0 ? 1 : numerator / denom;
-  const w = Math.max(0, Math.min(1, corr));
+  const r = Math.max(0, Math.min(1, corr));
   const sk = skewness(arr);
   return {
-    shapiroW: w,
-    isNormal: w > 0.9,
+    qqCorrelation: r,
+    isNormal: r > 0.95,
     skewness: sk,
     interpretation:
-      w > 0.95
+      r > 0.98
         ? "Approximately normal"
-        : w > 0.9
-        ? "Slight departure from normality"
+        : r > 0.95
+        ? "Mild departure from normality"
         : "Significant departure from normality",
   };
 }

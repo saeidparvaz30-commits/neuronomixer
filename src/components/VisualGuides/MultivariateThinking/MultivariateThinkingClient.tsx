@@ -136,10 +136,11 @@ export default function MultivariateThinkingClient() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                 </svg>
               </div>
-              <p className="text-sm font-semibold text-white mb-1">Volume Explodes</p>
+              <p className="text-sm font-semibold text-white mb-1">Space Grows Exponentially</p>
               <p className="text-[12px] text-[#94a3b8] leading-relaxed">
-                The volume of a unit hypercube grows as 1ᵈ = 1, but the unit hypersphere inside it
-                shrinks to near zero. Data becomes exponentially sparse.
+                Split each axis into just 10 bins and a d-dimensional grid has 10ᵈ cells to fill,
+                while the ball inscribed in the unit cube shrinks toward zero volume. Data becomes
+                exponentially sparse.
               </p>
             </div>
             <div className="rounded-xl bg-[#1e293b]/50 border border-[#1e293b] p-4">

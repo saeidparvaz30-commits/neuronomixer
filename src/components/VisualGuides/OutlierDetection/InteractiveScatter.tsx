@@ -89,10 +89,13 @@ export default function InteractiveScatter({
     onAddPoint(Math.round(c.x), Math.round(c.y));
   }
 
-  // Computed stat lines
+  // Computed stat lines (detection runs per axis, so fences exist for x AND y)
   const xs   = points.map(p => p.x);
+  const ys   = points.map(p => p.y);
   const mx   = xs.length > 0 ? mean(xs) : 50;
+  const my   = ys.length > 0 ? mean(ys) : 50;
   const sdX  = xs.length > 1 ? stdDev(xs, mx) : 0;
+  const sdY  = ys.length > 1 ? stdDev(ys, my) : 0;
   const medX = (() => {
     if (!xs.length) return 50;
     const s = [...xs].sort((a, b) => a - b);
@@ -100,12 +103,17 @@ export default function InteractiveScatter({
     return s.length % 2 === 0 ? (s[m - 1] + s[m]) / 2 : s[m];
   })();
   const { q1, q3, iqr } = xs.length > 3 ? quartiles(xs) : { q1: 25, q3: 75, iqr: 50 };
+  const { q1: q1y, q3: q3y, iqr: iqrY } = ys.length > 3 ? quartiles(ys) : { q1: 25, q3: 75, iqr: 50 };
   const reg = points.length > 1 ? regression(points) : null;
 
-  const zLo   = mx - threshold * sdX;
-  const zHi   = mx + threshold * sdX;
-  const iqrLo = q1 - 1.5 * iqr;
-  const iqrHi = q3 + 1.5 * iqr;
+  const zLo    = mx - threshold * sdX;
+  const zHi    = mx + threshold * sdX;
+  const zLoY   = my - threshold * sdY;
+  const zHiY   = my + threshold * sdY;
+  const iqrLo  = q1 - 1.5 * iqr;
+  const iqrHi  = q3 + 1.5 * iqr;
+  const iqrLoY = q1y - 1.5 * iqrY;
+  const iqrHiY = q3y + 1.5 * iqrY;
 
   const clamp  = (v: number) => Math.max(0, Math.min(100, v));
   const ticks  = [0, 20, 40, 60, 80, 100];
@@ -147,7 +155,7 @@ export default function InteractiveScatter({
         <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="9" fill="#94a3b8" fontFamily="Inter,sans-serif">X Value</text>
         <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fontSize="9" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,12,${PAD.t + IH / 2})`}>Y Value</text>
 
-        {/* Z-score shading + fence lines */}
+        {/* Z-score shading + fence lines (x fences vertical, y fences horizontal) */}
         {method === "zscore" && sdX > 0 && (
           <>
             {zLo > 0  && <rect x={PAD.l} y={PAD.t} width={Math.max(0, toSvgX(clamp(zLo)) - PAD.l)} height={IH} fill="#ef4444" opacity="0.05" />}
@@ -156,8 +164,16 @@ export default function InteractiveScatter({
             {zHi < 100 && <line x1={toSvgX(clamp(zHi))} y1={PAD.t} x2={toSvgX(clamp(zHi))} y2={PAD.t + IH} stroke="#ef4444" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
           </>
         )}
+        {method === "zscore" && sdY > 0 && (
+          <>
+            {zLoY > 0  && <rect x={PAD.l} y={toSvgY(clamp(zLoY))} width={IW} height={Math.max(0, PAD.t + IH - toSvgY(clamp(zLoY)))} fill="#ef4444" opacity="0.05" />}
+            {zHiY < 100 && <rect x={PAD.l} y={PAD.t} width={IW} height={Math.max(0, toSvgY(clamp(zHiY)) - PAD.t)} fill="#ef4444" opacity="0.05" />}
+            {zLoY > 0  && <line x1={PAD.l} y1={toSvgY(clamp(zLoY))} x2={PAD.l + IW} y2={toSvgY(clamp(zLoY))} stroke="#ef4444" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
+            {zHiY < 100 && <line x1={PAD.l} y1={toSvgY(clamp(zHiY))} x2={PAD.l + IW} y2={toSvgY(clamp(zHiY))} stroke="#ef4444" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
+          </>
+        )}
 
-        {/* IQR shading + fence lines */}
+        {/* IQR shading + fence lines (x fences vertical, y fences horizontal) */}
         {method === "iqr" && (
           <>
             <rect x={toSvgX(clamp(q1))} y={PAD.t} width={Math.max(0, toSvgX(clamp(q3)) - toSvgX(clamp(q1)))} height={IH} fill="#f97316" opacity="0.04" />
@@ -165,6 +181,10 @@ export default function InteractiveScatter({
             {iqrHi < 100 && <rect x={toSvgX(clamp(iqrHi))} y={PAD.t} width={Math.max(0, PAD.l + IW - toSvgX(clamp(iqrHi)))} height={IH} fill="#f97316" opacity="0.05" />}
             {iqrLo > 0  && <line x1={toSvgX(clamp(iqrLo))} y1={PAD.t} x2={toSvgX(clamp(iqrLo))} y2={PAD.t + IH} stroke="#f97316" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
             {iqrHi < 100 && <line x1={toSvgX(clamp(iqrHi))} y1={PAD.t} x2={toSvgX(clamp(iqrHi))} y2={PAD.t + IH} stroke="#f97316" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
+            {iqrLoY > 0  && <rect x={PAD.l} y={toSvgY(clamp(iqrLoY))} width={IW} height={Math.max(0, PAD.t + IH - toSvgY(clamp(iqrLoY)))} fill="#f97316" opacity="0.05" />}
+            {iqrHiY < 100 && <rect x={PAD.l} y={PAD.t} width={IW} height={Math.max(0, toSvgY(clamp(iqrHiY)) - PAD.t)} fill="#f97316" opacity="0.05" />}
+            {iqrLoY > 0  && <line x1={PAD.l} y1={toSvgY(clamp(iqrLoY))} x2={PAD.l + IW} y2={toSvgY(clamp(iqrLoY))} stroke="#f97316" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
+            {iqrHiY < 100 && <line x1={PAD.l} y1={toSvgY(clamp(iqrHiY))} x2={PAD.l + IW} y2={toSvgY(clamp(iqrHiY))} stroke="#f97316" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
           </>
         )}
 
