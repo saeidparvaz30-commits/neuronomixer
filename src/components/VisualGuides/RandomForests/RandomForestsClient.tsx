@@ -185,6 +185,7 @@ export default function RandomForestsClient() {
   const [selectedTree, setSelectedTree] = useState(0);
   const [datasetsExplored, setDatasetsExplored] = useState<Set<string>>(new Set(["moons"]));
   const [maxTreesReached, setMaxTreesReached] = useState(false);
+  const [maxTreesBuilt, setMaxTreesBuilt] = useState(1);
   const completionFired = useRef(false);
 
   // (Re)build forest when params change
@@ -192,6 +193,7 @@ export default function RandomForestsClient() {
     const built = buildForest(pts, nTrees, maxDepth);
     setForest(built);
     if (nTrees >= 20) setMaxTreesReached(true);
+    setMaxTreesBuilt(prev => Math.max(prev, nTrees));
   }, [pts, nTrees, maxDepth]);
 
   const forestGrid = useMemo(() => forest.length > 0 ? computeForestGrid(forest) : null, [forest]);
@@ -233,6 +235,7 @@ export default function RandomForestsClient() {
     setSelectedTree(0);
     setDatasetsExplored(new Set(["moons"]));
     setMaxTreesReached(false);
+    setMaxTreesBuilt(1);
     completionFired.current = false;
   }
 
@@ -282,7 +285,7 @@ export default function RandomForestsClient() {
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-[#94a3b8]">Exploration Progress</span>
             <span className="text-sm font-semibold text-white">
-              {datasetsExplored.size}/2 datasets · {maxTreesReached ? "Reached 20 trees ✓" : `${nTrees}/20 trees`}
+              {Math.min(datasetsExplored.size, 2)}/2 datasets · {maxTreesReached ? "Reached 20 trees ✓" : `${nTrees}/20 trees`}
             </span>
           </div>
           <div className="h-2 bg-[#0f172a] rounded-full overflow-hidden">
@@ -512,8 +515,8 @@ export default function RandomForestsClient() {
               <div className="px-6 py-5">
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
                   {[
-                    { label: "Datasets explored", value: `${datasetsExplored.size} / 3`, color: "#3bb4a4" },
-                    { label: "Largest forest", value: `${nTrees} trees`, color: "var(--color-accent)" },
+                    { label: "Datasets explored", value: `${Math.min(datasetsExplored.size, 2)} / 2`, color: "#3bb4a4" },
+                    { label: "Largest forest", value: `${maxTreesBuilt} trees`, color: "var(--color-accent)" },
                     { label: "Training accuracy", value: `${(acc * 100).toFixed(1)}%`, color: "#a855f7" },
                   ].map((item) => (
                     <div key={item.label} className="rounded-xl border border-[#1e293b] p-3">

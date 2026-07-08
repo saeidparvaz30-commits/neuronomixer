@@ -148,7 +148,7 @@ export default function CausalThinkingDAGsClient() {
 
   function handleResetGuide() {
     setActiveTab("confounder");
-    setScenariosExplored(new Set<ScenarioId>(["confounder"]));
+    setScenariosExplored(new Set<ScenarioId>());
     completionFired.current = false;
   }
 
@@ -163,11 +163,6 @@ export default function CausalThinkingDAGsClient() {
       });
     }
   }
-
-  // Also mark the initial tab as explored on mount
-  useEffect(() => {
-    setScenariosExplored(new Set<ScenarioId>(["confounder"]));
-  }, []);
 
   const isComplete = scenariosExplored.size >= 3;
 

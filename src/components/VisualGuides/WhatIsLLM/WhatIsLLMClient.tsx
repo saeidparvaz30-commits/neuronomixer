@@ -13,11 +13,12 @@ const PRED_ROUNDS = [
   { prefix: "The cat sat on the mat and purred", choices: ["loudly", "upside-down", "digitally"], correct: "loudly" },
 ];
 
+// Parameter counts are the officially published figures for each model.
 const MODEL_SIZES = [
   { name: "GPT-2", year: "2019", params: "1.5B", value: 1.5, cap: "Basic generation" },
   { name: "GPT-3", year: "2020", params: "175B", value: 175, cap: "In-context learning" },
   { name: "PaLM", year: "2022", params: "540B", value: 540, cap: "Chain-of-thought" },
-  { name: "GPT-4 est.", year: "2023", params: "~1T", value: 1000, cap: "Complex reasoning" },
+  { name: "Llama 3.1", year: "2024", params: "405B", value: 405, cap: "Complex reasoning" },
 ];
 
 const TRAIN_STEPS = [
@@ -129,7 +130,7 @@ export default function WhatIsLLMClient() {
     if (emergInView && !emergFiredRef.current) { emergFiredRef.current = true; setEmergentViewed(true); }
   }, [emergInView]);
 
-  const maxVal = MODEL_SIZES[MODEL_SIZES.length - 1].value;
+  const maxVal = Math.max(...MODEL_SIZES.map((m) => m.value));
   const progress = [
     { label: "Prediction game", done: predDone },
     { label: "Emergent abilities", done: emergentViewed },

@@ -139,8 +139,6 @@ const COMPARISON_ROWS = [
 export default function RLHFClient() {
   const { data: session } = useSession();
   const { fadeUp, card } = useGuideMotion();
-  const [isComplete, setIsComplete] = useState(false);
-
 
   const [expandedPhase, setExpandedPhase] = useState<PhaseId | null>(null);
   const [phasesViewed, setPhasesViewed] = useState<Set<PhaseId>>(new Set());
@@ -149,7 +147,6 @@ export default function RLHFClient() {
   const [ratingsComplete, setRatingsComplete] = useState(false);
   const [barsVisible, setBarsVisible] = useState(false);
   const barsRef = useRef<HTMLDivElement>(null);
-  const completionFired = useRef(false);
 
   // Intersection observer for bar chart
   useEffect(() => {
@@ -163,24 +160,9 @@ export default function RLHFClient() {
     return () => obs.disconnect();
   }, []);
 
-  // Completion logic
-  useEffect(() => {
-    if (
-      ratingsComplete &&
-      phasesViewed.size === 3 &&
-      !completionFired.current
-    ) {
-      completionFired.current = true;
-      setIsComplete(true);
-      if (session?.user) {
-        fetch("/api/visual-guides/complete", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ guideSlug: "rlhf", score: 100 }),
-        }).catch(() => {});
-      }
-    }
-  }, [ratingsComplete, phasesViewed, session?.user]);
+  // Completion is derived from the interaction gates so a reset re-arms the card;
+  // GuideCompletion handles the single-fire server write itself.
+  const isComplete = ratingsComplete && phasesViewed.size === 3;
 
   // Progress: ratings done + all phases expanded
   const ratingsCount = userChoices.filter(Boolean).length;
@@ -215,7 +197,6 @@ export default function RLHFClient() {
     setRatingsComplete(false);
     setPhasesViewed(new Set());
     setExpandedPhase(null);
-    setIsComplete(false);
   }
 
   return (

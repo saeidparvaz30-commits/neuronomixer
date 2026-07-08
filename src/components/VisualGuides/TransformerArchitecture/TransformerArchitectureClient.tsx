@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -74,14 +74,20 @@ export default function TransformerArchitectureClient() {
   const [animDone, setAnimDone] = useState(false);
   const [animating, setAnimating] = useState(false);
   const [flowStep, setFlowStep] = useState(-1);
+  const flowIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isComplete = explored.size >= 6 && animDone;
   const progress = Math.min(Math.round(((explored.size / 6) * 0.7 + (animDone ? 1 : 0) * 0.3) * 100), 100);
 
   function handleReset() {
+    if (flowIntervalRef.current !== null) {
+      clearInterval(flowIntervalRef.current);
+      flowIntervalRef.current = null;
+    }
     setSelected(null);
     setExplored(new Set());
     setAnimDone(false);
+    setAnimating(false);
     setFlowStep(-1);
   }
 
@@ -96,9 +102,14 @@ export default function TransformerArchitectureClient() {
     let step = 0;
     const iv = setInterval(() => {
       step++;
-      if (step >= FLOW_STEPS.length) { clearInterval(iv); setAnimating(false); setFlowStep(FLOW_STEPS.length - 1); }
+      if (step >= FLOW_STEPS.length) {
+        clearInterval(iv);
+        flowIntervalRef.current = null;
+        setAnimating(false); setFlowStep(FLOW_STEPS.length - 1);
+      }
       else setFlowStep(step);
     }, 500);
+    flowIntervalRef.current = iv;
   }
 
   const sel = BLOCKS.find((b) => b.id === selected);

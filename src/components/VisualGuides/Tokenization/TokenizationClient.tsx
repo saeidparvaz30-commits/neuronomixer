@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -174,53 +174,28 @@ export default function TokenizationClient() {
   const [inputText, setInputText] = useState(DEFAULT_TEXT);
   const [tokens, setTokens] = useState<string[]>(() => tokenize(DEFAULT_TEXT));
   const [bpeStep, setBpeStep] = useState(0);
-  const [isComplete, setIsComplete] = useState(false);
-  
-  const hasTyped = useRef(false);
-  const hasFinishedBpe = useRef(false);
-  const completionFired = useRef(false);
+  const [hasTyped, setHasTyped] = useState(false);
+  const [hasFinishedBpe, setHasFinishedBpe] = useState(false);
+
+  // Completion is derived from the interaction gates so a reset re-arms the card;
+  // GuideCompletion handles the single-fire server write itself.
+  const isComplete = hasTyped && hasFinishedBpe;
 
   // Retokenize on input change
   const handleTextChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = e.target.value;
     setInputText(val);
     setTokens(tokenize(val));
-    if (!hasTyped.current && val !== DEFAULT_TEXT) {
-      hasTyped.current = true;
-      checkCompletion();
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    if (val !== DEFAULT_TEXT) setHasTyped(true);
+  }, []);
 
   const handleNextBpeStep = useCallback(() => {
     setBpeStep((prev) => {
       const next = Math.min(prev + 1, BPE_STEPS.length - 1);
-      if (next === BPE_STEPS.length - 1) {
-        hasFinishedBpe.current = true;
-        checkCompletion();
-      }
+      if (next === BPE_STEPS.length - 1) setHasFinishedBpe(true);
       return next;
     });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  function checkCompletion() {
-    if (completionFired.current) return;
-    if (hasTyped.current && hasFinishedBpe.current) {
-      completionFired.current = true;
-      setIsComplete(true);
-      if (session?.user) {
-        fetch("/api/visual-guides/complete", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ guideSlug: "tokenization", score: 100 }),
-        }).catch(() => {});
-      }
-    }
-  }
-
-  // Re-check completion when session loads after interactions
-  useEffect(() => {
-    if (hasTyped.current && hasFinishedBpe.current) checkCompletion();
-  }, [session?.user]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const charCount = inputText.length;
   const currentStep = BPE_STEPS[bpeStep];
@@ -229,9 +204,8 @@ export default function TokenizationClient() {
     setInputText(DEFAULT_TEXT);
     setTokens(tokenize(DEFAULT_TEXT));
     setBpeStep(0);
-    hasTyped.current = false;
-    hasFinishedBpe.current = false;
-    setIsComplete(false);
+    setHasTyped(false);
+    setHasFinishedBpe(false);
   }
 
   return (
@@ -274,7 +248,7 @@ export default function TokenizationClient() {
               className="absolute left-0 top-0 h-full rounded-full"
               style={{ background: "linear-gradient(90deg, #1e5d8a, #3bb4a4, var(--color-accent))" }}
               initial={{ width: "0%" }}
-              animate={{ width: `${Math.round(((bpeStep + (hasTyped.current ? 1 : 0)) / (BPE_STEPS.length)) * 100)}%` }}
+              animate={{ width: `${Math.round(((bpeStep + (hasTyped ? 1 : 0)) / (BPE_STEPS.length)) * 100)}%` }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             />
           </div>

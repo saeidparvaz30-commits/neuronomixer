@@ -197,18 +197,6 @@ function PoissonPMFChart({ lambda }: { lambda: number }) {
   );
 }
 
-// ── Metric badge ──────────────────────────────────────────────────────────────
-function MetricBadge({ label, value, best, fmt }: { label: string; value: number; best: boolean; fmt?: (v: number) => string }) {
-  const display = fmt ? fmt(value) : value.toFixed(1);
-  return (
-    <div className={`rounded-lg px-3 py-2 border text-center ${best ? "border-[var(--color-accent)]/40 bg-[var(--color-accent)]/10" : "border-white/5 bg-white/[0.02]"}`}>
-      <div className={`text-xs font-mono font-semibold ${best ? "text-[var(--color-accent)]" : "text-gray-300"}`}>{display}</div>
-      <div className="text-[10px] text-gray-500 mt-0.5">{label}</div>
-      {best && <div className="text-[9px] text-[var(--color-accent)] mt-0.5 font-semibold">best fit</div>}
-    </div>
-  );
-}
-
 // ── Main component ────────────────────────────────────────────────────────────
 export default function CountModelsPoissonClient() {
   const { fadeUp, card } = useGuideMotion();
@@ -234,12 +222,6 @@ export default function CountModelsPoissonClient() {
     { id: "accidents",  label: "Traffic Accidents",   emoji: "🚗" },
     { id: "website",    label: "Website Visits",      emoji: "📊" },
   ];
-
-  const models = [
-    { key: "linear",   label: "Linear OLS",         color: COL_RED,    aic: fit.simpleLinear.rSquared, showAIC: false },
-    { key: "poisson",  label: "Poisson GLM",         color: COL_GOLD,   aic: fit.poisson.aic,           showAIC: true  },
-    { key: "negbinom", label: "Negative Binomial",   color: COL_PURPLE, aic: fit.negativeBinomial.aic,  showAIC: true  },
-  ] as const;
 
   const bestAIC = Math.min(fit.poisson.aic, fit.negativeBinomial.aic);
 
