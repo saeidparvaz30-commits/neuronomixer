@@ -55,7 +55,7 @@ const QUESTIONS: Question[] = [
     text: "Is your data approximately normally distributed?",
     options: [
       { value: "yes", label: "Yes, roughly normal (straight Q-Q plot, r > 0.95)" },
-      { value: "no", label: "No — significant departure from normality" },
+      { value: "no", label: "No: significant departure from normality" },
       { value: "unsure", label: "Unsure / not checked" },
     ],
   },
@@ -251,7 +251,7 @@ export default function DecisionHelper({ onUsed }: Props) {
             className="flex-1 h-1 rounded-full transition-colors"
             style={{
               background:
-                i < stepIndex ? "#d4af37" : i === stepIndex && !isDone ? "#d4af37" : "#1e293b",
+                i < stepIndex ? "var(--color-accent)" : i === stepIndex && !isDone ? "var(--color-accent)" : "#1e293b",
               opacity: i === stepIndex && !isDone ? 0.5 : 1,
             }}
           />
@@ -293,7 +293,7 @@ export default function DecisionHelper({ onUsed }: Props) {
                   const opt = q.options.find((o) => o.value === val);
                   return (
                     <div key={q.id} className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#d4af37] flex-shrink-0" />
+                      <span className="w-2 h-2 rounded-full bg-[var(--color-accent)] flex-shrink-0" />
                       <span className="text-[10px] text-[#94a3b8]">{q.text}</span>
                       <span className="text-[10px] text-white font-semibold ml-auto">{opt?.label}</span>
                     </div>
@@ -322,7 +322,7 @@ export default function DecisionHelper({ onUsed }: Props) {
                 </p>
                 <p
                   className={`text-[16px] font-black mb-2 ${
-                    recommendation.color === "gold" ? "text-[#d4af37]" : "text-[#3bb4a4]"
+                    recommendation.color === "gold" ? "text-[var(--color-accent)]" : "text-[#3bb4a4]"
                   }`}
                 >
                   {recommendation.test}

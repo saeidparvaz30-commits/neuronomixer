@@ -31,7 +31,7 @@ export default function EventSandbox({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Event Builder */}
         <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#d4af37] mb-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)] mb-4">
             Event Builder
           </p>
           <EventBuilder
@@ -43,7 +43,7 @@ export default function EventSandbox({
 
         {/* Right: Theoretical Calculator */}
         <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
-          <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#d4af37] mb-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)] mb-4">
             Theoretical Probability
           </p>
           <TheoreticalCalculator event={event} />
@@ -52,7 +52,7 @@ export default function EventSandbox({
 
       {/* Simulation Runner */}
       <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
-        <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#d4af37] mb-4">
+        <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)] mb-4">
           Simulation
         </p>
         <SimulationRunner

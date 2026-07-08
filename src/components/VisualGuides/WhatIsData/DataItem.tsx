@@ -8,7 +8,7 @@ import { DataItemDef, ItemState } from "./types";
 
 function CsvVisual({ transformed }: { transformed: boolean }) {
   const cols = [
-    { name: "Date", type: "datetime", color: "#3b82f6" },
+    { name: "Date", type: "datetime", color: "#93c5fd" },
     { name: "Product", type: "varchar", color: "#d4af37" },
     { name: "Revenue", type: "float", color: "#3bb4a4" },
     { name: "Units", type: "int", color: "#a855f7" },
@@ -73,7 +73,7 @@ function SqlVisual() {
       {cols.map((c) => (
         <div key={c.name} className="flex items-center gap-1 py-[1px] border-b border-white/5">
           <span className="text-[#3bb4a4] w-16 truncate">{c.name}</span>
-          <span className="text-[#d4af37]">{c.type}</span>
+          <span className="text-[var(--color-accent)]">{c.type}</span>
         </div>
       ))}
     </div>
@@ -125,21 +125,21 @@ function JsonVisual({ transformed }: { transformed: boolean }) {
       >
         <div className="text-white/40">{"{"}</div>
         <div className="pl-2">
-          <span className="text-[#d4af37]">"user"</span>
+          <span className="text-[var(--color-accent)]">"user"</span>
           <span className="text-white/40">: {"{"}</span>
         </div>
         <div className="pl-4">
-          <span className="text-[#d4af37]">"name"</span>
+          <span className="text-[var(--color-accent)]">"name"</span>
           <span className="text-white/40">: </span>
           <span className="text-[#3bb4a4]">"Alex"</span>
         </div>
         <div className="pl-4">
-          <span className="text-[#d4af37]">"age"</span>
+          <span className="text-[var(--color-accent)]">"age"</span>
           <span className="text-white/40">: </span>
-          <span className="text-[#a78bfa]">28</span>
+          <span className="text-[#a855f7]">28</span>
         </div>
         <div className="pl-4">
-          <span className="text-[#d4af37]">"tags"</span>
+          <span className="text-[var(--color-accent)]">"tags"</span>
           <span className="text-white/40">: [...]</span>
         </div>
         <div className="pl-2 text-white/40">{"}"}</div>
@@ -151,17 +151,17 @@ function JsonVisual({ transformed }: { transformed: boolean }) {
     <div className="text-[8px] leading-relaxed font-mono w-full">
       <div className="text-white/40">{"{"}</div>
       <div className="pl-2">
-        <span className="text-[#d4af37]">"user"</span>
+        <span className="text-[var(--color-accent)]">"user"</span>
         <span className="text-white/40">: {"{"}</span>
-        <span className="text-[#d4af37]">"name"</span>
+        <span className="text-[var(--color-accent)]">"name"</span>
         <span className="text-white/40">: </span>
         <span className="text-[#3bb4a4]">"Alex"</span>
         <span className="text-white/40">, </span>
-        <span className="text-[#d4af37]">"age"</span>
+        <span className="text-[var(--color-accent)]">"age"</span>
         <span className="text-white/40">: </span>
-        <span className="text-[#a78bfa]">28</span>
+        <span className="text-[#a855f7]">28</span>
         <span className="text-white/40">, </span>
-        <span className="text-[#d4af37]">"tags"</span>
+        <span className="text-[var(--color-accent)]">"tags"</span>
         <span className="text-white/40">: [...]{"}"}</span>
       </div>
       <div className="text-white/40">{"}"}</div>
@@ -173,24 +173,24 @@ function XmlVisual() {
   return (
     <div className="text-[8px] leading-relaxed font-mono w-full">
       <div>
-        <span className="text-[#3b82f6]">{"<config>"}</span>
+        <span className="text-[#93c5fd]">{"<config>"}</span>
       </div>
       <div className="pl-2">
-        <span className="text-[#3b82f6]">{"<server"}</span>
-        <span className="text-[#d4af37]"> host</span>
+        <span className="text-[#93c5fd]">{"<server"}</span>
+        <span className="text-[var(--color-accent)]"> host</span>
         <span className="text-white/40">{"=\"..."}</span>
-        <span className="text-[#3b82f6]">{">"}</span>
+        <span className="text-[#93c5fd]">{">"}</span>
       </div>
       <div className="pl-4">
-        <span className="text-[#3b82f6]">{"<port>"}</span>
+        <span className="text-[#93c5fd]">{"<port>"}</span>
         <span className="text-[#3bb4a4]">8080</span>
-        <span className="text-[#3b82f6]">{"</port>"}</span>
+        <span className="text-[#93c5fd]">{"</port>"}</span>
       </div>
       <div className="pl-2">
-        <span className="text-[#3b82f6]">{"</server>"}</span>
+        <span className="text-[#93c5fd]">{"</server>"}</span>
       </div>
       <div>
-        <span className="text-[#3b82f6]">{"</config>"}</span>
+        <span className="text-[#93c5fd]">{"</config>"}</span>
       </div>
     </div>
   );
@@ -206,7 +206,7 @@ function EmailVisual() {
         { k: "Date", v: "Jan 15, 2024" },
       ].map(({ k, v }) => (
         <div key={k} className="flex gap-1 border-b border-white/5 py-[1px]">
-          <span className="text-[#d4af37] w-12 flex-shrink-0">{k}:</span>
+          <span className="text-[var(--color-accent)] w-12 flex-shrink-0">{k}:</span>
           <span className="text-[#94a3b8] truncate">{v}</span>
         </div>
       ))}
@@ -235,7 +235,7 @@ function SocialVisual({ transformed }: { transformed: boolean }) {
         </motion.div>
       )}
       <div className="flex items-start gap-1.5">
-        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-[#3b82f6] to-[#a855f7] flex-shrink-0" />
+        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-[#93c5fd] to-[#a855f7] flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="text-[9px] font-semibold text-white">@user</div>
           <div className="text-[8px] text-[#94a3b8] leading-tight mt-0.5 line-clamp-2">
@@ -332,18 +332,18 @@ function Tooltip({ item }: { item: DataItemDef }) {
                  p-3 z-[200] pointer-events-none"
     >
       <div className="text-[12px] font-semibold text-white mb-0.5">{item.label}</div>
-      <div className="text-[10px] font-semibold uppercase tracking-wide text-[#d4af37] mb-2">
+      <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--color-accent)] mb-2">
         {item.tooltip.type}
       </div>
       <ul className="space-y-0.5 mb-2">
         {item.tooltip.examples.map((ex) => (
           <li key={ex} className="text-[11px] text-[#94a3b8] flex gap-1">
-            <span className="text-[#d4af37] flex-shrink-0">·</span>
+            <span className="text-[var(--color-accent)] flex-shrink-0">·</span>
             {ex}
           </li>
         ))}
       </ul>
-      <p className="text-[11px] text-[#64748b] leading-snug">{item.tooltip.keyTrait}</p>
+      <p className="text-[11px] text-[#475569] leading-snug">{item.tooltip.keyTrait}</p>
       {/* arrow */}
       <div className="absolute bottom-[-5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rotate-45 bg-[#0a0e1a] border-r border-b border-[#1e293b]" />
     </div>
@@ -398,7 +398,7 @@ function DataItemInner({
         }}
         role="button"
         tabIndex={sorted ? -1 : 0}
-        aria-label={`${item.label} — ${item.tooltip.type}`}
+        aria-label={`${item.label}: ${item.tooltip.type}`}
         aria-grabbed={isSelected}
         className={`
           flex flex-col gap-1.5 p-3 rounded-xl border transition-colors select-none

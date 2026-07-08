@@ -48,7 +48,7 @@ function getPowerTier(power: number): {
     bg: "#ef444422",
     label: "Low",
     interpretation:
-      "High Type II error risk. This study design is likely underpowered — you may miss a real effect more often than not.",
+      "High Type II error risk. This study design is likely underpowered; you may miss a real effect more often than not.",
   };
 }
 
@@ -93,7 +93,7 @@ export default function PowerResultsPanel({
       <div className="grid grid-cols-2 gap-3 mb-4">
         {[
           { label: "Significance (α)", value: alpha.toString(), color: "#ef4444" },
-          { label: "Type II Error (β)", value: beta.toFixed(2), color: "#d4af37" },
+          { label: "Type II Error (β)", value: beta.toFixed(2), color: "var(--color-accent)" },
           { label: "Effect Size (d)", value: `${cohensD.toFixed(2)} (${dLabel})`, color: "#3bb4a4" },
           { label: "n per group", value: String(sampleSizePerGroup), color: "#94a3b8" },
         ].map(({ label, value, color }) => (

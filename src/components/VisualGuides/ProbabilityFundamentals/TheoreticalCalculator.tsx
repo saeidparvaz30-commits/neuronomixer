@@ -24,12 +24,12 @@ export default function TheoreticalCalculator({ event }: TheoreticalCalculatorPr
     <div className="space-y-4">
       {/* Large P display */}
       <div className="rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 px-5 py-4 text-center">
-        <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[#d4af37] mb-1">
+        <p className="text-[11px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)] mb-1">
           Theoretical Probability
         </p>
         <p className="text-3xl font-black text-white font-mono">
           {p.toFixed(3)}{" "}
-          <span className="text-[#d4af37] text-xl">({pct}%)</span>
+          <span className="text-[var(--color-accent)] text-xl">({pct}%)</span>
         </p>
       </div>
 

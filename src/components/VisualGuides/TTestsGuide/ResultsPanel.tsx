@@ -45,7 +45,7 @@ export default function ResultsPanel({
           {/* Key stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
-              { label: "t-statistic", value: result.tStatistic.toFixed(3), color: "#d4af37" },
+              { label: "t-statistic", value: result.tStatistic.toFixed(3), color: "var(--color-accent)" },
               { label: "p-value", value: result.pValue < 0.001 ? "< 0.001" : result.pValue.toFixed(4), color: result.significant ? "#3bb4a4" : "#ef4444" },
               { label: "Degrees of Freedom", value: result.df.toFixed(1), color: "#94a3b8" },
               { label: "Cohen\u2019s d", value: result.cohensD.toFixed(3), color: "#1e5d8a" },
@@ -65,7 +65,7 @@ export default function ResultsPanel({
                 result.effectSizeLabel === "large"
                   ? "bg-[#3bb4a4]/15 text-[#3bb4a4]"
                   : result.effectSizeLabel === "medium"
-                  ? "bg-[#d4af37]/15 text-[#d4af37]"
+                  ? "bg-[#d4af37]/15 text-[var(--color-accent)]"
                   : "bg-white/5 text-[#94a3b8]"
               }`}
             >
@@ -130,17 +130,17 @@ function CINumberLine({
       {/* Base line */}
       <line x1={PAD} y1={H / 2} x2={PAD + IW} y2={H / 2} stroke="#334155" strokeWidth="1.5" />
       {/* CI bar */}
-      <rect x={ciLX} y={H / 2 - 4} width={ciUX - ciLX} height={8} fill="#d4af37" opacity="0.7" rx="2" />
+      <rect x={ciLX} y={H / 2 - 4} width={ciUX - ciLX} height={8} fill="var(--color-accent)" opacity="0.7" rx="2" />
       {/* Endpoint ticks */}
-      <line x1={ciLX} y1={H / 2 - 6} x2={ciLX} y2={H / 2 + 6} stroke="#d4af37" strokeWidth="1.5" />
-      <line x1={ciUX} y1={H / 2 - 6} x2={ciUX} y2={H / 2 + 6} stroke="#d4af37" strokeWidth="1.5" />
+      <line x1={ciLX} y1={H / 2 - 6} x2={ciLX} y2={H / 2 + 6} stroke="var(--color-accent)" strokeWidth="1.5" />
+      <line x1={ciUX} y1={H / 2 - 6} x2={ciUX} y2={H / 2 + 6} stroke="var(--color-accent)" strokeWidth="1.5" />
       {/* Center dot */}
-      <circle cx={midX} cy={H / 2} r="3" fill="#d4af37" />
+      <circle cx={midX} cy={H / 2} r="3" fill="var(--color-accent)" />
       {/* Null value line */}
       <line x1={nullX} y1={4} x2={nullX} y2={H - 4} stroke="#ef4444" strokeWidth="1.5" strokeDasharray="2,2" />
       {/* Labels */}
-      <text x={ciLX} y={H - 2} textAnchor="middle" fill="#d4af37" fontSize="7">{ciLower.toFixed(2)}</text>
-      <text x={ciUX} y={H - 2} textAnchor="middle" fill="#d4af37" fontSize="7">{ciUpper.toFixed(2)}</text>
+      <text x={ciLX} y={H - 2} textAnchor="middle" fill="var(--color-accent)" fontSize="7">{ciLower.toFixed(2)}</text>
+      <text x={ciUX} y={H - 2} textAnchor="middle" fill="var(--color-accent)" fontSize="7">{ciUpper.toFixed(2)}</text>
       <text x={nullX} y={8} textAnchor="middle" fill="#ef4444" fontSize="7">H₀={nullValue}</text>
     </svg>
   );

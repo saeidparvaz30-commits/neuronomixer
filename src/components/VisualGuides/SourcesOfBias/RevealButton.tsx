@@ -83,7 +83,7 @@ export default function RevealButton({ options, correctAnswer, notQuiteHint, rev
             transition={{ duration: 0.2 }}
             className="text-[11px] text-[#94a3b8] italic pt-1"
           >
-            Not quite — {notQuiteHint}
+            Not quite: {notQuiteHint}
           </motion.p>
         )}
       </AnimatePresence>

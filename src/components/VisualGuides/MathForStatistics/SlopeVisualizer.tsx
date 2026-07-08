@@ -93,12 +93,13 @@ export default function SlopeVisualizer({ onAdjust }: SlopeVisualizerProps) {
         </label>
         <input
           type="range"
+          aria-label="X position"
           min={0.5}
           max={9.5}
           step={0.1}
           value={xPos}
           onChange={(e) => handleX(Number(e.target.value))}
-          className="w-full accent-[#d4af37] h-1"
+          className="w-full accent-[var(--color-accent)] h-1"
         />
         <div className="flex justify-between text-[10px] text-[#334155] mt-0.5">
           <span>0</span><span>5 (peak)</span><span>10</span>
@@ -204,7 +205,7 @@ export default function SlopeVisualizer({ onAdjust }: SlopeVisualizerProps) {
                 y1={py0}
                 x2={pRunX}
                 y2={pRiseY}
-                stroke="#d4af37"
+                stroke="var(--color-accent)"
                 strokeWidth={2}
                 strokeDasharray="4 2"
               />
@@ -223,7 +224,7 @@ export default function SlopeVisualizer({ onAdjust }: SlopeVisualizerProps) {
                 y={(py0 + pRiseY) / 2 + 3}
                 textAnchor="start"
                 fontSize={9}
-                fill="#d4af37"
+                fill="var(--color-accent)"
               >
                 rise={m.toFixed(1)}
               </text>
@@ -236,13 +237,13 @@ export default function SlopeVisualizer({ onAdjust }: SlopeVisualizerProps) {
             y1={ptyLeft}
             x2={ptxRight}
             y2={ptyRight}
-            stroke="#f97316"
+            stroke="var(--color-warning)"
             strokeWidth={2}
             opacity={0.85}
           />
 
           {/* Point on curve */}
-          <circle cx={px0} cy={py0} r={5} fill="#d4af37" />
+          <circle cx={px0} cy={py0} r={5} fill="var(--color-accent)" />
           <circle cx={px0} cy={py0} r={3} fill="#0a0e1a" />
         </svg>
       </div>
@@ -258,7 +259,7 @@ export default function SlopeVisualizer({ onAdjust }: SlopeVisualizerProps) {
           <p className="text-[10px] uppercase tracking-widest text-[#475569] mb-1">Slope Δy/Δx</p>
           <p
             className="text-xl font-bold"
-            style={{ color: m > 0.1 ? "#3bb4a4" : m < -0.1 ? "#f87171" : "#d4af37" }}
+            style={{ color: m > 0.1 ? "#3bb4a4" : m < -0.1 ? "#ef4444" : "var(--color-accent)" }}
           >
             {m.toFixed(2)}
           </p>
@@ -275,7 +276,7 @@ export default function SlopeVisualizer({ onAdjust }: SlopeVisualizerProps) {
       <div className="rounded-xl border border-[#d4af37]/20 bg-[#d4af37]/5 p-4">
         <p className="text-[13px] text-[#94a3b8] leading-relaxed">
           <span className="font-semibold text-white">Slope is steepness.</span>{" "}
-          At the peak (x=5), slope=0 — the curve is momentarily flat. Before the peak: positive slope (rising). After: negative slope (falling). In a salary-vs-experience plot, slope = average raise per additional year.
+          At the peak (x=5), slope=0: the curve is momentarily flat. Before the peak: positive slope (rising). After: negative slope (falling). In a salary-vs-experience plot, slope = average raise per additional year.
         </p>
       </div>
     </div>

@@ -103,7 +103,7 @@ export default function DistributionCard({ type, params, isSelected, isOpened, o
     <motion.div
       role="button"
       tabIndex={0}
-      aria-label={`${meta.label} distribution — click to explore`}
+      aria-label={`${meta.label} distribution, click to explore`}
       aria-pressed={isSelected}
       onClick={onClick}
       onKeyDown={e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } }}

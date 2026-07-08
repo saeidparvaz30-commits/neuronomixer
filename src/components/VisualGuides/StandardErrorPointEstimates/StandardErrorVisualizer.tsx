@@ -194,13 +194,13 @@ export default function StandardErrorVisualizer({
         </h3>
         {/* SE formula gold box */}
         <div className="px-2.5 py-1 rounded-lg bg-[#d4af3720] border border-[#d4af3740]">
-          <span className="text-[11px] font-mono text-[#d4af37] font-bold">
+          <span className="text-[11px] font-mono text-[var(--color-accent)] font-bold">
             SE = σ / √n
           </span>
         </div>
       </div>
       <p className="text-[11px] text-[#475569] mb-4">
-        Larger samples produce tighter clustering of sample means — smaller SE
+        Larger samples produce tighter clustering of sample means: smaller SE
       </p>
 
       {/* Two mini plots */}
@@ -240,7 +240,7 @@ export default function StandardErrorVisualizer({
           <p className="text-[9px] text-[#475569] uppercase tracking-[1px] mb-1">
             n = {n5}
           </p>
-          <p className="text-[13px] font-mono font-bold text-[#d4af37]">
+          <p className="text-[13px] font-mono font-bold text-[var(--color-accent)]">
             SE = {seLarger.toFixed(3)}
           </p>
           <p className="text-[9px] text-[#475569] mt-0.5">

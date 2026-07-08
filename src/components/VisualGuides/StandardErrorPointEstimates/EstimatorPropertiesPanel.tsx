@@ -136,7 +136,7 @@ function BiasTab() {
       <p className="text-[12px] text-[#94a3b8] mb-4 leading-relaxed">
         An estimator is <span className="text-white font-semibold">unbiased</span> if its expected value equals the true parameter.
         The sample mean x̄ is unbiased:{" "}
-        <span className="text-[#d4af37] font-mono">E[x̄] = μ</span>
+        <span className="text-[var(--color-accent)] font-mono">E[x̄] = μ</span>
       </p>
 
       <div className="grid grid-cols-2 gap-4 mb-4">
@@ -156,7 +156,7 @@ function BiasTab() {
             data={biasedData}
             trueMean={100}
             label="Biased Estimator (+10)"
-            color="#f97316"
+            color="var(--color-warning)"
             xMin={75}
             xMax={125}
             tickLabels={[80, 100, 120]}
@@ -177,9 +177,9 @@ function BiasTab() {
           </p>
         </div>
         <div className="rounded-xl bg-[#3b1a00] border border-[#f9731640] px-3 py-2.5">
-          <p className="text-[10px] font-semibold text-[#f97316] mb-1">Biased (+10)</p>
+          <p className="text-[10px] font-semibold text-[var(--color-warning)] mb-1">Biased (+10)</p>
           <p className="text-[9px] text-[#94a3b8] leading-relaxed">
-            Dots center on 110. Systematically misses the true value — even with many samples.
+            Dots center on 110. Systematically misses the true value, even with many samples.
           </p>
         </div>
       </div>
@@ -438,8 +438,8 @@ export default function EstimatorPropertiesPanel({
               onClick={() => handleTabClick(key)}
               className="px-4 py-1.5 rounded-xl text-[12px] font-semibold border transition-all"
               style={{
-                borderColor: active ? "#d4af37" : "#1e293b",
-                color: active ? "#d4af37" : "#475569",
+                borderColor: active ? "var(--color-accent)" : "#1e293b",
+                color: active ? "var(--color-accent)" : "#475569",
                 background: active ? "#d4af3718" : "transparent",
               }}
             >

@@ -30,23 +30,23 @@ export default function DetectionMethodPanel({
   const hiY = method === "zscore" ? my + threshold * sdY : q3y + 1.5 * iqrY;
 
   const outlierList  = points.filter(p => outlierIds.has(p.id));
-  const outlierColor = method === "zscore" ? "#ef4444" : "#f97316";
+  const outlierColor = method === "zscore" ? "#ef4444" : "var(--color-warning)";
 
   return (
     <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-4">
       <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#94a3b8] mb-3">Detection Method</p>
 
       {/* Toggle */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-4" role="radiogroup" aria-label="Detection method">
         {(["zscore", "iqr"] as const).map(m => (
           <button
             key={m}
-            onClick={() => onMethodChange(m)}
+            onClick={() => onMethodChange(m)} role="radio" aria-checked={method === m}
             className={`flex-1 py-2 rounded-xl text-[11px] font-semibold transition-all border ${
               method === m
                 ? m === "zscore"
                   ? "bg-[#ef4444]/10 border-[#ef4444]/40 text-[#ef4444]"
-                  : "bg-[#f97316]/10 border-[#f97316]/40 text-[#f97316]"
+                  : "bg-[var(--color-warning)]/10 border-[var(--color-warning)]/40 text-[var(--color-warning)]"
                 : "bg-transparent border-[#1e293b] text-[#475569] hover:text-white hover:border-[#334155]"
             }`}
           >
@@ -71,7 +71,7 @@ export default function DetectionMethodPanel({
                 <span className="text-[11px] font-semibold text-[#ef4444]">{threshold.toFixed(1)}σ</span>
               </div>
               <input
-                type="range" min="1" max="4" step="0.5" value={threshold}
+                aria-label="Z-score threshold in standard deviations" type="range" min="1" max="4" step="0.5" value={threshold}
                 onChange={e => onThresholdChange(Number(e.target.value))}
                 className="w-full h-1.5 rounded-full bg-[#1e293b] appearance-none cursor-pointer
                   [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4
@@ -100,12 +100,12 @@ export default function DetectionMethodPanel({
             <div className="mb-4">
               <div className="grid grid-cols-2 gap-2 mb-3">
                 {[
-                  { label: "Q1 (X / Y)",          value: `${q1.toFixed(1)} / ${q1y.toFixed(1)}`,   color: "#f97316" },
-                  { label: "Q3 (X / Y)",          value: `${q3.toFixed(1)} / ${q3y.toFixed(1)}`,   color: "#f97316" },
-                  { label: "IQR (X / Y)",         value: `${iqr.toFixed(1)} / ${iqrY.toFixed(1)}`, color: "#f97316" },
+                  { label: "Q1 (X / Y)",          value: `${q1.toFixed(1)} / ${q1y.toFixed(1)}`,   color: "var(--color-warning)" },
+                  { label: "Q3 (X / Y)",          value: `${q3.toFixed(1)} / ${q3y.toFixed(1)}`,   color: "var(--color-warning)" },
+                  { label: "IQR (X / Y)",         value: `${iqr.toFixed(1)} / ${iqrY.toFixed(1)}`, color: "var(--color-warning)" },
                   { label: "1.5 × IQR (X / Y)",   value: `${(1.5*iqr).toFixed(1)} / ${(1.5*iqrY).toFixed(1)}`, color: "#94a3b8" },
-                  { label: "X fences",            value: `${lo.toFixed(1)} to ${hi.toFixed(1)}`,     color: "#f97316" },
-                  { label: "Y fences",            value: `${loY.toFixed(1)} to ${hiY.toFixed(1)}`,   color: "#f97316" },
+                  { label: "X fences",            value: `${lo.toFixed(1)} to ${hi.toFixed(1)}`,     color: "var(--color-warning)" },
+                  { label: "Y fences",            value: `${loY.toFixed(1)} to ${hiY.toFixed(1)}`,   color: "var(--color-warning)" },
                 ].map(({ label, value, color }) => (
                   <div key={label} className="rounded-lg bg-[#1e293b]/60 p-2">
                     <p className="text-[9px] text-[#475569] mb-0.5">{label}</p>

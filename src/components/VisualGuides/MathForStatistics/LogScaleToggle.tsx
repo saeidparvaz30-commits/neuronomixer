@@ -67,7 +67,7 @@ export default function LogScaleToggle({ onAdjust }: LogScaleToggleProps) {
           onClick={toggle}
           className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all border ${
             isLog
-              ? "bg-[#d4af37] text-[#0a0e1a] border-[#d4af37]"
+              ? "bg-[var(--color-accent)] text-[#0a0e1a] border-[var(--color-accent)]"
               : "border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37]"
           }`}
         >
@@ -88,7 +88,7 @@ export default function LogScaleToggle({ onAdjust }: LogScaleToggleProps) {
       {/* Histogram */}
       <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-4 overflow-x-auto">
         <p className="text-[10px] uppercase tracking-widest text-[#475569] mb-3">
-          Income Distribution — {isLog ? "Log Scale" : "Linear Scale"}
+          Income Distribution: {isLog ? "Log Scale" : "Linear Scale"}
         </p>
         <AnimatePresence mode="wait">
           <motion.div
@@ -110,7 +110,7 @@ export default function LogScaleToggle({ onAdjust }: LogScaleToggleProps) {
                       style={{
                         height: h,
                         background: isLog
-                          ? "linear-gradient(180deg, #d4af37cc, #d4af3760)"
+                          ? "linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 80%, transparent), color-mix(in srgb, var(--color-accent) 38%, transparent))"
                           : "linear-gradient(180deg, #3b82f6cc, #3b82f660)",
                       }}
                       title={`${bin.label}: ${bin.count} people`}
@@ -132,13 +132,13 @@ export default function LogScaleToggle({ onAdjust }: LogScaleToggleProps) {
         <div className={`rounded-xl border p-4 transition-all ${!isLog ? "border-[#3b82f6]/40 bg-[#3b82f6]/5" : "border-[#1e293b] bg-[#0f172a]"}`}>
           <p className="text-[11px] font-semibold text-[#3b82f6] mb-1.5">Linear Scale</p>
           <p className="text-[12px] text-[#94a3b8] leading-relaxed">
-            Heavily skewed — most data is crammed near zero. The ultra-wealthy create extreme outliers that compress the rest of the distribution into a narrow strip.
+            Heavily skewed: most data is crammed near zero. The ultra-wealthy create extreme outliers that compress the rest of the distribution into a narrow strip.
           </p>
         </div>
         <div className={`rounded-xl border p-4 transition-all ${isLog ? "border-[#d4af37]/40 bg-[#d4af37]/5" : "border-[#1e293b] bg-[#0f172a]"}`}>
-          <p className="text-[11px] font-semibold text-[#d4af37] mb-1.5">Log Scale</p>
+          <p className="text-[11px] font-semibold text-[var(--color-accent)] mb-1.5">Log Scale</p>
           <p className="text-[12px] text-[#94a3b8] leading-relaxed">
-            More symmetric — the distribution becomes bell-shaped, tail patterns are visible, and the shape of inequality is clearer to interpret.
+            More symmetric: the distribution becomes bell-shaped, tail patterns are visible, and the shape of inequality is clearer to interpret.
           </p>
         </div>
       </div>

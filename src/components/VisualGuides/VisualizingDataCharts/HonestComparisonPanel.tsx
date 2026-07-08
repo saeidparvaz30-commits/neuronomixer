@@ -26,7 +26,7 @@ function TruncatedDeceptive() {
       <line x1={44} y1={136} x2={180} y2={136} stroke="#334155" strokeWidth="1.5" />
       {/* bars */}
       <rect x={60} y={16 + (1 - (995 - 990) / 10) * 120} width={42} height={(5 / 10) * 120} rx="3" fill="#3bb4a4" opacity="0.8" />
-      <rect x={118} y={16} width={42} height={120} rx="3" fill="#d4af37" opacity="0.8" />
+      <rect x={118} y={16} width={42} height={120} rx="3" fill="var(--color-accent)" opacity="0.8" />
       <text x={81} y={148} textAnchor="middle" fontSize="9" fill="#94a3b8">2023</text>
       <text x={139} y={148} textAnchor="middle" fontSize="9" fill="#94a3b8">2024</text>
       {/* zigzag break indicator */}
@@ -50,7 +50,7 @@ function TruncatedHonest() {
       <line x1={44} y1={16} x2={44} y2={136} stroke="#334155" strokeWidth="1.5" />
       <line x1={44} y1={136} x2={180} y2={136} stroke="#334155" strokeWidth="1.5" />
       <rect x={60} y={16 + (1 - 995 / 1000) * 120} width={42} height={(995 / 1000) * 120} rx="3" fill="#3bb4a4" opacity="0.8" />
-      <rect x={118} y={16 + (1 - 1000 / 1000) * 120} width={42} height={(1000 / 1000) * 120} rx="3" fill="#d4af37" opacity="0.8" />
+      <rect x={118} y={16 + (1 - 1000 / 1000) * 120} width={42} height={(1000 / 1000) * 120} rx="3" fill="var(--color-accent)" opacity="0.8" />
       <text x={81} y={148} textAnchor="middle" fontSize="9" fill="#94a3b8">2023</text>
       <text x={139} y={148} textAnchor="middle" fontSize="9" fill="#94a3b8">2024</text>
     </svg>
@@ -119,8 +119,8 @@ function CherryHonest() {
         <circle key={i} cx={x} cy={toY(FULL_YEAR[i + 6])} r="2" fill="#3bb4a4" />
       ))}
       {/* Mark the cherry-picked range */}
-      <line x1={xs[6]} y1={topPad + 2} x2={xs[6]} y2={topPad + chartH} stroke="#d4af37" strokeWidth="1" strokeDasharray="3,2" />
-      <text x={xs[6] + 2} y={topPad + 10} fontSize="7.5" fill="#d4af37">shown →</text>
+      <line x1={xs[6]} y1={topPad + 2} x2={xs[6]} y2={topPad + chartH} stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="3,2" />
+      <text x={xs[6] + 2} y={topPad + 10} fontSize="7.5" fill="var(--color-accent)">shown →</text>
       {["J", "", "M", "", "M", "", "J", "", "S", "", "N", "", ""].map((m, i) => (
         m && <text key={i} x={xs[i]} y={topPad + chartH + 16} textAnchor="middle" fontSize="8" fill="#94a3b8">{m}</text>
       ))}
@@ -209,7 +209,7 @@ function PieDeceptive() {
 
   // Compute flat pie angles (degrees)
   const slices = [
-    { pct: 0.30, color: "#d4af37", label: "A 30%" },
+    { pct: 0.30, color: "var(--color-accent)", label: "A 30%" },
     { pct: 0.35, color: "#3bb4a4", label: "B 35%" },
     { pct: 0.35, color: "#a855f7", label: "C 35%" },
   ];
@@ -257,7 +257,7 @@ function PieDeceptive() {
 
 function PieHonest() {
   const data = [
-    { pct: 0.30, color: "#d4af37", label: "A", value: "30%" },
+    { pct: 0.30, color: "var(--color-accent)", label: "A", value: "30%" },
     { pct: 0.35, color: "#3bb4a4", label: "B", value: "35%" },
     { pct: 0.35, color: "#a855f7", label: "C", value: "35%" },
   ];
@@ -316,7 +316,7 @@ function StackedDeceptive() {
       <line x1={leftPad} y1={topPad} x2={leftPad} y2={topPad + chartH} stroke="#334155" strokeWidth="1.5" />
       <line x1={leftPad} y1={topPad + chartH} x2={totalW - 5} y2={topPad + chartH} stroke="#334155" strokeWidth="1.5" />
       <polygon points={area1Pts} fill="#3bb4a4" opacity="0.6" />
-      <polygon points={`${xs[0]},${toY(cum1[0])} ${area2Top} ${xs[xs.length-1]},${toY(cum1[xs.length-1])} ${area2Bot}`} fill="#d4af37" opacity="0.6" />
+      <polygon points={`${xs[0]},${toY(cum1[0])} ${area2Top} ${xs[xs.length-1]},${toY(cum1[xs.length-1])} ${area2Bot}`} fill="var(--color-accent)" opacity="0.6" />
       <polygon points={`${xs[0]},${toY(cum2[0])} ${area3Top} ${xs[xs.length-1]},${toY(cum2[xs.length-1])} ${area3Bot}`} fill="#a855f7" opacity="0.6" />
       {xs.filter((_, i) => i % 2 === 0).map((x, i) => (
         <text key={i} x={x} y={topPad + chartH + 16} textAnchor="middle" fontSize="8" fill="#94a3b8">{STACKED_MONTHS[i * 2]}</text>
@@ -332,7 +332,7 @@ function StackedHonest() {
   const totalW = 200;
   const xs = STACKED_S1.map((_, i) => leftPad + i * ((totalW - leftPad - 10) / (STACKED_S1.length - 1)));
   const maxVal = Math.max(...STACKED_S1, ...STACKED_S2, ...STACKED_S3) + 5;
-  const colors = ["#3bb4a4", "#d4af37", "#a855f7"];
+  const colors = ["#3bb4a4", "var(--color-accent)", "#a855f7"];
   const series = [STACKED_S1, STACKED_S2, STACKED_S3];
   const labels = ["Series 1", "Series 2", "Series 3"];
   const totalH = series.length * (chartH + 20) + topPad;

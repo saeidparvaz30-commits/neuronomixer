@@ -86,7 +86,7 @@ const CARDS = [
     example:
       "Three production lines, 30 samples each. Test if they have equal output variances using Levene's test, an F-test with df1 = 2, df2 = 87.",
     insightBadge: "Ratio of two chi-squares",
-    accentColor: "#4a9fd5",
+    accentColor: "#93c5fd",
   },
 ];
 

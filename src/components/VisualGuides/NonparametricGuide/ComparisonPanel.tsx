@@ -123,7 +123,7 @@ export default function ComparisonPanel({
                     Normality violated; result may be unreliable
                   </span>
                 ) : (
-                  <span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/30">
+                  <span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[var(--color-success)]/20 text-[var(--color-success)] border border-[var(--color-success)]/30">
                     Assumptions met
                   </span>
                 )}
@@ -159,7 +159,7 @@ export default function ComparisonPanel({
                 </span>
               </div>
               <div className="pt-1">
-                <span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/30">
+                <span className="inline-flex px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[var(--color-success)]/20 text-[var(--color-success)] border border-[var(--color-success)]/30">
                   No normality assumption needed (still assumes independent observations)
                 </span>
               </div>
@@ -209,7 +209,7 @@ export default function ComparisonPanel({
                 <td className="px-3 py-2 text-[#94a3b8]">Assumption Met?</td>
                 <td className="px-3 py-2 text-center">
                   {isNormal ? (
-                    <span className="text-[#10b981] font-semibold">YES</span>
+                    <span className="text-[var(--color-success)] font-semibold">YES</span>
                   ) : (
                     <span className="text-[#ec4899] font-semibold">NO</span>
                   )}
@@ -220,13 +220,13 @@ export default function ComparisonPanel({
                 <td className="px-3 py-2 text-[#94a3b8]">Reliable?</td>
                 <td className="px-3 py-2 text-center">
                   {isNormal ? (
-                    <span className="text-[#10b981] font-semibold">YES</span>
+                    <span className="text-[var(--color-success)] font-semibold">YES</span>
                   ) : (
                     <span className="text-[#ec4899] font-semibold">QUESTIONABLE</span>
                   )}
                 </td>
                 <td className="px-3 py-2 text-center">
-                  <span className="text-[#10b981] font-semibold">YES</span>
+                  <span className="text-[var(--color-success)] font-semibold">YES</span>
                 </td>
               </tr>
             </tbody>

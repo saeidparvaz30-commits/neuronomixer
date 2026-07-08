@@ -147,7 +147,7 @@ export default function PCAVisualizer({ onPcaViewed }: Props) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Original scatter with PC arrows */}
-        <div className="rounded-xl border border-[#1e293b] bg-[#0a0f1e] p-3">
+        <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-3">
           <p className="text-[11px] text-[#94a3b8] mb-2 font-semibold">Original Space (X, Y)</p>
           <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ maxHeight: 240 }}>
             {/* Grid */}
@@ -182,7 +182,7 @@ export default function PCAVisualizer({ onPcaViewed }: Props) {
             {/* PC1 arrow */}
             <defs>
               <marker id="arrow1" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
-                <path d="M0,0 L0,6 L6,3 z" fill="#d4af37" />
+                <path d="M0,0 L0,6 L6,3 z" fill="var(--color-accent)" />
               </marker>
               <marker id="arrow2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
                 <path d="M0,0 L0,6 L6,3 z" fill="#ef4444" />
@@ -193,7 +193,7 @@ export default function PCAVisualizer({ onPcaViewed }: Props) {
               y1={centerY + pca.pc1y * arrowScale * (H - PAD.t - PAD.b)}
               x2={centerX + pca.pc1x * arrowScale * (W - PAD.l - PAD.r)}
               y2={centerY - pca.pc1y * arrowScale * (H - PAD.t - PAD.b)}
-              stroke="#d4af37"
+              stroke="var(--color-accent)"
               strokeWidth={2.5}
               markerEnd="url(#arrow1)"
             />
@@ -210,8 +210,8 @@ export default function PCAVisualizer({ onPcaViewed }: Props) {
             />
 
             {/* Legend */}
-            <line x1={PAD.l + 4} y1={14} x2={PAD.l + 22} y2={14} stroke="#d4af37" strokeWidth={2.5} />
-            <text x={PAD.l + 26} y={18} fill="#d4af37" fontSize={9}>PC1 (max var)</text>
+            <line x1={PAD.l + 4} y1={14} x2={PAD.l + 22} y2={14} stroke="var(--color-accent)" strokeWidth={2.5} />
+            <text x={PAD.l + 26} y={18} fill="var(--color-accent)" fontSize={9}>PC1 (max var)</text>
             <line x1={PAD.l + 4} y1={26} x2={PAD.l + 22} y2={26} stroke="#ef4444" strokeWidth={1.5} strokeDasharray="4,3" />
             <text x={PAD.l + 26} y={30} fill="#ef4444" fontSize={9}>PC2 (min var)</text>
 
@@ -222,7 +222,7 @@ export default function PCAVisualizer({ onPcaViewed }: Props) {
         </div>
 
         {/* PCA-rotated scatter */}
-        <div className="rounded-xl border border-[#1e293b] bg-[#0a0f1e] p-3">
+        <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-3">
           <p className="text-[11px] text-[#94a3b8] mb-2 font-semibold">PCA Space (PC1, PC2)</p>
           <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ maxHeight: 240 }}>
             {/* Grid */}
@@ -263,7 +263,7 @@ export default function PCAVisualizer({ onPcaViewed }: Props) {
                 cx={scaleX(pt.pc1, pc1Min, pc1Max)}
                 cy={scaleY(pt.pc2, pc2Min, pc2Max)}
                 r={4}
-                fill="#d4af37"
+                fill="var(--color-accent)"
                 fillOpacity={0.8}
                 stroke="#0f172a"
                 strokeWidth={1}
@@ -271,11 +271,11 @@ export default function PCAVisualizer({ onPcaViewed }: Props) {
             ))}
 
             {/* Variance bar */}
-            <rect x={PAD.l} y={PAD.t + 4} width={(pca.varianceExplained / 100) * (W - PAD.l - PAD.r)} height={5} fill="#d4af37" fillOpacity={0.3} rx={2} />
-            <text x={PAD.l + 2} y={PAD.t + 17} fill="#d4af37" fontSize={9}>{pca.varianceExplained.toFixed(1)}% of variance in PC1</text>
+            <rect x={PAD.l} y={PAD.t + 4} width={(pca.varianceExplained / 100) * (W - PAD.l - PAD.r)} height={5} fill="var(--color-accent)" fillOpacity={0.3} rx={2} />
+            <text x={PAD.l + 2} y={PAD.t + 17} fill="var(--color-accent)" fontSize={9}>{pca.varianceExplained.toFixed(1)}% of variance in PC1</text>
 
             {/* Axis labels */}
-            <text x={scaleX((pc1Min + pc1Max) / 2, pc1Min, pc1Max)} y={H - 4} textAnchor="middle" fill="#d4af37" fontSize={10}>PC1</text>
+            <text x={scaleX((pc1Min + pc1Max) / 2, pc1Min, pc1Max)} y={H - 4} textAnchor="middle" fill="var(--color-accent)" fontSize={10}>PC1</text>
             <text x={10} y={scaleY((pc2Min + pc2Max) / 2, pc2Min, pc2Max)} textAnchor="middle" fill="#475569" fontSize={10} transform={`rotate(-90, 10, ${scaleY((pc2Min + pc2Max) / 2, pc2Min, pc2Max)})`}>PC2</text>
           </svg>
         </div>
@@ -284,7 +284,7 @@ export default function PCAVisualizer({ onPcaViewed }: Props) {
       {/* Explanation */}
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="rounded-xl bg-[#1e293b]/50 border border-[#1e293b] p-3">
-          <p className="text-[11px] font-semibold text-[#d4af37] mb-1">Eigenvalue 1 (PC1)</p>
+          <p className="text-[11px] font-semibold text-[var(--color-accent)] mb-1">Eigenvalue 1 (PC1)</p>
           <p className="text-lg font-bold text-white">{pca.lambda1.toFixed(4)}</p>
           <p className="text-[11px] text-[#94a3b8]">Variance along principal axis</p>
         </div>

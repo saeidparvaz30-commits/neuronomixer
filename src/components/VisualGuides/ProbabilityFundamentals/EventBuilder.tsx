@@ -159,7 +159,7 @@ export default function EventBuilder({ event, onChange, onReset }: EventBuilderP
           <select
             value={event.firstType}
             onChange={(e) => handleFirstType(e.target.value as EventType)}
-            className="w-full bg-[#0f172a] border border-[#1e293b] text-white text-[13px] rounded-xl px-3 py-2 focus:outline-none focus:border-[#d4af37] transition-colors"
+            className="w-full bg-[#0f172a] border border-[#1e293b] text-white text-[13px] rounded-xl px-3 py-2 focus:outline-none focus:border-[var(--color-accent)] transition-colors"
           >
             {EVENT_TYPES.map((t) => (
               <option key={t.value} value={t.value}>
@@ -175,7 +175,7 @@ export default function EventBuilder({ event, onChange, onReset }: EventBuilderP
           <select
             value={event.firstOutcome}
             onChange={(e) => patch({ firstOutcome: e.target.value })}
-            className="w-full bg-[#0f172a] border border-[#1e293b] text-white text-[13px] rounded-xl px-3 py-2 focus:outline-none focus:border-[#d4af37] transition-colors"
+            className="w-full bg-[#0f172a] border border-[#1e293b] text-white text-[13px] rounded-xl px-3 py-2 focus:outline-none focus:border-[var(--color-accent)] transition-colors"
           >
             {outcomesFor(event.firstType).map((o) => (
               <option key={o} value={o}>
@@ -194,7 +194,7 @@ export default function EventBuilder({ event, onChange, onReset }: EventBuilderP
         <select
           value={event.operator}
           onChange={(e) => handleOperator(e.target.value as Operator)}
-          className="w-full bg-[#0f172a] border border-[#1e293b] text-white text-[13px] rounded-xl px-3 py-2 focus:outline-none focus:border-[#d4af37] transition-colors"
+          className="w-full bg-[#0f172a] border border-[#1e293b] text-white text-[13px] rounded-xl px-3 py-2 focus:outline-none focus:border-[var(--color-accent)] transition-colors"
         >
           {OPERATORS.map((op) => (
             <option key={op.value} value={op.value}>
@@ -214,7 +214,7 @@ export default function EventBuilder({ event, onChange, onReset }: EventBuilderP
             <select
               value={event.secondType ?? "coin_flip"}
               onChange={(e) => handleSecondType(e.target.value as EventType)}
-              className="w-full bg-[#0f172a] border border-[#1e293b] text-white text-[13px] rounded-xl px-3 py-2 focus:outline-none focus:border-[#d4af37] transition-colors"
+              className="w-full bg-[#0f172a] border border-[#1e293b] text-white text-[13px] rounded-xl px-3 py-2 focus:outline-none focus:border-[var(--color-accent)] transition-colors"
             >
               {EVENT_TYPES.map((t) => (
                 <option key={t.value} value={t.value}>
@@ -230,7 +230,7 @@ export default function EventBuilder({ event, onChange, onReset }: EventBuilderP
             <select
               value={event.secondOutcome ?? ""}
               onChange={(e) => patch({ secondOutcome: e.target.value })}
-              className="w-full bg-[#0f172a] border border-[#1e293b] text-white text-[13px] rounded-xl px-3 py-2 focus:outline-none focus:border-[#d4af37] transition-colors"
+              className="w-full bg-[#0f172a] border border-[#1e293b] text-white text-[13px] rounded-xl px-3 py-2 focus:outline-none focus:border-[var(--color-accent)] transition-colors"
             >
               {outcomesFor(event.secondType ?? "coin_flip").map((o) => (
                 <option key={o} value={o}>

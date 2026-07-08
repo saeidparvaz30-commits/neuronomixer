@@ -59,7 +59,7 @@ const ASSUMPTIONS: AssumptionItem[] = [
     violationFix:
       "Randomize treatment assignment (RCT) to eliminate confounding. In observational studies, use stratification, matching, or regression adjustment.",
     exampleViolation:
-      "Countries with more hospitals have more disease deaths — but hospitals are built where disease is prevalent. Hospital count confounds the naive analysis.",
+      "Countries with more hospitals have more disease deaths, but hospitals are built where disease is prevalent. Hospital count confounds the naive analysis.",
   },
 ];
 
@@ -166,7 +166,7 @@ export default function AssumptionChecklistPanel({
                       </div>
 
                       <div className="rounded-lg border border-[#d4af37]/20 bg-[#d4af37]/5 p-2">
-                        <p className="text-[10px] font-semibold uppercase tracking-wider text-[#d4af37] mb-0.5">
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-0.5">
                           Example Violation
                         </p>
                         <p className="text-[11px] text-[#94a3b8] leading-relaxed italic">
@@ -196,7 +196,7 @@ export default function AssumptionChecklistPanel({
           </div>
           <p className="text-[11px] text-[#94a3b8]">
             {checkedSet.size === 4
-              ? "All assumptions reviewed — great statistical diligence!"
+              ? "All assumptions reviewed. Great statistical diligence!"
               : `${4 - checkedSet.size} assumption${4 - checkedSet.size === 1 ? "" : "s"} remaining. Expand each to learn more.`}
           </p>
         </div>

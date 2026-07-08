@@ -240,7 +240,7 @@ export default function BoxPlotBuilder({
             const isSelected = selectedPointIds.has(pt.id);
             const isOutlierStep4Plus = pt.isOutlier && currentStep >= 4;
             const fill = isSelected
-              ? "#06b6d4"
+              ? "#3bb4a4"
               : isOutlierStep4Plus
               ? "#ef4444"
               : "#475569";
@@ -253,7 +253,7 @@ export default function BoxPlotBuilder({
                 r={r}
                 fill={fill}
                 fillOpacity={isSelected ? 1 : 0.7}
-                stroke={isSelected ? "#06b6d4" : "none"}
+                stroke={isSelected ? "#3bb4a4" : "none"}
                 strokeWidth={isSelected ? 1.5 : 0}
                 style={{ cursor: "pointer" }}
                 whileHover={{ scale: 1.5, fillOpacity: 1 }}
@@ -333,7 +333,7 @@ export default function BoxPlotBuilder({
                 y1={BOX_TOP}
                 x2={q1X}
                 y2={BOX_BOTTOM}
-                stroke="#d4af37"
+                stroke="var(--color-accent)"
                 strokeWidth={2.5}
                 initial={{ scaleY: 0 }}
                 animate={{ scaleY: 1 }}
@@ -346,7 +346,7 @@ export default function BoxPlotBuilder({
                 y1={BOX_TOP}
                 x2={q3X}
                 y2={BOX_BOTTOM}
-                stroke="#d4af37"
+                stroke="var(--color-accent)"
                 strokeWidth={2.5}
                 initial={{ scaleY: 0 }}
                 animate={{ scaleY: 1 }}
@@ -354,11 +354,11 @@ export default function BoxPlotBuilder({
                 transition={{ duration: 0.3, delay: 0.2 }}
               />
               {/* Q1 label */}
-              <text x={q1X - 3} y={BOX_TOP - 5} textAnchor="end" fontSize={9} fill="#d4af37" fontWeight="600">
+              <text x={q1X - 3} y={BOX_TOP - 5} textAnchor="end" fontSize={9} fill="var(--color-accent)" fontWeight="600">
                 Q1={fmt(stats.q1)}
               </text>
               {/* Q3 label */}
-              <text x={q3X + 3} y={BOX_TOP - 5} textAnchor="start" fontSize={9} fill="#d4af37" fontWeight="600">
+              <text x={q3X + 3} y={BOX_TOP - 5} textAnchor="start" fontSize={9} fill="var(--color-accent)" fontWeight="600">
                 Q3={fmt(stats.q3)}
               </text>
             </motion.g>
@@ -469,7 +469,7 @@ function StepInfoBox({ step, stats, showZScores, unit, fmt }: InfoBoxProps) {
       case 3:
         return (
           <>
-            <span className="font-semibold text-[#d4af37]">
+            <span className="font-semibold text-[var(--color-accent)]">
               Q1 = {fmt(stats.q1)} {unit}, Q3 = {fmt(stats.q3)} {unit}, IQR = {fmt(stats.iqr)} {unit}.
             </span>{" "}
             <span className="text-[#94a3b8]">
@@ -502,7 +502,7 @@ function StepInfoBox({ step, stats, showZScores, unit, fmt }: InfoBoxProps) {
             <span className="font-semibold text-[#3bb4a4]">Z-Score view active.</span>{" "}
             <span className="text-[#94a3b8]">
               X-axis now shows standard deviations from the mean (z = (x − μ) / σ). The shaded band covers ~68% of
-              normally distributed data within ±1σ. Box plot shape is preserved — only the scale changes.
+              normally distributed data within ±1σ. Box plot shape is preserved. Only the scale changes.
             </span>
           </>
         ) : (

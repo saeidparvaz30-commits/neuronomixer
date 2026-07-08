@@ -31,12 +31,12 @@ export default function StepIndicator({ currentStep, onStepClick }: StepIndicato
                 <motion.div
                   animate={{
                     backgroundColor: isActive
-                      ? "#d4af37"
+                      ? "var(--color-accent)"
                       : isCompleted
                       ? "#3bb4a4"
                       : "#1e293b",
                     borderColor: isActive
-                      ? "#d4af37"
+                      ? "var(--color-accent)"
                       : isCompleted
                       ? "#3bb4a4"
                       : "#475569",
@@ -65,7 +65,7 @@ export default function StepIndicator({ currentStep, onStepClick }: StepIndicato
                 </motion.div>
                 <span
                   className={`text-[10px] font-medium hidden sm:block transition-colors ${
-                    isActive ? "text-[#d4af37]" : isCompleted ? "text-[#3bb4a4]" : "text-[#475569]"
+                    isActive ? "text-[var(--color-accent)]" : isCompleted ? "text-[#3bb4a4]" : "text-[#475569]"
                   } group-hover:text-white`}
                 >
                   {STEP_LABELS[step]}

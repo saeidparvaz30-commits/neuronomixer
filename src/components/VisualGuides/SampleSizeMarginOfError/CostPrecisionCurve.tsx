@@ -255,7 +255,7 @@ export default function CostPrecisionCurve({
             y1={PAD_T}
             x2={dotX}
             y2={SVG_H - PAD_B}
-            stroke="#d4af37"
+            stroke="var(--color-accent)"
             strokeWidth={1}
             strokeDasharray="4 3"
             opacity={0.5}
@@ -266,7 +266,7 @@ export default function CostPrecisionCurve({
             cx={dotX}
             cy={dotY}
             r={7}
-            fill="#d4af37"
+            fill="var(--color-accent)"
             className="cursor-grab"
           />
           <circle cx={dotX} cy={dotY} r={4} fill="#0f172a" />
@@ -281,7 +281,7 @@ export default function CostPrecisionCurve({
                 height={22}
                 rx={4}
                 fill="#1e293b"
-                stroke="#d4af37"
+                stroke="var(--color-accent)"
                 strokeWidth={0.8}
               />
               <text
@@ -289,7 +289,7 @@ export default function CostPrecisionCurve({
                 y={dotY - 18}
                 textAnchor="middle"
                 fontSize={9}
-                fill="#d4af37"
+                fill="var(--color-accent)"
                 fontWeight="bold"
               >
                 {currentN} → ±{currentMOE}%
@@ -301,8 +301,8 @@ export default function CostPrecisionCurve({
 
       {/* Key message */}
       <p className="text-[11px] text-[#94a3b8] mt-3 border-t border-white/[0.06] pt-3">
-        <span className="text-[#d4af37] font-semibold">Key insight:</span>{" "}
-        Notice the curve flattens — diminishing returns after ~n=400. Doubling
+        <span className="text-[var(--color-accent)] font-semibold">Key insight:</span>{" "}
+        Notice the curve flattens: diminishing returns after ~n=400. Doubling
         sample size beyond that barely shrinks the MOE.
       </p>
     </div>

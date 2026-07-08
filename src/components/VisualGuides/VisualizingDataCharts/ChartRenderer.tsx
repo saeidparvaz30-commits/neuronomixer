@@ -139,7 +139,7 @@ function TestScoresBoxPlot() {
             <line x1={cx + boxW / 2 - 8} y1={toY(c.min)} x2={cx + boxW / 2 + 8} y2={toY(c.min)} stroke="#3bb4a4" strokeWidth="1.5" />
             <line x1={cx + boxW / 2 - 8} y1={toY(c.max)} x2={cx + boxW / 2 + 8} y2={toY(c.max)} stroke="#3bb4a4" strokeWidth="1.5" />
             <rect x={cx} y={toY(c.q3)} width={boxW} height={toY(c.q1) - toY(c.q3)} rx="2" fill="none" stroke="#3bb4a4" strokeWidth="2" />
-            <line x1={cx} y1={toY(c.med)} x2={cx + boxW} y2={toY(c.med)} stroke="#d4af37" strokeWidth="2.5" />
+            <line x1={cx} y1={toY(c.med)} x2={cx + boxW} y2={toY(c.med)} stroke="var(--color-accent)" strokeWidth="2.5" />
             <text x={cx + boxW / 2} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{c.label}</text>
           </g>
         );
@@ -450,9 +450,9 @@ function LifeExpBoxPlot() {
             <line x1={cx - 10} y1={minY} x2={cx + 10} y2={minY} stroke="#3bb4a4" strokeWidth="1.5" />
             <line x1={cx - 10} y1={maxY} x2={cx + 10} y2={maxY} stroke="#3bb4a4" strokeWidth="1.5" />
             <rect x={cx - 25} y={q3Y} width={50} height={q1Y - q3Y} rx="2" fill="none" stroke="#3bb4a4" strokeWidth="2" />
-            <line x1={cx - 25} y1={medY} x2={cx + 25} y2={medY} stroke="#d4af37" strokeWidth="2.5" />
+            <line x1={cx - 25} y1={medY} x2={cx + 25} y2={medY} stroke="var(--color-accent)" strokeWidth="2.5" />
             <text x={cx} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">All Countries</text>
-            <text x={cx + 36} y={medY + 3} textAnchor="start" fontSize="9" fill="#d4af37">median</text>
+            <text x={cx + 36} y={medY + 3} textAnchor="start" fontSize="9" fill="var(--color-accent)">median</text>
           </g>
         );
       })()}
@@ -547,7 +547,7 @@ const TRAFFIC_DATA = [
   [3100, 3800, 4100],
   [1800, 1900, 2100],
 ];
-const PAGE_COLORS = ["#3bb4a4", "#d4af37", "#a855f7", "#ef4444", "#f97316"];
+const PAGE_COLORS = ["#3bb4a4", "var(--color-accent)", "#a855f7", "#ef4444", "var(--color-warning)"];
 
 function TrafficMultiLine() {
   const chartH = 180;

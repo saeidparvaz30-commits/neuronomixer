@@ -47,7 +47,7 @@ export default function TrialCounter({ sim, totalTrials, theoretical }: TrialCou
               : diff < 0.01
               ? "text-[#3bb4a4]"
               : diff < 0.05
-              ? "text-[#d4af37]"
+              ? "text-[var(--color-accent)]"
               : "text-white"
           }`}
         >

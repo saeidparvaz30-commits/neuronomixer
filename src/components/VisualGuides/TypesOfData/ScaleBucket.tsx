@@ -27,7 +27,7 @@ export default function ScaleBucket({ scale, items, isOver, phase, onDragOver, o
       onDragLeave={onDragLeave}
       className={`rounded-2xl border-2 transition-all min-h-[120px] p-3 ${
         isOver
-          ? "border-[#d4af37] bg-[#d4af37]/5"
+          ? "border-[var(--color-accent)] bg-[#d4af37]/5"
           : "border-[#1e293b] bg-[#0f172a] hover:border-[#334155]"
       }`}
     >

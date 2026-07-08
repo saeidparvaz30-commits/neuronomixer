@@ -70,7 +70,7 @@ function MiniBoxPlot() {
         <g key={i}>
           <line x1={b.x} y1={b.min} x2={b.x} y2={b.max} stroke="#3bb4a4" strokeWidth="1" strokeDasharray="2,1" />
           <rect x={b.x - 6} y={b.q3} width="12" height={b.q1 - b.q3} fill="none" stroke="#3bb4a4" strokeWidth="1.5" rx="1" />
-          <line x1={b.x - 6} y1={b.med} x2={b.x + 6} y2={b.med} stroke="#d4af37" strokeWidth="1.5" />
+          <line x1={b.x - 6} y1={b.med} x2={b.x + 6} y2={b.med} stroke="var(--color-accent)" strokeWidth="1.5" />
         </g>
       ))}
     </svg>
@@ -116,7 +116,7 @@ function MiniGroupedBar() {
     [44, 32, 26],
     [36, 30, 22],
   ];
-  const colors = ["#3bb4a4", "#d4af37", "#a855f7"];
+  const colors = ["#3bb4a4", "var(--color-accent)", "#a855f7"];
   return (
     <svg viewBox="0 0 80 60" className="w-full h-full" aria-hidden="true">
       <line x1="8" y1="52" x2="74" y2="52" stroke="#334155" strokeWidth="1" />
@@ -153,7 +153,7 @@ function MiniStackedArea() {
     <svg viewBox="0 0 80 60" className="w-full h-full" aria-hidden="true">
       <line x1="8" y1="52" x2="74" y2="52" stroke="#334155" strokeWidth="1" />
       <polygon points={bArea} fill="#3bb4a4" opacity="0.4" />
-      <polygon points={mArea} fill="#d4af37" opacity="0.4" />
+      <polygon points={mArea} fill="var(--color-accent)" opacity="0.4" />
       <polyline points={tPts} fill="none" stroke="#a855f7" strokeWidth="1.5" opacity="0.7" />
     </svg>
   );
@@ -167,7 +167,7 @@ function MiniMultiLine() {
     [52, 50, 46, 42, 38, 34],
     [40, 38, 34, 30, 26, 22],
   ];
-  const colors = ["#3bb4a4", "#d4af37", "#a855f7", "#ef4444", "#f97316"];
+  const colors = ["#3bb4a4", "var(--color-accent)", "#a855f7", "#ef4444", "var(--color-warning)"];
   const xs = series[0].map((_, i) => 8 + i * 13);
   return (
     <svg viewBox="0 0 80 60" className="w-full h-full" aria-hidden="true">
@@ -237,7 +237,7 @@ export default function ChartOptionButtons({ options, selected, onSelect, datase
       <p className="text-[11px] font-semibold uppercase tracking-widest text-[#94a3b8] mb-3">
         Which chart type best answers the question?
       </p>
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" role="radiogroup" aria-label="Chart type options">
         {options.map((opt) => {
           const isSelected = selected === opt.id;
           const isBest = opt.quality === "best";
@@ -255,9 +255,10 @@ export default function ChartOptionButtons({ options, selected, onSelect, datase
           return (
             <button
               key={opt.id}
+              role="radio"
               onClick={() => onSelect(opt.id)}
               className={`group relative flex flex-col rounded-xl border p-3 transition-all text-left ${borderClass}`}
-              aria-pressed={isSelected}
+              aria-checked={isSelected}
             >
               {/* Quality badge shown after selection */}
               {isRevealed && (

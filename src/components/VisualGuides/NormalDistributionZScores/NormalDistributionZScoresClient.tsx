@@ -40,7 +40,7 @@ export default function NormalDistributionZScoresClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "normal-distribution-z-scores", score: 6 }),
+        body: JSON.stringify({ guideSlug: "normal-distribution-z-scores", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -86,7 +86,7 @@ export default function NormalDistributionZScoresClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="normal-distribution-z-scores" score={6} />
+      <GuideCompletion isComplete={allComplete} guideSlug="normal-distribution-z-scores" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -106,15 +106,15 @@ export default function NormalDistributionZScoresClient() {
           transition={{ duration: 0.4 }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               STATISTICS
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             The Normal Distribution &amp;{" "}
-            <span className="text-[#d4af37]">Z-Scores</span>
+            <span className="text-[var(--color-accent)]">Z-Scores</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             Explore the bell curve, drag markers to calculate probabilities, and learn how to convert
@@ -194,9 +194,10 @@ export default function NormalDistributionZScoresClient() {
               <div className="mt-5 pt-4 border-t border-white/[0.06] grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#475569] block mb-2">
-                    Mean (μ) — {state.mean}
+                    Mean (μ): {state.mean}
                   </label>
                   <input
+                    aria-label="Mean (μ)"
                     type="range"
                     min={50}
                     max={150}
@@ -208,9 +209,10 @@ export default function NormalDistributionZScoresClient() {
                 </div>
                 <div>
                   <label className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#475569] block mb-2">
-                    Std Dev (σ) — {state.stdDev}
+                    Std Dev (σ): {state.stdDev}
                   </label>
                   <input
+                    aria-label="Standard deviation (σ)"
                     type="range"
                     min={5}
                     max={30}
@@ -310,7 +312,7 @@ export default function NormalDistributionZScoresClient() {
                   {
                     term: "Z-Score",
                     desc: "A standardized score: z = (x − μ) / σ. Tells you how many SDs a value is from the mean.",
-                    color: "#d4af37",
+                    color: "var(--color-accent)",
                   },
                   {
                     term: "Standard Normal",
@@ -320,7 +322,7 @@ export default function NormalDistributionZScoresClient() {
                   {
                     term: "Empirical Rule",
                     desc: "68% of data lies within ±1σ, 95% within ±2σ, and 99.7% within ±3σ of the mean.",
-                    color: "#f97316",
+                    color: "var(--color-warning)",
                   },
                 ].map(({ term, desc, color }) => (
                   <div key={term} className="flex gap-3">
@@ -346,7 +348,7 @@ export default function NormalDistributionZScoresClient() {
           </Link>
           <Link
             href="/visual-guides/hypothesis-testing"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Hypothesis Testing →
           </Link>

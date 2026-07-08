@@ -109,19 +109,19 @@ export default function VennDiagramVisualizer({
         <span className="text-white font-semibold">Fixed scenario: </span>
         A die is rolled once.{" "}
         <span className="text-[#3bb4a4]">Circle A = even result {"{2, 4, 6}"}</span>.{" "}
-        <span className="text-[#d4af37]">Circle B = result {">"} 3 {"{4, 5, 6}"}</span>.
+        <span className="text-[var(--color-accent)]">Circle B = result {">"} 3 {"{4, 5, 6}"}</span>.
         Intersection = {"{4, 6}"}.
       </div>
 
       {/* Mode selector */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-2 flex-wrap" role="radiogroup" aria-label="Venn set operation">
         {(["AND", "OR", "NOT"] as VennMode[]).map((m) => (
           <button
             key={m}
-            onClick={() => handleModeChange(m)}
+            onClick={() => handleModeChange(m)} role="radio" aria-checked={vennMode === m && !activeRegion}
             className={`px-4 py-1.5 text-[12px] rounded-lg font-semibold transition-colors ${
               vennMode === m && !activeRegion
-                ? "bg-[#d4af37] text-[#0a0e1a]"
+                ? "bg-[var(--color-accent)] text-[#0a0e1a]"
                 : "border border-[#1e293b] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37]"
             }`}
           >
@@ -136,11 +136,11 @@ export default function VennDiagramVisualizer({
 
         {/* Region info */}
         <div className="mt-3 rounded-xl border border-[#1e293b] bg-[#0f172a] px-4 py-2.5 text-center">
-          <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#d4af37] mb-0.5">
+          <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[var(--color-accent)] mb-0.5">
             Highlighted: {highlightLabel}
           </p>
           <p className="text-xl font-black text-white font-mono">
-            {highlightedCount}/6 outcomes — P = {highlightedP}
+            {highlightedCount}/6 outcomes, P = {highlightedP}
           </p>
         </div>
       </div>
@@ -154,10 +154,10 @@ export default function VennDiagramVisualizer({
           {REGIONS.map((r) => (
             <button
               key={r.id}
-              onClick={() => handleRegionClick(r.id)}
+              onClick={() => handleRegionClick(r.id)} aria-pressed={activeRegion === r.id}
               className={`rounded-xl border px-3 py-2.5 text-left transition-colors ${
                 activeRegion === r.id
-                  ? "border-[#d4af37] bg-[#d4af37]/10"
+                  ? "border-[var(--color-accent)] bg-[#d4af37]/10"
                   : vennRegionsClicked.includes(r.id)
                   ? "border-[#3bb4a4]/40 bg-[#3bb4a4]/5 hover:border-[#d4af37]/50"
                   : "border-[#1e293b] hover:border-[#d4af37]/50"
@@ -165,7 +165,7 @@ export default function VennDiagramVisualizer({
             >
               <p className="text-[11px] font-semibold text-white mb-0.5">{r.label}</p>
               <p className="text-[11px] text-[#94a3b8]">{r.outcomes}</p>
-              <p className="text-[11px] font-mono text-[#d4af37] mt-1">
+              <p className="text-[11px] font-mono text-[var(--color-accent)] mt-1">
                 {r.count}/{r.total} = {(r.count / r.total).toFixed(3)}
               </p>
             </button>
@@ -200,7 +200,7 @@ function VennSVG({ highlighted, onRegionClick }: VennSVGProps) {
   const cxB = W / 2 + 55;
 
   // Colours
-  const GOLD = "#d4af37";
+  const GOLD = "var(--color-accent)";
   const TEAL = "#3bb4a4";
   const DIM = "#1e293b";
   const GOLD_FILL = "rgba(212,175,55,0.18)";
@@ -277,14 +277,14 @@ function VennSVG({ highlighted, onRegionClick }: VennSVGProps) {
       <circle cx={cxB} cy={cy} r={r} fill="none" stroke={GOLD} strokeWidth={1.5} />
 
       {/* Labels */}
-      <text x={cxA - r * 0.55} y={cy} textAnchor="middle" fill="#fff" fontSize={12} fontWeight="bold">
+      <text x={cxA - r * 0.55} y={cy} textAnchor="middle" fill="#f1f5f9" fontSize={12} fontWeight="bold">
         A
       </text>
       <text x={cxA - r * 0.55} y={cy + 16} textAnchor="middle" fill={TEAL} fontSize={9}>
         Even
       </text>
 
-      <text x={cxB + r * 0.55} y={cy} textAnchor="middle" fill="#fff" fontSize={12} fontWeight="bold">
+      <text x={cxB + r * 0.55} y={cy} textAnchor="middle" fill="#f1f5f9" fontSize={12} fontWeight="bold">
         B
       </text>
       <text x={cxB + r * 0.55} y={cy + 16} textAnchor="middle" fill={GOLD} fontSize={9}>
@@ -300,7 +300,7 @@ function VennSVG({ highlighted, onRegionClick }: VennSVGProps) {
       </text>
 
       {/* Intersection label */}
-      <text x={(cxA + cxB) / 2} y={cy - 8} textAnchor="middle" fill="#fff" fontSize={9}>
+      <text x={(cxA + cxB) / 2} y={cy - 8} textAnchor="middle" fill="#f1f5f9" fontSize={9}>
         2/6
       </text>
       <text x={(cxA + cxB) / 2} y={cy + 6} textAnchor="middle" fill="#94a3b8" fontSize={9}>

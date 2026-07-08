@@ -261,7 +261,7 @@ export default function PowerVisualization({
         <motion.path
           d={paths.altCurve}
           fill="none"
-          stroke="#d4af37"
+          stroke="var(--color-accent)"
           strokeWidth="1.5"
           animate={{ d: paths.altCurve }}
           transition={{ duration: 0.35 }}
@@ -271,7 +271,7 @@ export default function PowerVisualization({
         <motion.line
           x1={paths.critRightX} y1={PAD.t}
           x2={paths.critRightX} y2={PAD.t + IH}
-          stroke="#d4af37" strokeWidth="1" strokeDasharray="4,3"
+          stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="4,3"
           animate={{ x1: paths.critRightX, x2: paths.critRightX }}
           transition={{ duration: 0.35 }}
         />
@@ -279,7 +279,7 @@ export default function PowerVisualization({
           <motion.line
             x1={paths.critLeftX} y1={PAD.t}
             x2={paths.critLeftX} y2={PAD.t + IH}
-            stroke="#d4af37" strokeWidth="1" strokeDasharray="4,3"
+            stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="4,3"
             animate={{ x1: paths.critLeftX, x2: paths.critLeftX }}
             transition={{ duration: 0.35 }}
           />
@@ -310,7 +310,7 @@ export default function PowerVisualization({
           x={Math.min(xToSvg(paths.ncp, paths.xMin, paths.xMax), W - 56)}
           y={PAD.t + 9}
           textAnchor="middle"
-          fill="#d4af37"
+          fill="var(--color-accent)"
           fontSize="7.5"
           fontWeight="600"
         >

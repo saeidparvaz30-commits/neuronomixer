@@ -38,7 +38,7 @@ export default function DatasetSelector({ selected, onChange }: Props) {
               <span
                 className={`w-3.5 h-3.5 rounded-full border-2 flex-shrink-0 transition-all ${
                   isSelected
-                    ? "border-[#d4af37] bg-[#d4af37]"
+                    ? "border-[var(--color-accent)] bg-[var(--color-accent)]"
                     : "border-[#475569] bg-transparent"
                 }`}
               />

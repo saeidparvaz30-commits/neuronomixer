@@ -135,7 +135,7 @@ const ML_TYPES = [
   },
   {
     title: "Unsupervised Learning",
-    color: "#d4af37",
+    color: "var(--color-accent)",
     icon: "🔍",
     desc: "Finds hidden structure in unlabeled data.",
     examples: ["Customer segmentation", "Anomaly detection", "Topic modeling"],
@@ -166,7 +166,7 @@ export default function WhatIsMLClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "what-is-ml", score: 6 }),
+        body: JSON.stringify({ guideSlug: "what-is-ml", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -241,17 +241,19 @@ export default function WhatIsMLClient() {
         </div>
 
         {/* View tabs */}
-        <div className="flex items-center gap-1.5 mb-6 flex-wrap">
+        <div className="flex items-center gap-1.5 mb-6 flex-wrap" role="radiogroup" aria-label="Guide view">
           {[
             { id: "comparison" as const, label: "Rules vs ML" },
             { id: "types" as const, label: "Types of ML" },
             { id: "workflow" as const, label: "ML Workflow" },
           ].map(({ id, label }) => (
             <button key={id}
+              role="radio"
+              aria-checked={view === id}
               onClick={() => selectView(id)}
               className={`px-4 py-2 rounded-xl text-[13px] font-semibold border transition-all ${
                 view === id
-                  ? "bg-[#d4af37] border-[#d4af37] text-[#0a0e1a]"
+                  ? "bg-[var(--color-accent)] border-[var(--color-accent)] text-[#0a0e1a]"
                   : "border-[#1e293b] text-[#94a3b8] hover:border-[#334155] hover:text-white"
               }`}>
               {label}
@@ -321,7 +323,7 @@ export default function WhatIsMLClient() {
 
               {/* Real-world example */}
               <div className="mt-4 rounded-xl border border-[#d4af37]/20 bg-[#d4af37]/5 p-4">
-                <span className="text-[10px] font-semibold text-[#d4af37] uppercase tracking-wider">Real-world example</span>
+                <span className="text-[10px] font-semibold text-[var(--color-accent)] uppercase tracking-wider">Real-world example</span>
                 <p className="text-[13px] text-white mt-1">{scenario.example}</p>
               </div>
             </motion.div>
@@ -355,7 +357,7 @@ export default function WhatIsMLClient() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                   { step: "1", title: "Collect Data", desc: "Gather labeled examples representative of the real problem. More diverse data → better generalization.", color: "#3bb4a4", icon: "📊" },
-                  { step: "2", title: "Prepare Features", desc: "Clean, transform, and engineer features. Handle missing values, scale, encode categories.", color: "#d4af37", icon: "🔧" },
+                  { step: "2", title: "Prepare Features", desc: "Clean, transform, and engineer features. Handle missing values, scale, encode categories.", color: "var(--color-accent)", icon: "🔧" },
                   { step: "3", title: "Train Model", desc: "Feed training data into an algorithm. It adjusts internal parameters to minimize prediction error.", color: "#a855f7", icon: "🧠" },
                   { step: "4", title: "Evaluate & Deploy", desc: "Test on held-out data. Monitor performance over time. Retrain as data drifts.", color: "#ef4444", icon: "🚀" },
                 ].map(({ step, title, desc, color, icon }) => (
@@ -381,7 +383,7 @@ export default function WhatIsMLClient() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {[
                     { label: "Training Set", pct: "70–80%", desc: "Used to fit model parameters", color: "#3bb4a4" },
-                    { label: "Validation Set", pct: "10–15%", desc: "Tune hyperparameters & architecture", color: "#d4af37" },
+                    { label: "Validation Set", pct: "10–15%", desc: "Tune hyperparameters & architecture", color: "var(--color-accent)" },
                     { label: "Test Set", pct: "10–15%", desc: "Final unbiased performance estimate", color: "#a855f7" },
                   ].map(({ label, pct, desc, color }) => (
                     <div key={label} className="rounded-xl border border-[#1e293b] p-3">
@@ -408,7 +410,7 @@ export default function WhatIsMLClient() {
           </Link>
         </div>
 
-        <GuideCompletion isComplete={allComplete} guideSlug="what-is-ml" score={6} />
+        <GuideCompletion isComplete={allComplete} guideSlug="what-is-ml" score={100} />
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ const FIXED_POINTS = [
   { x: 0.92, y: 0.42 }, { x: 0.83, y: 0.60 }, { x: 0.70, y: 0.48 }, { x: 0.87, y: 0.35 },
 ];
 
-const CLUSTER_COLORS = ["#3bb4a4", "#d4af37", "#ef4444", "#8b5cf6"];
+const CLUSTER_COLORS = ["#3bb4a4", "#d4af37", "#ef4444", "#a855f7"];
 
 // Fixed initial centroids for each K
 const INIT_CENTROIDS: Record<number, { x: number; y: number }[]> = {
@@ -104,14 +104,16 @@ export default function ClusteringPreview() {
       </p>
 
       {/* K selector */}
-      <div className="flex items-center gap-3 mb-5 flex-wrap">
+      <div className="flex items-center gap-3 mb-5 flex-wrap" role="radiogroup" aria-label="Number of clusters K">
         <span className="text-sm font-semibold text-[#94a3b8]">K =</span>
         {[2, 3, 4].map((kv) => (
           <button
             key={kv}
+            role="radio"
+            aria-checked={k === kv}
             onClick={() => setK(kv)}
             className={`w-10 h-10 rounded-xl font-bold text-sm border transition-all ${k === kv
-              ? "border-[#d4af37] bg-[#d4af37]/15 text-[#d4af37]"
+              ? "border-[var(--color-accent)] bg-[#d4af37]/15 text-[var(--color-accent)]"
               : "border-[#1e293b] text-[#94a3b8] hover:border-[#1e293b] hover:text-white"
               }`}
           >
@@ -127,7 +129,7 @@ export default function ClusteringPreview() {
       </div>
 
       {/* SVG */}
-      <div className="rounded-xl border border-[#1e293b] bg-[#0a0f1e] p-3 overflow-hidden">
+      <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-3 overflow-hidden">
         <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ maxHeight: 300 }}>
           {/* Grid */}
           {[0, 0.25, 0.5, 0.75, 1].map((v) => (
@@ -224,9 +226,9 @@ export default function ClusteringPreview() {
       </div>
 
       {/* Elbow method hint */}
-      <div className="mt-4 rounded-xl border border-[#1e293b] bg-[#0a0f1e] p-3">
+      <div className="mt-4 rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-3">
         <p className="text-[11px] font-semibold text-[#94a3b8] mb-2 uppercase tracking-wide">
-          Choosing K — The Elbow Method
+          Choosing K: The Elbow Method
         </p>
         <div className="flex gap-4">
           {[2, 3, 4].map((kv) => {
@@ -239,19 +241,19 @@ export default function ClusteringPreview() {
               <div key={kv} className="flex-1 text-center">
                 <div
                   className="text-[10px] font-bold mb-1"
-                  style={{ color: kv === k ? "#d4af37" : "#94a3b8" }}
+                  style={{ color: kv === k ? "var(--color-accent)" : "#94a3b8" }}
                 >
                   K={kv}
                 </div>
                 <div
                   className="rounded h-12 flex items-end justify-center pb-1"
-                  style={{ background: `${kv === k ? "#d4af37" : "#1e293b"}20` }}
+                  style={{ background: kv === k ? "color-mix(in srgb, var(--color-accent) 12.5%, transparent)" : "#1e293b20" }}
                 >
                   <div
                     className="w-full mx-1 rounded-sm transition-all"
                     style={{
                       height: `${Math.max(4, (inr / 0.5) * 40)}px`,
-                      background: kv === k ? "#d4af37" : "#334155",
+                      background: kv === k ? "var(--color-accent)" : "#334155",
                       maxHeight: "40px",
                     }}
                   />

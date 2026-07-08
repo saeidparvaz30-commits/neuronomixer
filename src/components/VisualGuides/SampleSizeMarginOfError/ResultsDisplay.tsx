@@ -55,7 +55,7 @@ export default function ResultsDisplay({
         <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#94a3b8] mb-1">
           Required Sample Size
         </p>
-        <p className="text-5xl font-black text-[#d4af37] tabular-nums">
+        <p className="text-5xl font-black text-[var(--color-accent)] tabular-nums">
           {formatNum(sampleSize)}
         </p>
         <p className="text-[12px] text-[#94a3b8] mt-2 max-w-[300px] mx-auto leading-relaxed">
@@ -119,12 +119,12 @@ export default function ResultsDisplay({
               onChange={(e) =>
                 onCostChange(Math.max(1, parseInt(e.target.value, 10) || 1))
               }
-              className="w-24 bg-[#1e293b] border border-white/10 rounded-lg px-3 py-1.5 text-[12px] text-white focus:outline-none focus:border-[#d4af37] transition-colors"
+              className="w-24 bg-[#1e293b] border border-white/10 rounded-lg px-3 py-1.5 text-[12px] text-white focus:outline-none focus:border-[var(--color-accent)] transition-colors"
             />
           </div>
           <div className="text-right">
             <p className="text-[11px] text-[#94a3b8]">Total budget</p>
-            <p className="text-[16px] font-bold text-[#d4af37]">
+            <p className="text-[16px] font-bold text-[var(--color-accent)]">
               {formatCurrency(totalCost)}
             </p>
           </div>

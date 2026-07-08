@@ -4,7 +4,7 @@ import MathForStatisticsClient from "@/components/VisualGuides/MathForStatistics
 export const metadata: Metadata = {
   title: "Math for Statistics: The Visual Toolkit",
   description:
-    "Explore growth, logarithms, summation, weighted averages, rates of change, and set operations with six interactive visual tools. No formulas to memorize — just intuition.",
+    "Explore growth, logarithms, summation, weighted averages, rates of change, and set operations with six interactive visual tools. No formulas to memorize, just intuition.",
   alternates: {
     canonical: "https://www.neuronomixer.com/visual-guides/math-for-statistics",
   },

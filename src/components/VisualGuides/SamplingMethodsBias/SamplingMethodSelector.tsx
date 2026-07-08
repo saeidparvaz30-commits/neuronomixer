@@ -34,7 +34,7 @@ const METHODS: MethodOption[] = [
   {
     method: "convenience",
     label: "Convenience Sampling",
-    description: "Only easily-accessible units — only Group B is sampled.",
+    description: "Only easily-accessible units: only Group B is sampled.",
     badge: "Biased!",
   },
 ];
@@ -58,7 +58,7 @@ export default function SamplingMethodSelector({ selected, onChange }: Props) {
               key={method}
               className="flex items-start gap-3 cursor-pointer rounded-xl p-3 border transition-all"
               style={{
-                borderColor: isActive ? "#d4af37" : "#1e293b",
+                borderColor: isActive ? "var(--color-accent)" : "#1e293b",
                 borderLeftWidth: isActive ? "3px" : "1px",
                 background: isActive ? "rgba(212,175,55,0.06)" : "transparent",
               }}
@@ -69,13 +69,13 @@ export default function SamplingMethodSelector({ selected, onChange }: Props) {
                 <span
                   className="absolute inset-0 rounded-full border-2 transition-colors"
                   style={{
-                    borderColor: isActive ? "#d4af37" : "#334155",
+                    borderColor: isActive ? "var(--color-accent)" : "#334155",
                   }}
                 />
                 {isActive && (
                   <span
                     className="absolute inset-[3px] rounded-full"
-                    style={{ background: "#d4af37" }}
+                    style={{ background: "var(--color-accent)" }}
                   />
                 )}
                 <input

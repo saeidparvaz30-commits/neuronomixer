@@ -77,7 +77,7 @@ export const STRATEGY_META = {
     accuracy: 83,
     dataLoss: "25%",
     biasRisk: "Medium",
-    biasColor: "#f59e0b",
+    biasColor: "var(--color-warning)",
     lossColor: "#ef4444",
     rowCount: 8,
     description:
@@ -89,11 +89,11 @@ export const STRATEGY_META = {
     accuracy: 81,
     dataLoss: "0%",
     biasRisk: "Medium",
-    biasColor: "#f59e0b",
+    biasColor: "var(--color-warning)",
     lossColor: "#3bb4a4",
     rowCount: 12,
     description:
-      "Replace each null with the column mean. Keeps all rows and is trivial to implement, but compresses the feature distribution — variance shrinks and relationships between features are weakened.",
+      "Replace each null with the column mean. Keeps all rows and is trivial to implement, but compresses the feature distribution: variance shrinks and relationships between features are weakened.",
   },
   "knn-imputation": {
     label: "KNN Imputation",
@@ -105,6 +105,6 @@ export const STRATEGY_META = {
     lossColor: "#3bb4a4",
     rowCount: 12,
     description:
-      "Estimate each missing value from K nearest neighbors (k=3) using Euclidean distance on available features. Preserves feature relationships and produces the most realistic fill values — at the cost of extra computation.",
+      "Estimate each missing value from K nearest neighbors (k=3) using Euclidean distance on available features. Preserves feature relationships and produces the most realistic fill values, at the cost of extra computation.",
   },
 } as const;

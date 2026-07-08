@@ -75,7 +75,7 @@ function AccuracyMeterInner({ selected }: Props) {
                 <motion.div
                   className="absolute left-0 top-0 h-full rounded-full"
                   style={{
-                    background: `linear-gradient(90deg, #ef4444 0%, #f59e0b 40%, ${meta.color} 100%)`,
+                    background: `linear-gradient(90deg, #ef4444 0%, var(--color-warning) 40%, ${meta.color} 100%)`,
                   }}
                   initial={{ width: "0%" }}
                   animate={{ width: `${pct}%` }}

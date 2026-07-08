@@ -50,7 +50,7 @@ export default function MultipleComparisonCorrectionPanel({
     bonferroni: {
       title: "Bonferroni Correction",
       explanation:
-        "Divide the significance threshold by the number of tests. Each test must now meet a much stricter standard to be called significant. Controls the family-wise error rate (FWER) — the probability of making even one false positive.",
+        "Divide the significance threshold by the number of tests. Each test must now meet a much stricter standard to be called significant. Controls the family-wise error rate (FWER): the probability of making even one false positive.",
       formula: `α_adjusted = α / M = 0.05 / ${M} = ${(0.05 / M).toFixed(4)}`,
       caveat:
         "Most conservative: very low false positive rate, but high false negative rate. Can miss true effects when M is large.",
@@ -60,7 +60,7 @@ export default function MultipleComparisonCorrectionPanel({
     fdr: {
       title: "Benjamini-Hochberg FDR",
       explanation:
-        "Sort p-values from smallest to largest. Reject null hypotheses for the largest k where p(k) ≤ (k/M)×α. Controls the False Discovery Rate — the expected proportion of false discoveries among all discoveries.",
+        "Sort p-values from smallest to largest. Reject null hypotheses for the largest k where p(k) ≤ (k/M)×α. Controls the False Discovery Rate: the expected proportion of false discoveries among all discoveries.",
       formula: `Reject H₀(k) if p(k) ≤ (k / M) × α = (k / ${M}) × 0.05`,
       caveat:
         "Moderate: allows a controlled proportion of false positives (~5%). Better power than Bonferroni when many tests are run.",
@@ -91,7 +91,7 @@ export default function MultipleComparisonCorrectionPanel({
       </p>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-4 border border-[#1e293b] rounded-xl p-1">
+      <div className="flex gap-1 mb-4 border border-[#1e293b] rounded-xl p-1" role="radiogroup" aria-label="Correction method">
         {TABS.map(tab => {
           const isApplied =
             tab.key === "bonferroni"
@@ -102,6 +102,8 @@ export default function MultipleComparisonCorrectionPanel({
           return (
             <button
               key={tab.key}
+              role="radio"
+              aria-checked={activeTab === tab.key}
               onClick={() => setActiveTab(tab.key)}
               className={`flex-1 py-1.5 rounded-lg text-[11px] font-semibold transition-all relative ${
                 activeTab === tab.key
@@ -140,7 +142,7 @@ export default function MultipleComparisonCorrectionPanel({
           <p className="text-[12px] text-[#94a3b8] leading-relaxed">{current.explanation}</p>
 
           <div className="rounded-xl border border-[#1e293b] bg-[#1e293b]/40 p-3">
-            <p className="text-[11px] font-mono text-[#d4af37]">{current.formula}</p>
+            <p className="text-[11px] font-mono text-[var(--color-accent)]">{current.formula}</p>
           </div>
 
           <div className="rounded-xl border border-[#475569]/30 bg-[#475569]/10 p-3">
@@ -158,7 +160,7 @@ export default function MultipleComparisonCorrectionPanel({
               className={`w-full py-2 rounded-xl text-[12px] font-semibold transition-all ${
                 current.applied
                   ? "border border-[#3bb4a4] text-[#3bb4a4] hover:bg-[#3bb4a4]/10"
-                  : "bg-[#d4af37] text-[#0a0e1a] hover:opacity-90"
+                  : "bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90"
               }`}
             >
               {current.applied ? "Re-apply Correction" : `Apply ${current.title}`}
@@ -180,7 +182,7 @@ export default function MultipleComparisonCorrectionPanel({
           <div className="space-y-1.5">
             <div className="flex justify-between text-[11px]">
               <span className="text-[#94a3b8]">Uncorrected (α=0.05)</span>
-              <span className={uncorrected > 0 ? "text-[#d4af37] font-semibold" : "text-white font-semibold"}>
+              <span className={uncorrected > 0 ? "text-[var(--color-accent)] font-semibold" : "text-white font-semibold"}>
                 {uncorrected}
               </span>
             </div>

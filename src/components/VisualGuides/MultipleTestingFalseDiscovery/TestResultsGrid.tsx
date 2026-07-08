@@ -79,7 +79,7 @@ export default function TestResultsGrid({
                   <td className="px-3 py-2 text-right font-mono">
                     <span
                       className={
-                        row.significant ? "text-[#d4af37] font-semibold" : "text-[#94a3b8]"
+                        row.significant ? "text-[var(--color-accent)] font-semibold" : "text-[#94a3b8]"
                       }
                     >
                       {row.pValue.toFixed(4)}
@@ -87,7 +87,7 @@ export default function TestResultsGrid({
                   </td>
                   <td className="px-3 py-2 text-center">
                     {row.significant ? (
-                      <span className="inline-block px-2 py-0.5 rounded-md bg-[#d4af37]/20 text-[#d4af37] font-semibold text-[10px]">
+                      <span className="inline-block px-2 py-0.5 rounded-md bg-[#d4af37]/20 text-[var(--color-accent)] font-semibold text-[10px]">
                         Yes
                       </span>
                     ) : (
@@ -140,7 +140,7 @@ export default function TestResultsGrid({
           </span>
           <span>
             Significant (uncorrected):{" "}
-            <span className={totalSignificant > 0 ? "text-[#d4af37] font-semibold" : "text-white font-semibold"}>
+            <span className={totalSignificant > 0 ? "text-[var(--color-accent)] font-semibold" : "text-white font-semibold"}>
               {totalSignificant}
             </span>
           </span>

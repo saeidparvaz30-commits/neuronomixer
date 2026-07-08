@@ -16,9 +16,9 @@ export default function TestTypeToggle({ testType, onChange }: Props) {
       <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">
         Test Type
       </p>
-      <div className="flex gap-2">
+      <div className="flex gap-2" role="radiogroup" aria-label="Test type">
         <button
-          role="switch"
+          role="radio"
           aria-checked={isTwoTailed}
           onClick={() => onChange("two-tailed")}
           className="flex-1 py-2 rounded-xl text-[12px] font-semibold border transition-all"
@@ -31,7 +31,7 @@ export default function TestTypeToggle({ testType, onChange }: Props) {
           Two-tailed
         </button>
         <button
-          role="switch"
+          role="radio"
           aria-checked={!isTwoTailed}
           onClick={() => onChange("one-tailed")}
           className="flex-1 py-2 rounded-xl text-[12px] font-semibold border transition-all"

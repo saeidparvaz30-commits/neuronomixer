@@ -160,16 +160,16 @@ export default function PayoutTableBuilder({
 
       {/* Warning banner */}
       {!isValid && (
-        <div className="mt-4 flex items-start gap-2 rounded-lg bg-[#7c2d12]/20 border border-[#7c2d12]/40 px-3 py-2.5">
-          <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-[#f97316] shrink-0 mt-0.5">
+        <div className="mt-4 flex items-start gap-2 rounded-lg bg-[var(--color-warning)]/10 border border-[var(--color-warning)]/30 px-3 py-2.5">
+          <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-[var(--color-warning)] shrink-0 mt-0.5">
             <path
               fillRule="evenodd"
               d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 5a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5A.75.75 0 0 1 10 5Zm0 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
               clipRule="evenodd"
             />
           </svg>
-          <p className="text-[12px] text-[#f97316]">
-            Probabilities sum to <strong>{probSum.toFixed(4)}</strong> — must equal 1.000 (±0.001) to
+          <p className="text-[12px] text-[var(--color-warning)]">
+            Probabilities sum to <strong>{probSum.toFixed(4)}</strong>, but they must equal 1.000 (±0.001) to
             run a valid simulation.
           </p>
         </div>

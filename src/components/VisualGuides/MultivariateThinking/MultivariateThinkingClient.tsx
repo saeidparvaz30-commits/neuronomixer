@@ -56,7 +56,7 @@ export default function MultivariateThinkingClient() {
 
   const progress = [
     { label: "High-dim explored", done: exploredHighDim, color: "#ef4444" },
-    { label: "PCA viewed", done: pcaViewed, color: "#d4af37" },
+    { label: "PCA viewed", done: pcaViewed, color: "var(--color-accent)" },
     { label: "Scaling compared", done: scalingExplored, color: "#3bb4a4" },
   ];
 
@@ -145,14 +145,14 @@ export default function MultivariateThinkingClient() {
             </div>
             <div className="rounded-xl bg-[#1e293b]/50 border border-[#1e293b] p-4">
               <div className="w-8 h-8 rounded-lg bg-[#d4af37]/15 border border-[#d4af37]/25 flex items-center justify-center mb-2">
-                <svg className="w-4 h-4 text-[#d4af37]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <svg className="w-4 h-4 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
               <p className="text-sm font-semibold text-white mb-1">Distances Lose Meaning</p>
               <p className="text-[12px] text-[#94a3b8] leading-relaxed">
                 As dimensions grow, the ratio of max-to-min pairwise distance approaches 1.
-                All points become &ldquo;equidistant&rdquo; — KNN breaks down.
+                All points become &ldquo;equidistant&rdquo;: KNN breaks down.
               </p>
             </div>
             <div className="rounded-xl bg-[#1e293b]/50 border border-[#1e293b] p-4">
@@ -164,7 +164,7 @@ export default function MultivariateThinkingClient() {
               <p className="text-sm font-semibold text-white mb-1">Data Requirements Explode</p>
               <p className="text-[12px] text-[#94a3b8] leading-relaxed">
                 To maintain the same density, you need exponentially more samples.
-                100 points in 2D becomes meaningless in 20D — you&apos;d need 10²⁰ samples.
+                100 points in 2D becomes meaningless in 20D: you&apos;d need 10²⁰ samples.
               </p>
             </div>
           </div>
@@ -255,7 +255,7 @@ export default function MultivariateThinkingClient() {
                     </p>
                   </div>
                   <div className="rounded-xl border border-[#d4af37]/25 bg-[#d4af37]/5 p-3">
-                    <p className="text-[11px] font-semibold text-[#d4af37] mb-1">PCA</p>
+                    <p className="text-[11px] font-semibold text-[var(--color-accent)] mb-1">PCA</p>
                     <p className="text-[12px] text-[#94a3b8] leading-relaxed">
                       Eigendecomposition of the covariance matrix reveals directions of maximum variance.
                     </p>
@@ -268,11 +268,11 @@ export default function MultivariateThinkingClient() {
                   </div>
                 </div>
 
-                <div className="rounded-xl border-l-4 border-[#d4af37] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
-                  <p className="text-[12px] font-semibold text-[#d4af37] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
                   <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
                     &quot;In high dimensions, our intuition from 2D and 3D space completely fails.
-                    The geometry of data changes — distances concentrate, volumes vanish, and sparsity dominates.
+                    The geometry of data changes: distances concentrate, volumes vanish, and sparsity dominates.
                     Every ML practitioner must understand these effects to choose the right algorithms and preprocessing.&quot;
                   </p>
                 </div>

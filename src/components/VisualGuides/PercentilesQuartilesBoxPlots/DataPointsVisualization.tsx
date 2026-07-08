@@ -70,7 +70,7 @@ export default function DataPointsVisualization({
       aria-label="Interactive data points visualization"
     >
       <p className="text-[10px] uppercase tracking-wider text-[#94a3b8] mb-3 font-medium">
-        All Data Points — Click to find percentile rank
+        All Data Points: click to find percentile rank
       </p>
       <svg
         viewBox={`0 0 ${VB_W} ${VB_H}`}
@@ -124,7 +124,7 @@ export default function DataPointsVisualization({
           {points.map((pt) => {
             const isSelected = selectedPointIds.has(pt.id);
             const isOutlier = pt.isOutlier && currentStep >= 4;
-            const fill = isSelected ? "#06b6d4" : isOutlier ? "#ef4444" : "#475569";
+            const fill = isSelected ? "#3bb4a4" : isOutlier ? "#ef4444" : "#475569";
             return (
               <motion.circle
                 key={pt.id}
@@ -133,7 +133,7 @@ export default function DataPointsVisualization({
                 r={isSelected ? 5 : 3.5}
                 fill={fill}
                 fillOpacity={isSelected ? 1 : 0.75}
-                stroke={isSelected ? "#06b6d4" : "none"}
+                stroke={isSelected ? "#3bb4a4" : "none"}
                 strokeWidth={isSelected ? 2 : 0}
                 style={{ cursor: "pointer" }}
                 whileHover={{ scale: 1.6, fillOpacity: 1 }}
@@ -141,7 +141,7 @@ export default function DataPointsVisualization({
                 transition={{ duration: 0.15 }}
                 onClick={() => onPointClick(pt.id, pt.value)}
                 role="button"
-                aria-label={`Value ${pt.value} ${unit}${isSelected ? " — selected" : ""}`}
+                aria-label={`Value ${pt.value} ${unit}${isSelected ? " (selected)" : ""}`}
               />
             );
           })}

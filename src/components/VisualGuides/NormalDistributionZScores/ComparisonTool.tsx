@@ -158,7 +158,7 @@ export default function ComparisonTool({
         />
         <ScoreInput
           label="Test B"
-          color="#f97316"
+          color="var(--color-warning)"
           value={testB_value}
           mean={testB_mean}
           stdDev={testB_stdDev}
@@ -172,7 +172,7 @@ export default function ComparisonTool({
       {/* Shared standard normal SVG */}
       <div className="mb-4">
         <p className="text-[10px] font-semibold uppercase tracking-[1px] text-[#475569] mb-2">
-          Standard Normal — Both Scores
+          Standard Normal: Both Scores
         </p>
         <svg
           viewBox={`0 0 ${VW} ${VH}`}
@@ -215,9 +215,9 @@ export default function ComparisonTool({
           {/* Test B marker */}
           {isFinite(zB) && (
             <g>
-              <line x1={zB_x} y1={PAD.t} x2={zB_x} y2={baselineY} stroke="#f97316" strokeWidth="2" strokeDasharray="3 2" />
-              <circle cx={zB_x} cy={PAD.t + 8} r={5} fill="#f97316" stroke="#0f172a" strokeWidth="1.5" />
-              <text x={zB_x} y={PAD.t - 2} textAnchor="middle" fill="#f97316" fontSize="8" fontWeight="bold">
+              <line x1={zB_x} y1={PAD.t} x2={zB_x} y2={baselineY} stroke="var(--color-warning)" strokeWidth="2" strokeDasharray="3 2" />
+              <circle cx={zB_x} cy={PAD.t + 8} r={5} fill="var(--color-warning)" stroke="#0f172a" strokeWidth="1.5" />
+              <text x={zB_x} y={PAD.t - 2} textAnchor="middle" fill="var(--color-warning)" fontSize="8" fontWeight="bold">
                 B
               </text>
             </g>
@@ -235,21 +235,21 @@ export default function ComparisonTool({
       >
         <p className="text-[11px] text-[#94a3b8] leading-relaxed">
           <span className="text-[#3bb4a4] font-semibold">Score A:</span> z = {isFinite(zA) ? zA.toFixed(2) : "∞"} &nbsp;|&nbsp;{" "}
-          <span className="text-[#f97316] font-semibold">Score B:</span> z = {isFinite(zB) ? zB.toFixed(2) : "∞"}
+          <span className="text-[var(--color-warning)] font-semibold">Score B:</span> z = {isFinite(zB) ? zB.toFixed(2) : "∞"}
         </p>
         {winner === "tie" && (
-          <p className="text-[12px] font-semibold text-[#d4af37] mt-1.5">
+          <p className="text-[12px] font-semibold text-[var(--color-accent)] mt-1.5">
             Both scores are equally strong relative to their distributions.
           </p>
         )}
         {winner === "A" && (
           <p className="text-[12px] font-semibold text-[#3bb4a4] mt-1.5">
-            Score A performs better — higher z-score means further above the mean.
+            Score A performs better: higher z-score means further above the mean.
           </p>
         )}
         {winner === "B" && (
-          <p className="text-[12px] font-semibold text-[#f97316] mt-1.5">
-            Score B performs better — higher z-score means further above the mean.
+          <p className="text-[12px] font-semibold text-[var(--color-warning)] mt-1.5">
+            Score B performs better: higher z-score means further above the mean.
           </p>
         )}
       </motion.div>

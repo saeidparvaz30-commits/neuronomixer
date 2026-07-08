@@ -55,16 +55,16 @@ function PermHistogram({ permStats, observedT }: { permStats: number[]; observed
           <line
             x1={tx(observedT)} y1={PP.t}
             x2={tx(observedT)} y2={PP.t + IH}
-            stroke="#d4af37" strokeWidth="2"
+            stroke="var(--color-accent)" strokeWidth="2"
           />
-          <text x={tx(observedT) + 3} y={PP.t + 10} fill="#d4af37" fontSize="8" fontWeight="600">
+          <text x={tx(observedT) + 3} y={PP.t + 10} fill="var(--color-accent)" fontSize="8" fontWeight="600">
             t={observedT.toFixed(2)}
           </text>
           {Math.abs(observedT) > 0.1 && (
             <line
               x1={tx(-Math.abs(observedT))} y1={PP.t}
               x2={tx(-Math.abs(observedT))} y2={PP.t + IH}
-              stroke="#d4af37" strokeWidth="1.5" strokeDasharray="3 2"
+              stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="3 2"
             />
           )}
         </>
@@ -179,14 +179,13 @@ export default function PermutationCounter({
             <span className="text-[11px] text-[#94a3b8]">Significant permutations</span>
             <span
               className="text-[13px] font-black font-mono"
-              style={{ color: permPct && parseFloat(permPct) < alpha * 100 + 2 ? "#d4af37" : "#ef4444" }}
+              style={{ color: permPct && parseFloat(permPct) < alpha * 100 + 2 ? "var(--color-accent)" : "#ef4444" }}
             >
               {significantPermutations} / {total} ({permPct}%)
             </span>
           </div>
           <p className="text-[10px] text-[#475569] leading-relaxed">
-            Permutation p ≈ <strong className="text-white">{permPct}%</strong>{" "}
-            — this is how often random shuffling beats or matches your observed t-statistic.
+            Permutation p ≈ <strong className="text-white">{permPct}%</strong>. This is how often random shuffling beats or matches your observed t-statistic.
             {theoreticalPctLabel && ` ${theoreticalPctLabel}.`}
           </p>
 

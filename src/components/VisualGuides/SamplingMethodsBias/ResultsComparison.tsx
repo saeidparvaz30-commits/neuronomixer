@@ -106,7 +106,7 @@ export default function ResultsComparison({
               <th className="pb-2 pr-3 text-right text-[10px] font-semibold uppercase tracking-wider text-[#3bb4a4]">
                 Population (true)
               </th>
-              <th className="pb-2 pr-3 text-right text-[10px] font-semibold uppercase tracking-wider text-[#d4af37]">
+              <th className="pb-2 pr-3 text-right text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)]">
                 Sample (n={currentSample.length})
               </th>
               <th className="pb-2 text-right text-[10px] font-semibold uppercase tracking-wider text-[#475569]">
@@ -165,17 +165,17 @@ export default function ResultsComparison({
           <span className="font-semibold text-white">{populationMean.toFixed(2)}</span>.
           {meanPctErr >= 10 && (
             <span className="text-[#ef4444]">
-              {" "}This level of error suggests sampling bias — try a different method.
+              {" "}This level of error suggests sampling bias. Try a different method.
             </span>
           )}
           {meanPctErr >= 5 && meanPctErr < 10 && (
-            <span className="text-[#d4af37]">
-              {" "}Moderate error — consider a larger sample or different method.
+            <span className="text-[var(--color-accent)]">
+              {" "}Moderate error: consider a larger sample or a different method.
             </span>
           )}
           {meanPctErr < 5 && (
             <span className="text-[#3bb4a4]">
-              {" "}Good estimate — within 5% of the true value.
+              {" "}Good estimate: within 5% of the true value.
             </span>
           )}
         </p>
@@ -185,7 +185,7 @@ export default function ResultsComparison({
       <div className="flex items-center gap-4 mt-3">
         {[
           { color: "#3bb4a4", label: "< 5% error" },
-          { color: "#d4af37", label: "5–10% error" },
+          { color: "var(--color-accent)", label: "5–10% error" },
           { color: "#ef4444", label: "≥ 10% error" },
         ].map(({ color, label }) => (
           <div key={label} className="flex items-center gap-1.5">

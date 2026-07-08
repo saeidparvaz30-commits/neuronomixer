@@ -19,7 +19,7 @@ function InlineTooltip({ term, definition }: ConceptTerm) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="underline decoration-dotted underline-offset-2 text-[#d4af37] cursor-help focus:outline-none"
+        className="underline decoration-dotted underline-offset-2 text-[var(--color-accent)] cursor-help focus:outline-none"
         aria-expanded={open}
       >
         {term}

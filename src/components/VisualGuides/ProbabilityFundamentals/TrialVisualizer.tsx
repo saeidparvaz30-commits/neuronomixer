@@ -10,13 +10,13 @@ function CoinSVG({ label, hit }: { label: string; hit: boolean }) {
     <svg viewBox="0 0 80 80" width={80} height={80} aria-label={`Coin: ${label}`}>
       <circle
         cx={40} cy={40} r={36}
-        fill={isHeads ? "#d4af37" : "#475569"}
-        stroke={hit ? "#22c55e" : "#ef4444"}
+        fill={isHeads ? "var(--color-accent)" : "#475569"}
+        stroke={hit ? "var(--color-success)" : "#ef4444"}
         strokeWidth={3}
         filter={hit ? "url(#glow-green)" : "url(#glow-red)"}
       />
       <text x={40} y={46} textAnchor="middle" fontSize={26} fontWeight="bold"
-        fill={isHeads ? "#0a0e1a" : "#e2e8f0"}>
+        fill={isHeads ? "#0a0e1a" : "#f1f5f9"}>
         {isHeads ? "H" : "T"}
       </text>
       <defs>
@@ -45,11 +45,11 @@ function DieSVG({ label, hit }: { label: string; hit: boolean }) {
     <svg viewBox="0 0 80 80" width={80} height={80} aria-label={`Die: ${label}`}>
       <rect x={4} y={4} width={72} height={72} rx={12}
         fill="#1e293b"
-        stroke={hit ? "#22c55e" : "#ef4444"}
+        stroke={hit ? "var(--color-success)" : "#ef4444"}
         strokeWidth={3}
       />
       {pips.map(([cx, cy], i) => (
-        <circle key={i} cx={cx} cy={cy} r={6} fill="#e2e8f0" />
+        <circle key={i} cx={cx} cy={cy} r={6} fill="#f1f5f9" />
       ))}
     </svg>
   );
@@ -59,15 +59,15 @@ function DieSVG({ label, hit }: { label: string; hit: boolean }) {
 
 function CardSVG({ label, hit }: { label: string; hit: boolean }) {
   const isRed = label.endsWith("♥") || label.endsWith("♦");
-  const suitColor = isRed ? "#ef4444" : "#e2e8f0";
+  const suitColor = isRed ? "#ef4444" : "#f1f5f9";
   const rankPart = label.slice(0, -1);   // everything before the suit symbol
   const suitPart = label.slice(-1);      // last char = suit symbol
 
   return (
     <svg viewBox="0 0 60 84" width={60} height={84} aria-label={`Card: ${label}`}>
       <rect x={2} y={2} width={56} height={80} rx={6}
-        fill="#f8fafc"
-        stroke={hit ? "#22c55e" : "#ef4444"}
+        fill="#f1f5f9"
+        stroke={hit ? "var(--color-success)" : "#ef4444"}
         strokeWidth={2.5}
       />
       {/* top-left rank */}
@@ -93,7 +93,7 @@ function EventCell({ type, raw, hit }: { type: EventType; raw: string; hit: bool
         {type === "card_draw" && <CardSVG label={raw} hit={hit} />}
         {/* hit/miss badge */}
         <span className={`absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold
-          ${hit ? "bg-[#22c55e] text-white" : "bg-[#ef4444] text-white"}`}>
+          ${hit ? "bg-[var(--color-success)] text-white" : "bg-[#ef4444] text-white"}`}>
           {hit ? "✓" : "✗"}
         </span>
       </div>
@@ -134,7 +134,7 @@ export default function TrialVisualizer({ result }: Props) {
 
         {/* Operator label */}
         {operator !== "none" && (
-          <span className="text-[13px] font-bold text-[#d4af37] px-1">{operator}</span>
+          <span className="text-[13px] font-bold text-[var(--color-accent)] px-1">{operator}</span>
         )}
 
         {/* Event B (AND / OR only) */}
@@ -147,7 +147,7 @@ export default function TrialVisualizer({ result }: Props) {
       <div className="mt-4 flex justify-center">
         <span className={`px-4 py-1 rounded-full text-[12px] font-semibold
           ${hit
-            ? "bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30"
+            ? "bg-[var(--color-success)]/15 text-[var(--color-success)] border border-[var(--color-success)]/30"
             : "bg-[#ef4444]/15 text-[#ef4444] border border-[#ef4444]/30"
           }`}>
           {hit ? "✓ Event occurred" : "✗ Event did not occur"}

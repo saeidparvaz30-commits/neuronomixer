@@ -59,7 +59,7 @@ export default function SampleSizeCalculator({
           >
             Desired Margin of Error
           </label>
-          <span className="text-[14px] font-bold text-[#d4af37]">
+          <span className="text-[14px] font-bold text-[var(--color-accent)]">
             ±{state.marginOfError}%
           </span>
         </div>
@@ -74,7 +74,7 @@ export default function SampleSizeCalculator({
           step={0.5}
           value={state.marginOfError}
           onChange={(e) => onMOEChange(parseFloat(e.target.value))}
-          className="w-full accent-[#d4af37] cursor-pointer"
+          className="w-full accent-[var(--color-accent)] cursor-pointer"
           aria-label="Desired margin of error"
           aria-valuenow={state.marginOfError}
           aria-valuemin={1}
@@ -91,20 +91,21 @@ export default function SampleSizeCalculator({
         <p className="text-[13px] font-semibold text-white mb-2">
           Confidence Level
         </p>
-        <div className="flex gap-2">
+        <div className="flex gap-2" role="radiogroup" aria-label="Confidence level">
           {CONFIDENCE_LEVELS.map((cl) => {
             const active = cl === state.confidenceLevel;
             return (
               <button
                 key={cl}
+                role="radio"
+                aria-checked={active}
                 onClick={() => onConfidenceChange(cl)}
                 className="flex-1 py-2 rounded-xl text-[12px] font-semibold border transition-all"
                 style={{
-                  borderColor: active ? "#d4af37" : "#1e293b",
-                  color: active ? "#d4af37" : "#475569",
+                  borderColor: active ? "var(--color-accent)" : "#1e293b",
+                  color: active ? "var(--color-accent)" : "#475569",
                   background: active ? "#d4af3718" : "transparent",
                 }}
-                aria-pressed={active}
               >
                 {cl}%
               </button>
@@ -130,7 +131,7 @@ export default function SampleSizeCalculator({
           </span>
         </div>
         <p className="text-[11px] text-[#94a3b8] mb-2">
-          Use 50% if unsure — this gives the largest (most conservative) sample
+          Use 50% if unsure: this gives the largest (most conservative) sample
           size
         </p>
         <input

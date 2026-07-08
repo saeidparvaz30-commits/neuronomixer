@@ -121,8 +121,8 @@ export default function LotteryEVBreakdown() {
       </div>
 
       {/* Key insight */}
-      <div className="mt-4 rounded-xl bg-[#7c2d12]/15 border border-[#7c2d12]/30 p-4">
-        <p className="text-[12px] text-[#f97316] font-semibold mb-1">Key Insight</p>
+      <div className="mt-4 rounded-xl bg-[var(--color-warning)]/5 border border-[var(--color-warning)]/30 p-4">
+        <p className="text-[12px] text-[var(--color-warning)] font-semibold mb-1">Key Insight</p>
         <p className="text-[12px] text-[#94a3b8] leading-relaxed">
           Every $2 lottery ticket has an expected return of approximately{" "}
           <strong className="text-[#ef4444]">{totalEV.toFixed(2)}</strong>. This means

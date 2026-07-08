@@ -68,14 +68,16 @@ export default function SampleSizeControl({ value, computedPower, onChange }: Pr
       </div>
 
       {/* Quick presets */}
-      <div className="flex gap-2 mt-4 flex-wrap">
+      <div className="flex gap-2 mt-4 flex-wrap" role="radiogroup" aria-label="Sample size presets">
         {[20, 50, 100, 200, 500].map((n) => (
           <button
             key={n}
+            role="radio"
+            aria-checked={value === n}
             onClick={() => onChange(n)}
             className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-colors ${
               value === n
-                ? "bg-[#d4af37] text-[#0a0e1a]"
+                ? "bg-[var(--color-accent)] text-[#0a0e1a]"
                 : "border border-[#1e293b] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37]"
             }`}
           >

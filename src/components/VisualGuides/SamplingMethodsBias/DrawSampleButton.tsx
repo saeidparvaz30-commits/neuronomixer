@@ -27,7 +27,7 @@ export default function DrawSampleButton({ onDraw, onDrawMore, onClear, drawCoun
         {/* Primary: Draw Sample */}
         <button
           onClick={onDraw}
-          className="px-4 py-2 rounded-xl text-[13px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+          className="px-4 py-2 rounded-xl text-[13px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
         >
           Draw Sample
         </button>
@@ -60,7 +60,7 @@ export default function DrawSampleButton({ onDraw, onDrawMore, onClear, drawCoun
       </div>
 
       <p className="text-[10px] text-[#334155] mt-3">
-        &ldquo;Draw 10 More&rdquo; and &ldquo;Draw 100 More&rdquo; add repeated draws to the distribution chart below — great for seeing sampling variability.
+        &ldquo;Draw 10 More&rdquo; and &ldquo;Draw 100 More&rdquo; add repeated draws to the distribution chart below, great for seeing sampling variability.
       </p>
     </div>
   );

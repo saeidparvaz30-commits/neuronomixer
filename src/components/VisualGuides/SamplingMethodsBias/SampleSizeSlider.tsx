@@ -15,7 +15,7 @@ export default function SampleSizeSlider({ value, onChange }: Props) {
           Sample Size
         </p>
         <span className="text-[14px] font-bold text-white font-mono">
-          n = <span className="text-[#d4af37]">{value}</span>
+          n = <span className="text-[var(--color-accent)]">{value}</span>
         </span>
       </div>
 
@@ -26,10 +26,11 @@ export default function SampleSizeSlider({ value, onChange }: Props) {
           max={200}
           step={10}
           value={value}
+          aria-label="Sample size"
           onChange={e => onChange(Number(e.target.value))}
           className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
           style={{
-            background: `linear-gradient(to right, #d4af37 ${((value - 10) / (200 - 10)) * 100}%, #1e293b ${((value - 10) / (200 - 10)) * 100}%)`,
+            background: `linear-gradient(to right, var(--color-accent) ${((value - 10) / (200 - 10)) * 100}%, #1e293b ${((value - 10) / (200 - 10)) * 100}%)`,
           }}
         />
       </div>
@@ -41,7 +42,7 @@ export default function SampleSizeSlider({ value, onChange }: Props) {
       </div>
 
       <p className="text-[10px] text-[#334155] mt-2">
-        Larger samples tend to be more representative — adjust to see the effect.
+        Larger samples tend to be more representative. Adjust to see the effect.
       </p>
     </div>
   );

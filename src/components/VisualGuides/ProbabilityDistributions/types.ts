@@ -169,7 +169,7 @@ export const DISTRIBUTIONS: Record<DistributionType, DistributionConfig> = {
     label: "Normal",
     color: "#3bb4a4",
     icon: "Bell",
-    tagline: "The bell curve — symmetric and ubiquitous",
+    tagline: "The bell curve: symmetric and ubiquitous",
     shortDesc: "Symmetric bell curve. Central Limit Theorem in action.",
     isContinuous: true,
     paramDefs: [
@@ -195,7 +195,7 @@ export const DISTRIBUTIONS: Record<DistributionType, DistributionConfig> = {
   uniform: {
     type: "uniform",
     label: "Uniform",
-    color: "#d4af37",
+    color: "var(--color-accent)",
     icon: "Minus",
     tagline: "Equal probability across an interval",
     shortDesc: "All values equally likely in [a, b]. Perfectly flat.",
@@ -278,7 +278,7 @@ export const DISTRIBUTIONS: Record<DistributionType, DistributionConfig> = {
   binomial: {
     type: "binomial",
     label: "Binomial",
-    color: "#f59e0b",
+    color: "var(--color-warning)",
     icon: "Percent",
     tagline: "Successes in n independent trials",
     shortDesc: "Number of successes in n independent Bernoulli trials.",
@@ -371,7 +371,7 @@ export const DISTRIBUTIONS: Record<DistributionType, DistributionConfig> = {
     label: "Laplace",
     color: "#ec4899",
     icon: "Zap",
-    tagline: "Double exponential — heavier tails than Normal",
+    tagline: "Double exponential: heavier tails than Normal",
     shortDesc: "Double exponential. Symmetric with sharper peak and fatter tails.",
     isContinuous: true,
     paramDefs: [

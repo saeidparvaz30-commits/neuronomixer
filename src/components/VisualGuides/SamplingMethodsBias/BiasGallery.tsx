@@ -37,7 +37,7 @@ const CASE_STUDIES: CaseStudy[] = [
       "For decades, clinical trials systematically excluded pregnant women, the elderly, and ethnic minorities. Dosage guidelines and drug efficacy data were built on unrepresentative samples, leading to harmful outcomes for excluded groups.",
     rootCause: "Non-Representative Sampling",
     lesson:
-      "Non-representative sampling limits external validity. Results valid for one subgroup may not — and often do not — generalize to other populations.",
+      "Non-representative sampling limits external validity. Results valid for one subgroup may not (and often do not) generalize to other populations.",
   },
   {
     title: "Online Self-Selection Polls",
@@ -54,7 +54,7 @@ const ROOT_CAUSE_COLORS: Record<string, string> = {
   "Convenience Bias": "#ef4444",
   "Survivorship Bias": "#f97316",
   "Non-Representative Sampling": "#a855f7",
-  "Voluntary Response Bias": "#3b82f6",
+  "Voluntary Response Bias": "#93c5fd",
 };
 
 interface Props {
@@ -83,7 +83,7 @@ export default function BiasGallery({ onExpand }: Props) {
           <div className="text-left">
             <p className="text-[14px] font-bold text-white">Famous Sampling Failures</p>
             <p className="text-[11px] text-[#475569]">
-              4 historical case studies — click to expand
+              4 historical case studies. Click to expand.
             </p>
           </div>
         </div>
@@ -117,7 +117,7 @@ export default function BiasGallery({ onExpand }: Props) {
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="rounded-xl border border-[#1e293b] bg-[#070d1a] p-4"
+                      className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-4"
                       style={{ borderLeftColor: color, borderLeftWidth: "3px" }}
                     >
                       <div className="flex items-start justify-between gap-2 mb-2">

@@ -175,8 +175,8 @@ export default function IndependentSampleScenario({ onTestRun, onAssumptionCheck
               animate={{ opacity: 1, y: 0 }}
               className="rounded-xl border p-3 flex items-center justify-between"
               style={{
-                borderColor: (leveneResult.equalVariance ? "#3bb4a4" : "#d4af37") + "40",
-                background: (leveneResult.equalVariance ? "#3bb4a4" : "#d4af37") + "10",
+                borderColor: leveneResult.equalVariance ? "#3bb4a440" : "#d4af3740",
+                background: leveneResult.equalVariance ? "#3bb4a410" : "#d4af3710",
               }}
             >
               <div>
@@ -184,12 +184,12 @@ export default function IndependentSampleScenario({ onTestRun, onAssumptionCheck
                   Levene p = {leveneResult.pValue.toFixed(4)}
                 </p>
                 <p className="text-[10px] text-[#94a3b8] mt-0.5">
-                  {leveneResult.equalVariance ? "Equal variances assumed" : "Unequal variances — Welch's t-test recommended"}
+                  {leveneResult.equalVariance ? "Equal variances assumed" : "Unequal variances: Welch's t-test recommended"}
                 </p>
               </div>
               <span
                 className="text-[11px] font-semibold px-2 py-1 rounded-lg"
-                style={{ color: leveneResult.equalVariance ? "#3bb4a4" : "#d4af37" }}
+                style={{ color: leveneResult.equalVariance ? "#3bb4a4" : "var(--color-accent)" }}
               >
                 {testType}
               </span>
@@ -206,7 +206,7 @@ export default function IndependentSampleScenario({ onTestRun, onAssumptionCheck
         <motion.button
           onClick={runTest}
           whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-          className="w-full py-2.5 rounded-xl text-[13px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+          className="w-full py-2.5 rounded-xl text-[13px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
         >
           Run Independent t-Test
         </motion.button>

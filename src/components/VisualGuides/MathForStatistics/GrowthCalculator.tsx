@@ -55,12 +55,13 @@ export default function GrowthCalculator({ onAdjust }: GrowthCalculatorProps) {
           <div className="flex items-center gap-3">
             <input
               type="range"
+              aria-label="Initial amount"
               min={100}
               max={1000}
               step={50}
               value={initialAmount}
               onChange={(e) => handleChange(setInitialAmount, Number(e.target.value))}
-              className="flex-1 accent-[#d4af37] h-1"
+              className="flex-1 accent-[var(--color-accent)] h-1"
             />
             <span className="text-sm font-semibold text-white w-14 text-right">${initialAmount}</span>
           </div>
@@ -72,12 +73,13 @@ export default function GrowthCalculator({ onAdjust }: GrowthCalculatorProps) {
           <div className="flex items-center gap-3">
             <input
               type="range"
+              aria-label="Annual rate"
               min={0.5}
               max={10}
               step={0.5}
               value={annualRate}
               onChange={(e) => handleChange(setAnnualRate, Number(e.target.value))}
-              className="flex-1 accent-[#d4af37] h-1"
+              className="flex-1 accent-[var(--color-accent)] h-1"
             />
             <span className="text-sm font-semibold text-white w-14 text-right">{annualRate}%</span>
           </div>
@@ -89,12 +91,13 @@ export default function GrowthCalculator({ onAdjust }: GrowthCalculatorProps) {
           <div className="flex items-center gap-3">
             <input
               type="range"
+              aria-label="Years"
               min={1}
               max={30}
               step={1}
               value={years}
               onChange={(e) => handleChange(setYears, Number(e.target.value))}
-              className="flex-1 accent-[#d4af37] h-1"
+              className="flex-1 accent-[var(--color-accent)] h-1"
             />
             <span className="text-sm font-semibold text-white w-14 text-right">{years} yr</span>
           </div>
@@ -154,7 +157,7 @@ export default function GrowthCalculator({ onAdjust }: GrowthCalculatorProps) {
         </div>
         <div className="rounded-xl border border-[#1e293b] bg-[#0f172a] p-4">
           <p className="text-[10px] uppercase tracking-widest text-[#475569] mb-1">Compound Final</p>
-          <p className="text-xl font-bold text-[#d4af37]">${finalCompound.toFixed(2)}</p>
+          <p className="text-xl font-bold text-[var(--color-accent)]">${finalCompound.toFixed(2)}</p>
           <p className="text-[10px] text-[#475569] mt-1">
             {initialAmount} × (1 + {(rate * 100).toFixed(1)}%)^{years}
           </p>
@@ -172,7 +175,7 @@ export default function GrowthCalculator({ onAdjust }: GrowthCalculatorProps) {
       <div className="rounded-xl border border-[#d4af37]/20 bg-[#d4af37]/5 p-4">
         <p className="text-[13px] text-[#94a3b8] leading-relaxed">
           <span className="font-semibold text-white">Simple growth</span> increases linearly.{" "}
-          <span className="font-semibold text-[#d4af37]">Compound growth</span> multiplies — each year, the interest earns interest. Over 30 years, compound growth can be 2–3× larger.
+          <span className="font-semibold text-[var(--color-accent)]">Compound growth</span> multiplies: each year, the interest earns interest. Over 30 years, compound growth can be 2–3× larger.
         </p>
       </div>
     </div>

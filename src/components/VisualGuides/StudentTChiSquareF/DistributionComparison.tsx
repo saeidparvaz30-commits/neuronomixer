@@ -414,7 +414,7 @@ interface FTabProps {
 
 function FTab({ fDF1, fDF2, onFDF1Change, onFDF2Change }: FTabProps) {
   const color = "#1e5d8a";
-  const colorBright = "#4a9fd5";
+  const colorBright = "#93c5fd";
 
   const { fPath, xMax } = useMemo(() => {
     // Scale the x-range off the mean df2/(df2-2), which only exists for df2 > 2.

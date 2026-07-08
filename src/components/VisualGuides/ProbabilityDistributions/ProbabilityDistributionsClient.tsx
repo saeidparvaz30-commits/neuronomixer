@@ -57,7 +57,7 @@ export default function ProbabilityDistributionsClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "probability-distributions", score: 8 }),
+        body: JSON.stringify({ guideSlug: "probability-distributions", score: 100 }),
       }).catch(() => {});
     }
   }, [tasksCompleted, session?.user]);
@@ -95,7 +95,7 @@ export default function ProbabilityDistributionsClient() {
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={tasksCompleted} guideSlug="probability-distributions" score={8} />
+      <GuideCompletion isComplete={tasksCompleted} guideSlug="probability-distributions" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -115,15 +115,15 @@ export default function ProbabilityDistributionsClient() {
           className="mb-10"
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Statistics
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Probability Distributions{" "}
-            <span className="text-[#d4af37]">Gallery</span>
+            <span className="text-[var(--color-accent)]">Gallery</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[660px]">
             Explore 8 probability distributions interactively. Click any card to
@@ -188,7 +188,7 @@ export default function ProbabilityDistributionsClient() {
             className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-semibold border transition-colors"
             style={
               comparisonMode
-                ? { borderColor: "#d4af37", color: "#d4af37", background: "#d4af3718" }
+                ? { borderColor: "var(--color-accent)", color: "var(--color-accent)", background: "color-mix(in srgb, var(--color-accent) 9%, transparent)" }
                 : { borderColor: "#1e293b", color: "#94a3b8" }
             }
             aria-pressed={comparisonMode}
@@ -248,7 +248,7 @@ export default function ProbabilityDistributionsClient() {
           </Link>
           <Link
             href="/visual-guides/normal-distribution-z-scores"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Next: The Normal Distribution & Z-Scores →
           </Link>

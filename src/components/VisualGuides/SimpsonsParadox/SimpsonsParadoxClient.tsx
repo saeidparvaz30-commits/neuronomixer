@@ -16,7 +16,7 @@ import {
 // ── Colour constants ──────────────────────────────────────────────────────────
 const COL_A    = "#1e5d8a"; // group A — blue
 const COL_B    = "#3bb4a4"; // group B — teal
-const COL_GOLD = "#d4af37";
+const COL_GOLD = "var(--color-accent)";
 const COL_PINK = "#ec4899";
 
 // ── Tiny bar chart used for one subgroup ─────────────────────────────────────
@@ -252,19 +252,23 @@ function CaseStudiesTab({
           <p className="text-[13px] text-[#94a3b8] mb-5">{caseStudy.context}</p>
 
           {/* Aggregate / By Subgroup toggle */}
-          <div className="flex items-center gap-2 mb-5">
+          <div className="flex items-center gap-2 mb-5" role="radiogroup" aria-label="Chart view">
             <button
+              role="radio"
+              aria-checked={!showSubgroups}
               onClick={() => handleToggle(false)}
               className="px-4 py-2 rounded-xl text-sm font-semibold transition-all"
               style={{
                 background: !showSubgroups ? "#1e5d8a" : "transparent",
-                color: !showSubgroups ? "#fff" : "#94a3b8",
+                color: !showSubgroups ? "#f1f5f9" : "#94a3b8",
                 border: `1px solid ${!showSubgroups ? "#1e5d8a" : "#1e293b"}`,
               }}
             >
               Aggregate View
             </button>
             <button
+              role="radio"
+              aria-checked={showSubgroups}
               onClick={() => handleToggle(true)}
               className="px-4 py-2 rounded-xl text-sm font-semibold transition-all"
               style={{
@@ -306,7 +310,7 @@ function CaseStudiesTab({
 
                 <button
                   onClick={() => handleToggle(true)}
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
                 >
                   Reveal Subgroup Breakdown →
                 </button>
@@ -378,7 +382,7 @@ function CaseStudiesTab({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.35 }}
                     className="rounded-xl border px-4 py-4"
-                    style={{ borderColor: COL_GOLD, background: `${COL_GOLD}0d` }}
+                    style={{ borderColor: COL_GOLD, background: `#d4af370d` }}
                   >
                     <p className="text-[11px] font-bold uppercase tracking-widest mb-1" style={{ color: COL_GOLD }}>
                       Lurking Variable Identified
@@ -663,7 +667,7 @@ function BuildYourOwnTab({ onAttempted }: { onAttempted: () => void }) {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.35 }}
               className="rounded-xl border px-4 py-4"
-              style={{ borderColor: COL_GOLD, background: `${COL_GOLD}11` }}
+              style={{ borderColor: COL_GOLD, background: `#d4af3711` }}
             >
               <p className="text-[15px] font-black mb-1" style={{ color: COL_GOLD }}>
                 🎉 You created Simpson&apos;s Paradox!
@@ -672,7 +676,7 @@ function BuildYourOwnTab({ onAttempted }: { onAttempted: () => void }) {
                 Treatment A beats B in Subgroup 1 ({(rateA1 * 100).toFixed(1)}% vs {(rateB1 * 100).toFixed(1)}%)
                 and in Subgroup 2 ({(rateA2 * 100).toFixed(1)}% vs {(rateB2 * 100).toFixed(1)}%).
                 Yet overall, B appears to win ({(aggRateB * 100).toFixed(1)}% vs {(aggRateA * 100).toFixed(1)}%).
-                The key is that the subgroup sizes are unequal — B is represented more in the subgroup
+                The key is that the subgroup sizes are unequal: B is represented more in the subgroup
                 where the overall rates are highest.
               </p>
             </motion.div>
@@ -684,7 +688,7 @@ function BuildYourOwnTab({ onAttempted }: { onAttempted: () => void }) {
               className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] px-4 py-3 text-[12px] text-[#475569]"
             >
               {rateA1 > rateB1 && rateA2 > rateB2
-                ? "A wins both subgroups — now make total sizes unequal so B wins overall!"
+                ? "A wins both subgroups. Now make total sizes unequal so B wins overall!"
                 : "Adjust the values so Treatment A wins in both subgroups individually."}
             </motion.div>
           )}
@@ -707,7 +711,7 @@ function BuildYourOwnTab({ onAttempted }: { onAttempted: () => void }) {
                 className="text-[12px] text-[#94a3b8] mt-2 leading-relaxed overflow-hidden"
               >
                 Try making one subgroup much larger than the other. For example, give Treatment B a huge
-                sample in the subgroup where rates are naturally high — this pulls its aggregate rate up
+                sample in the subgroup where rates are naturally high, and this pulls its aggregate rate up
                 artificially, even if A outperforms B within each individual subgroup.
               </motion.p>
             )}
@@ -797,7 +801,7 @@ function LurkingVariablesTab() {
                   className="overflow-hidden"
                 >
                   <div className="px-5 pb-5 space-y-3 border-t border-[#1e293b]">
-                    <p className="text-[13px] text-[#cbd5e1] leading-relaxed pt-3">
+                    <p className="text-[13px] text-[#f1f5f9] leading-relaxed pt-3">
                       {card.detail}
                     </p>
                     <div className="rounded-xl bg-[#0a0e1a] border border-[#1e293b] px-4 py-3">
@@ -817,12 +821,12 @@ function LurkingVariablesTab() {
       {/* Key takeaway card */}
       <div
         className="rounded-2xl border px-5 py-5"
-        style={{ borderColor: COL_GOLD, background: `${COL_GOLD}09` }}
+        style={{ borderColor: COL_GOLD, background: `#d4af3709` }}
       >
         <p className="text-[11px] font-bold uppercase tracking-widest mb-2" style={{ color: COL_GOLD }}>
           How to Avoid Simpson&apos;s Paradox
         </p>
-        <ol className="space-y-2 text-[13px] text-[#cbd5e1]">
+        <ol className="space-y-2 text-[13px] text-[#f1f5f9]">
           <li className="flex gap-2">
             <span style={{ color: COL_GOLD }} className="font-bold flex-shrink-0">1.</span>
             Always disaggregate your data by key subgroups before drawing conclusions.
@@ -873,7 +877,7 @@ export default function SimpsonsParadoxClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "simpsons-paradox", score: 8 }),
+        body: JSON.stringify({ guideSlug: "simpsons-paradox", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -904,19 +908,19 @@ export default function SimpsonsParadoxClient() {
         {/* Hero */}
         <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               UNIT 9: ASSOCIATION &amp; DEPENDENCE
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Simpson&apos;s Paradox{" "}
-            <span className="text-[#d4af37]">&amp; Lurking Variables</span>
+            <span className="text-[var(--color-accent)]">&amp; Lurking Variables</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[620px]">
             Discover how aggregate trends can reverse when you look at subgroups. A lurking variable
-            can completely flip your conclusion — and it happens more often than you&apos;d think.
+            can completely flip your conclusion, and it happens more often than you&apos;d think.
           </p>
         </section>
 
@@ -972,7 +976,7 @@ export default function SimpsonsParadoxClient() {
                 className="px-4 py-2 rounded-lg text-sm font-semibold transition-all"
                 style={{
                   background: active ? "#1e5d8a" : "transparent",
-                  color: active ? "#fff" : "#475569",
+                  color: active ? "#f1f5f9" : "#475569",
                 }}
               >
                 {label}
@@ -1015,13 +1019,13 @@ export default function SimpsonsParadoxClient() {
           </Link>
           <Link
             href="/visual-guides/simple-linear-regression"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Simple Linear Regression →
           </Link>
         </div>
 
-        <GuideCompletion isComplete={allComplete} guideSlug="simpsons-paradox" score={8} />
+        <GuideCompletion isComplete={allComplete} guideSlug="simpsons-paradox" score={100} />
       </div>
     </div>
   );

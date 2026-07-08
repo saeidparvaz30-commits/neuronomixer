@@ -117,7 +117,7 @@ export default function InteractiveScatter({
 
   const clamp  = (v: number) => Math.max(0, Math.min(100, v));
   const ticks  = [0, 20, 40, 60, 80, 100];
-  const outlierColor = method === "zscore" ? "#ef4444" : "#f97316";
+  const outlierColor = method === "zscore" ? "#ef4444" : "var(--color-warning)";
 
   return (
     <div>
@@ -176,15 +176,15 @@ export default function InteractiveScatter({
         {/* IQR shading + fence lines (x fences vertical, y fences horizontal) */}
         {method === "iqr" && (
           <>
-            <rect x={toSvgX(clamp(q1))} y={PAD.t} width={Math.max(0, toSvgX(clamp(q3)) - toSvgX(clamp(q1)))} height={IH} fill="#f97316" opacity="0.04" />
-            {iqrLo > 0  && <rect x={PAD.l} y={PAD.t} width={Math.max(0, toSvgX(clamp(iqrLo)) - PAD.l)} height={IH} fill="#f97316" opacity="0.05" />}
-            {iqrHi < 100 && <rect x={toSvgX(clamp(iqrHi))} y={PAD.t} width={Math.max(0, PAD.l + IW - toSvgX(clamp(iqrHi)))} height={IH} fill="#f97316" opacity="0.05" />}
-            {iqrLo > 0  && <line x1={toSvgX(clamp(iqrLo))} y1={PAD.t} x2={toSvgX(clamp(iqrLo))} y2={PAD.t + IH} stroke="#f97316" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
-            {iqrHi < 100 && <line x1={toSvgX(clamp(iqrHi))} y1={PAD.t} x2={toSvgX(clamp(iqrHi))} y2={PAD.t + IH} stroke="#f97316" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
-            {iqrLoY > 0  && <rect x={PAD.l} y={toSvgY(clamp(iqrLoY))} width={IW} height={Math.max(0, PAD.t + IH - toSvgY(clamp(iqrLoY)))} fill="#f97316" opacity="0.05" />}
-            {iqrHiY < 100 && <rect x={PAD.l} y={PAD.t} width={IW} height={Math.max(0, toSvgY(clamp(iqrHiY)) - PAD.t)} fill="#f97316" opacity="0.05" />}
-            {iqrLoY > 0  && <line x1={PAD.l} y1={toSvgY(clamp(iqrLoY))} x2={PAD.l + IW} y2={toSvgY(clamp(iqrLoY))} stroke="#f97316" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
-            {iqrHiY < 100 && <line x1={PAD.l} y1={toSvgY(clamp(iqrHiY))} x2={PAD.l + IW} y2={toSvgY(clamp(iqrHiY))} stroke="#f97316" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
+            <rect x={toSvgX(clamp(q1))} y={PAD.t} width={Math.max(0, toSvgX(clamp(q3)) - toSvgX(clamp(q1)))} height={IH} fill="var(--color-warning)" opacity="0.04" />
+            {iqrLo > 0  && <rect x={PAD.l} y={PAD.t} width={Math.max(0, toSvgX(clamp(iqrLo)) - PAD.l)} height={IH} fill="var(--color-warning)" opacity="0.05" />}
+            {iqrHi < 100 && <rect x={toSvgX(clamp(iqrHi))} y={PAD.t} width={Math.max(0, PAD.l + IW - toSvgX(clamp(iqrHi)))} height={IH} fill="var(--color-warning)" opacity="0.05" />}
+            {iqrLo > 0  && <line x1={toSvgX(clamp(iqrLo))} y1={PAD.t} x2={toSvgX(clamp(iqrLo))} y2={PAD.t + IH} stroke="var(--color-warning)" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
+            {iqrHi < 100 && <line x1={toSvgX(clamp(iqrHi))} y1={PAD.t} x2={toSvgX(clamp(iqrHi))} y2={PAD.t + IH} stroke="var(--color-warning)" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
+            {iqrLoY > 0  && <rect x={PAD.l} y={toSvgY(clamp(iqrLoY))} width={IW} height={Math.max(0, PAD.t + IH - toSvgY(clamp(iqrLoY)))} fill="var(--color-warning)" opacity="0.05" />}
+            {iqrHiY < 100 && <rect x={PAD.l} y={PAD.t} width={IW} height={Math.max(0, toSvgY(clamp(iqrHiY)) - PAD.t)} fill="var(--color-warning)" opacity="0.05" />}
+            {iqrLoY > 0  && <line x1={PAD.l} y1={toSvgY(clamp(iqrLoY))} x2={PAD.l + IW} y2={toSvgY(clamp(iqrLoY))} stroke="var(--color-warning)" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
+            {iqrHiY < 100 && <line x1={PAD.l} y1={toSvgY(clamp(iqrHiY))} x2={PAD.l + IW} y2={toSvgY(clamp(iqrHiY))} stroke="var(--color-warning)" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />}
           </>
         )}
 
@@ -200,7 +200,7 @@ export default function InteractiveScatter({
         {/* Mean X vertical */}
         <line x1={toSvgX(mx)}   y1={PAD.t} x2={toSvgX(mx)}   y2={PAD.t + IH} stroke="#3bb4a4" strokeWidth="1.5" strokeDasharray="5 3" opacity="0.85" />
         {/* Median X vertical */}
-        <line x1={toSvgX(medX)} y1={PAD.t} x2={toSvgX(medX)} y2={PAD.t + IH} stroke="#d4af37" strokeWidth="1.5" opacity="0.85" />
+        <line x1={toSvgX(medX)} y1={PAD.t} x2={toSvgX(medX)} y2={PAD.t + IH} stroke="var(--color-accent)" strokeWidth="1.5" opacity="0.85" />
 
         {/* Data points */}
         {points.map(pt => {
@@ -225,7 +225,7 @@ export default function InteractiveScatter({
               <motion.circle
                 cx={px} cy={py} r={r}
                 fill={color}
-                stroke={isOutlier ? color : isHov ? "#d4af37" : "rgba(255,255,255,0.2)"}
+                stroke={isOutlier ? color : isHov ? "var(--color-accent)" : "rgba(255,255,255,0.2)"}
                 strokeWidth={isOutlier || isHov ? 2 : 1}
                 animate={{ cx: px, cy: py, r }}
                 transition={isDragging ? { duration: 0 } : { type: "spring", stiffness: 400, damping: 30 }}
@@ -234,7 +234,7 @@ export default function InteractiveScatter({
                 onMouseEnter={() => setHoverId(pt.id)}
                 onMouseLeave={() => setHoverId(null)}
               >
-                <title>{`(${pt.x}, ${pt.y})${isOutlier ? " — outlier" : ""}`}</title>
+                <title>{`(${pt.x}, ${pt.y})${isOutlier ? " (outlier)" : ""}`}</title>
               </motion.circle>
 
               {/* Hover tooltip */}
@@ -261,7 +261,7 @@ export default function InteractiveScatter({
           <text   x={PAD.l + 68}  y={H - 7} fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">Outlier</text>
           <line x1={PAD.l + 114} y1={H - 10} x2={PAD.l + 128} y2={H - 10} stroke="#3bb4a4" strokeWidth="1.5" strokeDasharray="5 3" />
           <text   x={PAD.l + 132} y={H - 7} fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">Mean X</text>
-          <line x1={PAD.l + 180} y1={H - 10} x2={PAD.l + 194} y2={H - 10} stroke="#d4af37" strokeWidth="1.5" />
+          <line x1={PAD.l + 180} y1={H - 10} x2={PAD.l + 194} y2={H - 10} stroke="var(--color-accent)" strokeWidth="1.5" />
           <text   x={PAD.l + 198} y={H - 7} fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">Median X</text>
           <line x1={PAD.l + 254} y1={H - 10} x2={PAD.l + 268} y2={H - 10} stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="6 3" />
           <text   x={PAD.l + 272} y={H - 7} fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">Trend</text>

@@ -73,7 +73,7 @@ export default function SampleSizeMarginOfErrorClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guideSlug: "sample-size-margin-of-error",
-          score: 7,
+          score: 100,
         }),
       }).catch(() => {});
     }
@@ -163,7 +163,7 @@ export default function SampleSizeMarginOfErrorClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="sample-size-margin-of-error" score={7} />
+      <GuideCompletion isComplete={allComplete} guideSlug="sample-size-margin-of-error" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -188,15 +188,15 @@ export default function SampleSizeMarginOfErrorClient() {
           className="mb-10"
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               STATISTICS
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Sample Size,{" "}
-            <span className="text-[#d4af37]">Margin of Error</span>{" "}
+            <span className="text-[var(--color-accent)]">Margin of Error</span>{" "}
             &amp; Survey Design
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
@@ -362,7 +362,7 @@ export default function SampleSizeMarginOfErrorClient() {
           </Link>
           <Link
             href="/visual-guides/hypothesis-testing"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Next: Hypothesis Testing &rarr;
           </Link>

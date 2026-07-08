@@ -77,7 +77,7 @@ function ScatterPlotInner({ rows, strategy }: Props) {
               <motion.circle
                 key={row.id}
                 fill={color}
-                stroke={imp ? "#ffffff" : "none"}
+                stroke={imp ? "#f1f5f9" : "none"}
                 strokeWidth={imp ? 1 : 0}
                 animate={{
                   cx:      toX(fA),
@@ -93,7 +93,7 @@ function ScatterPlotInner({ rows, strategy }: Props) {
                 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
               >
-                <title>{`Row ${row.id} — Feature_A: ${fA}, Feature_B: ${fB}`}</title>
+                <title>{`Row ${row.id} (Feature_A: ${fA}, Feature_B: ${fB})`}</title>
               </motion.circle>
             );
           })}

@@ -51,7 +51,7 @@ export default function ComparisonStats({ points, outlierIds }: Props) {
 
       <div className="grid grid-cols-2 gap-2 mb-3">
         <StatCard label="Mean X"   value={mx.toFixed(1)}   color="#3bb4a4" sub="sensitive to outliers" />
-        <StatCard label="Median X" value={medX.toFixed(1)} color="#d4af37" sub="robust to outliers" />
+        <StatCard label="Median X" value={medX.toFixed(1)} color="var(--color-accent)" sub="robust to outliers" />
         <StatCard label="Std Dev X" value={sd.toFixed(1)}  color="#3b82f6" sub="spread of values" />
         <StatCard label="N points" value={String(points.length)} color="#94a3b8" sub={`${outlierIds.size} flagged`} />
       </div>
@@ -78,14 +78,14 @@ export default function ComparisonStats({ points, outlierIds }: Props) {
             </div>
           </div>
           <p className="text-[10px] text-[#94a3b8] leading-relaxed">
-            The median stays near {medX.toFixed(1)} regardless — this is what makes it outlier-robust.
+            The median stays near {medX.toFixed(1)} regardless. This is what makes it outlier-robust.
           </p>
         </div>
       )}
 
       {outlierIds.size === 0 && (
         <p className="text-[11px] text-[#475569] text-center py-1">
-          No outliers flagged — mean and median are both reliable.
+          No outliers flagged: mean and median are both reliable.
         </p>
       )}
     </div>

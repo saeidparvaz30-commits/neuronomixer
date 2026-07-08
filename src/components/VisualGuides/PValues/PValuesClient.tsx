@@ -31,7 +31,7 @@ export default function PValuesClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "p-values", score: 8 }),
+        body: JSON.stringify({ guideSlug: "p-values", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -74,7 +74,7 @@ export default function PValuesClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="p-values" score={8} />
+      <GuideCompletion isComplete={allComplete} guideSlug="p-values" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -104,7 +104,7 @@ export default function PValuesClient() {
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
             Run a simulated experiment with two groups. Watch the p-value shift as you change
             effect size and sample size. Use permutation tests to build genuine intuition for what
-            p-values really measure — and what they don&apos;t.
+            p-values really measure, and what they don&apos;t.
           </p>
         </motion.section>
 
@@ -250,7 +250,7 @@ export default function PValuesClient() {
             {
               title: "Significance ≠ importance",
               body: "With large samples, tiny and practically irrelevant differences become highly significant. Always consider effect size alongside p-values.",
-              color: "#d4af37",
+              color: "var(--color-accent)",
             },
             {
               title: "Permutation tests",
@@ -275,7 +275,7 @@ export default function PValuesClient() {
           </Link>
           <Link
             href="/visual-guides/statistical-power-effect-size"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Statistical Power &amp; Effect Size →
           </Link>

@@ -108,7 +108,7 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
             );
           })}
           {/* Normal curve */}
-          <polyline points={curvePoints} fill="none" stroke="#d4af37" strokeWidth="1.5" />
+          <polyline points={curvePoints} fill="none" stroke="var(--color-accent)" strokeWidth="1.5" />
           {/* Axis labels */}
           <text x={PAD.l} y={H_SVG - 4} textAnchor="middle" fill="#475569" fontSize="7">
             {mn.toFixed(0)}
@@ -155,7 +155,7 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
           <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={PAD.t + IH} stroke="#334155" strokeWidth="1" />
           {/* Reference line */}
           <line x1={refStart.x} y1={refStart.y} x2={refEnd.x} y2={refEnd.y}
-            stroke="#d4af37" strokeWidth="1" strokeDasharray="3,2" />
+            stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="3,2" />
           {/* Points */}
           {standardized.map((d, i) => {
             const q = theoretical[i];

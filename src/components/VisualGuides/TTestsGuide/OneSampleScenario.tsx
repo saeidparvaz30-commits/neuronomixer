@@ -64,12 +64,12 @@ export default function OneSampleScenario({ onTestRun, onAssumptionChecked }: Pr
         <div className="mb-4">
           <div className="flex justify-between mb-1">
             <span className="text-[11px] text-white">Target mean (μ₀)</span>
-            <span className="text-[11px] font-mono text-[#d4af37]">{targetMean}</span>
+            <span className="text-[11px] font-mono text-[var(--color-accent)]">{targetMean}</span>
           </div>
           <input
-            type="range" min={480} max={520} step={1} value={targetMean}
+            type="range" min={480} max={520} step={1} value={targetMean} aria-label="Target mean (μ₀)"
             onChange={e => { setTargetMean(Number(e.target.value)); setResult(null); setHasRun(false); }}
-            className="w-full" style={{ accentColor: "#d4af37" }}
+            className="w-full" style={{ accentColor: "var(--color-accent)" }}
           />
         </div>
 
@@ -106,7 +106,7 @@ export default function OneSampleScenario({ onTestRun, onAssumptionChecked }: Pr
         <motion.button
           onClick={runTest}
           whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-          className="w-full py-2.5 rounded-xl text-[13px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+          className="w-full py-2.5 rounded-xl text-[13px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
         >
           Run One-Sample t-Test (H₀: μ = {targetMean})
         </motion.button>
@@ -115,7 +115,7 @@ export default function OneSampleScenario({ onTestRun, onAssumptionChecked }: Pr
       {/* Assumption checker */}
       <AssumptionChecker
         data={FACTORY_DATA}
-        title="Normality check — factory output data"
+        title="Normality check: factory output data"
         onChecked={onAssumptionChecked}
       />
 

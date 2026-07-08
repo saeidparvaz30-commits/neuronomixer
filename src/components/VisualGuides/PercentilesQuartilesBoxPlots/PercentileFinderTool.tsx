@@ -42,8 +42,8 @@ export default function PercentileFinderTool({
       aria-label="Percentile finder tool"
     >
       <div className="flex items-center gap-2 mb-3">
-        <span className="w-2 h-2 rounded-full bg-[#06b6d4]" aria-hidden="true" />
-        <h3 className="text-[11px] uppercase tracking-widest text-[#06b6d4] font-semibold">
+        <span className="w-2 h-2 rounded-full bg-[#3bb4a4]" aria-hidden="true" />
+        <h3 className="text-[11px] uppercase tracking-widest text-[#3bb4a4] font-semibold">
           Percentile Finder
         </h3>
       </div>
@@ -67,7 +67,7 @@ export default function PercentileFinderTool({
                 aria-label={`Value ${entry.value} is at the ${entry.percentile}th percentile`}
               >
                 {/* Cyan dot */}
-                <span className="w-2.5 h-2.5 rounded-full bg-[#06b6d4] flex-shrink-0" aria-hidden="true" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#3bb4a4] flex-shrink-0" aria-hidden="true" />
 
                 {/* Value */}
                 <div className="flex flex-col">
@@ -80,7 +80,7 @@ export default function PercentileFinderTool({
                 {/* Percentile */}
                 <div className="flex flex-col">
                   <span className="text-[10px] text-[#94a3b8] uppercase tracking-wider">Percentile</span>
-                  <span className="text-sm font-bold text-[#06b6d4]">{entry.percentile}th</span>
+                  <span className="text-sm font-bold text-[#3bb4a4]">{entry.percentile}th</span>
                 </div>
 
                 {/* Higher than */}
@@ -93,7 +93,7 @@ export default function PercentileFinderTool({
                 <div className="flex-1 min-w-[80px]">
                   <div className="h-1.5 rounded-full bg-[#0f172a] overflow-hidden">
                     <motion.div
-                      className="h-full rounded-full bg-[#06b6d4]"
+                      className="h-full rounded-full bg-[#3bb4a4]"
                       initial={{ width: 0 }}
                       animate={{ width: `${entry.percentile}%` }}
                       transition={{ duration: 0.5, ease: "easeOut" }}
@@ -110,7 +110,7 @@ export default function PercentileFinderTool({
 
           {entries.length > 0 && (
             <p className="text-[10px] text-[#475569] mt-1 italic">
-              {entries.length} point{entries.length > 1 ? "s" : ""} selected — click more to compare.
+              {entries.length} point{entries.length > 1 ? "s" : ""} selected. Click more to compare.
             </p>
           )}
         </div>

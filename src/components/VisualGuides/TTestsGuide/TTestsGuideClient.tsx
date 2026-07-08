@@ -51,7 +51,7 @@ export default function TTestsGuideClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "t-tests-proportion-tests", score: 8 }),
+        body: JSON.stringify({ guideSlug: "t-tests-proportion-tests", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -72,7 +72,7 @@ export default function TTestsGuideClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="t-tests-proportion-tests" score={8} />
+      <GuideCompletion isComplete={allComplete} guideSlug="t-tests-proportion-tests" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -92,20 +92,20 @@ export default function TTestsGuideClient() {
           className="mb-8"
         >
           <div className="flex items-center gap-2 mb-3">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[10px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[10px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Statistics &nbsp;|&nbsp; Unit 8: Comparing Groups
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white mb-3 leading-tight">
             t-Tests &amp; Proportion Tests:{" "}
-            <span className="text-[#d4af37]">Comparing Two Groups</span>
+            <span className="text-[var(--color-accent)]">Comparing Two Groups</span>
           </h1>
           <p className="text-[14px] sm:text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             Determine whether two groups differ significantly. Work through four
-            real-world scenarios — one-sample, independent, paired, and proportion
-            tests — with interactive data, assumption checks, and visual results.
+            real-world scenarios (one-sample, independent, paired, and proportion
+            tests) with interactive data, assumption checks, and visual results.
           </p>
         </motion.section>
 
@@ -137,7 +137,7 @@ export default function TTestsGuideClient() {
           </div>
           <div className="w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-[#d4af37] rounded-full"
+              className="h-full bg-[var(--color-accent)] rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progressPct}%` }}
               transition={{ duration: 0.5 }}
@@ -169,7 +169,7 @@ export default function TTestsGuideClient() {
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
               className={`px-4 py-2 rounded-xl text-[12px] font-semibold whitespace-nowrap transition-all flex-shrink-0 ${
                 activeScenario === tab.id
-                  ? "bg-[#d4af37] text-[#0a0e1a]"
+                  ? "bg-[var(--color-accent)] text-[#0a0e1a]"
                   : "bg-[#1e293b] text-white hover:bg-[#334155]"
               }`}
             >
@@ -245,7 +245,7 @@ export default function TTestsGuideClient() {
                 test: "Paired t",
                 when: "Same subjects measured twice (before/after)",
                 example: "Training effect?",
-                color: "#d4af37",
+                color: "var(--color-accent)",
               },
               {
                 test: "Proportion z",
@@ -273,7 +273,7 @@ export default function TTestsGuideClient() {
           </Link>
           <Link
             href="/visual-guides/anova-comparing-groups"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             ANOVA: Comparing Many Groups &rarr;
           </Link>

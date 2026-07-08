@@ -59,7 +59,7 @@ export default function StandardErrorPointEstimatesClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guideSlug: "standard-error-point-estimates",
-          score: 6,
+          score: 100,
         }),
       }).catch(() => {});
     }
@@ -143,7 +143,7 @@ export default function StandardErrorPointEstimatesClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="standard-error-point-estimates" score={6} />
+      <GuideCompletion isComplete={allComplete} guideSlug="standard-error-point-estimates" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -166,20 +166,20 @@ export default function StandardErrorPointEstimatesClient() {
           transition={{ duration: 0.4 }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               STATISTICS
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Standard Error &amp;{" "}
-            <span className="text-[#d4af37]">Point Estimates</span>
+            <span className="text-[var(--color-accent)]">Point Estimates</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             Draw repeated samples from a hidden population and watch the sample
             means cluster. Discover how standard error measures that spread, and
-            explore the core properties that make a good estimator — bias,
+            explore the core properties that make a good estimator: bias,
             consistency, and efficiency.
           </p>
         </motion.section>
@@ -312,7 +312,7 @@ export default function StandardErrorPointEstimatesClient() {
           </Link>
           <Link
             href="/visual-guides/probability-fundamentals"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Probability Fundamentals →
           </Link>

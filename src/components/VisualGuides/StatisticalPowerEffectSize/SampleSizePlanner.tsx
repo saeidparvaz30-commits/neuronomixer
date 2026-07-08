@@ -55,9 +55,9 @@ export default function SampleSizePlanner({
   }
 
   function powerColor(p: number): string {
-    if (p >= 0.9) return "#22c55e";
+    if (p >= 0.9) return "var(--color-success)";
     if (p >= 0.8) return "#3bb4a4";
-    if (p >= 0.6) return "#d4af37";
+    if (p >= 0.6) return "var(--color-accent)";
     return "#ef4444";
   }
 
@@ -70,14 +70,16 @@ export default function SampleSizePlanner({
       {/* Target power */}
       <div className="mb-4">
         <p className="text-[10px] text-[#94a3b8] mb-2">Target Power</p>
-        <div className="flex gap-1">
+        <div className="flex gap-1" role="radiogroup" aria-label="Target power">
           {POWER_OPTS.map(({ value, label }) => (
             <button
               key={value}
+              role="radio"
+              aria-checked={targetPower === value}
               onClick={() => onTargetPowerChange(value)}
               className={`flex-1 py-2 rounded-xl text-[11px] font-semibold transition-all ${
                 targetPower === value
-                  ? "bg-[#d4af37] text-[#0a0e1a]"
+                  ? "bg-[var(--color-accent)] text-[#0a0e1a]"
                   : "bg-[#1e293b] text-[#94a3b8] hover:bg-[#334155] hover:text-white"
               }`}
             >
@@ -93,10 +95,12 @@ export default function SampleSizePlanner({
           <p className="text-[10px] text-[#94a3b8]">Effect Size (d)</p>
           <span className="text-[10px] text-[#475569]">{effectSizeLabel(plannedD)}</span>
         </div>
-        <div className="flex gap-2 mb-2">
+        <div className="flex gap-2 mb-2" role="radiogroup" aria-label="Effect size presets">
           {D_PRESETS.map(({ label, value }) => (
             <button
               key={value}
+              role="radio"
+              aria-checked={plannedD === value}
               onClick={() => onPlannedDChange(value)}
               className={`flex-1 py-1.5 rounded-lg text-[10px] font-semibold transition-all ${
                 plannedD === value
@@ -118,21 +122,23 @@ export default function SampleSizePlanner({
             const v = parseFloat(e.target.value);
             if (!isNaN(v)) onPlannedDChange(v);
           }}
-          className="w-full bg-[#1e293b] border border-[#334155] rounded-lg px-2.5 py-2 text-[12px] font-mono text-white focus:outline-none focus:border-[#d4af37] transition-colors"
+          className="w-full bg-[#1e293b] border border-[#334155] rounded-lg px-2.5 py-2 text-[12px] font-mono text-white focus:outline-none focus:border-[var(--color-accent)] transition-colors"
         />
       </div>
 
       {/* Alpha */}
       <div className="mb-4">
         <p className="text-[10px] text-[#94a3b8] mb-2">Significance Level</p>
-        <div className="flex gap-1">
+        <div className="flex gap-1" role="radiogroup" aria-label="Significance level (alpha)">
           {ALPHA_OPTS.map(({ value, label }) => (
             <button
               key={value}
+              role="radio"
+              aria-checked={plannedAlpha === value}
               onClick={() => onPlannedAlphaChange(value)}
               className={`flex-1 py-2 rounded-xl text-[11px] font-semibold transition-all ${
                 plannedAlpha === value
-                  ? "bg-[#d4af37] text-[#0a0e1a]"
+                  ? "bg-[var(--color-accent)] text-[#0a0e1a]"
                   : "bg-[#1e293b] text-[#94a3b8] hover:bg-[#334155] hover:text-white"
               }`}
             >
@@ -145,7 +151,7 @@ export default function SampleSizePlanner({
       {/* Calculate button */}
       <button
         onClick={handleCalculate}
-        className="w-full py-2.5 rounded-xl text-[12px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity mb-4"
+        className="w-full py-2.5 rounded-xl text-[12px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity mb-4"
       >
         Calculate Required n
       </button>
@@ -154,7 +160,7 @@ export default function SampleSizePlanner({
       {calculated && (
         <div className="rounded-xl bg-[#1e293b] p-4 mb-4 text-center">
           <p className="text-[10px] text-[#475569] mb-1">Required sample size</p>
-          <p className="text-[32px] font-black font-mono text-[#d4af37]">{plannedN}</p>
+          <p className="text-[32px] font-black font-mono text-[var(--color-accent)]">{plannedN}</p>
           <p className="text-[11px] text-[#94a3b8]">
             per group · total: {plannedN * 2} participants
           </p>

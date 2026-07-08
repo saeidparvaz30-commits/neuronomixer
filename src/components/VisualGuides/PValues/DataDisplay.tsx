@@ -78,7 +78,7 @@ export default function DataDisplay({ groupA, groupB, pValue, alpha, effectSize 
       </p>
       {isEmpty && (
         <p className="text-[10px] text-[#334155] mb-2">
-          Showing preview — run experiment to generate real data.
+          Showing preview: run the experiment to generate real data.
         </p>
       )}
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" className="block">
@@ -117,18 +117,18 @@ export default function DataDisplay({ groupA, groupB, pValue, alpha, effectSize 
         <line
           x1={tx(meanA)} y1={rowA - 18}
           x2={tx(meanA)} y2={rowA + 18}
-          stroke="#d4af37" strokeWidth="2"
+          stroke="var(--color-accent)" strokeWidth="2"
         />
-        <text x={tx(meanA)} y={rowA - 22} textAnchor="middle" fill="#d4af37" fontSize="8" fontWeight="600">
+        <text x={tx(meanA)} y={rowA - 22} textAnchor="middle" fill="var(--color-accent)" fontSize="8" fontWeight="600">
           Mean: {meanA.toFixed(1)}
         </text>
 
         <line
           x1={tx(meanB)} y1={rowB - 18}
           x2={tx(meanB)} y2={rowB + 18}
-          stroke="#d4af37" strokeWidth="2"
+          stroke="var(--color-accent)" strokeWidth="2"
         />
-        <text x={tx(meanB)} y={rowB + 30} textAnchor="middle" fill="#d4af37" fontSize="8" fontWeight="600">
+        <text x={tx(meanB)} y={rowB + 30} textAnchor="middle" fill="var(--color-accent)" fontSize="8" fontWeight="600">
           Mean: {meanB.toFixed(1)}
         </text>
 

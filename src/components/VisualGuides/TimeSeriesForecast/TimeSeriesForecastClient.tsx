@@ -379,7 +379,7 @@ export default function TimeSeriesForecastClient() {
   ];
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="time-series-forecasting" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
         {/* Hero */}
@@ -407,7 +407,7 @@ export default function TimeSeriesForecastClient() {
             className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]"
           >
             Explore decomposition, trend, seasonality, smoothing, and forecasting with prediction
-            intervals — across three real-world datasets. Learn to spot and prevent temporal leakage.
+            intervals across three real-world datasets. Learn to spot and prevent temporal leakage.
           </motion.p>
         </section>
 
@@ -606,21 +606,21 @@ export default function TimeSeriesForecastClient() {
                   label: "MAE",
                   value: accuracy.mae.toFixed(2),
                   unit: cfg.unit,
-                  description: "Mean Absolute Error — average unsigned forecast error.",
+                  description: "Mean Absolute Error: average unsigned forecast error.",
                   color: "#3bb4a4",
                 },
                 {
                   label: "RMSE",
                   value: accuracy.rmse.toFixed(2),
                   unit: cfg.unit,
-                  description: "Root Mean Squared Error — penalises large errors more than MAE.",
-                  color: "#d4af37",
+                  description: "Root Mean Squared Error: penalises large errors more than MAE.",
+                  color: "var(--color-accent)",
                 },
                 {
                   label: "MAPE",
                   value: accuracy.mape.toFixed(1),
                   unit: "%",
-                  description: "Mean Absolute Percentage Error — scale-free relative accuracy.",
+                  description: "Mean Absolute Percentage Error: scale-free relative accuracy.",
                   color: "#a855f7",
                 },
               ].map((m) => (
@@ -659,13 +659,13 @@ export default function TimeSeriesForecastClient() {
             {[
               {
                 title: "Stationarity",
-                body: "A series is stationary when its mean, variance, and autocorrelation do not change over time. Many forecasting models require stationarity — achieved through differencing or log transforms.",
+                body: "A series is stationary when its mean, variance, and autocorrelation do not change over time. Many forecasting models require stationarity, achieved through differencing or log transforms.",
                 color: "#3bb4a4",
               },
               {
                 title: "Autocorrelation (ACF)",
                 body: "The correlation of a series with a lagged version of itself. Seasonal series show spikes at lags 12, 24 in monthly data. The ACF guides lag selection in ARIMA models.",
-                color: "#d4af37",
+                color: "var(--color-accent)",
               },
               {
                 title: "Walk-Forward Validation",
@@ -711,7 +711,7 @@ export default function TimeSeriesForecastClient() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {[
                     { label: "Datasets explored", value: `${datasetsExplored.size} / 3`, color: "#3bb4a4" },
-                    { label: "Smoothing methods", value: "MA + ES", color: "#d4af37" },
+                    { label: "Smoothing methods", value: "MA + ES", color: "var(--color-accent)" },
                     { label: "Leakage pitfall", value: "Understood", color: "#a855f7" },
                   ].map((item) => (
                     <div key={item.label} className="rounded-xl border border-[#1e293b] p-3">
@@ -723,12 +723,12 @@ export default function TimeSeriesForecastClient() {
                   ))}
                 </div>
 
-                <div className="rounded-xl border-l-4 border-[#d4af37] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4">
-                  <p className="text-[12px] font-semibold text-[#d4af37] mb-1.5 uppercase tracking-wide">
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
                     Key Takeaway
                   </p>
                   <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
-                    &quot;Time always flows one way. Your model must respect that — training on the future to predict the past is the fastest path to a misleadingly optimistic evaluation.&quot;
+                    &quot;Time always flows one way. Your model must respect that: training on the future to predict the past is the fastest path to a misleadingly optimistic evaluation.&quot;
                   </p>
                 </div>
               </div>

@@ -53,7 +53,7 @@ function Histogram({ data, isNormal }: { data: number[]; isNormal: boolean }) {
     return { val, x };
   });
 
-  const fillColor = isNormal ? "#10b981" : "#ec4899";
+  const fillColor = isNormal ? "var(--color-success)" : "#ec4899";
 
   return (
     <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="w-full">
@@ -84,7 +84,7 @@ function Histogram({ data, isNormal }: { data: number[]; isNormal: boolean }) {
         );
       })}
       {/* Density curve */}
-      <path d={densityPath} fill="none" stroke="#d4af37" strokeWidth={1.5} opacity={0.8} />
+      <path d={densityPath} fill="none" stroke="var(--color-accent)" strokeWidth={1.5} opacity={0.8} />
       {/* Axes */}
       <line x1={PAD.left} y1={PAD.top + plotH} x2={PAD.left + plotW} y2={PAD.top + plotH} stroke="#334155" strokeWidth={0.5} />
       <line x1={PAD.left} y1={PAD.top} x2={PAD.left} y2={PAD.top + plotH} stroke="#334155" strokeWidth={0.5} />
@@ -138,7 +138,7 @@ function QQPlot({ data, isNormal }: { data: number[]; isNormal: boolean }) {
   const refX2 = PAD.left + plotW;
   const refY2 = PAD.top;
 
-  const dotColor = isNormal ? "#10b981" : "#ec4899";
+  const dotColor = isNormal ? "var(--color-success)" : "#ec4899";
 
   const qTicks = [-2, 0, 2];
   const dTickCount = 4;
@@ -149,7 +149,7 @@ function QQPlot({ data, isNormal }: { data: number[]; isNormal: boolean }) {
       <line x1={PAD.left} y1={PAD.top + plotH} x2={PAD.left + plotW} y2={PAD.top + plotH} stroke="#334155" strokeWidth={0.5} />
       <line x1={PAD.left} y1={PAD.top} x2={PAD.left} y2={PAD.top + plotH} stroke="#334155" strokeWidth={0.5} />
       {/* Reference line */}
-      <line x1={refX1} y1={refY1} x2={refX2} y2={refY2} stroke="#d4af37" strokeWidth={1} strokeDasharray="4 3" opacity={0.6} />
+      <line x1={refX1} y1={refY1} x2={refX2} y2={refY2} stroke="var(--color-accent)" strokeWidth={1} strokeDasharray="4 3" opacity={0.6} />
       {/* Data points */}
       {pts.map((p, i) => (
         <circle key={i} cx={p.cx} cy={p.cy} r={2} fill={dotColor} opacity={0.5} />
@@ -217,7 +217,7 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
           onClick={handleCheck}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="px-3 py-1.5 rounded-xl text-[11px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+          className="px-3 py-1.5 rounded-xl text-[11px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
         >
           Run Assumption Check
         </motion.button>
@@ -261,7 +261,7 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
 
           <div className="flex items-center gap-2 flex-wrap">
             {result.isNormal ? (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/30">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[var(--color-success)]/20 text-[var(--color-success)] border border-[var(--color-success)]/30">
                 Normality plausible (r &gt; 0.95)
               </span>
             ) : (

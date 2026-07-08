@@ -11,7 +11,7 @@ const SUMMARY = [
   {
     id: "structured",
     label: "Structured Data",
-    color: "#3b82f6",
+    color: "#93c5fd",
     items: ["CSV Sales Data", "SQL Database Table", "Excel Spreadsheet"],
     explanation:
       "Structured data lives in rows and columns with a strictly defined schema. Every record follows the same format, making it easy for machines to query and analyze at scale.",
@@ -23,7 +23,7 @@ const SUMMARY = [
     color: "#d4af37",
     items: ["JSON API Response", "XML Configuration", "Email with Metadata"],
     explanation:
-      "Semi-structured data has self-describing markers (keys, tags, headers) but doesn't conform to a rigid tabular schema. The structure is flexible — fields can be nested, optional, or variable.",
+      "Semi-structured data has self-describing markers (keys, tags, headers) but doesn't conform to a rigid tabular schema. The structure is flexible: fields can be nested, optional, or variable.",
     keyTrait: "Uses tags or keys to organize data without enforcing a fixed schema.",
   },
   {
@@ -33,7 +33,7 @@ const SUMMARY = [
     items: ["Social Media Post", "Audio Waveform", "Photograph"],
     explanation:
       "Unstructured data has no predefined format. Text, audio, images, and video are raw blobs of bytes with meaning that must be extracted by NLP, computer vision, or other ML techniques.",
-    keyTrait: "No predefined format — meaning must be inferred by algorithms.",
+    keyTrait: "No predefined format: meaning must be inferred by algorithms.",
   },
 ];
 

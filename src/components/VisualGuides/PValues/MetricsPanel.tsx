@@ -48,7 +48,7 @@ export default function MetricsPanel({ groupA, groupB, tStatistic, pValue, alpha
         {[
           { label: "Group A mean", value: mA.toFixed(3), color: "#3bb4a4" },
           { label: "Group B mean", value: mB.toFixed(3), color: "#1e5d8a" },
-          { label: "Difference (B − A)", value: diff.toFixed(3), color: diff >= 0 ? "#d4af37" : "#94a3b8" },
+          { label: "Difference (B − A)", value: diff.toFixed(3), color: diff >= 0 ? "var(--color-accent)" : "#94a3b8" },
           { label: "Sample size (each group)", value: String(n) },
           { label: "Degrees of freedom", value: String(df) },
         ].map(({ label, value, color }) => (
@@ -97,8 +97,8 @@ export default function MetricsPanel({ groupA, groupB, tStatistic, pValue, alpha
           </p>
           <p className="text-[9px] text-[#334155] mt-0.5">
             {ciLow > 0 || ciHigh < 0
-              ? "CI excludes zero — consistent with a real difference."
-              : "CI includes zero — effect may be due to chance."}
+              ? "CI excludes zero, consistent with a real difference."
+              : "CI includes zero, so the effect may be due to chance."}
           </p>
         </div>
       </div>

@@ -77,8 +77,8 @@ function ResidualsVsFitted({ points, modelState }: ResidualsPlotProps) {
   const yMin = -yAbs, yMax = yAbs;
 
   const interpretations: Record<ModelState, { icon: string; text: string; color: string }> = {
-    healthy:          { icon: "✓", text: "Random scatter around zero — linearity assumption met.", color: "#3bb4a4" },
-    heteroscedastic:  { icon: "⚠", text: "Fan shape: variance increases with fitted values.", color: "#f59e0b" },
+    healthy:          { icon: "✓", text: "Random scatter around zero: linearity assumption met.", color: "#3bb4a4" },
+    heteroscedastic:  { icon: "⚠", text: "Fan shape: variance increases with fitted values.", color: "var(--color-warning)" },
     nonlinear:        { icon: "⚠", text: "Curved pattern indicates non-linearity in the true relationship.", color: "#ef4444" },
     outlier:          { icon: "⚠", text: "Extreme residuals pull the fitted line away from the bulk of data.", color: "#ef4444" },
   };
@@ -102,7 +102,7 @@ function ResidualsVsFitted({ points, modelState }: ResidualsPlotProps) {
           return (
             <g key={pt.id}>
               {pt.isHighLeverage && (
-                <circle cx={cx} cy={cy} r={isHov ? 10 : 8} fill="none" stroke="#d4af37" strokeWidth="1.5" />
+                <circle cx={cx} cy={cy} r={isHov ? 10 : 8} fill="none" stroke="var(--color-accent)" strokeWidth="1.5" />
               )}
               <circle cx={cx} cy={cy} r={isHov ? 6 : 4.5}
                 fill={fill} stroke="rgba(255,255,255,0.2)" strokeWidth="0.8"
@@ -159,10 +159,10 @@ function QQPlot({ points, modelState }: QQPlotProps) {
   const yMax = Math.max(obsMax, theoMax) + yPad;
 
   const interps: Record<ModelState, { icon: string; text: string; color: string }> = {
-    healthy:         { icon: "✓", text: "Points near the diagonal — residuals approximately normal.", color: "#3bb4a4" },
-    heteroscedastic: { icon: "⚠", text: "S-curve deviation: heavy tails in residual distribution.", color: "#f59e0b" },
+    healthy:         { icon: "✓", text: "Points near the diagonal: residuals approximately normal.", color: "#3bb4a4" },
+    heteroscedastic: { icon: "⚠", text: "S-curve deviation: heavy tails in residual distribution.", color: "var(--color-warning)" },
     nonlinear:       { icon: "⚠", text: "Systematic departure from normality due to model misfit.", color: "#ef4444" },
-    outlier:         { icon: "⚠", text: "Points at ends deviate sharply — outliers visible in both tails.", color: "#ef4444" },
+    outlier:         { icon: "⚠", text: "Points at ends deviate sharply: outliers visible in both tails.", color: "#ef4444" },
   };
   const interp = interps[modelState];
 
@@ -229,8 +229,8 @@ function ScaleLocation({ points, modelState }: ScaleLocationProps) {
   const yMin = 0;
 
   const interps: Record<ModelState, { icon: string; text: string; color: string }> = {
-    healthy:         { icon: "✓", text: "Horizontal band — constant variance (homoscedasticity) confirmed.", color: "#3bb4a4" },
-    heteroscedastic: { icon: "⚠", text: "Rising trend — variance grows with fitted values (heteroscedasticity).", color: "#f59e0b" },
+    healthy:         { icon: "✓", text: "Horizontal band: constant variance (homoscedasticity) confirmed.", color: "#3bb4a4" },
+    heteroscedastic: { icon: "⚠", text: "Rising trend: variance grows with fitted values (heteroscedasticity).", color: "var(--color-warning)" },
     nonlinear:       { icon: "⚠", text: "Systematic pattern due to model misspecification.", color: "#ef4444" },
     outlier:         { icon: "⚠", text: "Spike at outlier location elevates the spread locally.", color: "#ef4444" },
   };
@@ -329,9 +329,9 @@ function LeveragePlot({ points, modelState, onTogglePoint }: LeveragePlotProps) 
         <line
           x1={toSvgX(levThreshold, xMin, xMax)} y1={PAD.t}
           x2={toSvgX(levThreshold, xMin, xMax)} y2={PAD.t + IH}
-          stroke="#d4af37" strokeWidth="1" strokeDasharray="5 3" opacity="0.6"
+          stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="5 3" opacity="0.6"
         />
-        <text x={toSvgX(levThreshold, xMin, xMax) + 2} y={PAD.t + 10} fontSize="7" fill="#d4af37" opacity="0.7" fontFamily="Inter,sans-serif">Lev threshold</text>
+        <text x={toSvgX(levThreshold, xMin, xMax) + 2} y={PAD.t + 10} fontSize="7" fill="var(--color-accent)" opacity="0.7" fontFamily="Inter,sans-serif">Lev threshold</text>
         {/* Cook's D=0.5 contour (positive side) */}
         {cook05Pos.length > 1 && cookContourX.slice(0, cook05Pos.length).map((h, i) => {
           if (i === 0) return null;
@@ -340,7 +340,7 @@ function LeveragePlot({ points, modelState, onTogglePoint }: LeveragePlotProps) 
             <line key={`cook-p-${i}`}
               x1={toSvgX(cookContourX[i - 1], xMin, xMax)} y1={toSvgY(y1v, yMin, yMax)}
               x2={toSvgX(h, xMin, xMax)} y2={toSvgY(y2v, yMin, yMax)}
-              stroke="#f59e0b" strokeWidth="0.8" strokeDasharray="3 2" opacity="0.4"
+              stroke="var(--color-warning)" strokeWidth="0.8" strokeDasharray="3 2" opacity="0.4"
             />
           );
         })}
@@ -381,7 +381,7 @@ function LeveragePlot({ points, modelState, onTogglePoint }: LeveragePlotProps) 
         })}
       </svg>
       <div className="flex items-start gap-1.5 mt-2 px-1">
-        <span className="text-[8px] font-semibold text-[#d4af37] mt-0.5">TIP</span>
+        <span className="text-[8px] font-semibold text-[var(--color-accent)] mt-0.5">TIP</span>
         <p className="text-[11px] text-[#94a3b8] leading-snug">Click highlighted points to remove them and see how the model changes.</p>
       </div>
     </div>
@@ -393,7 +393,7 @@ function LeveragePlot({ points, modelState, onTogglePoint }: LeveragePlotProps) 
 function VIFTable({ data }: { data: VIFResult[] }) {
   const statusConfig = {
     good:        { label: "GOOD",        color: "#3bb4a4", bg: "rgba(59,180,164,0.12)" },
-    acceptable:  { label: "ACCEPTABLE",  color: "#d4af37", bg: "rgba(212,175,55,0.12)" },
+    acceptable:  { label: "ACCEPTABLE",  color: "var(--color-accent)", bg: "rgba(212,175,55,0.12)" },
     problematic: { label: "PROBLEMATIC", color: "#ef4444", bg: "rgba(239,68,68,0.12)"  },
   };
   return (
@@ -548,7 +548,7 @@ export default function RegressionDiagnosticsClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "regression-diagnostics", score: 7 }),
+        body: JSON.stringify({ guideSlug: "regression-diagnostics", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -590,17 +590,17 @@ export default function RegressionDiagnosticsClient() {
         <motion.section className="mb-10"
           initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">UNIT 10: REGRESSION FOUNDATIONS</span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">UNIT 10: REGRESSION FOUNDATIONS</span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Regression Diagnostics:{" "}
-            <span className="text-[#d4af37]">When the Model Breaks</span>
+            <span className="text-[var(--color-accent)]">When the Model Breaks</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
-            Every regression model rests on assumptions. Learn to detect violations — non-linearity, heteroscedasticity,
-            non-normal residuals, and influential outliers — using the four core diagnostic plots.
+            Every regression model rests on assumptions. Learn to detect violations (non-linearity, heteroscedasticity,
+            non-normal residuals, and influential outliers) using the four core diagnostic plots.
           </p>
         </motion.section>
 
@@ -634,13 +634,15 @@ export default function RegressionDiagnosticsClient() {
         {/* Model Toggle */}
         <section className="mb-8">
           <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">Select Dataset</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Select dataset">
             {modelButtons.map(({ state, label }) => (
               <button key={state}
+                role="radio"
+                aria-checked={modelState === state}
                 onClick={() => handleModelSwitch(state)}
                 className={`px-4 py-2 rounded-xl text-[13px] font-semibold transition-all ${
                   modelState === state
-                    ? "bg-[#d4af37] text-[#0a0e1a]"
+                    ? "bg-[var(--color-accent)] text-[#0a0e1a]"
                     : "border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37]"
                 }`}>
                 {label}
@@ -724,7 +726,7 @@ export default function RegressionDiagnosticsClient() {
                           <input type="checkbox" id={`pt-${pt.id}`}
                             checked={isRemoved}
                             onChange={() => handleTogglePoint(pt.id)}
-                            className="w-4 h-4 accent-[#d4af37] cursor-pointer"
+                            className="w-4 h-4 accent-[var(--color-accent)] cursor-pointer"
                           />
                           <label htmlFor={`pt-${pt.id}`} className="cursor-pointer">
                             <span className="text-[13px] font-semibold text-white">Point #{pt.id}</span>
@@ -736,7 +738,7 @@ export default function RegressionDiagnosticsClient() {
                           <span className="text-[#94a3b8]">Cook&apos;s D: <span className={`font-mono ${pt.cooksD > 1 ? "text-[#ef4444]" : "text-white"}`}>{pt.cooksD.toFixed(3)}</span></span>
                           <span className="text-[#94a3b8]">Std. Res: <span className={`font-mono ${Math.abs(pt.stdResidual) > 2 ? "text-[#ef4444]" : "text-white"}`}>{pt.stdResidual.toFixed(2)}</span></span>
                           {pt.isOutlier     && <span className="px-1.5 py-0.5 rounded-md text-[9px] font-semibold bg-[#ef4444]/15 text-[#ef4444]">OUTLIER</span>}
-                          {pt.isHighLeverage && <span className="px-1.5 py-0.5 rounded-md text-[9px] font-semibold bg-[#d4af37]/15 text-[#d4af37]">HIGH LEV</span>}
+                          {pt.isHighLeverage && <span className="px-1.5 py-0.5 rounded-md text-[9px] font-semibold bg-[#d4af37]/15 text-[var(--color-accent)]">HIGH LEV</span>}
                         </div>
                       </div>
                     );
@@ -750,7 +752,7 @@ export default function RegressionDiagnosticsClient() {
                       setRemovedIds(new Set(allFlagged));
                       setRemovedAnyOutlier(true);
                     }}
-                    className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+                    className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
                     Remove All Flagged
                   </button>
                   <button
@@ -807,13 +809,15 @@ export default function RegressionDiagnosticsClient() {
           </p>
 
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
-            <div className="flex gap-2 mb-5">
+            <div className="flex gap-2 mb-5" role="radiogroup" aria-label="Multicollinearity scenario">
               {(["healthy", "collinear"] as const).map(mode => (
                 <button key={mode}
+                  role="radio"
+                  aria-checked={vifMode === mode}
                   onClick={() => handleVifSwitch(mode)}
                   className={`px-4 py-2 rounded-xl text-[12px] font-semibold transition-all ${
                     vifMode === mode
-                      ? "bg-[#d4af37] text-[#0a0e1a]"
+                      ? "bg-[var(--color-accent)] text-[#0a0e1a]"
                       : "border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37]"
                   }`}>
                   {mode === "healthy" ? "No Multicollinearity" : "High Multicollinearity"}
@@ -832,8 +836,8 @@ export default function RegressionDiagnosticsClient() {
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
                 { range: "VIF < 5",   label: "Good",        color: "#3bb4a4", desc: "No meaningful correlation with other predictors." },
-                { range: "5 – 10",    label: "Acceptable",  color: "#d4af37", desc: "Moderate correlation; monitor but usually acceptable." },
-                { range: "VIF > 10",  label: "Problematic", color: "#ef4444", desc: "High collinearity — standard errors are inflated." },
+                { range: "5 – 10",    label: "Acceptable",  color: "var(--color-accent)", desc: "Moderate correlation; monitor but usually acceptable." },
+                { range: "VIF > 10",  label: "Problematic", color: "#ef4444", desc: "High collinearity: standard errors are inflated." },
               ].map(({ range, label, color, desc }) => (
                 <div key={label} className="rounded-xl border border-[#1e293b] p-3">
                   <div className="flex items-center gap-2 mb-1">
@@ -908,12 +912,12 @@ export default function RegressionDiagnosticsClient() {
             ← Multiple Regression
           </Link>
           <Link href="/visual-guides/logistic-regression"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
             Logistic Regression →
           </Link>
         </div>
 
-        <GuideCompletion isComplete={allComplete} guideSlug="regression-diagnostics" score={7} />
+        <GuideCompletion isComplete={allComplete} guideSlug="regression-diagnostics" score={100} />
       </div>
     </div>
   );

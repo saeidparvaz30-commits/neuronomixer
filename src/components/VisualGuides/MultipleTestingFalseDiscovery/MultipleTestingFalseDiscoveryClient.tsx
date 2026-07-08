@@ -63,7 +63,7 @@ export default function MultipleTestingFalseDiscoveryClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guideSlug: "multiple-testing-false-discovery",
-          score: 7,
+          score: 100,
         }),
       }).catch(() => {});
     }
@@ -191,7 +191,7 @@ export default function MultipleTestingFalseDiscoveryClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="multiple-testing-false-discovery" score={7} />
+      <GuideCompletion isComplete={allComplete} guideSlug="multiple-testing-false-discovery" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -211,15 +211,15 @@ export default function MultipleTestingFalseDiscoveryClient() {
           className="mb-10"
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Statistics
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Multiple Testing &amp;{" "}
-            <span className="text-[#d4af37]">False Discovery</span>
+            <span className="text-[var(--color-accent)]">False Discovery</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
             Run 20 jelly bean tests on pure noise. Watch false positives appear at α=0.05.
@@ -334,11 +334,11 @@ export default function MultipleTestingFalseDiscoveryClient() {
                 {
                   title: "Family-Wise Error Rate",
                   body: "FWER is the probability of making at least one false positive across all tests. Bonferroni and Holm control FWER at α.",
-                  color: "#d4af37",
+                  color: "var(--color-accent)",
                 },
                 {
                   title: "False Discovery Rate",
-                  body: "FDR is the expected proportion of false positives among all significant results. BH controls FDR at α — more lenient.",
+                  body: "FDR is the expected proportion of false positives among all significant results. BH controls FDR at α (more lenient).",
                   color: "#3bb4a4",
                 },
                 {
@@ -368,7 +368,7 @@ export default function MultipleTestingFalseDiscoveryClient() {
           </Link>
           <Link
             href="/visual-guides/t-tests-proportion-tests"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             t-Tests &amp; Proportion Tests →
           </Link>

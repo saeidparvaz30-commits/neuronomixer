@@ -57,16 +57,16 @@ export default function OutlierDetectionClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "outlier-detection", score: 5 }),
+        body: JSON.stringify({ guideSlug: "outlier-detection", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
 
-  const methodColor = method === "zscore" ? "#ef4444" : "#f97316";
+  const methodColor = method === "zscore" ? "#ef4444" : "var(--color-warning)";
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="outlier-detection" score={5} />
+      <GuideCompletion isComplete={allComplete} guideSlug="outlier-detection" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -102,7 +102,7 @@ export default function OutlierDetectionClient() {
               return (
                 <div key={m} className="flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full transition-colors"
-                    style={{ background: done ? (m === "zscore" ? "#ef4444" : "#f97316") : "#1e293b" }} />
+                    style={{ background: done ? (m === "zscore" ? "#ef4444" : "var(--color-warning)") : "#1e293b" }} />
                   <span className={`text-[11px] ${done ? "text-white" : "text-[#475569]"}`}>
                     {m === "zscore" ? "Z-Score" : "IQR"} explored
                   </span>
@@ -137,7 +137,7 @@ export default function OutlierDetectionClient() {
           <motion.div key={method} initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             className="mb-6 px-4 py-2 rounded-xl border text-[12px] font-medium"
             style={{ borderColor: methodColor + "44", background: methodColor + "0d", color: methodColor }}>
-            <strong>{method === "zscore" ? "Z-Score" : "IQR"} Method</strong> —{" "}
+            <strong>{method === "zscore" ? "Z-Score" : "IQR"} Method</strong>:{" "}
             {method === "zscore"
               ? `flagging points more than ${threshold}σ from the mean on either axis`
               : "flagging points outside the 1.5×IQR fences on either axis"}
@@ -183,7 +183,7 @@ export default function OutlierDetectionClient() {
                 <p className="text-[12px] text-[#94a3b8] leading-relaxed mb-3">
                   {method === "zscore"
                     ? "Measures how many standard deviations each coordinate is from that axis mean, applied to X and Y separately. Assumes a roughly normal distribution. A key limitation: extreme outliers inflate the standard deviation, which can actually mask themselves."
-                    : "Uses the interquartile range (Q3 − Q1) of each axis to set fences, applied to X and Y separately. Entirely distribution-free — no normality assumption. More robust because outliers barely influence Q1, Q3, or the IQR itself."}
+                    : "Uses the interquartile range (Q3 − Q1) of each axis to set fences, applied to X and Y separately. Entirely distribution-free: no normality assumption. More robust because outliers barely influence Q1, Q3, or the IQR itself."}
                 </p>
                 <div className="grid grid-cols-2 gap-2">
                   {(method === "zscore" ? [
@@ -194,7 +194,7 @@ export default function OutlierDetectionClient() {
                   ] : [
                     { label: "Best for",   text: "Skewed or non-normal data" },
                     { label: "Formula",    text: "fences = Q1/Q3 ± 1.5×IQR" },
-                    { label: "Strength",   text: "Robust — outliers don't shift fences" },
+                    { label: "Strength",   text: "Robust: outliers don't shift fences" },
                     { label: "Used in",    text: "EDA, box plots, robust statistics" },
                   ]).map(({ label, text }) => (
                     <div key={label} className="rounded-lg bg-[#1e293b]/40 p-2">
@@ -226,9 +226,9 @@ export default function OutlierDetectionClient() {
               <div className="flex flex-col gap-2.5 text-[11px]">
                 {[
                   { color: "#ef4444", label: "Z-Score", note: "Data is normally distributed; you need a threshold in interpretable σ units." },
-                  { color: "#f97316", label: "IQR",     note: "Data is skewed or you can't assume normality; need resistance to masking." },
+                  { color: "var(--color-warning)", label: "IQR",     note: "Data is skewed or you can't assume normality; need resistance to masking." },
                   { color: "#94a3b8", label: "Both agree",    note: "High confidence the point is genuinely anomalous." },
-                  { color: "#3bb4a4", label: "They disagree", note: "Use domain knowledge — the disagreement reveals the distribution shape." },
+                  { color: "#3bb4a4", label: "They disagree", note: "Use domain knowledge: the disagreement reveals the distribution shape." },
                 ].map(({ color, label, note }) => (
                   <div key={label} className="flex items-start gap-2">
                     <div className="w-2 h-2 rounded-full mt-0.5 flex-shrink-0" style={{ background: color }} />

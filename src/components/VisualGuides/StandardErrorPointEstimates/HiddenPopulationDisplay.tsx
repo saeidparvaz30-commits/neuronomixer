@@ -66,7 +66,7 @@ export default function HiddenPopulationDisplay({
       <p className="text-[12px] text-[#94a3b8] mb-3 leading-relaxed">
         Population of measurements{" "}
         <span className="text-[#3bb4a4] font-semibold">N(μ, 20)</span>
-        {" "}— true mean hidden
+        {" "}(true mean hidden)
       </p>
 
       {/* Mini histogram */}
@@ -122,7 +122,7 @@ export default function HiddenPopulationDisplay({
                 y1={0}
                 x2={((POP_MEAN - X_MIN) / (X_MAX - X_MIN)) * plotW}
                 y2={plotH}
-                stroke="#d4af37"
+                stroke="var(--color-accent)"
                 strokeWidth={1.5}
                 strokeDasharray="3,2"
               />
@@ -130,7 +130,7 @@ export default function HiddenPopulationDisplay({
                 x={((POP_MEAN - X_MIN) / (X_MAX - X_MIN)) * plotW + 3}
                 y={10}
                 fontSize={8}
-                fill="#d4af37"
+                fill="var(--color-accent)"
                 fontWeight="bold"
               >
                 μ=100
@@ -145,7 +145,7 @@ export default function HiddenPopulationDisplay({
         <div className="text-[12px] text-[#94a3b8]">
           True mean:{" "}
           {populationMeanRevealed ? (
-            <span className="text-[#d4af37] font-bold font-mono">μ = 100</span>
+            <span className="text-[var(--color-accent)] font-bold font-mono">μ = 100</span>
           ) : (
             <span className="text-[#475569] font-mono tracking-widest">••••</span>
           )}

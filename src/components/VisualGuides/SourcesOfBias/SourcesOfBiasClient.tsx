@@ -29,7 +29,7 @@ export default function SourcesOfBiasClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "sources-of-bias", score: 5 }),
+        body: JSON.stringify({ guideSlug: "sources-of-bias", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -52,7 +52,7 @@ export default function SourcesOfBiasClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="sources-of-bias" score={5} />
+      <GuideCompletion isComplete={allComplete} guideSlug="sources-of-bias" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -65,19 +65,19 @@ export default function SourcesOfBiasClient() {
         {/* Hero */}
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">Statistics</span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">Statistics</span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Sources of Bias:{" "}
-            <span className="text-[#d4af37]">Selection, Survivorship & Beyond</span>
+            <span className="text-[var(--color-accent)]">Selection, Survivorship & Beyond</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px] mb-4">
             Data tells a story, but which story? Explore five real-world cases where hidden biases distort conclusions. Learn to spot the traps.
           </p>
           <p className="text-[13px] text-[#94a3b8] leading-relaxed max-w-[680px]">
-            Bias is not about intentional deception — it is about how data is collected, who responds, what survives to observation, and what questions we choose to ask. Each case below hides a different type of bias.
+            Bias is not about intentional deception; it is about how data is collected, who responds, what survives to observation, and what questions we choose to ask. Each case below hides a different type of bias.
           </p>
         </section>
 
@@ -174,7 +174,7 @@ export default function SourcesOfBiasClient() {
           </Link>
           <Link
             href="/visual-guides/math-for-statistics"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Next: Math for Statistics: The Visual Toolkit →
           </Link>

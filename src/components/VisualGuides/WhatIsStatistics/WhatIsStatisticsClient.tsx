@@ -36,7 +36,7 @@ const SCENARIOS: ScenarioInfo[] = [
       descriptive:
         "45% of the 200 sampled users adopted the feature. Mobile adoption was 65%; desktop was 25%. The mode traffic source was Organic.",
       inferential:
-        "Can we generalize this 45% to all users? Only if the 200 users are a random sample. The device split in our sample must match the overall user base — otherwise our estimate is biased.",
+        "Can we generalize this 45% to all users? Only if the 200 users are a random sample. The device split in our sample must match the overall user base; otherwise our estimate is biased.",
       predictive:
         "If the next 1000 users have the same device mix (50% mobile), predicted adoption is ~45%. If mobile share grows to 70%, predicted adoption rises to ~53%.",
     },
@@ -45,7 +45,7 @@ const SCENARIOS: ScenarioInfo[] = [
     id: "loan_default",
     title: "Loan Default Bias",
     context:
-      "You are auditing a loan approval algorithm. In the raw data: 70% of Group A loans defaulted; 30% of Group B loans defaulted. The conclusion: 'Group A is riskier.' But there is hidden structure — Group A has a different income composition than Group B.",
+      "You are auditing a loan approval algorithm. In the raw data: 70% of Group A loans defaulted; 30% of Group B loans defaulted. The conclusion: 'Group A is riskier.' But there is hidden structure: Group A has a different income composition than Group B.",
     decisionQuestion: "Is Group A truly riskier, or is something else happening?",
     options: [
       "Yes, Group A is riskier",
@@ -56,7 +56,7 @@ const SCENARIOS: ScenarioInfo[] = [
     notQuiteHint:
       "Consider whether the two groups have the same mix of high-income and low-income borrowers.",
     revealText:
-      "This is a classic case of Simpson's Paradox and confounding. Group A has 50% low-income borrowers; Group B has only 20%. When you stratify by income, defaults depend almost entirely on income level, not group membership. The algorithm may be encoding income-based risk and calling it group-based — a serious fairness issue.",
+      "This is a classic case of Simpson's Paradox and confounding. Group A has 50% low-income borrowers; Group B has only 20%. When you stratify by income, defaults depend almost entirely on income level, not group membership. The algorithm may be encoding income-based risk and calling it group-based, a serious fairness issue.",
     conceptTerms: [
       {
         term: "Simpson's Paradox",
@@ -138,7 +138,7 @@ export default function WhatIsStatisticsClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "what-is-statistics", score: 5 }),
+        body: JSON.stringify({ guideSlug: "what-is-statistics", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -167,7 +167,7 @@ export default function WhatIsStatisticsClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="what-is-statistics" score={5} />
+      <GuideCompletion isComplete={allComplete} guideSlug="what-is-statistics" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -180,19 +180,19 @@ export default function WhatIsStatisticsClient() {
         {/* Hero */}
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">Statistics</span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">Statistics</span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             What Is Statistics?{" "}
-            <span className="text-[#d4af37]">Why It Matters</span>
+            <span className="text-[var(--color-accent)]">Why It Matters</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px] mb-4">
             Three real-world scenarios where raw intuition fails. See why organizations rely on statistical thinking to extract signal from noise.
           </p>
           <p className="text-[13px] text-[#94a3b8] leading-relaxed max-w-[680px]">
-            Statistics is not about memorizing formulas — it is about asking the right questions of data. Each scenario below presents raw data and an intuitive conclusion. Your job is to decide whether to trust it.
+            Statistics is not about memorizing formulas; it is about asking the right questions of data. Each scenario below presents raw data and an intuitive conclusion. Your job is to decide whether to trust it.
           </p>
         </section>
 
@@ -251,7 +251,7 @@ export default function WhatIsStatisticsClient() {
           </Link>
           <Link
             href="/visual-guides/types-of-data-measurement-scales"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Next: Types of Data →
           </Link>

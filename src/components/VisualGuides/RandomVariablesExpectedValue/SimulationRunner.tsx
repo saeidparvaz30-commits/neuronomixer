@@ -119,7 +119,7 @@ export default function SimulationRunner({
         <button
           disabled={sim.isRunning || !isValid}
           onClick={() => startSimulation(1000)}
-          className="px-5 py-2 text-[13px] rounded-xl font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
+          className="px-5 py-2 text-[13px] rounded-xl font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity"
         >
           Run 1,000 Trials
         </button>
@@ -136,7 +136,7 @@ export default function SimulationRunner({
           </span>
         )}
         {!isValid && (
-          <span className="text-[12px] text-[#f97316]">
+          <span className="text-[12px] text-[var(--color-warning)]">
             Fix probabilities first (must sum to 1.0)
           </span>
         )}
@@ -147,7 +147,7 @@ export default function SimulationRunner({
         <div className="space-y-1.5">
           <div className="h-1.5 w-full rounded-full bg-[#1e293b] overflow-hidden">
             <div
-              className="h-full bg-[#d4af37] rounded-full transition-[width] duration-100"
+              className="h-full bg-[var(--color-accent)] rounded-full transition-[width] duration-100"
               style={{ width: `${progress}%` }}
             />
           </div>

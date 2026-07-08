@@ -90,7 +90,7 @@ function WeightingTable({
                   max={99}
                   value={row.achieved}
                   onChange={(e) => handleAchievedChange(idx, e.target.value)}
-                  className="w-16 bg-[#1e293b] border border-white/10 rounded-lg px-2 py-1 text-[11px] text-white text-right focus:outline-none focus:border-[#d4af37] transition-colors"
+                  className="w-16 bg-[#1e293b] border border-white/10 rounded-lg px-2 py-1 text-[11px] text-white text-right focus:outline-none focus:border-[var(--color-accent)] transition-colors"
                   aria-label={`${row.group} achieved percentage`}
                 />
               </td>
@@ -98,7 +98,7 @@ function WeightingTable({
                 <span
                   className={`font-mono font-bold text-[13px] ${
                     row.weight < 0.9
-                      ? "text-[#f97316]"
+                      ? "text-[var(--color-warning)]"
                       : row.weight > 1.1
                       ? "text-[#3bb4a4]"
                       : "text-white"
@@ -112,7 +112,7 @@ function WeightingTable({
         </tbody>
       </table>
       <p className="text-[11px] text-[#94a3b8] mt-3">
-        <span className="text-[#d4af37] font-semibold">Key lesson:</span>{" "}
+        <span className="text-[var(--color-accent)] font-semibold">Key lesson:</span>{" "}
         Weighting corrects for unequal sampling probabilities. Edit the
         Achieved % to see weights update.
       </p>
@@ -192,8 +192,8 @@ function NonResponseContent() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         {[
-          { method: "Phone", range: "5–15%", color: "#f97316" },
-          { method: "Mail", range: "20–30%", color: "#d4af37" },
+          { method: "Phone", range: "5–15%", color: "var(--color-warning)" },
+          { method: "Mail", range: "20–30%", color: "var(--color-accent)" },
           { method: "Online opt-in", range: "10–20%", color: "#3bb4a4" },
         ].map(({ method, range, color }) => (
           <div
@@ -229,8 +229,8 @@ function NonResponseContent() {
         </ul>
       </div>
 
-      <div className="rounded-xl border border-[#f97316]/30 bg-[#f97316]/5 p-3">
-        <p className="text-[11px] text-[#f97316] font-semibold mb-1">
+      <div className="rounded-xl border border-[var(--color-warning)]/30 bg-[var(--color-warning)]/5 p-3">
+        <p className="text-[11px] text-[var(--color-warning)] font-semibold mb-1">
           Caution
         </p>
         <p className="text-[11px] text-[#94a3b8]">

@@ -38,7 +38,7 @@ export default function MissingDataClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "missing-data", score: 3 }),
+        body: JSON.stringify({ guideSlug: "missing-data", score: 100 }),
       }).catch(() => {});
     }
   }, [explored.size, session?.user]);
@@ -48,7 +48,7 @@ export default function MissingDataClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={explored.size === 3} guideSlug="missing-data" score={3} />
+      <GuideCompletion isComplete={explored.size === 3} guideSlug="missing-data" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -71,7 +71,7 @@ export default function MissingDataClient() {
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[600px] mb-4">
             When data is incomplete, you have choices. Drop affected rows? Estimate missing values?
-            See how each strategy trades off data loss against bias — and how it affects your model&apos;s performance.
+            See how each strategy trades off data loss against bias, and how it affects your model&apos;s performance.
           </p>
 
           {/* Dataset overview pills */}
@@ -131,7 +131,7 @@ export default function MissingDataClient() {
                 <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
                   className="px-4 py-2.5 rounded-xl border text-[12px] font-medium"
                   style={{ borderColor: meta.color + "44", background: meta.color + "0d", color: meta.color }}>
-                  Showing: <strong>{meta.label}</strong> — {meta.rowCount} rows remain, {meta.dataLoss} data loss
+                  Showing: <strong>{meta.label}</strong> ({meta.rowCount} rows remain, {meta.dataLoss} data loss)
                 </motion.div>
               )}
             </AnimatePresence>
@@ -164,7 +164,7 @@ export default function MissingDataClient() {
                     className="mt-4 rounded-xl border-l-4 p-3 text-[12px] text-[#94a3b8] leading-relaxed"
                     style={{ borderColor: meta!.color, background: meta!.color + "08" }}>
                     <strong className="text-white block mb-0.5">When to use {meta!.label}</strong>
-                    {selected === "drop-rows"       && "Use when missingness is completely random (MCAR) and you can afford the data loss — typically when < 5% of rows are affected."}
+                    {selected === "drop-rows"       && "Use when missingness is completely random (MCAR) and you can afford the data loss, typically when < 5% of rows are affected."}
                     {selected === "mean-imputation" && "Use for a quick baseline with low complexity requirements. Avoid when feature correlations matter, as variance reduction can degrade model performance."}
                     {selected === "knn-imputation"  && "Use when features are correlated and the dataset is small-to-medium. For large datasets (> 100K rows), consider faster alternatives like MICE or iterative imputation."}
                   </motion.div>
@@ -180,9 +180,9 @@ export default function MissingDataClient() {
               <div className="mt-4 pt-4 border-t border-white/[0.06]">
                 <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#94a3b8] mb-3">Key Concepts</p>
                 <div className="flex flex-col gap-2 text-[11px] text-[#94a3b8]">
-                  <div><strong className="text-white">MCAR</strong> — Missing Completely at Random. Missingness has no pattern.</div>
-                  <div><strong className="text-white">MAR</strong> — Missing at Random. Missingness depends on other observed values.</div>
-                  <div><strong className="text-white">MNAR</strong> — Missing Not at Random. The missing value itself affects whether it&apos;s missing.</div>
+                  <div><strong className="text-white">MCAR</strong>: Missing Completely at Random. Missingness has no pattern.</div>
+                  <div><strong className="text-white">MAR</strong>: Missing at Random. Missingness depends on other observed values.</div>
+                  <div><strong className="text-white">MNAR</strong>: Missing Not at Random. The missing value itself affects whether it&apos;s missing.</div>
                 </div>
               </div>
             </div>

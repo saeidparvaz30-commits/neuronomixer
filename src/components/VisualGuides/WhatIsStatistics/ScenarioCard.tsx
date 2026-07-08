@@ -37,12 +37,12 @@ export default function ScenarioCard({
       {/* Scenario header */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div>
-          <span className="text-[10px] font-semibold uppercase tracking-[1px] text-[#d4af37]">
+          <span className="text-[10px] font-semibold uppercase tracking-[1px] text-[var(--color-accent)]">
             Scenario {scenarioIndex + 1}
           </span>
           <h3 className="text-[17px] font-bold text-white mt-0.5">{info.title}</h3>
         </div>
-        <div className="shrink-0 w-9 h-9 rounded-xl bg-[#d4af37]/10 border border-[#d4af37]/20 flex items-center justify-center text-[14px] font-black text-[#d4af37]">
+        <div className="shrink-0 w-9 h-9 rounded-xl bg-[#d4af37]/10 border border-[#d4af37]/20 flex items-center justify-center text-[14px] font-black text-[var(--color-accent)]">
           {scenarioIndex + 1}
         </div>
       </div>

@@ -29,7 +29,7 @@ function PairedScatter({ before, after }: { before: number[]; after: number[] })
       <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={PAD.t + IH} stroke="#334155" strokeWidth="1" />
       {/* y = x reference line */}
       <line x1={tx(mn)} y1={ty(mn)} x2={tx(mx)} y2={ty(mx)}
-        stroke="#d4af37" strokeWidth="1" strokeDasharray="3,2" opacity="0.6" />
+        stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="3,2" opacity="0.6" />
       {/* Connecting lines per pair */}
       {before.map((b, i) => (
         <line key={`l${i}`}
@@ -59,7 +59,7 @@ function PairedScatter({ before, after }: { before: number[]; after: number[] })
         transform={`rotate(-90, ${PAD.l - 14}, ${PAD.t + IH / 2})`}>
         After score
       </text>
-      <text x={tx(mx) - 10} y={ty(mx) - 4} fill="#d4af37" fontSize="7">y=x</text>
+      <text x={tx(mx) - 10} y={ty(mx) - 4} fill="var(--color-accent)" fontSize="7">y=x</text>
     </svg>
   );
 }
@@ -101,7 +101,7 @@ function DiffHistogram({ diffs }: { diffs: number[] }) {
         const zx = PAD.l + ((0 - mn) / (mx - mn)) * IW;
         if (zx >= PAD.l && zx <= PAD.l + IW) {
           return <line x1={zx} y1={PAD.t} x2={zx} y2={PAD.t + IH}
-            stroke="#d4af37" strokeWidth="1" strokeDasharray="2,2" />;
+            stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="2,2" />;
         }
         return null;
       })()}
@@ -134,7 +134,7 @@ export default function PairedSampleScenario({ onTestRun }: Props) {
       <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
         <div className="flex items-start gap-3 mb-4">
           <div className="w-8 h-8 rounded-lg bg-[#d4af37]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <svg className="w-4 h-4 text-[#d4af37]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4 h-4 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
@@ -164,7 +164,7 @@ export default function PairedSampleScenario({ onTestRun }: Props) {
           </div>
           <div className="rounded-xl border border-[#1e293b] p-3 text-center">
             <p className="text-[9px] text-[#475569] mb-1">Mean Diff</p>
-            <p className="text-[18px] font-black font-mono text-[#d4af37]">
+            <p className="text-[18px] font-black font-mono text-[var(--color-accent)]">
               +{meanDiff}
             </p>
           </div>
@@ -236,7 +236,7 @@ export default function PairedSampleScenario({ onTestRun }: Props) {
         <motion.button
           onClick={runTest}
           whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-          className="w-full py-2.5 rounded-xl text-[13px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+          className="w-full py-2.5 rounded-xl text-[13px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
         >
           Run Paired t-Test
         </motion.button>
@@ -255,7 +255,7 @@ export default function PairedSampleScenario({ onTestRun }: Props) {
             { step: "3", title: "Paired advantage", body: "Removes between-subject variability, increasing power" },
           ].map(({ step, title, body }) => (
             <div key={step} className="rounded-xl border border-[#1e293b] p-3">
-              <p className="text-[10px] font-mono text-[#d4af37] mb-1">Step {step}</p>
+              <p className="text-[10px] font-mono text-[var(--color-accent)] mb-1">Step {step}</p>
               <p className="text-[11px] font-semibold text-white mb-1">{title}</p>
               <p className="text-[11px] text-[#94a3b8]">{body}</p>
             </div>

@@ -78,7 +78,7 @@ export default function NonparametricGuideClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "nonparametric-tests", score: 7 }),
+        body: JSON.stringify({ guideSlug: "nonparametric-tests", score: 100 }),
       }).catch(() => {});
     }
   }, [isComplete, session?.user]);
@@ -108,7 +108,7 @@ export default function NonparametricGuideClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={isComplete} guideSlug="nonparametric-tests" score={7} />
+      <GuideCompletion isComplete={isComplete} guideSlug="nonparametric-tests" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -128,19 +128,19 @@ export default function NonparametricGuideClient() {
           className="mb-10"
         >
           <div className="flex items-center gap-2 mb-3">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[10px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[10px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               STATISTICS
             </span>
             <span className="text-[10px] text-[#475569]">·</span>
             <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[#475569]">
               UNIT 8: COMPARING GROUPS
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Nonparametric Tests:{" "}
-            <span className="text-[#d4af37]">When Assumptions Fail</span>
+            <span className="text-[var(--color-accent)]">When Assumptions Fail</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             Use rank-based methods when your data violates normality or when you have ordinal
@@ -237,7 +237,7 @@ export default function NonparametricGuideClient() {
           </Link>
           <Link
             href="/visual-guides/correlation-covariance"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Correlation &amp; Covariance →
           </Link>

@@ -15,8 +15,8 @@ interface Props {
 
 function ProductLaunchViz() {
   const bars = [
-    { label: "Mobile", pct: 65, color: "#d4af37" },
-    { label: "Desktop", pct: 25, color: "#3b82f6" },
+    { label: "Mobile", pct: 65, color: "var(--color-accent)" },
+    { label: "Desktop", pct: 25, color: "#93c5fd" },
     { label: "All Users", pct: 45, color: "#94a3b8" },
   ];
   return (
@@ -83,7 +83,7 @@ function ClinicalTrialViz() {
 
   const groups = [
     { label: "Treated", ...treated, color: "#3bb4a4" },
-    { label: "Control", ...control, color: "#3b82f6" },
+    { label: "Control", ...control, color: "#93c5fd" },
   ];
 
   // Scale: map score range [-10, 20] to 0-100%

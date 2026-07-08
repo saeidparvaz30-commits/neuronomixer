@@ -383,7 +383,7 @@ function ScatterPlot({
           <line
             x1={predScreen.x} y1={predScreen.piLower}
             x2={predScreen.x} y2={predScreen.piUpper}
-            stroke="#d4af37" strokeWidth={1.5}
+            stroke="var(--color-accent)" strokeWidth={1.5}
             strokeDasharray="4,3" opacity={0.5}
           />
           {/* CI range */}
@@ -403,7 +403,7 @@ function ScatterPlot({
           {/* Predicted point on regression line */}
           <circle
             cx={predScreen.x} cy={predScreen.yHat}
-            r={6} fill="#d4af37" stroke="#0f172a" strokeWidth={2}
+            r={6} fill="var(--color-accent)" stroke="#0f172a" strokeWidth={2}
           />
         </>
       )}
@@ -413,7 +413,7 @@ function ScatterPlot({
         <motion.line
           x1={lineXs[0].sx} y1={lineXs[0].sy}
           x2={lineXs[1].sx} y2={lineXs[1].sy}
-          stroke="#d4af37" strokeWidth={2.5}
+          stroke="var(--color-accent)" strokeWidth={2.5}
           animate={{ x1: lineXs[0].sx, y1: lineXs[0].sy, x2: lineXs[1].sx, y2: lineXs[1].sy }}
           transition={{ duration: 0.25 }}
           clipPath={`url(#plotClip)`}
@@ -462,7 +462,7 @@ function ScatterPlot({
       {eqText && (
         <text
           x={PAD.l + PLOT_W - 6} y={PAD.t + 16}
-          textAnchor="end" fill="#d4af37" fontSize={11}
+          textAnchor="end" fill="var(--color-accent)" fontSize={11}
           fontFamily="monospace"
         >
           {eqText}
@@ -706,7 +706,7 @@ export default function SimpleRegressionClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "simple-linear-regression", score: 8 }),
+        body: JSON.stringify({ guideSlug: "simple-linear-regression", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -805,7 +805,7 @@ export default function SimpleRegressionClient() {
   ];
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-20">
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
@@ -819,11 +819,11 @@ export default function SimpleRegressionClient() {
         {/* Hero */}
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               UNIT 10: REGRESSION FOUNDATIONS
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
@@ -832,7 +832,7 @@ export default function SimpleRegressionClient() {
             className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
           >
             Simple Linear Regression:{" "}
-            <span className="text-[#d4af37]">Fit the Line</span>
+            <span className="text-[var(--color-accent)]">Fit the Line</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 16 }}
@@ -884,7 +884,7 @@ export default function SimpleRegressionClient() {
                 <select
                   value={currentPreset}
                   onChange={(e) => handlePresetChange(e.target.value as PresetKey)}
-                  className="text-[12px] bg-[#1e293b] text-white border border-[#334155] rounded-lg px-3 py-1.5 focus:outline-none focus:border-[#d4af37] cursor-pointer"
+                  className="text-[12px] bg-[#1e293b] text-white border border-[#334155] rounded-lg px-3 py-1.5 focus:outline-none focus:border-[var(--color-accent)] cursor-pointer"
                 >
                   {(Object.entries(PRESETS) as [PresetKey, { label: string }][]).map(
                     ([key, { label }]) => (
@@ -960,7 +960,7 @@ export default function SimpleRegressionClient() {
               </div>
               <motion.p
                 className="text-5xl font-black mb-1"
-                style={{ color: "#d4af37" }}
+                style={{ color: "var(--color-accent)" }}
                 animate={{ opacity: [0.5, 1] }}
                 key={rSquared.toFixed(3)}
                 transition={{ duration: 0.3 }}
@@ -1018,7 +1018,7 @@ export default function SimpleRegressionClient() {
                     <StatRow label="Slope (b)" value={fit.slope.toFixed(4)} color="#3bb4a4"
                       note={`For each unit ↑ in x, y changes by ${fit.slope.toFixed(3)}`}
                     />
-                    <StatRow label="Intercept (a)" value={fit.intercept.toFixed(4)} color="#d4af37" />
+                    <StatRow label="Intercept (a)" value={fit.intercept.toFixed(4)} color="var(--color-accent)" />
                     <StatRow label="Residual SE" value={`±${rmse.toFixed(3)}`} color="#ef4444"
                       note={`Typical residual size: ±${rmse.toFixed(3)} (sqrt of SSE/(n−2))`}
                     />
@@ -1045,24 +1045,25 @@ export default function SimpleRegressionClient() {
                   value={predXRaw}
                   onChange={(e) => handlePredXChange(e.target.value)}
                   step={0.1}
-                  className="flex-1 text-[12px] bg-[#1e293b] text-white border border-[#334155] rounded-lg px-3 py-1.5 focus:outline-none focus:border-[#d4af37]"
+                  className="flex-1 text-[12px] bg-[#1e293b] text-white border border-[#334155] rounded-lg px-3 py-1.5 focus:outline-none focus:border-[var(--color-accent)]"
                   placeholder={fit ? fit.meanX.toFixed(2) : "x value"}
                 />
                 <input
                   type="range"
+                  aria-label="Prediction x value"
                   min={bounds.xMin.toFixed(2)}
                   max={bounds.xMax.toFixed(2)}
                   step={((bounds.xMax - bounds.xMin) / 100).toFixed(3)}
                   value={predXRaw || (fit ? fit.meanX.toFixed(2) : "0")}
                   onChange={(e) => handlePredXChange(e.target.value)}
-                  className="flex-1 accent-[#d4af37]"
+                  className="flex-1 accent-[var(--color-accent)]"
                 />
               </div>
               {predFit && predX !== null ? (
                 <div className="space-y-1.5 text-[12px]">
                   <div className="flex justify-between items-center">
                     <span className="text-[#94a3b8]">Predicted ŷ</span>
-                    <span className="font-mono font-bold text-[#d4af37]">{predFit.yHat.toFixed(3)}</span>
+                    <span className="font-mono font-bold text-[var(--color-accent)]">{predFit.yHat.toFixed(3)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-[#94a3b8]">95% CI</span>
@@ -1077,7 +1078,7 @@ export default function SimpleRegressionClient() {
                     </span>
                   </div>
                   <p className="text-[10px] text-[#475569] mt-2 leading-relaxed border-t border-[#1e293b] pt-2">
-                    PI is wider — it accounts for individual variation around the mean line.
+                    PI is wider: it accounts for individual variation around the mean line.
                     The CI estimates where the true mean response falls; the PI covers
                     where a new individual observation will likely land.
                   </p>
@@ -1101,14 +1102,16 @@ export default function SimpleRegressionClient() {
                   Inspect residual patterns to check OLS assumptions
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2" role="radiogroup" aria-label="Diagnostic view">
                 {(["residual", "qq", "summary"] as const).map((tab) => (
                   <button
                     key={tab}
+                    role="radio"
+                    aria-checked={diagTab === tab}
                     onClick={() => handleDiagTab(tab)}
                     className={`text-[11px] px-3 py-1.5 rounded-lg border transition-colors ${
                       diagTab === tab
-                        ? "border-[#d4af37] text-[#d4af37] bg-[#d4af37]/10"
+                        ? "border-[var(--color-accent)] text-[var(--color-accent)] bg-[#d4af37]/10"
                         : "border-[#1e293b] text-[#94a3b8] hover:border-[#334155] hover:text-white"
                     }`}
                   >
@@ -1141,7 +1144,7 @@ export default function SimpleRegressionClient() {
                       <div className="max-w-[400px]">
                         <p className="text-[11px] text-[#475569] mb-3">
                           Q-Q plot of residuals. Points close to the diagonal suggest
-                          normality — important for valid inference.
+                          normality, which is important for valid inference.
                         </p>
                         <QQPlot fit={fit} />
                       </div>
@@ -1151,7 +1154,7 @@ export default function SimpleRegressionClient() {
                         <SummaryCard label="Min Residual" value={residualStats.min.toFixed(3)} color="#ef4444" />
                         <SummaryCard label="Max Residual" value={residualStats.max.toFixed(3)} color="#3bb4a4" />
                         <SummaryCard label="Mean Residual" value={residualStats.mean.toFixed(4)} color="#94a3b8" />
-                        <SummaryCard label="Std Dev" value={residualStats.stdev.toFixed(3)} color="#d4af37" />
+                        <SummaryCard label="Std Dev" value={residualStats.stdev.toFixed(3)} color="var(--color-accent)" />
                         <SummaryCard label="Residual SE" value={rmse.toFixed(3)} color="#a855f7" />
                         <SummaryCard
                           label="Outliers (|r|>2σ)"
@@ -1182,17 +1185,17 @@ export default function SimpleRegressionClient() {
           {[
             {
               title: "OLS Principle",
-              body: "Ordinary Least Squares minimises the sum of squared residuals — the total vertical distance² between each point and the fitted line.",
+              body: "Ordinary Least Squares minimises the sum of squared residuals: the total vertical distance² between each point and the fitted line.",
               color: "#3bb4a4",
             },
             {
               title: "R² Explained",
               body: "R² = 1 − SSE/SST. It measures the proportion of variance in y explained by x. A value near 1 means the model fits well.",
-              color: "#d4af37",
+              color: "var(--color-accent)",
             },
             {
               title: "PI vs CI",
-              body: "The 95% CI covers the true mean response at x*. The 95% PI covers where a new individual observation will fall — always wider.",
+              body: "The 95% CI covers the true mean response at x*. The 95% PI covers where a new individual observation will fall, and is always wider.",
               color: "#a855f7",
             },
           ].map(({ title, body, color }) => (
@@ -1215,13 +1218,13 @@ export default function SimpleRegressionClient() {
           </Link>
           <Link
             href="/visual-guides/multiple-regression-confounding"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Multiple Regression →
           </Link>
         </div>
 
-        <GuideCompletion isComplete={allComplete} guideSlug="simple-linear-regression" score={8} />
+        <GuideCompletion isComplete={allComplete} guideSlug="simple-linear-regression" score={100} />
       </div>
     </div>
   );

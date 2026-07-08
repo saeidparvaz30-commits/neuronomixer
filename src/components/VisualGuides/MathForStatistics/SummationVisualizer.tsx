@@ -93,12 +93,13 @@ export default function SummationVisualizer({ onAdjust }: SummationVisualizerPro
           </label>
           <input
             type="range"
+            aria-label="Upper limit N"
             min={3}
             max={20}
             step={1}
             value={n}
             onChange={(e) => handleN(Number(e.target.value))}
-            className="w-full accent-[#d4af37] h-1"
+            className="w-full accent-[var(--color-accent)] h-1"
           />
           <div className="flex justify-between text-[10px] text-[#334155] mt-0.5">
             <span>3</span><span>20</span>
@@ -108,14 +109,16 @@ export default function SummationVisualizer({ onAdjust }: SummationVisualizerPro
           <label className="block text-[11px] font-semibold uppercase tracking-widest text-[#94a3b8] mb-2">
             Formula
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-2" role="radiogroup" aria-label="Summation formula">
             {(["i", "i2", "2i+1"] as FormulaType[]).map((f) => (
               <button
                 key={f}
+                role="radio"
+                aria-checked={formula === f}
                 onClick={() => handleFormula(f)}
                 className={`px-4 py-1.5 rounded-lg text-sm font-mono font-semibold transition-all border ${
                   formula === f
-                    ? "bg-[#d4af37] text-[#0a0e1a] border-[#d4af37]"
+                    ? "bg-[var(--color-accent)] text-[#0a0e1a] border-[var(--color-accent)]"
                     : "border-[#1e293b] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37]"
                 }`}
               >
@@ -131,9 +134,9 @@ export default function SummationVisualizer({ onAdjust }: SummationVisualizerPro
         <div className="flex items-center gap-6 flex-wrap">
           <div className="flex items-center gap-1 text-white">
             <div className="flex flex-col items-center leading-none mr-1">
-              <span className="text-[18px] text-[#d4af37] font-bold">N={n}</span>
-              <span className="text-[28px] font-black text-[#d4af37]">Σ</span>
-              <span className="text-[12px] text-[#d4af37]">i=1</span>
+              <span className="text-[18px] text-[var(--color-accent)] font-bold">N={n}</span>
+              <span className="text-[28px] font-black text-[var(--color-accent)]">Σ</span>
+              <span className="text-[12px] text-[var(--color-accent)]">i=1</span>
             </div>
             <span className="text-xl font-mono text-white">({formulaLabel(formula)})</span>
           </div>
@@ -150,7 +153,7 @@ export default function SummationVisualizer({ onAdjust }: SummationVisualizerPro
                     className="text-base font-mono text-white"
                   >
                     {idx > 0 && <span className="text-[#3bb4a4] mx-1">+</span>}
-                    <span className="text-[#d4af37]">{t}</span>
+                    <span className="text-[var(--color-accent)]">{t}</span>
                   </motion.span>
                 ))}
                 {visibleTerms >= n && (
@@ -178,7 +181,7 @@ export default function SummationVisualizer({ onAdjust }: SummationVisualizerPro
         <div className="mt-4 flex gap-3">
           <button
             onClick={handleExpand}
-            className="px-4 py-1.5 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-4 py-1.5 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             {expanded ? "Reset" : "Expand"}
           </button>
@@ -204,7 +207,7 @@ export default function SummationVisualizer({ onAdjust }: SummationVisualizerPro
                   className="w-full rounded-t transition-all duration-300"
                   style={{
                     height: h,
-                    background: isVisible ? "#d4af37cc" : "#1e293b",
+                    background: isVisible ? "color-mix(in srgb, var(--color-accent) 80%, transparent)" : "#1e293b",
                     marginTop: "auto",
                   }}
                 />
@@ -220,7 +223,7 @@ export default function SummationVisualizer({ onAdjust }: SummationVisualizerPro
         <p className="text-[13px] text-[#94a3b8] leading-relaxed">
           <span className="font-semibold text-white">Sigma (Σ) is just shorthand for &ldquo;add these up.&rdquo;</span>{" "}
           Start with i=1, plug into the formula, add. Repeat until i=N. For example:{" "}
-          <span className="font-mono text-[#d4af37]">Σ(i=1 to 5)(2i+1) = 3+5+7+9+11 = 35</span>.
+          <span className="font-mono text-[var(--color-accent)]">Σ(i=1 to 5)(2i+1) = 3+5+7+9+11 = 35</span>.
         </p>
       </div>
     </div>

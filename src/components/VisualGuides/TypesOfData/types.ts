@@ -37,7 +37,7 @@ export const DATA_EXAMPLES: DataExample[] = [
 ];
 
 export const SCALE_INFO: Record<Scale, { name: string; description: string; color: string }> = {
-  nominal:  { name: "Nominal",  description: "Categories with no order (e.g., colors, gender, zip code)",         color: "#3b82f6" },
+  nominal:  { name: "Nominal",  description: "Categories with no order (e.g., colors, gender, zip code)",         color: "#93c5fd" },
   ordinal:  { name: "Ordinal",  description: "Ordered categories (e.g., rankings, satisfaction levels)",          color: "#a855f7" },
   interval: { name: "Interval", description: "Numeric with no true zero (e.g., temperature, IQ score)",           color: "#f97316" },
   ratio:    { name: "Ratio",    description: "Numeric with true zero (e.g., weight, income, height)",             color: "#3bb4a4" },
@@ -76,7 +76,7 @@ export const VALID_OPERATIONS: ValidOperation[] = [
   },
   {
     name: "Ratios & proportions",
-    why: "'Twice as heavy' requires a true zero. 0°C is not 'no temperature' — so 40°C is not twice as warm as 20°C.",
+    why: "'Twice as heavy' requires a true zero. 0°C is not 'no temperature', so 40°C is not twice as warm as 20°C.",
     availableFor: ["ratio"],
   },
   {

@@ -40,7 +40,7 @@ export default function MathForStatisticsClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "math-for-statistics", score: 5 }),
+        body: JSON.stringify({ guideSlug: "math-for-statistics", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -61,7 +61,7 @@ export default function MathForStatisticsClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="math-for-statistics" score={5} />
+      <GuideCompletion isComplete={allComplete} guideSlug="math-for-statistics" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -76,15 +76,15 @@ export default function MathForStatisticsClient() {
         {/* Hero */}
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Statistics
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Math for Statistics:{" "}
-            <span className="text-[#d4af37]">The Visual Toolkit</span>
+            <span className="text-[var(--color-accent)]">The Visual Toolkit</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px] mb-3">
             Statistics relies on a small toolkit of mathematical ideas. You do not need to memorize formulas; you need to understand what they mean.
@@ -197,7 +197,7 @@ export default function MathForStatisticsClient() {
           </Link>
           <Link
             href="/visual-guides/descriptive-statistics"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Next: Descriptive Statistics →
           </Link>

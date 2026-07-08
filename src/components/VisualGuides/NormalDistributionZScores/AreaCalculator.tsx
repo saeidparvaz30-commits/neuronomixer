@@ -83,11 +83,11 @@ export default function AreaCalculator() {
       </p>
 
       {/* Mode selector */}
-      <div className="flex gap-2 mb-4 flex-wrap">
+      <div className="flex gap-2 mb-4 flex-wrap" role="radiogroup" aria-label="Area calculation mode">
         {(["between", "left", "right"] as AreaMode[]).map(m => (
           <button
             key={m}
-            onClick={() => setMode(m)}
+            onClick={() => setMode(m)} role="radio" aria-checked={mode === m}
             className="px-3 py-1.5 rounded-xl text-[11px] font-semibold border transition-all capitalize"
             style={{
               borderColor: mode === m ? "#1e5d8a" : "#1e293b",
@@ -133,7 +133,7 @@ export default function AreaCalculator() {
             className="bg-[#1e293b] rounded-xl px-3 py-2 text-center"
           >
             <p className="text-[9px] text-[#475569] uppercase tracking-[1px] mb-0.5">Area</p>
-            <p className="text-[16px] font-black text-[#d4af37]">{(area * 100).toFixed(2)}%</p>
+            <p className="text-[16px] font-black text-[var(--color-accent)]">{(area * 100).toFixed(2)}%</p>
           </motion.div>
         </div>
       </div>
@@ -147,7 +147,7 @@ export default function AreaCalculator() {
         className="block"
       >
         <path d={`${curvePath} L${curvePoints[curvePoints.length - 1].x.toFixed(2)},${baselineY} L${curvePoints[0].x.toFixed(2)},${baselineY} Z`} fill="#1e5d8a" opacity={0.12} />
-        {shadedPath && <path d={shadedPath} fill="#d4af37" opacity={0.35} />}
+        {shadedPath && <path d={shadedPath} fill="var(--color-accent)" opacity={0.35} />}
         <path d={curvePath} fill="none" stroke="#3bb4a4" strokeWidth="2" />
         <line x1={PAD.l} y1={baselineY} x2={VW - PAD.r} y2={baselineY} stroke="#334155" strokeWidth="1" />
 
@@ -156,8 +156,8 @@ export default function AreaCalculator() {
           const sx = zToSvgX(z1);
           return (
             <g>
-              <line x1={sx} y1={PAD.t} x2={sx} y2={baselineY} stroke="#d4af37" strokeWidth="1.5" strokeDasharray="3 2" />
-              <text x={sx} y={PAD.t - 2} textAnchor="middle" fill="#d4af37" fontSize="8" fontWeight="bold">
+              <line x1={sx} y1={PAD.t} x2={sx} y2={baselineY} stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="3 2" />
+              <text x={sx} y={PAD.t - 2} textAnchor="middle" fill="var(--color-accent)" fontSize="8" fontWeight="bold">
                 {z1.toFixed(1)}
               </text>
             </g>
@@ -169,8 +169,8 @@ export default function AreaCalculator() {
           const sx = zToSvgX(z2);
           return (
             <g>
-              <line x1={sx} y1={PAD.t} x2={sx} y2={baselineY} stroke="#f97316" strokeWidth="1.5" strokeDasharray="3 2" />
-              <text x={sx} y={PAD.t - 2} textAnchor="middle" fill="#f97316" fontSize="8" fontWeight="bold">
+              <line x1={sx} y1={PAD.t} x2={sx} y2={baselineY} stroke="var(--color-warning)" strokeWidth="1.5" strokeDasharray="3 2" />
+              <text x={sx} y={PAD.t - 2} textAnchor="middle" fill="var(--color-warning)" fontSize="8" fontWeight="bold">
                 {z2.toFixed(1)}
               </text>
             </g>

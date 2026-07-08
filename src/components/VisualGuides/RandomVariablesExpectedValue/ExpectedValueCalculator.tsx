@@ -30,7 +30,7 @@ export default function ExpectedValueCalculator({ rows, label }: ExpectedValueCa
 
       {/* Formula header */}
       <div className="mb-4 p-3 rounded-xl bg-[#0a0e1a] border border-[#1e293b]">
-        <p className="text-[13px] font-mono text-[#d4af37] text-center">
+        <p className="text-[13px] font-mono text-[var(--color-accent)] text-center">
           EV = Σ xᵢ · pᵢ
         </p>
       </div>
@@ -86,17 +86,17 @@ export default function ExpectedValueCalculator({ rows, label }: ExpectedValueCa
           {Math.abs(ev) < 0.005 ? (
             <div className="inline-flex items-center gap-1.5 rounded-full border border-[#334155] px-3 py-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#94a3b8]" />
-              <span className="text-[11px] text-[#94a3b8]">Fair game — zero expected gain</span>
+              <span className="text-[11px] text-[#94a3b8]">Fair game: zero expected gain</span>
             </div>
           ) : ev > 0 ? (
             <div className="inline-flex items-center gap-1.5 rounded-full border border-[#3bb4a4]/30 bg-[#3bb4a4]/10 px-3 py-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#3bb4a4]" />
-              <span className="text-[11px] text-[#3bb4a4]">Positive EV — favors the player</span>
+              <span className="text-[11px] text-[#3bb4a4]">Positive EV: favors the player</span>
             </div>
           ) : (
             <div className="inline-flex items-center gap-1.5 rounded-full border border-[#ef4444]/30 bg-[#ef4444]/10 px-3 py-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#ef4444]" />
-              <span className="text-[11px] text-[#ef4444]">Negative EV — house always wins</span>
+              <span className="text-[11px] text-[#ef4444]">Negative EV: house always wins</span>
             </div>
           )}
         </div>

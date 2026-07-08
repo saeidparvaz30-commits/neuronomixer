@@ -88,7 +88,7 @@ export default function DistributionCurve({ df, tStat, alpha, testType, hasResul
         {critLeftPath && <path d={critLeftPath} fill="#ef4444" opacity="0.25" />}
 
         {/* P-value region shading (gold) */}
-        {pValuePath && <path d={pValuePath} fill="#d4af37" opacity="0.35" />}
+        {pValuePath && <path d={pValuePath} fill="var(--color-accent)" opacity="0.35" />}
 
         {/* Distribution curve */}
         <path d={curvePath} fill="none" stroke="#3bb4a4" strokeWidth="2" />
@@ -113,9 +113,9 @@ export default function DistributionCurve({ df, tStat, alpha, testType, hasResul
             <line
               x1={tx(tStat)} y1={PAD.t}
               x2={tx(tStat)} y2={PAD.t + IH}
-              stroke="#d4af37" strokeWidth="2"
+              stroke="var(--color-accent)" strokeWidth="2"
             />
-            <text x={tx(tStat) + 3} y={PAD.t + 14} fill="#d4af37" fontSize="9" fontWeight="600">
+            <text x={tx(tStat) + 3} y={PAD.t + 14} fill="var(--color-accent)" fontSize="9" fontWeight="600">
               t={tStat.toFixed(2)}
             </text>
           </motion.g>
@@ -132,7 +132,7 @@ export default function DistributionCurve({ df, tStat, alpha, testType, hasResul
         <g>
           <rect x={W - PAD.r - 100} y={PAD.t + 2} width={8} height={8} fill="#ef4444" opacity="0.5" />
           <text x={W - PAD.r - 89} y={PAD.t + 9} fill="#94a3b8" fontSize="8">Critical region (α)</text>
-          <rect x={W - PAD.r - 100} y={PAD.t + 14} width={8} height={8} fill="#d4af37" opacity="0.5" />
+          <rect x={W - PAD.r - 100} y={PAD.t + 14} width={8} height={8} fill="var(--color-accent)" opacity="0.5" />
           <text x={W - PAD.r - 89} y={PAD.t + 21} fill="#94a3b8" fontSize="8">P-value region</text>
         </g>
       </svg>

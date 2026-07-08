@@ -48,7 +48,7 @@ function DataTableInner({ rows, strategy }: Props) {
     if (wasNull)
       return {
         bg:    "bg-[#ef4444]/10",
-        text:  "text-[#fca5a5]",
+        text:  "text-[#ef4444]",
         extra: "animate-pulse",
       };
     return { bg: "", text: "text-[#f1f5f9]", extra: "" };
@@ -84,7 +84,7 @@ function DataTableInner({ rows, strategy }: Props) {
       <div className="overflow-x-auto rounded-xl border border-[#1e293b]">
         <table className="w-full border-collapse min-w-max">
           <caption className="sr-only">
-            Dataset with missing values — {rowCount} rows displayed
+            Dataset with missing values: {rowCount} rows displayed
           </caption>
           <thead>
             <tr className="bg-[#1e293b]">
@@ -124,7 +124,7 @@ function DataTableInner({ rows, strategy }: Props) {
                         aria-label={isNull ? "Missing value" : undefined}
                         className={`px-3 py-2 text-[12px] whitespace-nowrap transition-colors ${
                           isNull
-                            ? "bg-[#ef4444]/10 text-[#fca5a5] animate-pulse"
+                            ? "bg-[#ef4444]/10 text-[#ef4444] animate-pulse"
                             : "text-[#f1f5f9]"
                         }`}
                         style={
@@ -146,7 +146,7 @@ function DataTableInner({ rows, strategy }: Props) {
                             {fmt(rawVal as number | null)}
                           </motion.span>
                         ) : isNull ? (
-                          <span className="italic text-[#fca5a5]">null</span>
+                          <span className="italic text-[#ef4444]">null</span>
                         ) : (
                           fmt(rawVal as number | null)
                         )}

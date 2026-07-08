@@ -48,17 +48,19 @@ export default function SampleSizeControl({ sampleSize, onChange }: Props) {
       </p>
 
       {/* Preset buttons */}
-      <div className="flex flex-wrap gap-2 mb-3">
+      <div className="flex flex-wrap gap-2 mb-3" role="radiogroup" aria-label="Sample size (n)">
         {PRESET_SIZES.map((n) => {
           const active = sampleSize === n;
           return (
             <button
               key={n}
+              role="radio"
+              aria-checked={active}
               onClick={() => handlePreset(n)}
               className="px-3 py-1.5 rounded-xl text-[11px] font-semibold border transition-all"
               style={{
-                borderColor: active ? "#d4af37" : "#1e293b",
-                color: active ? "#d4af37" : "#475569",
+                borderColor: active ? "var(--color-accent)" : "#1e293b",
+                color: active ? "var(--color-accent)" : "#475569",
                 background: active ? "#d4af3718" : "transparent",
               }}
             >
@@ -95,7 +97,7 @@ export default function SampleSizeControl({ sampleSize, onChange }: Props) {
         <span className="text-[11px] text-[#94a3b8] font-mono">
           SE = σ / √n = 20 / √{sampleSize} ≈{" "}
         </span>
-        <span className="text-[#d4af37] font-mono font-bold text-[13px] transition-all">
+        <span className="text-[var(--color-accent)] font-mono font-bold text-[13px] transition-all">
           {se.toFixed(3)}
         </span>
       </div>

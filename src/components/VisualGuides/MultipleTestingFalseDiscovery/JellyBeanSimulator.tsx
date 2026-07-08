@@ -42,7 +42,7 @@ export default function JellyBeanSimulator({
       <div className="rounded-xl border border-[#1e293b] bg-[#1e293b]/40 p-3 mb-5">
         <p className="text-[12px] text-[#94a3b8] leading-relaxed">
           A researcher tests whether eating jelly beans of each of{" "}
-          <span className="text-[#d4af37] font-semibold">{numberOfTests} colors</span> is
+          <span className="text-[var(--color-accent)] font-semibold">{numberOfTests} colors</span> is
           associated with acne. Each test compares the mean acne-severity score of a
           jelly-bean group against a control group (a two-sample test of means), but{" "}
           <span className="text-white font-semibold">there is no real effect</span>. All
@@ -53,14 +53,16 @@ export default function JellyBeanSimulator({
       {/* Number of tests */}
       <div className="mb-5">
         <p className="text-[11px] text-white mb-2">Number of jelly bean colors tested (M)</p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Number of jelly bean colors tested">
           {TEST_OPTIONS.map(n => (
             <button
               key={n}
+              role="radio"
+              aria-checked={numberOfTests === n}
               onClick={() => handleTestsChange(n)}
               className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${
                 numberOfTests === n
-                  ? "bg-[#d4af37] text-[#0a0e1a]"
+                  ? "bg-[var(--color-accent)] text-[#0a0e1a]"
                   : "border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37]"
               }`}
             >
@@ -74,17 +76,18 @@ export default function JellyBeanSimulator({
       <div className="mb-5">
         <div className="flex justify-between mb-1">
           <span className="text-[11px] text-white">Sample size per test (n)</span>
-          <span className="text-[11px] font-mono text-[#d4af37]">{sampleSizePerTest}</span>
+          <span className="text-[11px] font-mono text-[var(--color-accent)]">{sampleSizePerTest}</span>
         </div>
         <input
           type="range"
+          aria-label="Sample size per test"
           min={30}
           max={200}
           step={5}
           value={sampleSizePerTest}
           onChange={e => onSampleSizeChange(Number(e.target.value))}
           className="w-full"
-          style={{ accentColor: "#d4af37" }}
+          style={{ accentColor: "var(--color-accent)" }}
         />
         <div className="flex justify-between mt-0.5">
           <span className="text-[10px] text-[#475569]">30</span>
@@ -97,7 +100,7 @@ export default function JellyBeanSimulator({
         <p className="text-[11px] text-[#94a3b8] mb-1">Expected false positives under H₀:</p>
         <p className="text-[13px] font-mono text-white">
           M × α = {numberOfTests} × 0.05 ={" "}
-          <span className="text-[#d4af37] font-bold">{expectedFP}</span>
+          <span className="text-[var(--color-accent)] font-bold">{expectedFP}</span>
         </p>
         <p className="text-[11px] text-[#475569] mt-1">
           Even with no real effect, we expect ~{expectedFP} tests to appear significant by chance.
@@ -110,7 +113,7 @@ export default function JellyBeanSimulator({
         disabled={isRunning}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.97 }}
-        className="w-full py-2.5 rounded-xl text-[13px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-50"
+        className="w-full py-2.5 rounded-xl text-[13px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-50"
       >
         {isRunning ? "Simulating…" : "Run Simulation"}
       </motion.button>

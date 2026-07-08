@@ -26,11 +26,11 @@ const DATA_ITEMS: DataItemDef[] = [
         "E-commerce product catalogs",
         "Sensor readings from IoT devices",
       ],
-      keyTrait: "Fixed columns with defined data types — every row follows the exact same format.",
+      keyTrait: "Fixed columns with defined data types: every row follows the exact same format.",
     },
     wrongHints: {
-      semi: "Not quite — CSV has a rigid schema with fixed columns, not flexible tags.",
-      unstructured: "Not quite — CSV data fits neatly into rows and columns with a strict schema.",
+      semi: "Not quite: CSV has a rigid schema with fixed columns, not flexible tags.",
+      unstructured: "Not quite: CSV data fits neatly into rows and columns with a strict schema.",
     },
   },
   {
@@ -47,8 +47,8 @@ const DATA_ITEMS: DataItemDef[] = [
       keyTrait: "A relational table with typed columns enforces a rigid, predefined schema.",
     },
     wrongHints: {
-      semi: "Not quite — SQL tables have a fixed schema with typed columns, not flexible keys.",
-      unstructured: "Not quite — SQL data is highly structured: every column has a defined type.",
+      semi: "Not quite: SQL tables have a fixed schema with typed columns, not flexible keys.",
+      unstructured: "Not quite: SQL data is highly structured: every column has a defined type.",
     },
   },
   {
@@ -62,11 +62,11 @@ const DATA_ITEMS: DataItemDef[] = [
         "HR employee rosters",
         "Sales pipeline trackers",
       ],
-      keyTrait: "Grid of cells with rows and columns — tabular by design.",
+      keyTrait: "Grid of cells with rows and columns: tabular by design.",
     },
     wrongHints: {
-      semi: "Not quite — a spreadsheet grid has a row/column structure, not self-describing tags.",
-      unstructured: "Not quite — spreadsheets are inherently tabular and structured.",
+      semi: "Not quite: a spreadsheet grid has a row/column structure, not self-describing tags.",
+      unstructured: "Not quite: spreadsheets are inherently tabular and structured.",
     },
   },
   // Semi-Structured
@@ -81,11 +81,11 @@ const DATA_ITEMS: DataItemDef[] = [
         "Configuration files for apps",
         "NoSQL document store records",
       ],
-      keyTrait: "Self-describing key-value pairs — flexible nesting without a fixed schema.",
+      keyTrait: "Self-describing key-value pairs: flexible nesting without a fixed schema.",
     },
     wrongHints: {
-      structured: "Not quite — JSON fields can be optional or nested, so there's no rigid schema.",
-      unstructured: "Not quite — JSON has key-value structure with identifiable fields.",
+      structured: "Not quite: JSON fields can be optional or nested, so there's no rigid schema.",
+      unstructured: "Not quite: JSON has key-value structure with identifiable fields.",
     },
   },
   {
@@ -102,8 +102,8 @@ const DATA_ITEMS: DataItemDef[] = [
       keyTrait: "Hierarchical tags give structure, but the schema is flexible and self-describing.",
     },
     wrongHints: {
-      structured: "Not quite — XML tags are flexible and hierarchical, not fixed columns.",
-      unstructured: "Not quite — XML has explicit tags and attributes that define its structure.",
+      structured: "Not quite: XML tags are flexible and hierarchical, not fixed columns.",
+      unstructured: "Not quite: XML has explicit tags and attributes that define its structure.",
     },
   },
   {
@@ -120,8 +120,8 @@ const DATA_ITEMS: DataItemDef[] = [
       keyTrait: "Structured headers (From, To, Date) combined with a freeform text body.",
     },
     wrongHints: {
-      structured: "Not quite — the email body is freeform text, so it's not fully structured.",
-      unstructured: "Not quite — emails have structured headers (From, To, Subject) alongside freeform content.",
+      structured: "Not quite: the email body is freeform text, so it's not fully structured.",
+      unstructured: "Not quite: emails have structured headers (From, To, Subject) alongside freeform content.",
     },
   },
   // Unstructured
@@ -139,8 +139,8 @@ const DATA_ITEMS: DataItemDef[] = [
       keyTrait: "Freeform text and embedded media with no predefined schema.",
     },
     wrongHints: {
-      structured: "Not quite — social posts are freeform text with no fixed columns or schema.",
-      semi: "Not quite — social posts lack the self-describing key-value markers of semi-structured data.",
+      structured: "Not quite: social posts are freeform text with no fixed columns or schema.",
+      semi: "Not quite: social posts lack the self-describing key-value markers of semi-structured data.",
     },
   },
   {
@@ -154,11 +154,11 @@ const DATA_ITEMS: DataItemDef[] = [
         "Call center audio logs",
         "Music tracks",
       ],
-      keyTrait: "Raw binary signal data — meaning must be extracted by speech recognition or audio ML.",
+      keyTrait: "Raw binary signal data: meaning must be extracted by speech recognition or audio ML.",
     },
     wrongHints: {
-      structured: "Not quite — an audio file is a raw binary signal with no column schema.",
-      semi: "Not quite — audio data has no tags or keys describing its content.",
+      structured: "Not quite: an audio file is a raw binary signal with no column schema.",
+      semi: "Not quite: audio data has no tags or keys describing its content.",
     },
   },
   {
@@ -172,11 +172,11 @@ const DATA_ITEMS: DataItemDef[] = [
         "Satellite imagery",
         "Product catalog photos",
       ],
-      keyTrait: "A grid of pixels with no semantic schema — content must be inferred by computer vision.",
+      keyTrait: "A grid of pixels with no semantic schema: content must be inferred by computer vision.",
     },
     wrongHints: {
-      structured: "Not quite — image pixels have no column schema; the content is encoded visually.",
-      semi: "Not quite — image files have no meaningful keys describing what's in the picture.",
+      structured: "Not quite: image pixels have no column schema; the content is encoded visually.",
+      semi: "Not quite: image files have no meaningful keys describing what's in the picture.",
     },
   },
 ];
@@ -186,7 +186,7 @@ const BUCKETS: { id: BucketId; label: string; subtitle: string; color: string; i
     id: "structured",
     label: "Structured",
     subtitle: "Rigid schema, rows & columns",
-    color: "#3b82f6",
+    color: "#93c5fd",
     icon: <Table2 size={16} />,
   },
   {
@@ -227,7 +227,7 @@ function shuffleIds(): string[] {
 type Particle = { id: number; x: number; y: number; color: string; dx: number; dy: number };
 
 function generateParticles(): Particle[] {
-  const colors = ["#d4af37", "#3bb4a4", "#3b82f6", "#a855f7", "#ffffff"];
+  const colors = ["var(--color-accent)", "#3bb4a4", "#93c5fd", "#a855f7", "#f1f5f9"];
   return Array.from({ length: 30 }, (_, i) => ({
     id: i,
     x: 40 + Math.random() * 60, // percent
@@ -280,7 +280,7 @@ export default function WhatIsDataClient() {
         fetch("/api/visual-guides/complete", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ guideSlug: "what-is-data", score: 9 }),
+          body: JSON.stringify({ guideSlug: "what-is-data", score: 100 }),
         }).catch(() => {});
       }
       return () => clearTimeout(timer);
@@ -300,7 +300,7 @@ export default function WhatIsDataClient() {
       }));
       setLiveMessage(`${item.label} correctly placed in ${targetBucket}.`);
     } else {
-      const hint = item.wrongHints[targetBucket] ?? "Not quite — try a different bucket.";
+      const hint = item.wrongHints[targetBucket] ?? "Not quite: try a different bucket.";
       setErrorBucketId(targetBucket);
       setErrorItemId(itemId);
       setErrorHint(hint);
@@ -428,7 +428,7 @@ export default function WhatIsDataClient() {
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[560px]">
             Drag each data sample into the right bucket. Learn to tell structured from
-            unstructured data — by doing.
+            unstructured data, by doing.
           </p>
         </section>
 
@@ -438,7 +438,7 @@ export default function WhatIsDataClient() {
             <motion.div
               className="absolute left-0 top-0 h-full rounded-full"
               style={{
-                background: "linear-gradient(90deg, #1e5d8a, #3bb4a4, #d4af37)",
+                background: "linear-gradient(90deg, #1e5d8a, #3bb4a4, var(--color-accent))",
               }}
               initial={{ width: "0%" }}
               animate={{ width: `${(correctCount / DATA_ITEMS.length) * 100}%` }}
@@ -467,7 +467,7 @@ export default function WhatIsDataClient() {
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              className="mb-4 px-4 py-2.5 rounded-xl bg-[#ef4444]/10 border border-[#ef4444]/30 text-[12px] text-[#fca5a5]"
+              className="mb-4 px-4 py-2.5 rounded-xl bg-[#ef4444]/10 border border-[#ef4444]/30 text-[12px] text-[#ef4444]"
             >
               {errorHint}
             </motion.div>
@@ -481,10 +481,10 @@ export default function WhatIsDataClient() {
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              className="mb-4 px-4 py-2.5 rounded-xl bg-[#d4af37]/10 border border-[#d4af37]/30 text-[12px] text-[#d4af37]"
+              className="mb-4 px-4 py-2.5 rounded-xl bg-[#d4af37]/10 border border-[#d4af37]/30 text-[12px] text-[var(--color-accent)]"
             >
-              <strong>{DATA_ITEMS.find((i) => i.id === selectedItemId)?.label}</strong> selected
-              — Tab to a bucket and press Enter/Space to drop. Press Escape to cancel.
+              <strong>{DATA_ITEMS.find((i) => i.id === selectedItemId)?.label}</strong> selected.
+              Tab to a bucket and press Enter/Space to drop. Press Escape to cancel.
             </motion.div>
           )}
         </AnimatePresence>

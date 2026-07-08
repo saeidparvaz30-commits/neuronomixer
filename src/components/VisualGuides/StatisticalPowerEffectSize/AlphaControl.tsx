@@ -18,8 +18,8 @@ const OPTIONS: { value: AlphaValue; label: string }[] = [
 ];
 
 const DESCRIPTIONS: Record<string, string> = {
-  "0.05": "Standard significance threshold — 5% false positive rate",
-  "0.01": "Stricter threshold — 1% false positive rate",
+  "0.05": "Standard significance threshold: 5% false positive rate",
+  "0.01": "Stricter threshold: 1% false positive rate",
   "0.001": "Very strict: guards against false positives when many tests are run (genome-wide association studies conventionally go much further, to 5×10⁻⁸)",
 };
 
@@ -36,14 +36,16 @@ export default function AlphaControl({
       </p>
 
       {/* Alpha toggle group */}
-      <div className="flex gap-1 mb-3">
+      <div className="flex gap-1 mb-3" role="radiogroup" aria-label="Significance level (alpha)">
         {OPTIONS.map(({ value: v, label }) => (
           <button
             key={v}
+            role="radio"
+            aria-checked={value === v}
             onClick={() => onChange(v)}
             className={`flex-1 py-2 rounded-xl text-[11px] font-semibold transition-all ${
               value === v
-                ? "bg-[#d4af37] text-[#0a0e1a]"
+                ? "bg-[var(--color-accent)] text-[#0a0e1a]"
                 : "bg-[#1e293b] text-[#94a3b8] hover:bg-[#334155] hover:text-white"
             }`}
           >
@@ -76,7 +78,7 @@ export default function AlphaControl({
       </div>
 
       <p className="mt-2 text-[10px] text-[#475569] leading-relaxed">
-        Two-tailed tests are more conservative — they split α across both tails.
+        Two-tailed tests are more conservative: they split α across both tails.
         Use one-tailed only when the direction of effect is known in advance.
       </p>
     </div>

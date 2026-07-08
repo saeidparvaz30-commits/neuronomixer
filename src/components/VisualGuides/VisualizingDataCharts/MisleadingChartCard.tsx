@@ -38,7 +38,7 @@ export default function MisleadingChartCard({ chart, revealed, onReveal }: Props
           </p>
           <button
             onClick={onReveal}
-            className="mt-3 px-4 py-2 rounded-xl text-[12px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="mt-3 px-4 py-2 rounded-xl text-[12px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Reveal the truth
           </button>

@@ -141,7 +141,7 @@ export default function ProportionTestSection({ onTestRun }: Props) {
                   <span className="text-[11px] text-white">{label}</span>
                   <span className="text-[11px] font-mono text-[#1e5d8a]">{value}</span>
                 </div>
-                <input type="range" min={min} max={max} step={step} value={value}
+                <input type="range" min={min} max={max} step={step} value={value} aria-label={label}
                   onChange={e => { set(Number(e.target.value)); setResult(null); setHasRun(false); }}
                   className="w-full" style={{ accentColor: "#1e5d8a" }} />
               </div>
@@ -163,7 +163,7 @@ export default function ProportionTestSection({ onTestRun }: Props) {
                   <span className="text-[11px] text-white">{label}</span>
                   <span className="text-[11px] font-mono text-[#3bb4a4]">{value}</span>
                 </div>
-                <input type="range" min={min} max={max} step={step} value={value}
+                <input type="range" min={min} max={max} step={step} value={value} aria-label={label}
                   onChange={e => { set(Number(e.target.value)); setResult(null); setHasRun(false); }}
                   className="w-full" style={{ accentColor: "#3bb4a4" }} />
               </div>
@@ -185,7 +185,7 @@ export default function ProportionTestSection({ onTestRun }: Props) {
         <motion.button
           onClick={runTest}
           whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-          className="w-full py-2.5 rounded-xl text-[13px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+          className="w-full py-2.5 rounded-xl text-[13px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
         >
           Run Test for Proportions
         </motion.button>
@@ -215,7 +215,7 @@ export default function ProportionTestSection({ onTestRun }: Props) {
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {[
-                { label: "z-statistic", value: result.zStatistic.toFixed(3), color: "#d4af37" },
+                { label: "z-statistic", value: result.zStatistic.toFixed(3), color: "var(--color-accent)" },
                 { label: "p-value", value: result.pValue < 0.001 ? "< 0.001" : result.pValue.toFixed(4), color: result.significant ? "#3bb4a4" : "#ef4444" },
                 { label: "Difference (p̂₁−p̂₂)", value: ((p1 - p2) * 100).toFixed(2) + "%", color: "#1e5d8a" },
               ].map(({ label, value, color }) => (
@@ -244,12 +244,12 @@ export default function ProportionTestSection({ onTestRun }: Props) {
                     return (
                       <>
                         <line x1={PAD} y1={20} x2={PAD + IW} y2={20} stroke="#334155" strokeWidth="1.5" />
-                        <rect x={tx(lo)} y={14} width={tx(hi) - tx(lo)} height={12} fill="#d4af37" opacity="0.7" rx="2" />
-                        <circle cx={tx((lo + hi) / 2)} cy={20} r="3" fill="#d4af37" />
+                        <rect x={tx(lo)} y={14} width={tx(hi) - tx(lo)} height={12} fill="var(--color-accent)" opacity="0.7" rx="2" />
+                        <circle cx={tx((lo + hi) / 2)} cy={20} r="3" fill="var(--color-accent)" />
                         <line x1={zx} y1={6} x2={zx} y2={34} stroke="#ef4444" strokeWidth="1.5" strokeDasharray="2,2" />
                         <text x={zx} y={6} textAnchor="middle" fill="#ef4444" fontSize="7">0</text>
-                        <text x={tx(lo)} y={36} textAnchor="middle" fill="#d4af37" fontSize="7">{(lo * 100).toFixed(1)}%</text>
-                        <text x={tx(hi)} y={36} textAnchor="middle" fill="#d4af37" fontSize="7">{(hi * 100).toFixed(1)}%</text>
+                        <text x={tx(lo)} y={36} textAnchor="middle" fill="var(--color-accent)" fontSize="7">{(lo * 100).toFixed(1)}%</text>
+                        <text x={tx(hi)} y={36} textAnchor="middle" fill="var(--color-accent)" fontSize="7">{(hi * 100).toFixed(1)}%</text>
                       </>
                     );
                   })()}

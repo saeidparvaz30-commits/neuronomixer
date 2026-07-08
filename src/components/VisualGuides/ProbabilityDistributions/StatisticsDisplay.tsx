@@ -25,7 +25,7 @@ export default function StatisticsDisplay({ type, params }: Props) {
           >
             <p
               className="text-[9px] font-semibold uppercase tracking-[1px] mb-0.5"
-              style={{ color: "#d4af37" }}
+              style={{ color: "var(--color-accent)" }}
             >
               {key}
             </p>

@@ -20,7 +20,7 @@ export default function DegreesOfFreedomSlider({
   max,
   step = 1,
   onChange,
-  color = "#d4af37",
+  color = "var(--color-accent)",
   hint,
 }: DegreesOfFreedomSliderProps) {
   return (
@@ -57,6 +57,7 @@ export default function DegreesOfFreedomSlider({
           max={max}
           step={step}
           value={value}
+          aria-label={label}
           onChange={(e) => onChange(Number(e.target.value))}
           className="relative w-full h-5 appearance-none bg-transparent cursor-pointer"
           style={
@@ -84,20 +85,20 @@ export default function DegreesOfFreedomSlider({
           width: 16px;
           height: 16px;
           border-radius: 50%;
-          background: var(--thumb-color, #d4af37);
+          background: var(--thumb-color, var(--color-accent));
           border: 2px solid #0f172a;
           cursor: pointer;
-          box-shadow: 0 0 0 2px var(--thumb-color, #d4af37)33;
+          box-shadow: 0 0 0 2px var(--thumb-color, var(--color-accent))33;
           transition: box-shadow 0.15s;
         }
         input[type='range']::-webkit-slider-thumb:hover {
-          box-shadow: 0 0 0 4px var(--thumb-color, #d4af37)44;
+          box-shadow: 0 0 0 4px var(--thumb-color, var(--color-accent))44;
         }
         input[type='range']::-moz-range-thumb {
           width: 16px;
           height: 16px;
           border-radius: 50%;
-          background: var(--thumb-color, #d4af37);
+          background: var(--thumb-color, var(--color-accent));
           border: 2px solid #0f172a;
           cursor: pointer;
         }

@@ -165,7 +165,7 @@ export default function ConvergenceChart({
           y1={evY}
           x2={PAD.left + IW}
           y2={evY}
-          stroke="#d4af37"
+          stroke="var(--color-accent)"
           strokeWidth={1.5}
           strokeDasharray="5 3"
         />
@@ -173,7 +173,7 @@ export default function ConvergenceChart({
           x={PAD.left + IW - 2}
           y={evY - 4}
           textAnchor="end"
-          fill="#d4af37"
+          fill="var(--color-accent)"
           fontSize={9}
           fontWeight="600"
         >
@@ -213,7 +213,7 @@ export default function ConvergenceChart({
               x={PAD.left + IW * 0.5}
               y={PAD.top + 12}
               textAnchor="middle"
-              fill={converged ? "#3bb4a4" : "#f97316"}
+              fill={converged ? "#3bb4a4" : "var(--color-warning)"}
               fontSize={10}
               fontWeight="600"
             >
@@ -231,9 +231,9 @@ export default function ConvergenceChart({
           <span className="w-4 h-0.5 bg-[#3bb4a4] inline-block rounded-full" />
           Running average
         </span>
-        <span className="flex items-center gap-1.5 text-[10px] text-[#d4af37]">
+        <span className="flex items-center gap-1.5 text-[10px] text-[var(--color-accent)]">
           <svg width="16" height="4" className="inline-block">
-            <line x1={0} y1={2} x2={16} y2={2} stroke="#d4af37" strokeWidth={1.5} strokeDasharray="4 2" />
+            <line x1={0} y1={2} x2={16} y2={2} stroke="var(--color-accent)" strokeWidth={1.5} strokeDasharray="4 2" />
           </svg>
           Theoretical EV ({theoreticalEV.toFixed(3)})
         </span>

@@ -27,7 +27,7 @@ export default function DrawSampleButton({
         {/* Draw one sample */}
         <button
           onClick={onDraw}
-          className="w-full px-4 py-2.5 rounded-xl text-[13px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+          className="w-full px-4 py-2.5 rounded-xl text-[13px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
         >
           Draw Sample (n = {sampleSize})
         </button>

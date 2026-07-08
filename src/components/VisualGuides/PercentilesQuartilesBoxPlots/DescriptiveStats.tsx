@@ -29,7 +29,7 @@ export default function DescriptiveStats({ stats, unit }: DescriptiveStatsProps)
       className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-4"
       aria-label="Descriptive statistics summary"
     >
-      <h3 className="text-[11px] uppercase tracking-widest text-[#d4af37] font-semibold mb-4">
+      <h3 className="text-[11px] uppercase tracking-widest text-[var(--color-accent)] font-semibold mb-4">
         Five-Number Summary
       </h3>
 

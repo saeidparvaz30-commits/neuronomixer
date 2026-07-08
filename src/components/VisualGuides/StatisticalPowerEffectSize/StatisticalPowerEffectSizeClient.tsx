@@ -56,7 +56,7 @@ export default function StatisticalPowerEffectSizeClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "statistical-power-effect-size", score: 7 }),
+        body: JSON.stringify({ guideSlug: "statistical-power-effect-size", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -140,7 +140,7 @@ export default function StatisticalPowerEffectSizeClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="statistical-power-effect-size" score={7} />
+      <GuideCompletion isComplete={allComplete} guideSlug="statistical-power-effect-size" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -293,13 +293,13 @@ export default function StatisticalPowerEffectSizeClient() {
           {[
             {
               title: "Type I Error (α)",
-              body: "The probability of rejecting a true null hypothesis — a false positive. You control this directly by choosing α.",
+              body: "The probability of rejecting a true null hypothesis: a false positive. You control this directly by choosing α.",
               color: "#ef4444",
             },
             {
               title: "Type II Error (β)",
-              body: "The probability of failing to reject a false null hypothesis — a false negative. β = 1 − Power.",
-              color: "#d4af37",
+              body: "The probability of failing to reject a false null hypothesis: a false negative. β = 1 − Power.",
+              color: "var(--color-accent)",
             },
             {
               title: "Power = 1 − β",

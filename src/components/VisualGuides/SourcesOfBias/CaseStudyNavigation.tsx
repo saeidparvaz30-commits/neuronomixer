@@ -40,7 +40,7 @@ export default function CaseStudyNavigation({ cases, current, visited, revealed,
             onClick={() => onChange(c.id)}
             className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-[12px] font-semibold border transition-all ${
               isActive
-                ? "border-[#d4af37] bg-[#d4af37]/10 text-white"
+                ? "border-[var(--color-accent)] bg-[#d4af37]/10 text-white"
                 : "border-[#1e293b] text-[#94a3b8] hover:border-[#334155] hover:text-white"
             }`}
           >

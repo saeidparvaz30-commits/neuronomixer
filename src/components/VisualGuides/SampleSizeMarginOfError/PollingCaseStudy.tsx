@@ -44,7 +44,7 @@ const STEPS = [
           <p className="text-[12px] font-mono text-[#3bb4a4] mt-1">
             n = 3.8416 × 0.25 / 0.0009
           </p>
-          <p className="text-[14px] font-mono font-bold text-[#d4af37] mt-1">
+          <p className="text-[14px] font-mono font-bold text-[var(--color-accent)] mt-1">
             n = <strong>1,067</strong>
           </p>
         </div>
@@ -60,7 +60,7 @@ const STEPS = [
           {
             label: "Non-response buffer (20%)",
             detail: "1,067 / 0.80 ≈ 1,334 contacts needed",
-            color: "#d4af37",
+            color: "var(--color-accent)",
           },
           {
             label: "State-level oversampling",
@@ -94,14 +94,14 @@ const STEPS = [
     title: "Published Result",
     content: (
       <div className="rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-4">
-        <p className="text-[15px] font-bold text-[#d4af37] text-center mb-1">
+        <p className="text-[15px] font-bold text-[var(--color-accent)] text-center mb-1">
           48% support
         </p>
         <p className="text-[12px] text-[#94a3b8] text-center">
           (95% CI: 45% to 51%)
         </p>
         <p className="text-[11px] text-[#475569] text-center mt-2">
-          Cannot rule out either candidate leading — within the margin
+          Cannot rule out either candidate leading: the race is within the margin
         </p>
       </div>
     ),
@@ -110,11 +110,11 @@ const STEPS = [
     num: 5,
     title: "Historical Note",
     content: (
-      <div className="rounded-xl border border-[#f97316]/20 bg-[#f97316]/5 p-3">
+      <div className="rounded-xl border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/5 p-3">
         <p className="text-[11px] text-[#94a3b8] leading-relaxed">
           Polls are accurate in stable elections. The 2016 and 2020 U.S.
           presidential elections had systematic misses caused by
-          education-correlated non-response bias — college-educated voters
+          education-correlated non-response bias: college-educated voters
           were over-represented in samples, skewing estimates toward one
           candidate.
         </p>
@@ -141,7 +141,7 @@ export default function PollingCaseStudy({ onViewed }: Props) {
       >
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#d4af37]">
+            <span className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[var(--color-accent)]">
               Case Study
             </span>
           </div>
@@ -172,7 +172,7 @@ export default function PollingCaseStudy({ onViewed }: Props) {
                   <div key={num} className="flex gap-4">
                     {/* Step number */}
                     <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[#d4af37]/15 border border-[#d4af37]/30 flex items-center justify-center">
-                      <span className="text-[11px] font-bold text-[#d4af37]">
+                      <span className="text-[11px] font-bold text-[var(--color-accent)]">
                         {num}
                       </span>
                     </div>

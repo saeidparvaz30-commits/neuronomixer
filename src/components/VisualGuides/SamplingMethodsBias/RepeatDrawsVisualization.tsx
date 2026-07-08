@@ -80,7 +80,7 @@ export default function RepeatDrawsVisualization({ repeatedMeans, populationMean
         )}
       </div>
 
-      <div className="rounded-xl overflow-hidden border border-[#1e293b] bg-[#070d1a]">
+      <div className="rounded-xl overflow-hidden border border-[#1e293b] bg-[#0a0e1a]">
         <svg
           viewBox={`0 0 ${SVG_W} ${SVG_H}`}
           width="100%"
@@ -116,7 +116,7 @@ export default function RepeatDrawsVisualization({ repeatedMeans, populationMean
                 y1={DOT_AREA_TOP}
                 x2={meanOfMeansX}
                 y2={AXIS_Y - 2}
-                stroke="#d4af37"
+                stroke="var(--color-accent)"
                 strokeWidth={1.2}
                 strokeDasharray="3 3"
                 opacity={0.7}
@@ -125,7 +125,7 @@ export default function RepeatDrawsVisualization({ repeatedMeans, populationMean
                 x={meanOfMeansX + 3}
                 y={DOT_AREA_TOP + 20}
                 fontSize={8}
-                fill="#d4af37"
+                fill="var(--color-accent)"
                 opacity={0.7}
               >
                 x̄ of x̄s
@@ -198,7 +198,7 @@ export default function RepeatDrawsVisualization({ repeatedMeans, populationMean
           );
         }
         return (
-          <p className="text-[11px] text-[#d4af37] mt-1.5">
+          <p className="text-[11px] text-[var(--color-accent)] mt-1.5">
             High SD of means ({sdOfMeans.toFixed(2)}): high variability across draws. Try a larger sample size.
           </p>
         );

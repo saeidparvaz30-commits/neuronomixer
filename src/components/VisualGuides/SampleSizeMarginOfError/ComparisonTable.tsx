@@ -111,20 +111,20 @@ export default function ComparisonTable({
                   <td className="py-2.5 pr-3">
                     <span
                       className={`font-bold ${
-                        isHighlighted ? "text-[#d4af37]" : "text-white"
+                        isHighlighted ? "text-[var(--color-accent)]" : "text-white"
                       }`}
                     >
                       ±{moe}%
                     </span>
                     {isHighlighted && (
-                      <span className="ml-1.5 text-[9px] text-[#d4af37] bg-[#d4af37]/20 rounded px-1 py-0.5">
+                      <span className="ml-1.5 text-[9px] text-[var(--color-accent)] bg-[#d4af37]/20 rounded px-1 py-0.5">
                         current
                       </span>
                     )}
                   </td>
                   <td
                     className={`text-right py-2.5 px-3 font-mono ${
-                      isHighlighted ? "text-[#d4af37]" : "text-[#f1f5f9]"
+                      isHighlighted ? "text-[var(--color-accent)]" : "text-[#f1f5f9]"
                     }`}
                   >
                     {fmt(n)}
@@ -145,8 +145,8 @@ export default function ComparisonTable({
       {/* Key insight */}
       <div className="mt-4 pt-3 border-t border-white/[0.06]">
         <p className="text-[11px] text-[#94a3b8]">
-          <span className="text-[#d4af37] font-semibold">Key insight:</span>{" "}
-          Halving MOE quadruples sample size — precision is expensive.
+          <span className="text-[var(--color-accent)] font-semibold">Key insight:</span>{" "}
+          Halving MOE quadruples sample size: precision is expensive.
         </p>
       </div>
     </div>

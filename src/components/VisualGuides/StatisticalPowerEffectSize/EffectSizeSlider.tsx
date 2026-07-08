@@ -41,7 +41,7 @@ export default function EffectSizeSlider({ value, onChange }: Props) {
           >
             {label}
           </span>
-          <span className="text-[14px] font-bold font-mono text-[#d4af37]">
+          <span className="text-[14px] font-bold font-mono text-[var(--color-accent)]">
             {value.toFixed(1)}
           </span>
         </div>
@@ -51,7 +51,7 @@ export default function EffectSizeSlider({ value, onChange }: Props) {
       <div className="relative mb-1">
         <div className="relative h-2 rounded-full bg-[#1e293b] overflow-hidden">
           <div
-            className="absolute left-0 top-0 h-full rounded-full bg-[#d4af37]"
+            className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-accent)]"
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -70,7 +70,7 @@ export default function EffectSizeSlider({ value, onChange }: Props) {
         />
         {/* Visible thumb */}
         <div
-          className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-[#d4af37] border-2 border-[#0f172a] shadow-md pointer-events-none"
+          className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-[var(--color-accent)] border-2 border-[#0f172a] shadow-md pointer-events-none"
           style={{ left: `calc(${pct}% - 8px)` }}
         />
       </div>

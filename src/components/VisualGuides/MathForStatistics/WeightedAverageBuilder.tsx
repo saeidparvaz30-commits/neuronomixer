@@ -41,7 +41,7 @@ export default function WeightedAverageBuilder({ onAdjust }: WeightedAverageBuil
 
   const weightedAvg = categories.reduce((sum, c) => sum + (c.score * c.weight) / 100, 0);
 
-  const COLORS = ["#3b82f6", "#3bb4a4", "#a78bfa", "#f59e0b"];
+  const COLORS = ["#3b82f6", "#3bb4a4", "#a855f7", "var(--color-warning)"];
 
   return (
     <div className="space-y-5">
@@ -71,6 +71,7 @@ export default function WeightedAverageBuilder({ onAdjust }: WeightedAverageBuil
                 </label>
                 <input
                   type="range"
+                  aria-label={`${cat.name} weight`}
                   min={1}
                   max={80}
                   step={1}
@@ -86,6 +87,7 @@ export default function WeightedAverageBuilder({ onAdjust }: WeightedAverageBuil
                 </label>
                 <input
                   type="range"
+                  aria-label={`${cat.name} score`}
                   min={0}
                   max={100}
                   step={1}
@@ -121,7 +123,7 @@ export default function WeightedAverageBuilder({ onAdjust }: WeightedAverageBuil
                   />
                   <div
                     className="flex-1 rounded-t transition-all duration-300"
-                    style={{ height: contribH, background: "#d4af37" }}
+                    style={{ height: contribH, background: "var(--color-accent)" }}
                     title={`Contribution: ${((cat.score * cat.weight) / 100).toFixed(1)}`}
                   />
                 </div>
@@ -136,7 +138,7 @@ export default function WeightedAverageBuilder({ onAdjust }: WeightedAverageBuil
             <span className="text-[11px] text-[#94a3b8]">Score (raw)</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-[#d4af37]" />
+            <div className="w-3 h-3 rounded-sm bg-[var(--color-accent)]" />
             <span className="text-[11px] text-[#94a3b8]">Weighted contribution</span>
           </div>
         </div>
@@ -146,7 +148,7 @@ export default function WeightedAverageBuilder({ onAdjust }: WeightedAverageBuil
       <div className="rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-5 flex items-center justify-between">
         <div>
           <p className="text-[10px] uppercase tracking-widest text-[#94a3b8] mb-1">Weighted Average</p>
-          <p className="text-3xl font-black text-[#d4af37]">{weightedAvg.toFixed(2)}</p>
+          <p className="text-3xl font-black text-[var(--color-accent)]">{weightedAvg.toFixed(2)}</p>
         </div>
         <div className="text-right">
           <p className="text-[10px] uppercase tracking-widest text-[#475569] mb-1">Weights sum to</p>

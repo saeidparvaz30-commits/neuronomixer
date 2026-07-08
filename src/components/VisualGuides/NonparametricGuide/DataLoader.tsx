@@ -11,7 +11,7 @@ interface Props {
 
 const BADGE_MAP: Record<DatasetId, { label: string; color: string }> = {
   skewed: { label: "Violates normality", color: "bg-[#ec4899]/20 text-[#ec4899] border border-[#ec4899]/30" },
-  ordinal: { label: "Not continuous", color: "bg-[#d4af37]/20 text-[#d4af37] border border-[#d4af37]/30" },
+  ordinal: { label: "Not continuous", color: "bg-[#d4af37]/20 text-[var(--color-accent)] border border-[#d4af37]/30" },
   "small-sample": { label: "n=12", color: "bg-white/10 text-[#94a3b8] border border-white/10" },
   outliers: { label: "Sensitive to outliers", color: "bg-[#ec4899]/20 text-[#ec4899] border border-[#ec4899]/30" },
 };
@@ -130,19 +130,21 @@ export default function DataLoader({ selectedDataset, onSelect }: Props) {
         Each dataset exhibits a different reason to prefer nonparametric methods.
       </p>
 
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" role="radiogroup" aria-label="Select dataset">
         {DATASETS.map((ds) => {
           const badge = BADGE_MAP[ds.id];
           const active = ds.id === selectedDataset;
           return (
             <motion.button
               key={ds.id}
+              role="radio"
+              aria-checked={active}
               onClick={() => onSelect(ds.id)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className={`relative flex flex-col items-start gap-2 p-3 rounded-xl border text-left transition-colors ${
                 active
-                  ? "border-[#d4af37] bg-[#d4af37]/5"
+                  ? "border-[var(--color-accent)] bg-[#d4af37]/5"
                   : "border-[#1e293b] hover:border-[#334155]"
               }`}
             >

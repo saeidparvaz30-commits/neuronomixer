@@ -41,7 +41,7 @@ export default function ConceptToolbar({ active, explored, onChange }: ConceptTo
             onClick={() => onChange(tab.id)}
             className={`relative px-4 py-2 rounded-xl text-sm font-semibold transition-all border ${
               isActive
-                ? "bg-[#d4af37] text-[#0a0e1a] border-[#d4af37]"
+                ? "bg-[var(--color-accent)] text-[#0a0e1a] border-[var(--color-accent)]"
                 : "border-[#1e293b] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37]"
             }`}
           >

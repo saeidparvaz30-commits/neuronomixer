@@ -52,7 +52,7 @@ export const DATASETS: Record<ModelState, DatasetSpec> = {
   },
   nonlinear: {
     label: "Nonlinear",
-    description: "y ≈ x²/5 — curved, but fitted with a linear model.",
+    description: "y ≈ x²/5: curved, but fitted with a linear model.",
     problemDescription: "The Residuals vs Fitted plot shows a curved (U-shaped) pattern, indicating the true relationship is non-linear.",
     points: [
       { x: 1,  y: 0.4  }, { x: 2,  y: 1.0  }, { x: 3,  y: 1.6  }, { x: 4,  y: 3.3  },

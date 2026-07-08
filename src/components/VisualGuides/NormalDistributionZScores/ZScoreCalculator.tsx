@@ -29,8 +29,8 @@ function getInterpretation(z: number): string {
 
 function getInterpretationColor(z: number): string {
   if (!isFinite(z)) return "#94a3b8";
-  if (Math.abs(z) > 2) return "#f97316";
-  if (Math.abs(z) > 1) return "#d4af37";
+  if (Math.abs(z) > 2) return "var(--color-warning)";
+  if (Math.abs(z) > 1) return "var(--color-accent)";
   return "#3bb4a4";
 }
 
@@ -113,7 +113,7 @@ export default function ZScoreCalculator({
             {stdDev % 1 === 0 ? stdDev : stdDev.toFixed(2)}
           </span>
           <span className="text-[13px] font-mono text-[#94a3b8]">=</span>
-          <span className="text-[13px] font-mono font-bold text-[#d4af37]">
+          <span className="text-[13px] font-mono font-bold text-[var(--color-accent)]">
             {stdDev === 0 ? "∞" : z.toFixed(4)}
           </span>
         </div>

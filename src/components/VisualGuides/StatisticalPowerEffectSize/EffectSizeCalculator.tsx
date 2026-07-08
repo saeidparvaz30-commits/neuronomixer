@@ -92,7 +92,7 @@ export default function EffectSizeCalculator({
               type="number"
               value={value}
               onChange={(e) => onChange(Number(e.target.value) || 0)}
-              className="w-full bg-[#1e293b] border border-[#334155] rounded-lg px-2.5 py-2 text-[12px] font-mono text-white focus:outline-none focus:border-[#d4af37] transition-colors"
+              className="w-full bg-[#1e293b] border border-[#334155] rounded-lg px-2.5 py-2 text-[12px] font-mono text-white focus:outline-none focus:border-[var(--color-accent)] transition-colors"
             />
           </div>
         ))}
@@ -116,7 +116,7 @@ export default function EffectSizeCalculator({
 
       <button
         onClick={handleApply}
-        className="w-full py-2 rounded-xl text-[12px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+        className="w-full py-2 rounded-xl text-[12px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
       >
         Apply d = {d.toFixed(2)} to Visualization
       </button>

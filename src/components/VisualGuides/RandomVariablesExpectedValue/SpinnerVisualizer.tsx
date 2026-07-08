@@ -108,7 +108,7 @@ export default function SpinnerVisualizer({ rows }: SpinnerVisualizerProps) {
           {/* Pointer at top */}
           <div className="absolute left-1/2 -translate-x-1/2 -top-1 z-10">
             <svg width={14} height={18} viewBox="0 0 14 18">
-              <polygon points="7,18 0,0 14,0" fill="#d4af37" />
+              <polygon points="7,18 0,0 14,0" fill="var(--color-accent)" />
             </svg>
           </div>
 
@@ -158,7 +158,7 @@ export default function SpinnerVisualizer({ rows }: SpinnerVisualizerProps) {
         <button
           disabled={isSpinning || !isValid}
           onClick={spin}
-          className="px-6 py-2.5 rounded-xl text-[13px] font-semibold border border-[#d4af37] text-[#d4af37] hover:bg-[#d4af37] hover:text-[#0a0e1a] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+          className="px-6 py-2.5 rounded-xl text-[13px] font-semibold border border-[var(--color-accent)] text-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-[#0a0e1a] disabled:opacity-40 disabled:cursor-not-allowed transition-all"
         >
           {isSpinning ? "Spinning…" : "Spin!"}
         </button>
@@ -183,7 +183,7 @@ export default function SpinnerVisualizer({ rows }: SpinnerVisualizerProps) {
         )}
 
         {!isValid && (
-          <p className="text-[11px] text-[#f97316]">Fix probabilities to enable spinner</p>
+          <p className="text-[11px] text-[var(--color-warning)]">Fix probabilities to enable spinner</p>
         )}
       </div>
     </div>

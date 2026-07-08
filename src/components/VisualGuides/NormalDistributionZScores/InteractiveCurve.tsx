@@ -143,7 +143,7 @@ export default function InteractiveCurve({
         </p>
         <div className="flex items-center gap-2 bg-[#1e293b] px-3 py-1.5 rounded-lg">
           <span className="text-[11px] text-[#94a3b8]">Probability:</span>
-          <span className="text-[14px] font-bold text-[#d4af37]">{(probability * 100).toFixed(2)}%</span>
+          <span className="text-[14px] font-bold text-[var(--color-accent)]">{(probability * 100).toFixed(2)}%</span>
         </div>
       </div>
 
@@ -177,7 +177,7 @@ export default function InteractiveCurve({
         {shadedPath && (
           <motion.path
             d={shadedPath}
-            fill="#d4af37"
+            fill="var(--color-accent)"
             opacity={0.3}
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.3 }}
@@ -232,19 +232,19 @@ export default function InteractiveCurve({
         <g>
           <line
             x1={m1SvgX} y1={PAD.t + 4} x2={m1SvgX} y2={baselineY}
-            stroke="#d4af37" strokeWidth="1.5" strokeDasharray="3 2"
+            stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="3 2"
           />
           <circle
             cx={m1SvgX}
             cy={PAD.t + 4}
             r={7}
-            fill="#d4af37"
+            fill="var(--color-accent)"
             stroke="#0f172a"
             strokeWidth="1.5"
             style={{ cursor: "ew-resize" }}
             onPointerDown={handlePointerDown("m1")}
           />
-          <text x={m1SvgX} y={PAD.t - 2} textAnchor="middle" fill="#d4af37" fontSize="8" fontWeight="bold">
+          <text x={m1SvgX} y={PAD.t - 2} textAnchor="middle" fill="var(--color-accent)" fontSize="8" fontWeight="bold">
             {markerX1 % 1 === 0 ? markerX1.toFixed(0) : markerX1.toFixed(1)}
           </text>
         </g>
@@ -253,19 +253,19 @@ export default function InteractiveCurve({
         <g>
           <line
             x1={m2SvgX} y1={PAD.t + 4} x2={m2SvgX} y2={baselineY}
-            stroke="#f97316" strokeWidth="1.5" strokeDasharray="3 2"
+            stroke="var(--color-warning)" strokeWidth="1.5" strokeDasharray="3 2"
           />
           <circle
             cx={m2SvgX}
             cy={PAD.t + 4}
             r={7}
-            fill="#f97316"
+            fill="var(--color-warning)"
             stroke="#0f172a"
             strokeWidth="1.5"
             style={{ cursor: "ew-resize" }}
             onPointerDown={handlePointerDown("m2")}
           />
-          <text x={m2SvgX} y={PAD.t - 2} textAnchor="middle" fill="#f97316" fontSize="8" fontWeight="bold">
+          <text x={m2SvgX} y={PAD.t - 2} textAnchor="middle" fill="var(--color-warning)" fontSize="8" fontWeight="bold">
             {markerX2 % 1 === 0 ? markerX2.toFixed(0) : markerX2.toFixed(1)}
           </text>
         </g>
@@ -274,20 +274,20 @@ export default function InteractiveCurve({
       {/* Z-score labels below */}
       <div className="flex justify-between mt-2 px-1 flex-wrap gap-2">
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#d4af37]" />
+          <div className="w-2 h-2 rounded-full bg-[var(--color-accent)]" />
           <span className="text-[11px] text-[#94a3b8]">
             Marker 1: <span className="text-white font-semibold">z = {m1Z.toFixed(2)}</span>
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-[#f97316]" />
+          <div className="w-2 h-2 rounded-full bg-[var(--color-warning)]" />
           <span className="text-[11px] text-[#94a3b8]">
             Marker 2: <span className="text-white font-semibold">z = {m2Z.toFixed(2)}</span>
           </span>
         </div>
         <div className="text-[11px] text-[#94a3b8]">
           Area:{" "}
-          <span className="text-[#d4af37] font-semibold">{(probability * 100).toFixed(2)}%</span>
+          <span className="text-[var(--color-accent)] font-semibold">{(probability * 100).toFixed(2)}%</span>
         </div>
       </div>
 

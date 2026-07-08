@@ -173,7 +173,7 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
         {mode === "simple" &&
           linePath(
             (t) => simple.slope * t + simple.intercept,
-            "#d4af37"
+            "var(--color-accent)"
           )}
 
         {mode === "multiple" && (
@@ -187,7 +187,7 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
                 multiple.interceptCoeff +
                 multiple.weekendCoeff +
                 multiple.tempCoeff * t,
-              "#d4af37"
+              "var(--color-accent)"
             )}
           </>
         )}
@@ -203,7 +203,7 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
                 interaction.interceptCoeff +
                 interaction.weekendCoeff +
                 (interaction.tempCoeff + interaction.interactionCoeff) * t,
-              "#d4af37"
+              "var(--color-accent)"
             )}
           </>
         )}
@@ -215,7 +215,7 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
             cx={tx(p.temperature)}
             cy={ty(p.sales)}
             r={5}
-            fill={p.weekend === 1 ? "#d4af37" : "#3bb4a4"}
+            fill={p.weekend === 1 ? "var(--color-accent)" : "#3bb4a4"}
             stroke="#0f172a"
             strokeWidth="1.5"
             opacity={0.85}
@@ -270,12 +270,12 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
           <span className="text-[#94a3b8]">Weekday</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-[#d4af37]" />
+          <div className="w-3 h-3 rounded-full bg-[var(--color-accent)]" />
           <span className="text-[#94a3b8]">Weekend</span>
         </div>
         {mode === "simple" && (
           <div className="flex items-center gap-1.5">
-            <div className="w-8 h-0.5 bg-[#d4af37]" />
+            <div className="w-8 h-0.5 bg-[var(--color-accent)]" />
             <span className="text-[#94a3b8]">OLS line (temp only)</span>
           </div>
         )}
@@ -286,7 +286,7 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
               <span className="text-[#94a3b8]">Weekday line</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-8 h-0.5 bg-[#d4af37]" />
+              <div className="w-8 h-0.5 bg-[var(--color-accent)]" />
               <span className="text-[#94a3b8]">Weekend line</span>
             </div>
           </>
@@ -346,7 +346,7 @@ function CoefficientTable({ simple, multiple, interaction, mode }: CompTableProp
             </th>
             <th
               className={`px-3 py-2 text-center text-[11px] font-semibold uppercase tracking-wider border-b border-[#1e293b] transition-colors ${
-                mode === "simple" ? "text-[#d4af37]" : "text-[#475569]"
+                mode === "simple" ? "text-[var(--color-accent)]" : "text-[#475569]"
               }`}
             >
               Simple
@@ -375,7 +375,7 @@ function CoefficientTable({ simple, multiple, interaction, mode }: CompTableProp
                 {s !== null ? (
                   <span
                     className={`font-mono font-semibold ${
-                      highlight ? "text-[#d4af37]" : "text-[#f1f5f9]"
+                      highlight ? "text-[var(--color-accent)]" : "text-[#f1f5f9]"
                     }`}
                   >
                     {fmt(s, 3)}
@@ -415,7 +415,7 @@ function CoefficientTable({ simple, multiple, interaction, mode }: CompTableProp
           {/* R² row */}
           <tr className="border-b border-[#0f172a]/60 bg-[#0f172a]/30">
             <td className="px-3 py-2.5 font-mono text-[#475569]">R²</td>
-            <td className="px-3 py-2.5 text-center font-mono text-[#d4af37]">
+            <td className="px-3 py-2.5 text-center font-mono text-[var(--color-accent)]">
               {fmt(simple.rSquared, 4)}
             </td>
             <td className="px-3 py-2.5 text-center font-mono text-[#3bb4a4]">
@@ -489,7 +489,7 @@ export default function MultipleRegressionClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guideSlug: "multiple-regression-confounding",
-          score: 7,
+          score: 100,
         }),
       }).catch(() => {});
     }
@@ -532,15 +532,15 @@ export default function MultipleRegressionClient() {
           transition={{ duration: 0.4 }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               UNIT 10: REGRESSION FOUNDATIONS
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Multiple Regression &amp;{" "}
-            <span className="text-[#d4af37]">Confounding</span>
+            <span className="text-[var(--color-accent)]">Confounding</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
             Add predictors and watch coefficient estimates shift. Understand why
@@ -615,7 +615,7 @@ export default function MultipleRegressionClient() {
             Daily ice cream sales at a beach café (50 observations). Two
             predictors: <span className="text-white font-medium">Temperature (°C)</span>{" "}
             and whether the day is a{" "}
-            <span className="text-[#d4af37] font-medium">Weekend</span>. Goal: understand
+            <span className="text-[var(--color-accent)] font-medium">Weekend</span>. Goal: understand
             how each factor drives sales, accounting for the other.
           </p>
           <div className="flex flex-wrap gap-4 text-[12px]">
@@ -636,7 +636,7 @@ export default function MultipleRegressionClient() {
         </motion.div>
 
         {/* Section 2 — Model mode toggle */}
-        <div className="flex gap-2 mb-6 flex-wrap">
+        <div className="flex gap-2 mb-6 flex-wrap" role="radiogroup" aria-label="Regression model mode">
           {(
             [
               {
@@ -661,6 +661,8 @@ export default function MultipleRegressionClient() {
           ).map(({ key, label, subtitle, color }) => (
             <button
               key={key}
+              role="radio"
+              aria-checked={mode === key}
               onClick={() => setMode(key)}
               className="flex-1 min-w-[140px] px-4 py-3 rounded-xl border text-left transition-all duration-200"
               style={{
@@ -692,7 +694,7 @@ export default function MultipleRegressionClient() {
               transition={{ duration: 0.35 }}
             >
               <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-4">
-                Scatter Plot — Ice Cream Sales vs Temperature
+                Scatter Plot: Ice Cream Sales vs Temperature
               </p>
               <ScatterPlot
                 data={ICE_CREAM_DATA}
@@ -718,15 +720,15 @@ export default function MultipleRegressionClient() {
                   transition={{ duration: 0.3 }}
                 >
                   <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">
-                    Simple Regression — Equation
+                    Simple Regression Equation
                   </p>
                   <div className="rounded-xl bg-[#1e293b]/60 px-4 py-3 font-mono text-[13px] text-white mb-4">
                     Sales ={" "}
-                    <span className="text-[#d4af37]">
+                    <span className="text-[var(--color-accent)]">
                       {fmt(simple.intercept)}
                     </span>{" "}
                     +{" "}
-                    <span className="text-[#d4af37]">
+                    <span className="text-[var(--color-accent)]">
                       {fmt(simple.slope)}
                     </span>{" "}
                     × Temp
@@ -735,13 +737,13 @@ export default function MultipleRegressionClient() {
                   <div className="grid grid-cols-2 gap-3 mb-4">
                     <div className="rounded-xl border border-[#1e293b] p-3">
                       <p className="text-[10px] text-[#475569] mb-1">R²</p>
-                      <p className="text-[18px] font-bold text-[#d4af37] font-mono">
+                      <p className="text-[18px] font-bold text-[var(--color-accent)] font-mono">
                         {fmt(simple.rSquared, 4)}
                       </p>
                     </div>
                     <div className="rounded-xl border border-[#1e293b] p-3">
                       <p className="text-[10px] text-[#475569] mb-1">RMSE</p>
-                      <p className="text-[18px] font-bold text-[#d4af37] font-mono">
+                      <p className="text-[18px] font-bold text-[var(--color-accent)] font-mono">
                         {fmt(simple.rmse, 2)}
                       </p>
                     </div>
@@ -750,19 +752,19 @@ export default function MultipleRegressionClient() {
                   <div className="rounded-xl border border-[#1e293b] p-3 mb-3">
                     <p className="text-[11px] font-semibold text-white mb-1">
                       Temperature coefficient:{" "}
-                      <span className="text-[#d4af37] font-mono">{fmt(simple.slope, 3)}</span>
+                      <span className="text-[var(--color-accent)] font-mono">{fmt(simple.slope, 3)}</span>
                     </p>
                     <p className="text-[11px] text-[#94a3b8] leading-relaxed">
                       For every +1°C increase in temperature, sales increase by{" "}
                       <span className="text-white font-medium">
                         ${fmt(simple.slope, 2)}k
                       </span>{" "}
-                      — according to this simple model.
+                      (according to this simple model).
                     </p>
                   </div>
 
                   <div className="rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5 px-4 py-3">
-                    <p className="text-[11px] text-[#d4af37] font-semibold mb-1">
+                    <p className="text-[11px] text-[var(--color-accent)] font-semibold mb-1">
                       Note
                     </p>
                     <p className="text-[11px] text-[#94a3b8] leading-relaxed">
@@ -785,7 +787,7 @@ export default function MultipleRegressionClient() {
                   transition={{ duration: 0.3 }}
                 >
                   <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">
-                    Multiple Regression — Equation
+                    Multiple Regression Equation
                   </p>
                   <div className="rounded-xl bg-[#1e293b]/60 px-4 py-3 font-mono text-[12px] text-white mb-4 leading-relaxed">
                     Sales ={" "}
@@ -797,7 +799,7 @@ export default function MultipleRegressionClient() {
                       {fmt(multiple.tempCoeff, 3)}
                     </span>{" "}
                     × Temp +{" "}
-                    <span className="text-[#d4af37]">
+                    <span className="text-[var(--color-accent)]">
                       {fmt(multiple.weekendCoeff, 3)}
                     </span>{" "}
                     × Weekend
@@ -832,7 +834,7 @@ export default function MultipleRegressionClient() {
                       </p>
                     </div>
                     <div className="rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-3">
-                      <p className="text-[11px] font-semibold text-[#d4af37] mb-1">
+                      <p className="text-[11px] font-semibold text-[var(--color-accent)] mb-1">
                         Weekend: {fmt(multiple.weekendCoeff, 3)}
                       </p>
                       <p className="text-[11px] text-[#94a3b8] leading-relaxed">
@@ -847,13 +849,13 @@ export default function MultipleRegressionClient() {
 
                   {/* Confounding card */}
                   <div className="rounded-xl border border-[#d4af37]/40 bg-[#d4af37]/8 px-4 py-3">
-                    <p className="text-[11px] font-semibold text-[#d4af37] mb-2">
+                    <p className="text-[11px] font-semibold text-[var(--color-accent)] mb-2">
                       Confounding Effect
                     </p>
                     <div className="grid grid-cols-3 gap-2 text-center mb-2">
                       <div>
                         <p className="text-[10px] text-[#475569]">Simple slope</p>
-                        <p className="text-[14px] font-mono font-bold text-[#d4af37]">
+                        <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
                           {fmt(simple.slope, 3)}
                         </p>
                       </div>
@@ -898,7 +900,7 @@ export default function MultipleRegressionClient() {
                   transition={{ duration: 0.3 }}
                 >
                   <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">
-                    Interaction Model — Equation
+                    Interaction Model Equation
                   </p>
                   <div className="rounded-xl bg-[#1e293b]/60 px-4 py-3 font-mono text-[11px] text-white mb-4 leading-relaxed">
                     Sales ={" "}
@@ -910,7 +912,7 @@ export default function MultipleRegressionClient() {
                       {fmt(interaction.tempCoeff, 3)}
                     </span>{" "}
                     × Temp +{" "}
-                    <span className="text-[#d4af37]">
+                    <span className="text-[var(--color-accent)]">
                       {fmt(interaction.weekendCoeff, 3)}
                     </span>{" "}
                     × Weekend +{" "}
@@ -945,7 +947,7 @@ export default function MultipleRegressionClient() {
                         {fmt(interaction.tempCoeff, 3)}
                       </span>
                       . On weekends it becomes{" "}
-                      <span className="font-mono text-[#d4af37]">
+                      <span className="font-mono text-[var(--color-accent)]">
                         {fmt(weekendTempSlope, 3)}
                       </span>{" "}
                       ({interaction.interactionCoeff >= 0 ? "stronger" : "weaker"} effect of
@@ -1012,7 +1014,7 @@ export default function MultipleRegressionClient() {
                   {
                     title: "Confounding Variable",
                     body: "A variable correlated with both the predictor and outcome, creating spurious associations.",
-                    color: "#d4af37",
+                    color: "var(--color-accent)",
                   },
                   {
                     title: "Omitted Variable Bias",
@@ -1021,7 +1023,7 @@ export default function MultipleRegressionClient() {
                   },
                   {
                     title: "Parallel Lines",
-                    body: "In an additive model, lines for different groups are parallel — same slope, different intercept.",
+                    body: "In an additive model, lines for different groups are parallel: same slope, different intercept.",
                     color: "#3bb4a4",
                   },
                   {
@@ -1059,7 +1061,7 @@ export default function MultipleRegressionClient() {
                 R² Comparison
               </p>
               {[
-                { label: "Simple", value: simple.rSquared, color: "#d4af37" },
+                { label: "Simple", value: simple.rSquared, color: "var(--color-accent)" },
                 {
                   label: "+ Weekend",
                   value: multiple.rSquared,
@@ -1130,13 +1132,13 @@ export default function MultipleRegressionClient() {
           </Link>
           <Link
             href="/visual-guides/regression-diagnostics"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Regression Diagnostics →
           </Link>
         </div>
 
-        <GuideCompletion isComplete={allComplete} guideSlug="multiple-regression-confounding" score={7} />
+        <GuideCompletion isComplete={allComplete} guideSlug="multiple-regression-confounding" score={100} />
       </div>
     </div>
   );

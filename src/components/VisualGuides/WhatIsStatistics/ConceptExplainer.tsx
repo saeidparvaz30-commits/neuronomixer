@@ -26,7 +26,7 @@ export default function ConceptExplainer({ term, definition }: Props) {
         type="button"
         onClick={() => setOpen((v) => !v)}
         onKeyDown={(e) => e.key === "Enter" && setOpen((v) => !v)}
-        className="underline decoration-dotted underline-offset-2 text-[#d4af37] cursor-help focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37] rounded"
+        className="underline decoration-dotted underline-offset-2 text-[var(--color-accent)] cursor-help focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37] rounded"
         aria-label={`Definition of ${term}`}
         aria-expanded={open}
       >

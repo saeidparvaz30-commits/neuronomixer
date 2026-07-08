@@ -42,7 +42,7 @@ export default function CorrectionComparison({
     if (n === 0) return "text-[#3bb4a4]";
     const ratio = n / Math.max(max, 1);
     if (ratio > 0.6) return "text-[#ef4444]";
-    if (ratio > 0.3) return "text-[#d4af37]";
+    if (ratio > 0.3) return "text-[var(--color-accent)]";
     return "text-[#3bb4a4]";
   }
 
@@ -51,7 +51,7 @@ export default function CorrectionComparison({
       method: "Uncorrected (α=0.05)",
       count: uncorrectedCount,
       pct: pctStr(uncorrectedCount),
-      notes: "Baseline — inflated by chance",
+      notes: "Baseline: inflated by chance",
       shown: true,
     },
     {

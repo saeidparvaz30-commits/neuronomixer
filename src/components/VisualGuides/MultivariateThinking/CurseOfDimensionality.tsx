@@ -166,7 +166,7 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
       <div className="mb-5">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-semibold text-white">
-            Dimensions: <span className="text-[#d4af37]">{dim}</span>
+            Dimensions: <span className="text-[var(--color-accent)]">{dim}</span>
           </span>
           <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ color: dimLabelColor, background: `${dimLabelColor}18` }}>
             {dimLabel}
@@ -174,6 +174,7 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
         </div>
         <input
           type="range"
+          aria-label="Number of dimensions"
           min={1}
           max={100}
           value={dim}
@@ -193,7 +194,7 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
       </div>
 
       {/* SVG Scatter */}
-      <div className="rounded-xl border border-[#1e293b] bg-[#0a0f1e] p-3 mb-5 overflow-hidden">
+      <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-3 mb-5 overflow-hidden">
         <p className="text-[11px] text-[#475569] mb-2">
           First 2 coordinates of the 10 sampled points (re-sampled at each dimension)
         </p>
@@ -320,7 +321,7 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
           </p>
           <p className="text-[12px] text-[#94a3b8] mt-0.5">
             At {dim} dimensions, your 10 data points occupy an astronomically large space.
-            Every point is nearly equidistant from every other — distance metrics lose their meaning.
+            every point is nearly equidistant from every other, and distance metrics lose their meaning.
           </p>
         </motion.div>
       )}

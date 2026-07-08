@@ -60,7 +60,7 @@ export default function PercentilesQuartilesBoxPlotsClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           guideSlug: "percentiles-quartiles-box-plots",
-          score: 10,
+          score: 100,
         }),
       }).catch(() => {});
     }
@@ -137,7 +137,7 @@ export default function PercentilesQuartilesBoxPlotsClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={isComplete} guideSlug="percentiles-quartiles-box-plots" score={10} />
+      <GuideCompletion isComplete={isComplete} guideSlug="percentiles-quartiles-box-plots" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -152,18 +152,18 @@ export default function PercentilesQuartilesBoxPlotsClient() {
         {/* Hero */}
         <section className="mb-10" aria-labelledby="guide-title">
           <div className="flex items-center gap-2 mb-4" aria-hidden="true">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Statistics
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1
             id="guide-title"
             className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
           >
             Percentiles, Quartiles &amp;{" "}
-            <span className="text-[#d4af37]">Box Plots</span>
+            <span className="text-[var(--color-accent)]">Box Plots</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             Transform raw data into a box plot step by step. Discover quartiles, percentiles, and the
@@ -223,7 +223,7 @@ export default function PercentilesQuartilesBoxPlotsClient() {
 
         {/* Dataset selector */}
         <section className="mb-8 rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5" aria-labelledby="dataset-heading">
-          <h2 id="dataset-heading" className="text-[11px] uppercase tracking-widest text-[#d4af37] font-semibold mb-4">
+          <h2 id="dataset-heading" className="text-[11px] uppercase tracking-widest text-[var(--color-accent)] font-semibold mb-4">
             Choose Dataset
           </h2>
           <div className="flex flex-col sm:flex-row gap-3" role="radiogroup" aria-label="Dataset selection">
@@ -237,13 +237,13 @@ export default function PercentilesQuartilesBoxPlotsClient() {
                   onClick={() => handleDatasetChange(ds.id)}
                   className={`flex-1 rounded-xl border px-4 py-3 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37] ${
                     active
-                      ? "border-[#d4af37] bg-[#d4af37]/10"
+                      ? "border-[var(--color-accent)] bg-[#d4af37]/10"
                       : "border-[#1e293b] hover:border-[#d4af37]/50"
                   }`}
                 >
                   <span
                     className={`block text-[12px] font-semibold mb-0.5 ${
-                      active ? "text-[#d4af37]" : "text-white"
+                      active ? "text-[var(--color-accent)]" : "text-white"
                     }`}
                   >
                     {ds.label}
@@ -282,7 +282,7 @@ export default function PercentilesQuartilesBoxPlotsClient() {
               <div className="flex justify-end">
                 <button
                   onClick={handleNextStep}
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
                   aria-label={NEXT_LABELS[state.currentStep]}
                 >
                   {NEXT_LABELS[state.currentStep]} →
@@ -334,7 +334,7 @@ export default function PercentilesQuartilesBoxPlotsClient() {
           </Link>
           <Link
             href="/visual-guides/data-distributions"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Next: Data Distributions →
           </Link>

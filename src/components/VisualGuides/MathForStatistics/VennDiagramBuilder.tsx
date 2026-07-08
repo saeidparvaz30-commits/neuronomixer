@@ -20,7 +20,7 @@ const CX_A = 130;
 const CX_B = 230;
 const CY = 100;
 const R = 75;
-const GOLD = "#d4af37";
+const GOLD = "var(--color-accent)";
 const FO = 0.35; // fill opacity for highlighted regions
 
 type OpConfig = {
@@ -42,7 +42,7 @@ const OPS: OpConfig[] = [
     formulaValue: "= 50/100 + 40/100 − 20/100 = 70/100",
     highlighted: A_ONLY + INTER + B_ONLY,
     explanation:
-      "A∪B means \"A or B\" — everything in A, in B, or in both. To avoid double-counting the overlap, we subtract P(A∩B).",
+      "A∪B means \"A or B\": everything in A, in B, or in both. To avoid double-counting the overlap, we subtract P(A∩B).",
   },
   {
     id: "intersection",
@@ -52,7 +52,7 @@ const OPS: OpConfig[] = [
     formulaValue: "|A∩B| = 20  →  P(A∩B) = 20/100",
     highlighted: INTER,
     explanation:
-      "A∩B means \"A and B\" — only elements in both sets simultaneously. If A and B are independent, P(A∩B) = P(A) × P(B).",
+      "A∩B means \"A and B\": only elements in both sets simultaneously. If A and B are independent, P(A∩B) = P(A) × P(B).",
   },
   {
     id: "complement",
@@ -62,7 +62,7 @@ const OPS: OpConfig[] = [
     formulaValue: "= 1 − 50/100 = 50/100",
     highlighted: B_ONLY + NEITHER,
     explanation:
-      "Aᶜ means \"not A\" — everything in the universe that is NOT in A. This includes the B-only region and the neither region.",
+      "Aᶜ means \"not A\": everything in the universe that is NOT in A. This includes the B-only region and the neither region.",
   },
   {
     id: "difference",
@@ -72,7 +72,7 @@ const OPS: OpConfig[] = [
     formulaValue: "= 50/100 − 20/100 = 30/100",
     highlighted: A_ONLY,
     explanation:
-      "A∖B means \"A but not B\" — elements in A that are not in B. Also written A − B. Useful for isolating events exclusive to one set.",
+      "A∖B means \"A but not B\": elements in A that are not in B. Also written A − B. Useful for isolating events exclusive to one set.",
   },
   {
     id: "symmetric_difference",
@@ -82,7 +82,7 @@ const OPS: OpConfig[] = [
     formulaValue: "= 50/100 + 40/100 − 2×20/100 = 50/100",
     highlighted: A_ONLY + B_ONLY,
     explanation:
-      "A△B means \"A or B, but not both\" — elements in exactly one of the two sets. It excludes the intersection. Equivalent to (A∪B) ∖ (A∩B).",
+      "A△B means \"A or B, but not both\": elements in exactly one of the two sets. It excludes the intersection. Equivalent to (A∪B) ∖ (A∩B).",
   },
 ];
 
@@ -120,7 +120,7 @@ export default function VennDiagramBuilder({ onAdjust }: VennDiagramBuilderProps
             onClick={() => handleOp(op.id)}
             className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all border ${
               operation === op.id
-                ? "bg-[#d4af37] text-[#0a0e1a] border-[#d4af37]"
+                ? "bg-[var(--color-accent)] text-[#0a0e1a] border-[var(--color-accent)]"
                 : "border-[#1e293b] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37]"
             }`}
           >
@@ -254,7 +254,7 @@ export default function VennDiagramBuilder({ onAdjust }: VennDiagramBuilderProps
 
         {/* Formula */}
         <div className="mt-3 rounded-lg border border-[#1e293b] bg-[#0f172a] px-4 py-2 text-center">
-          <p className="text-[12px] font-mono text-[#d4af37]">{cfg.formula}</p>
+          <p className="text-[12px] font-mono text-[var(--color-accent)]">{cfg.formula}</p>
           <p className="text-[11px] text-[#94a3b8] mt-0.5">{cfg.formulaValue}</p>
         </div>
       </div>
@@ -262,10 +262,10 @@ export default function VennDiagramBuilder({ onAdjust }: VennDiagramBuilderProps
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "|A|", value: 50, color: "#d4af37" },
+          { label: "|A|", value: 50, color: "var(--color-accent)" },
           { label: "|B|", value: 40, color: "#3bb4a4" },
-          { label: "|A∩B|", value: 20, color: "#a78bfa" },
-          { label: "Highlighted", value: cfg.highlighted, color: "#f59e0b" },
+          { label: "|A∩B|", value: 20, color: "#a855f7" },
+          { label: "Highlighted", value: cfg.highlighted, color: "var(--color-warning)" },
         ].map((s) => (
           <div key={s.label} className="rounded-xl border border-[#1e293b] bg-[#0f172a] p-3 text-center">
             <p className="text-[10px] uppercase tracking-widest text-[#475569] mb-1">{s.label}</p>

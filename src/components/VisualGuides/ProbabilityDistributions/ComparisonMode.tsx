@@ -187,8 +187,8 @@ export default function ComparisonMode({ params, distA, distB, onChangeA, onChan
       className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5 space-y-5"
     >
       <div className="flex items-center gap-2">
-        <span className="w-4 h-px bg-[#d4af37]" />
-        <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#d4af37]">
+        <span className="w-4 h-px bg-[var(--color-accent)]" />
+        <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[var(--color-accent)]">
           Comparison Mode
         </p>
       </div>

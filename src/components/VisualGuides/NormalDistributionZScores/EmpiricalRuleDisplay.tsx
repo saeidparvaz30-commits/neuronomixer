@@ -126,9 +126,9 @@ export default function EmpiricalRuleDisplay({ showStandardNormal, onToggle, onV
         className="block"
       >
         {/* Shaded bands — outermost first */}
-        {band3 && <path d={band3} fill="#d4af37" opacity={0.10} />}
-        {band2 && <path d={band2} fill="#d4af37" opacity={0.20} />}
-        {band1 && <path d={band1} fill="#d4af37" opacity={0.30} />}
+        {band3 && <path d={band3} fill="var(--color-accent)" opacity={0.10} />}
+        {band2 && <path d={band2} fill="var(--color-accent)" opacity={0.20} />}
+        {band1 && <path d={band1} fill="var(--color-accent)" opacity={0.30} />}
 
         {/* Curve stroke */}
         <path d={curvePath} fill="none" stroke="#3bb4a4" strokeWidth="2" />
@@ -154,15 +154,15 @@ export default function EmpiricalRuleDisplay({ showStandardNormal, onToggle, onV
 
         {/* Percentage labels */}
         {/* 99.7% */}
-        <text x={center} y={labelY} textAnchor="middle" fill="#d4af37" fontSize="8" opacity={0.6} fontWeight="600">
+        <text x={center} y={labelY} textAnchor="middle" fill="var(--color-accent)" fontSize="8" opacity={0.6} fontWeight="600">
           99.7%
         </text>
         {/* 95% */}
-        <text x={center} y={labelY + 10} textAnchor="middle" fill="#d4af37" fontSize="8" opacity={0.75} fontWeight="600">
+        <text x={center} y={labelY + 10} textAnchor="middle" fill="var(--color-accent)" fontSize="8" opacity={0.75} fontWeight="600">
           95%
         </text>
         {/* 68% */}
-        <text x={center} y={labelY + 20} textAnchor="middle" fill="#d4af37" fontSize="8" opacity={0.9} fontWeight="600">
+        <text x={center} y={labelY + 20} textAnchor="middle" fill="var(--color-accent)" fontSize="8" opacity={0.9} fontWeight="600">
           68%
         </text>
 
@@ -191,15 +191,15 @@ export default function EmpiricalRuleDisplay({ showStandardNormal, onToggle, onV
       {/* Legend */}
       <div className="flex flex-wrap gap-4 mt-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-3 rounded-sm" style={{ background: "#d4af37", opacity: 0.3 }} />
+          <div className="w-8 h-3 rounded-sm" style={{ background: "var(--color-accent)", opacity: 0.3 }} />
           <span className="text-[10px] text-[#94a3b8]">±1σ → 68%</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-3 rounded-sm" style={{ background: "#d4af37", opacity: 0.2 }} />
+          <div className="w-8 h-3 rounded-sm" style={{ background: "var(--color-accent)", opacity: 0.2 }} />
           <span className="text-[10px] text-[#94a3b8]">±2σ → 95%</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-8 h-3 rounded-sm" style={{ background: "#d4af37", opacity: 0.1 }} />
+          <div className="w-8 h-3 rounded-sm" style={{ background: "var(--color-accent)", opacity: 0.1 }} />
           <span className="text-[10px] text-[#94a3b8]">±3σ → 99.7%</span>
         </div>
       </div>

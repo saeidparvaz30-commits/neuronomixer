@@ -58,7 +58,7 @@ function NonresponseReveal() {
   // Weighted average computed from the two groups: 0.15*78 + 0.85*35 = 41.45
   const trueAvg = respondents.share * respondents.pct + nonRespondents.share * nonRespondents.pct;
   const groups = [
-    { label: "Respondents (15%)", pct: respondents.pct, color: "#d4af37" },
+    { label: "Respondents (15%)", pct: respondents.pct, color: "var(--color-accent)" },
     { label: "Non-respondents (85%)", pct: nonRespondents.pct, color: "#ef4444" },
     { label: "True average (weighted)", pct: trueAvg, color: "#3bb4a4" },
   ];
@@ -147,7 +147,7 @@ function SelectionReveal() {
 
 function MeasurementReveal() {
   const groups = [
-    { label: "18-30", reported: 250, actual: 180, color: "#f97316" },
+    { label: "18-30", reported: 250, actual: 180, color: "var(--color-warning)" },
     { label: "50-70", reported: 80, actual: 140, color: "#3bb4a4" },
   ];
   return (

@@ -51,7 +51,7 @@ function CategoryBucketInner({
       }}
       tabIndex={isKeyTarget ? 0 : -1}
       role="region"
-      aria-label={`${label} bucket — ${count} of ${total} sorted`}
+      aria-label={`${label} bucket, ${count} of ${total} sorted`}
       className={`
         flex flex-col rounded-2xl border-2 border-dashed transition-all duration-200 min-h-[180px] p-4
         ${isKeyTarget ? "ring-2 ring-[var(--color-accent)]" : ""}

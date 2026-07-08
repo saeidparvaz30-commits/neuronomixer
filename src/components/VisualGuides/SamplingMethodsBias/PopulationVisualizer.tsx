@@ -44,7 +44,7 @@ export default function PopulationVisualizer({
           </p>
           <p className="text-[13px] font-bold text-white">
             Mean ={" "}
-            <span className="text-[#d4af37]">{populationMean.toFixed(2)}</span>
+            <span className="text-[var(--color-accent)]">{populationMean.toFixed(2)}</span>
             {"  "}
             <span className="text-[#475569] font-normal text-[12px]">
               SD = {populationSD.toFixed(2)}
@@ -54,14 +54,14 @@ export default function PopulationVisualizer({
         {selectedCount > 0 && (
           <div className="text-right">
             <p className="text-[11px] text-[#94a3b8]">
-              <span className="font-semibold text-[#d4af37]">{selectedCount}</span> selected
+              <span className="font-semibold text-[var(--color-accent)]">{selectedCount}</span> selected
             </p>
           </div>
         )}
       </div>
 
       {/* SVG canvas */}
-      <div className="rounded-xl overflow-hidden border border-[#1e293b] bg-[#070d1a]">
+      <div className="rounded-xl overflow-hidden border border-[#1e293b] bg-[#0a0e1a]">
         <svg
           viewBox={`0 0 ${SVG_W} ${SVG_H}`}
           width="100%"
@@ -88,9 +88,9 @@ export default function PopulationVisualizer({
             .filter(c => c.isSelected)
             .map(({ unit, cx, cy, baseColor }) => (
               <g key={`sel-${unit.id}`}>
-                <circle cx={cx} cy={cy} r={5.5} fill="#d4af37" opacity={0.35} />
+                <circle cx={cx} cy={cy} r={5.5} fill="var(--color-accent)" opacity={0.35} />
                 <circle cx={cx} cy={cy} r={3.2} fill={baseColor} opacity={1} />
-                <circle cx={cx} cy={cy} r={5} fill="none" stroke="#d4af37" strokeWidth={1.2} opacity={0.9} />
+                <circle cx={cx} cy={cy} r={5} fill="none" stroke="var(--color-accent)" strokeWidth={1.2} opacity={0.9} />
               </g>
             ))}
         </svg>
@@ -101,22 +101,22 @@ export default function PopulationVisualizer({
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-[#3bb4a4] inline-block" />
           <span className="text-[11px] text-[#94a3b8]">
-            Group A ({groupACount} — 60%)
+            Group A ({groupACount}, 60%)
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-[#ef4444] inline-block" />
           <span className="text-[11px] text-[#94a3b8]">
-            Group B ({groupBCount} — 40%)
+            Group B ({groupBCount}, 40%)
           </span>
         </div>
         {selectedCount > 0 && (
           <div className="flex items-center gap-1.5 ml-auto">
             <span
               className="w-2.5 h-2.5 rounded-full inline-block border"
-              style={{ borderColor: "#d4af37", background: "transparent" }}
+              style={{ borderColor: "var(--color-accent)", background: "transparent" }}
             />
-            <span className="text-[11px] text-[#d4af37]">Selected sample</span>
+            <span className="text-[11px] text-[var(--color-accent)]">Selected sample</span>
           </div>
         )}
       </div>

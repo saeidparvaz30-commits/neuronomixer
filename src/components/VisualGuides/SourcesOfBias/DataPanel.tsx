@@ -72,10 +72,10 @@ function SelectionViz() {
         <div key={hospital}>
           <div className="flex items-center justify-between mb-1">
             <span className="text-[12px] font-semibold text-white">{hospital}</span>
-            <span className="text-[12px] font-bold text-[#d4af37]">{survival}%</span>
+            <span className="text-[12px] font-bold text-[var(--color-accent)]">{survival}%</span>
           </div>
           <div className="bg-[#1e293b] rounded-full h-4">
-            <div className="h-4 rounded-full bg-[#d4af37]" style={{ width: `${survival}%` }} />
+            <div className="h-4 rounded-full bg-[var(--color-accent)]" style={{ width: `${survival}%` }} />
           </div>
         </div>
       ))}
@@ -96,10 +96,10 @@ function MeasurementViz() {
         <div key={label}>
           <div className="flex items-center justify-between mb-1">
             <span className="text-[12px] text-[#94a3b8]">{label}</span>
-            <span className="text-[12px] font-bold text-[#f97316]">{mins} min</span>
+            <span className="text-[12px] font-bold text-[var(--color-warning)]">{mins} min</span>
           </div>
           <div className="bg-[#1e293b] rounded-full h-3">
-            <div className="h-3 rounded-full bg-[#f97316]" style={{ width: `${(mins / max) * 100}%` }} />
+            <div className="h-3 rounded-full bg-[var(--color-warning)]" style={{ width: `${(mins / max) * 100}%` }} />
           </div>
         </div>
       ))}
@@ -156,7 +156,7 @@ export default function DataPanel({ caseId, headline, conclusion }: Props) {
       <p className="text-[14px] font-bold text-white mb-4">{headline}</p>
       <Viz />
       <div className="mt-4 pt-3 border-t border-[#1e293b]">
-        <p className="text-[11px] font-semibold text-[#d4af37] uppercase tracking-wider mb-1">Conclusion drawn</p>
+        <p className="text-[11px] font-semibold text-[var(--color-accent)] uppercase tracking-wider mb-1">Conclusion drawn</p>
         <p className="text-[12px] text-[#94a3b8] italic">&ldquo;{conclusion}&rdquo;</p>
       </div>
     </div>

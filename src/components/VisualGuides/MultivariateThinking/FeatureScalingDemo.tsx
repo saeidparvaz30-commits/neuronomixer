@@ -44,7 +44,7 @@ function sy(v: number, min: number, max: number) {
   return PAD.t + ((max - v) / (max - min)) * (H - PAD.t - PAD.b);
 }
 
-const POINT_COLORS = ["#d4af37", "#3bb4a4", "#ef4444", "#8b5cf6", "#f59e0b", "#06b6d4", "#ec4899", "#84cc16"];
+const POINT_COLORS = ["var(--color-accent)", "#3bb4a4", "#ef4444", "#a855f7", "var(--color-warning)", "#06b6d4", "#ec4899", "var(--color-success)"];
 
 interface Props {
   onScalingExplored: () => void;
@@ -112,7 +112,7 @@ export default function FeatureScalingDemo({ onScalingExplored }: Props) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Unscaled */}
-        <div className="rounded-xl border border-[#1e293b] bg-[#0a0f1e] p-3">
+        <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-3">
           <div className="flex items-center justify-between mb-2">
             <p className="text-[11px] font-semibold text-[#94a3b8]">Unscaled Data</p>
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#ef4444]/10 text-[#ef4444] border border-[#ef4444]/20">
@@ -145,7 +145,7 @@ export default function FeatureScalingDemo({ onScalingExplored }: Props) {
                 const bx = sx(RAW_POINTS[b].salary, rawXMin, rawXMax);
                 const by_ = sy(RAW_POINTS[b].experience, rawYMin, rawYMax);
                 const dist = euclidDist(RAW_POINTS[a].salary, RAW_POINTS[a].experience, RAW_POINTS[b].salary, RAW_POINTS[b].experience);
-                const colors = ["#f59e0b", "#8b5cf6", "#06b6d4"];
+                const colors = ["var(--color-warning)", "#a855f7", "#06b6d4"];
                 return (
                   <g key={pairIdx}>
                     <motion.line
@@ -194,7 +194,7 @@ export default function FeatureScalingDemo({ onScalingExplored }: Props) {
         </div>
 
         {/* Standardized */}
-        <div className="rounded-xl border border-[#1e293b] bg-[#0a0f1e] p-3">
+        <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-3">
           <div className="flex items-center justify-between mb-2">
             <p className="text-[11px] font-semibold text-[#94a3b8]">Standardized (z-score)</p>
             <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#3bb4a4]/10 text-[#3bb4a4] border border-[#3bb4a4]/20">
@@ -241,7 +241,7 @@ export default function FeatureScalingDemo({ onScalingExplored }: Props) {
                 const bx = sx(scaledPoints[b].x, scXMin, scXMax);
                 const by_ = sy(scaledPoints[b].y, scYMin, scYMax);
                 const dist = euclidDist(scaledPoints[a].x, scaledPoints[a].y, scaledPoints[b].x, scaledPoints[b].y);
-                const colors = ["#f59e0b", "#8b5cf6", "#06b6d4"];
+                const colors = ["var(--color-warning)", "#a855f7", "#06b6d4"];
                 return (
                   <g key={pairIdx}>
                     <motion.line
@@ -299,7 +299,7 @@ export default function FeatureScalingDemo({ onScalingExplored }: Props) {
             exit={{ opacity: 0, height: 0 }}
             className="mt-4 overflow-hidden"
           >
-            <div className="rounded-xl border border-[#1e293b] bg-[#0a0f1e] p-4">
+            <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-4">
               <p className="text-[11px] font-semibold text-[#94a3b8] mb-3 uppercase tracking-wide">Distance Comparison</p>
               <div className="overflow-x-auto">
                 <table className="w-full text-[11px]">
@@ -312,7 +312,7 @@ export default function FeatureScalingDemo({ onScalingExplored }: Props) {
                   </thead>
                   <tbody>
                     {PAIRS.map(([a, b], i) => {
-                      const colors = ["#f59e0b", "#8b5cf6", "#06b6d4"];
+                      const colors = ["var(--color-warning)", "#a855f7", "#06b6d4"];
                       const rawDist = euclidDist(RAW_POINTS[a].salary, RAW_POINTS[a].experience, RAW_POINTS[b].salary, RAW_POINTS[b].experience);
                       const scaledDist = euclidDist(scaledPoints[a].x, scaledPoints[a].y, scaledPoints[b].x, scaledPoints[b].y);
                       return (
@@ -341,15 +341,15 @@ export default function FeatureScalingDemo({ onScalingExplored }: Props) {
 
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px]">
         <div className="rounded-lg bg-[#1e293b]/40 p-3 border border-[#1e293b]">
-          <p className="text-[#d4af37] font-semibold mb-0.5">Formula</p>
+          <p className="text-[var(--color-accent)] font-semibold mb-0.5">Formula</p>
           <p className="text-[#94a3b8] font-mono">z = (x − μ) / σ</p>
         </div>
         <div className="rounded-lg bg-[#1e293b]/40 p-3 border border-[#1e293b]">
-          <p className="text-[#d4af37] font-semibold mb-0.5">When to scale</p>
+          <p className="text-[var(--color-accent)] font-semibold mb-0.5">When to scale</p>
           <p className="text-[#94a3b8]">KNN, SVM, PCA, gradient descent</p>
         </div>
         <div className="rounded-lg bg-[#1e293b]/40 p-3 border border-[#1e293b]">
-          <p className="text-[#d4af37] font-semibold mb-0.5">Scale-invariant</p>
+          <p className="text-[var(--color-accent)] font-semibold mb-0.5">Scale-invariant</p>
           <p className="text-[#94a3b8]">Decision trees, Random Forests</p>
         </div>
       </div>

@@ -4,7 +4,7 @@ import TTestsGuideClient from "@/components/VisualGuides/TTestsGuide/TTestsGuide
 export const metadata: Metadata = {
   title: "t-Tests & Proportion Tests: Comparing Two Groups",
   description:
-    "Work through four interactive scenarios — one-sample, independent, paired, and proportion tests. Run real statistical tests with assumption checks, CI visualizations, and Cohen's d.",
+    "Work through four interactive scenarios: one-sample, independent, paired, and proportion tests. Run real statistical tests with assumption checks, CI visualizations, and Cohen's d.",
   alternates: {
     canonical: "https://www.neuronomixer.com/visual-guides/t-tests-proportion-tests",
   },

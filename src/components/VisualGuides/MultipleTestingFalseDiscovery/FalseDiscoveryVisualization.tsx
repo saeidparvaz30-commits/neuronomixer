@@ -61,7 +61,7 @@ export default function FalseDiscoveryVisualization({
       <div>
         <div className="flex items-center justify-between mb-2">
           <p className="text-[11px] text-white font-semibold">P-Value Distribution</p>
-          <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#d4af37]/20 text-[#d4af37]">
+          <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-[#d4af37]/20 text-[var(--color-accent)]">
             {sigCount} tests fall below α = 0.05
           </span>
         </div>
@@ -92,7 +92,7 @@ export default function FalseDiscoveryVisualization({
                 initial={{ height: 0, y: HIST_PAD.t + histIH }}
                 animate={{ height: bh, y: HIST_PAD.t + histIH - bh }}
                 transition={{ duration: 0.4, delay: i * 0.015 }}
-                fill={isFirstBin ? "#d4af37" : "#334155"}
+                fill={isFirstBin ? "var(--color-accent)" : "#334155"}
                 opacity="0.9"
                 rx="1"
               />
@@ -128,7 +128,7 @@ export default function FalseDiscoveryVisualization({
           <text
             x={HIST_PAD.l + 0.05 * histIW + 2}
             y={HIST_PAD.t + 8}
-            fill="#d4af37"
+            fill="var(--color-accent)"
             fontSize="7"
           >
             α=0.05
@@ -197,8 +197,8 @@ export default function FalseDiscoveryVisualization({
                 initial={{ opacity: 0, cy: MAN_PAD.t + manIH }}
                 animate={{ opacity: 1, cy }}
                 transition={{ duration: 0.3, delay: i * 0.03 }}
-                fill={r.significant ? "#d4af37" : "#3b5168"}
-                stroke={r.significant ? "#d4af37" : "#334155"}
+                fill={r.significant ? "var(--color-accent)" : "#475569"}
+                stroke={r.significant ? "var(--color-accent)" : "#334155"}
                 strokeWidth="1"
               />
             );

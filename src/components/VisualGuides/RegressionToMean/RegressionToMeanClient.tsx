@@ -47,7 +47,7 @@ function ScatterPlot({
     const isBottom = s.test1 < (100 - threshold);
     if (selected === "top" && !isTop) return "#1e293b";
     if (selected === "bottom" && !isBottom) return "#1e293b";
-    if (isTop) return "#d4af37";
+    if (isTop) return "var(--color-accent)";
     if (isBottom) return "#ef4444";
     return "#475569";
   }
@@ -88,7 +88,7 @@ function ScatterPlot({
         return (
           <motion.line
             x1={tx(x0)} y1={ty(y0)} x2={tx(x1)} y2={ty(y1)}
-            stroke="#d4af37" strokeWidth="2"
+            stroke="var(--color-accent)" strokeWidth="2"
             initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
             transition={{ duration: 0.6 }}
           />
@@ -98,7 +98,7 @@ function ScatterPlot({
       {/* Threshold region */}
       {selected === "top" && (
         <rect x={tx(threshold)} y={PAD.t} width={tx(100) - tx(threshold)} height={IH}
-          fill="#d4af37" opacity="0.05" />
+          fill="var(--color-accent)" opacity="0.05" />
       )}
       {selected === "bottom" && (
         <rect x={PAD.l} y={PAD.t} width={tx(100 - threshold) - PAD.l} height={IH}
@@ -216,7 +216,7 @@ export default function RegressionToMeanClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "regression-to-mean", score: 6 }),
+        body: JSON.stringify({ guideSlug: "regression-to-mean", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -264,7 +264,7 @@ export default function RegressionToMeanClient() {
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
             Select the top performers after Test 1 and watch their Test 2 scores drift back toward
-            the group average — even with no intervention. This is regression to the mean, not improvement or deterioration.
+            the group average, even with no intervention. This is regression to the mean, not improvement or deterioration.
           </p>
         </section>
 
@@ -308,11 +308,12 @@ export default function RegressionToMeanClient() {
                 <div key={label} className="mb-3">
                   <div className="flex justify-between mb-1">
                     <span className="text-[11px] text-white">{label}</span>
-                    <span className="text-[11px] font-mono text-[#d4af37]">{fmt(value)}</span>
+                    <span className="text-[11px] font-mono text-[var(--color-accent)]">{fmt(value)}</span>
                   </div>
                   <input type="range" min={min} max={max} step={step} value={value}
+                    aria-label={label}
                     onChange={e => set(Number(e.target.value))}
-                    className="w-full" style={{ accentColor: "#d4af37" }} />
+                    className="w-full" style={{ accentColor: "var(--color-accent)" }} />
                 </div>
               ))}
 
@@ -326,7 +327,7 @@ export default function RegressionToMeanClient() {
                 <button
                   onClick={() => setShowRegression(!showRegression)}
                   className={`flex-1 py-1.5 rounded-lg text-[11px] font-semibold border transition-colors ${
-                    showRegression ? "border-[#d4af37] text-[#d4af37] bg-[#d4af37]/10" : "border-[#1e293b] text-[#475569]"
+                    showRegression ? "border-[var(--color-accent)] text-[var(--color-accent)] bg-[#d4af37]/10" : "border-[#1e293b] text-[#475569]"
                   }`}
                 >
                   {showRegression ? "Hide" : "Show"} regression line
@@ -337,7 +338,7 @@ export default function RegressionToMeanClient() {
             {/* Group selector */}
             <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
               <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">Select Group</p>
-              <div className="space-y-2">
+              <div className="space-y-2" role="radiogroup" aria-label="Select group">
                 {[
                   { id: "top" as const, label: `Top performers (≥ ${threshold})`, color: "#d4af37", count: topStudents.length },
                   { id: "bottom" as const, label: `Low performers (< ${100 - threshold})`, color: "#ef4444", count: bottomStudents.length },
@@ -345,6 +346,8 @@ export default function RegressionToMeanClient() {
                 ].map(({ id, label, color, count }) => (
                   <button
                     key={id}
+                    role="radio"
+                    aria-checked={selected === id}
                     onClick={() => handleSelectGroup(id)}
                     className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl border transition-colors text-left"
                     style={{
@@ -367,7 +370,7 @@ export default function RegressionToMeanClient() {
                   {[
                     { label: "Overall mean", value: overallMean.toFixed(1), color: "#475569" },
                     { label: "Group T1 mean", value: mean(displayGroup.map(s => s.test1)).toFixed(1), color: "#3bb4a4" },
-                    { label: "Group T2 mean", value: mean(displayGroup.map(s => s.test2)).toFixed(1), color: "#d4af37" },
+                    { label: "Group T2 mean", value: mean(displayGroup.map(s => s.test2)).toFixed(1), color: "var(--color-accent)" },
                     { label: "Mean shift", value: (mean(displayGroup.map(s => s.test2)) - mean(displayGroup.map(s => s.test1))).toFixed(1), color: "#a855f7" },
                   ].map(({ label, value, color }) => (
                     <div key={label} className="flex justify-between">
@@ -394,7 +397,7 @@ export default function RegressionToMeanClient() {
                   </span>
                   {showRegression && (
                     <span className="flex items-center gap-1">
-                      <span className="inline-block w-6 border-t-2 border-[#d4af37]" /> regression
+                      <span className="inline-block w-6 border-t-2 border-[var(--color-accent)]" /> regression
                     </span>
                   )}
                 </div>
@@ -417,10 +420,10 @@ export default function RegressionToMeanClient() {
 
             {/* Insight box */}
             <div className="rounded-2xl border border-[#d4af37]/20 bg-[#d4af37]/5 p-5">
-              <p className="text-[12px] font-semibold text-[#d4af37] mb-2">Why does this happen?</p>
+              <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-2">Why does this happen?</p>
               <p className="text-[12px] text-[#94a3b8] leading-relaxed">
                 Extreme scores on Test 1 include a component of luck. Top scorers were lucky;
-                bottom scorers were unlucky. On Test 2, luck averages out — so both groups drift
+                bottom scorers were unlucky. On Test 2, luck averages out, so both groups drift
                 back toward the overall mean. <strong className="text-white">No intervention is needed for this effect to occur.</strong>
               </p>
               <p className="text-[12px] text-[#94a3b8] leading-relaxed mt-2">
@@ -443,7 +446,7 @@ export default function RegressionToMeanClient() {
           </Link>
         </div>
 
-        <GuideCompletion isComplete={allComplete} guideSlug="regression-to-mean" score={6} />
+        <GuideCompletion isComplete={allComplete} guideSlug="regression-to-mean" score={100} />
       </div>
     </div>
   );

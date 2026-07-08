@@ -36,7 +36,7 @@ export default function TimeSeriesPlot({
   color = "#3bb4a4",
   height = 220,
   overlayValues,
-  overlayColor = "#d4af37",
+  overlayColor = "var(--color-accent)",
   title,
   showZeroLine = false,
 }: Props) {

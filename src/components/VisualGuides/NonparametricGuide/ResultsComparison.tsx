@@ -108,7 +108,7 @@ const TAB_CONTENT: Record<TabId, TabContent> = {
   },
   "sign-test": {
     scenario:
-      "Simplest nonparametric test for paired data. Only counts the sign of differences — ignores magnitude entirely.",
+      "Simplest nonparametric test for paired data. Only counts the sign of differences, ignoring magnitude entirely.",
     steps: [
       "1. Compute differences: dᵢ = before_i − after_i",
       "2. Remove zero differences (ties)",
@@ -139,7 +139,7 @@ function ResultCard({ result }: { result: TestResult }) {
       <div className="flex items-center justify-between">
         <span className="text-[11px] font-bold text-white">{result.testName} Result</span>
         {result.significant ? (
-          <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/30">
+          <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-[var(--color-success)]/20 text-[var(--color-success)] border border-[var(--color-success)]/30">
             Significant
           </span>
         ) : (
@@ -159,7 +159,7 @@ function ResultCard({ result }: { result: TestResult }) {
           <p className="text-[9px] text-[#94a3b8] uppercase tracking-wide">p-value</p>
           <p
             className={`text-[13px] font-mono font-bold ${
-              result.significant ? "text-[#10b981]" : "text-white"
+              result.significant ? "text-[var(--color-success)]" : "text-white"
             }`}
           >
             {fmtP(result.pValue)}
@@ -211,14 +211,16 @@ export default function ResultsComparison({ currentData, activeTab, onTabChange 
       </p>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-4 overflow-x-auto pb-1">
+      <div className="flex gap-1 mb-4 overflow-x-auto pb-1" role="radiogroup" aria-label="Nonparametric test">
         {TABS.map((tab) => (
           <button
             key={tab.id}
+            role="radio"
+            aria-checked={activeTab === tab.id}
             onClick={() => onTabChange(tab.id)}
             className={`shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-colors ${
               activeTab === tab.id
-                ? "bg-[#d4af37] text-[#0a0e1a]"
+                ? "bg-[var(--color-accent)] text-[#0a0e1a]"
                 : "border border-[#1e293b] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37]"
             }`}
           >
@@ -280,7 +282,7 @@ export default function ResultsComparison({ currentData, activeTab, onTabChange 
             onClick={handleRun}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full px-4 py-2 rounded-xl text-[12px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="w-full px-4 py-2 rounded-xl text-[12px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Run on Current Data
           </motion.button>
@@ -293,9 +295,9 @@ export default function ResultsComparison({ currentData, activeTab, onTabChange 
             <motion.div
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-4 rounded-xl border border-[#f59e0b]/30 bg-[#f59e0b]/5 p-4"
+              className="mt-4 rounded-xl border border-[var(--color-warning)]/30 bg-[var(--color-warning)]/5 p-4"
             >
-              <p className="text-[11px] font-bold text-[#f59e0b] mb-1">
+              <p className="text-[11px] font-bold text-[var(--color-warning)] mb-1">
                 Not applicable to this dataset
               </p>
               <p className="text-[10px] text-[#94a3b8] leading-relaxed">
