@@ -434,12 +434,14 @@ export default function SampleSpaceAnimator({
   scenario,
   selectedNodeId = null,
 }: SampleSpaceAnimatorProps) {
+  // Hooks must run unconditionally, before the marble-scenario early return
+  const visible = useMemo(() => squares.filter((sq) => isVisible(sq, filter)), [squares, filter]);
+
   // Marble scenario uses a dedicated bag view
   if (scenario === "marbles") {
     return <MarbleBagView selectedNodeId={selectedNodeId} />;
   }
 
-  const visible = useMemo(() => squares.filter((sq) => isVisible(sq, filter)), [squares, filter]);
   const total = squares.length;
   const visibleCount = visible.length;
 
