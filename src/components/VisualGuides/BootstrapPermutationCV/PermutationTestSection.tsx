@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useGuideMotion, GUIDE_VIEWPORT } from "@/lib/guideMotion";
 import HistogramPlot from "./HistogramPlot";
 
 // Fixed deterministic group data
@@ -38,6 +39,7 @@ interface PermutationTestSectionProps {
 }
 
 export default function PermutationTestSection({ onPermutationDone }: PermutationTestSectionProps) {
+  const { fadeUp } = useGuideMotion();
   const [nullDist, setNullDist] = useState<number[]>([]);
   const [isAnimating, setIsAnimating] = useState(false);
   const [pValue, setPValue] = useState<number | null>(null);
@@ -50,10 +52,12 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
   const observedDiff = group2Mean - group1Mean;
   const combined = [...GROUP1, ...GROUP2];
 
+  // (k + 1) / (N + 1): the observed labeling counts as one permutation,
+  // so a permutation p-value can never legitimately be exactly 0.
   const computePValue = useCallback((dist: number[]) => {
     const absDiff = Math.abs(observedDiff);
     const extreme = dist.filter((d) => Math.abs(d) >= absDiff).length;
-    return extreme / dist.length;
+    return (extreme + 1) / (dist.length + 1);
   }, [observedDiff]);
 
   const stopAnimation = useCallback(() => {
@@ -168,7 +172,7 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
               key={v}
               x={PAD.l + ((v - minV) / (maxV - minV)) * chartW}
               y={H - 4}
-              fill="#64748b"
+              fill="#475569"
               fontSize="8"
               textAnchor="middle"
             >
@@ -186,9 +190,10 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.1 }}
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={GUIDE_VIEWPORT}
       className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6"
     >
       {/* Header */}
@@ -199,7 +204,8 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
           </div>
           <h2 className="text-xl font-bold text-white">Permutation Test</h2>
           <p className="text-sm text-[#94a3b8] mt-1">
-            Test if the difference between two groups is statistically significant — without distributional assumptions.
+            Test if the difference between two groups is statistically significant. No normality
+            assumption needed, only that observations are exchangeable between groups under the null.
           </p>
         </div>
         {isDone && (
@@ -234,14 +240,14 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
           {/* Observed difference */}
           <div className="rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-4 text-center">
             <span className="text-xs text-[#94a3b8] uppercase tracking-wide">Observed Difference (Group 2 − Group 1)</span>
-            <div className="text-3xl font-black text-[#d4af37] mt-1">+{observedDiff.toFixed(3)}</div>
+            <div className="text-3xl font-black text-[var(--color-accent)] mt-1">+{observedDiff.toFixed(3)}</div>
           </div>
 
           {/* Progress bar */}
           <div className="flex items-center gap-3">
             <div className="flex-1 h-2 bg-[#1e293b] rounded-full overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-[#3bb4a4] to-[#d4af37] rounded-full"
+                className="h-full bg-gradient-to-r from-[#3bb4a4] to-[var(--color-accent)] rounded-full"
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.2 }}
               />
@@ -269,12 +275,21 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
                         color: "#ef4444",
                         label: `obs (${observedDiff.toFixed(1)})`,
                       },
+                      {
+                        x: -observedDiff,
+                        color: "#ef4444",
+                        label: `−obs (${(-observedDiff).toFixed(1)})`,
+                      },
                     ]
                   : []
               }
-              shadedRange={
+              shadedRanges={
                 nullDist.length > 0
-                  ? { lo: observedDiff, hi: Math.max(...nullDist) + 1, color: "#ef4444" }
+                  ? [
+                      // both tails count toward the two-tailed p-value
+                      { lo: Math.abs(observedDiff), hi: Math.max(...nullDist) + 1, color: "#ef4444" },
+                      { lo: Math.min(...nullDist) - 1, hi: -Math.abs(observedDiff), color: "#ef4444" },
+                    ]
                   : undefined
               }
             />
@@ -292,8 +307,8 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
                 isDone
                   ? "bg-[#1e293b] text-[#475569] cursor-not-allowed"
                   : isAnimating
-                  ? "bg-[#d4af37]/20 text-[#d4af37] border border-[#d4af37]/40 hover:opacity-90"
-                  : "bg-[#d4af37] text-[#0a0e1a] hover:opacity-90"
+                  ? "bg-[#d4af37]/20 text-[var(--color-accent)] border border-[#d4af37]/40 hover:opacity-90"
+                  : "bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90"
               }`}
             >
               {isDone ? "Done" : isAnimating ? "Pause" : nullDist.length > 0 ? "Resume" : "Run Permutation Test"}
@@ -313,11 +328,11 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
               {[
                 { label: "Group 1 Mean", value: group1Mean.toFixed(3), color: "#1e5d8a" },
                 { label: "Group 2 Mean", value: group2Mean.toFixed(3), color: "#3bb4a4" },
-                { label: "Observed Diff", value: `+${observedDiff.toFixed(3)}`, color: "#d4af37" },
+                { label: "Observed Diff", value: `+${observedDiff.toFixed(3)}`, color: "var(--color-accent)" },
                 {
                   label: "p-value (two-tailed)",
                   value: pValue !== null ? pValue.toFixed(4) : "—",
-                  color: pValue !== null ? (isSignificant ? "#22c55e" : "#ef4444") : "#94a3b8",
+                  color: pValue !== null ? (isSignificant ? "var(--color-success)" : "#ef4444") : "#94a3b8",
                 },
               ].map(({ label, value, color }) => (
                 <div key={label} className="flex items-center justify-between">
@@ -339,7 +354,7 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
               >
                 <span
                   className="text-sm font-bold"
-                  style={{ color: isSignificant ? "#22c55e" : "#ef4444" }}
+                  style={{ color: isSignificant ? "var(--color-success)" : "#ef4444" }}
                 >
                   {isSignificant ? "Significant (p < 0.05)" : "Not Significant (p ≥ 0.05)"}
                 </span>
@@ -357,7 +372,7 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
                 "Randomly shuffle and re-split into two groups of same size.",
                 "Compute the difference for this random permutation.",
                 "Repeat 5,000 times to build the null distribution.",
-                "p-value = fraction of permutations with |diff| ≥ |observed|.",
+                "p-value = (k + 1) / (N + 1), where k = permutations with |diff| ≥ |observed|. Both tails count, and the +1 (the observed labeling itself) keeps p from ever being exactly 0.",
               ].map((step, i) => (
                 <li key={i} className="flex gap-2 text-xs text-[#94a3b8]">
                   <span className="text-[#3bb4a4] font-bold shrink-0">{i + 1}.</span>

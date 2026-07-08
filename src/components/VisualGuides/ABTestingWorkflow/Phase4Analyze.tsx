@@ -2,7 +2,8 @@
 
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Phase4Props, twoProportionZTest, normalCDF } from "./types";
+import { useGuideMotion } from "@/lib/guideMotion";
+import { Phase4Props, twoProportionZTest, zAlphaFor, normalQuantile } from "./types";
 
 // SVG chart dimensions
 const W = 480;
@@ -30,9 +31,18 @@ export default function Phase4Analyze({
   direction,
   onBack,
 }: Props) {
+  const { fadeUp } = useGuideMotion();
   const { z, pValue, ciLow, ciHigh, cohenH } = useMemo(
-    () => twoProportionZTest(controlConversions, controlN, treatmentConversions, treatmentN),
-    [controlConversions, controlN, treatmentConversions, treatmentN]
+    () =>
+      twoProportionZTest(
+        controlConversions,
+        controlN,
+        treatmentConversions,
+        treatmentN,
+        alpha,
+        direction
+      ),
+    [controlConversions, controlN, treatmentConversions, treatmentN, alpha, direction]
   );
 
   const isSignificant = pValue < alpha;
@@ -40,8 +50,12 @@ export default function Phase4Analyze({
   const p2 = treatmentConversions / treatmentN;
   const diff = p2 - p1;
 
-  // Practical significance: observed lift >= 50% of MDE
-  const isPracticallySignificant = Math.abs(diff) >= mde * 0.5;
+  // Confidence level matching the chosen alpha
+  const confPct = ((1 - alpha) * 100).toFixed(0);
+  const zCI = normalQuantile(1 - alpha / 2);
+
+  // Practical significance: observed lift meets or exceeds the MDE you planned for
+  const isPracticallySignificant = Math.abs(diff) >= mde;
 
   // Z-distribution visualization
   const zMin = -4;
@@ -50,8 +64,8 @@ export default function Phase4Analyze({
   const mu = 0;
   const sigma = 1;
 
-  // Critical value
-  const zCrit = direction === "two-tailed" ? 1.96 : 1.645;
+  // Critical value from the user's actual alpha and direction
+  const zCrit = zAlphaFor(alpha, direction);
 
   // Build distribution points
   const pts = Array.from({ length: steps + 1 }, (_, i) => {
@@ -99,9 +113,9 @@ export default function Phase4Analyze({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
       className="space-y-6"
     >
       {/* Decision banner */}
@@ -127,12 +141,12 @@ export default function Phase4Analyze({
               }`}
             >
               {isSignificant
-                ? "Reject H₀ — Statistically Significant"
-                : "Fail to Reject H₀ — Not Statistically Significant"}
+                ? "Reject H₀: Statistically Significant"
+                : "Fail to Reject H₀: Not Statistically Significant"}
             </p>
             <p className="text-[13px] text-[#94a3b8]">
               {isSignificant
-                ? `p = ${pValue < 0.001 ? "< 0.001" : pValue.toFixed(4)} is below α = ${alpha.toFixed(2)}. The observed difference is unlikely due to chance.`
+                ? `p = ${pValue < 0.001 ? "< 0.001" : pValue.toFixed(4)} is below α = ${alpha.toFixed(2)}. If there were truly no difference, data at least this extreme would occur in only ${pValue < 0.001 ? "under 0.1%" : `about ${(pValue * 100).toFixed(1)}%`} of experiments.`
                 : `p = ${pValue < 0.001 ? "< 0.001" : pValue.toFixed(4)} is above α = ${alpha.toFixed(2)}. Insufficient evidence to conclude a real effect exists.`}
             </p>
           </div>
@@ -196,7 +210,7 @@ export default function Phase4Analyze({
               y1={PAD.t}
               x2={zSvgX}
               y2={H - PAD.b}
-              stroke={isSignificant ? "#3bb4a4" : "#d4af37"}
+              stroke={isSignificant ? "#3bb4a4" : "var(--color-accent)"}
               strokeWidth={2}
             />
 
@@ -224,7 +238,7 @@ export default function Phase4Analyze({
               x={zSvgX + 4}
               y={PAD.t + 24}
               fontSize={9}
-              fill={isSignificant ? "#3bb4a4" : "#d4af37"}
+              fill={isSignificant ? "#3bb4a4" : "var(--color-accent)"}
             >
               z={z.toFixed(2)}
             </text>
@@ -265,7 +279,7 @@ export default function Phase4Analyze({
             <span className="text-[11px] text-[#94a3b8]">Critical value (α = {alpha.toFixed(2)})</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-8 h-0.5 rounded-full" style={{ background: isSignificant ? "#3bb4a4" : "#d4af37" }} />
+            <div className="w-8 h-0.5 rounded-full" style={{ background: isSignificant ? "#3bb4a4" : "var(--color-accent)" }} />
             <span className="text-[11px] text-[#94a3b8]">Observed z = {z.toFixed(3)}</span>
           </div>
         </div>
@@ -277,7 +291,7 @@ export default function Phase4Analyze({
           { label: "Control Rate", value: `${(p1 * 100).toFixed(2)}%`, color: "#1e5d8a" },
           { label: "Treatment Rate", value: `${(p2 * 100).toFixed(2)}%`, color: "#3bb4a4" },
           { label: "Absolute Lift", value: `${diff >= 0 ? "+" : ""}${(diff * 100).toFixed(2)}%`, color: diff >= 0 ? "#3bb4a4" : "#ef4444" },
-          { label: "Relative Lift", value: p1 > 0 ? `${((diff / p1) * 100).toFixed(1)}%` : "—", color: "#d4af37" },
+          { label: "Relative Lift", value: p1 > 0 ? `${((diff / p1) * 100).toFixed(1)}%` : "—", color: "var(--color-accent)" },
         ].map(({ label, value, color }) => (
           <div key={label} className="rounded-xl bg-[#1e293b] p-4 text-center">
             <p className="text-[10px] text-[#94a3b8] mb-1">{label}</p>
@@ -299,14 +313,14 @@ export default function Phase4Analyze({
               formula: "z = (p₂ − p₁) / √(p̂(1−p̂)(1/n₁ + 1/n₂))",
             },
             {
-              label: "p-value (two-tailed)",
+              label: `p-value (${direction === "two-tailed" ? "two-tailed" : "one-tailed, right"})`,
               value: pValue < 0.0001 ? "< 0.0001" : pValue.toFixed(4),
-              formula: "p = 2 × Φ(−|z|)",
+              formula: direction === "two-tailed" ? "p = 2 × Φ(−|z|)" : "p = 1 − Φ(z)",
             },
             {
-              label: "95% CI for Difference",
+              label: `${confPct}% CI for Difference`,
               value: `[${(ciLow * 100).toFixed(2)}%, ${(ciHigh * 100).toFixed(2)}%]`,
-              formula: "(p₂−p₁) ± 1.96 × SE_diff",
+              formula: `(p₂−p₁) ± ${zCI.toFixed(3)} × SE_diff`,
             },
             {
               label: "Cohen's h (Effect Size)",
@@ -329,7 +343,7 @@ export default function Phase4Analyze({
 
       {/* Confidence interval bar */}
       <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
-        <h3 className="text-sm font-semibold text-white mb-4">95% Confidence Interval</h3>
+        <h3 className="text-sm font-semibold text-white mb-4">{confPct}% Confidence Interval</h3>
         <div className="relative">
           {(() => {
             const range = 0.1;
@@ -362,7 +376,7 @@ export default function Phase4Analyze({
                   />
                   {/* Point estimate */}
                   <div
-                    className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[#d4af37]"
+                    className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[var(--color-accent)]"
                     style={{ left: `calc(${diffPct}% - 6px)` }}
                   />
                 </div>
@@ -376,7 +390,7 @@ export default function Phase4Analyze({
                     Lower: <span className="text-white font-semibold">{(ciLow * 100).toFixed(2)}%</span>
                   </span>
                   <span>
-                    Estimate: <span className="text-[#d4af37] font-semibold">{(diff * 100).toFixed(2)}%</span>
+                    Estimate: <span className="text-[var(--color-accent)] font-semibold">{(diff * 100).toFixed(2)}%</span>
                   </span>
                   <span>
                     Upper: <span className="text-white font-semibold">{(ciHigh * 100).toFixed(2)}%</span>
@@ -384,12 +398,12 @@ export default function Phase4Analyze({
                 </div>
                 {isSignificant && ciLow > 0 && (
                   <p className="text-[11px] text-[#3bb4a4] text-center mt-2">
-                    CI excludes zero — confirms significant positive lift
+                    CI excludes zero, confirming a significant positive lift
                   </p>
                 )}
                 {!isSignificant && ciLow <= 0 && ciHigh >= 0 && (
                   <p className="text-[11px] text-[#94a3b8] text-center mt-2">
-                    CI includes zero — consistent with no effect
+                    CI includes zero, consistent with no effect
                   </p>
                 )}
               </div>
@@ -433,7 +447,7 @@ export default function Phase4Analyze({
             </p>
             <p
               className={`text-sm font-bold ${
-                isPracticallySignificant ? "text-[#d4af37]" : "text-[#94a3b8]"
+                isPracticallySignificant ? "text-[var(--color-accent)]" : "text-[#94a3b8]"
               }`}
             >
               {isPracticallySignificant ? "Meaningful" : "Marginal"}
@@ -448,7 +462,7 @@ export default function Phase4Analyze({
           <p className="text-[12px] text-[#94a3b8] leading-relaxed">
             <span className="text-white font-semibold">Interpretation: </span>
             {isSignificant && isPracticallySignificant
-              ? "The result is both statistically and practically significant. The observed lift exceeds the MDE you planned for — a strong case to ship the treatment."
+              ? "The result is both statistically and practically significant. The observed lift exceeds the MDE you planned for, a strong case to ship the treatment."
               : isSignificant && !isPracticallySignificant
               ? "The result is statistically significant, but the effect size may be smaller than business-relevant. Consider whether the observed lift justifies implementation costs."
               : !isSignificant && isPracticallySignificant
@@ -475,7 +489,7 @@ export default function Phase4Analyze({
           </div>
           <div>
             <p className="text-[11px] text-[#94a3b8]">Cohen's h</p>
-            <p className="text-lg font-bold text-[#d4af37]">
+            <p className="text-lg font-bold text-[var(--color-accent)]">
               {cohenH.toFixed(3)} ({hLabel})
             </p>
           </div>

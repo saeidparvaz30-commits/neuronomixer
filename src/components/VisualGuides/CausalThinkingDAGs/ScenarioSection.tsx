@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
+import { useGuideMotion } from "@/lib/guideMotion";
 import DAGCanvas from "./DAGCanvas";
 import ControlPanel from "./ControlPanel";
 import BiasAnalyzer from "./BiasAnalyzer";
@@ -18,7 +19,18 @@ const CONFOUNDER_DAG: DAG = {
   edges: [
     { id: "s-ic",  source: "summer",   target: "icecream" },
     { id: "s-dr",  source: "summer",   target: "drowning" },
-    { id: "ic-dr", source: "icecream", target: "drowning", spurious: true },
+    // NOT a causal arrow: the true effect of ice cream on drowning is 0.
+    // This dashed association is what the raw data shows, and it disappears
+    // once Summer is controlled (or once treatment/outcome are conditioned).
+    {
+      id: "ic-dr",
+      source: "icecream",
+      target: "drowning",
+      association: true,
+      hideWhenControlled: ["summer", "icecream", "drowning"],
+      associationColor: "var(--color-accent)",
+      label: "spurious association (not causal)",
+    },
   ],
 };
 
@@ -44,6 +56,18 @@ const COLLIDER_DAG: DAG = {
   edges: [
     { id: "t-s", source: "talent", target: "success" },
     { id: "e-s", source: "effort", target: "success" },
+    // Appears ONLY while Success (the collider) is conditioned on: the
+    // induced, non-causal association between its parents.
+    {
+      id: "t-e-induced",
+      source: "talent",
+      target: "effort",
+      association: true,
+      showWhenControlled: ["success"],
+      hideWhenControlled: ["talent", "effort"],
+      associationColor: "#ef4444",
+      label: "induced association (collider opened)",
+    },
   ],
 };
 
@@ -59,7 +83,7 @@ function getConfounderBias(controlled: Set<string>): BiasResult {
       status: "blocked",
       label: "Blocked: controlled for outcome",
       explanation:
-        "Controlling for the outcome (Drowning Deaths) blocks all paths to it — you can no longer estimate any effect.",
+        "Conditioning on the outcome (Drowning Deaths) selects on the result you are trying to explain; the analysis no longer answers the causal question at all.",
       detail: "Never condition on your outcome variable unless you have a specific causal reason.",
       color: "#94a3b8",
     };
@@ -69,7 +93,7 @@ function getConfounderBias(controlled: Set<string>): BiasResult {
       status: "blocked",
       label: "Blocked: treatment controlled",
       explanation:
-        "Controlling for Ice Cream Sales removes all variation in your treatment — you can't estimate its effect.",
+        "Controlling for Ice Cream Sales removes all variation in your treatment, so you can't estimate its effect.",
       detail: "Conditioning on the treatment itself prevents estimation of that treatment's effect.",
       color: "#94a3b8",
     };
@@ -80,15 +104,15 @@ function getConfounderBias(controlled: Set<string>): BiasResult {
       label: "Unbiased: confounder blocked",
       explanation:
         "Blocking the path Summer → Ice Cream Sales → Drowning Deaths removes the spurious correlation. The true causal effect of Ice Cream on Drowning is exactly 0.",
-      detail: "By conditioning on Summer, you compare ice cream sales only within the same season. The dashed edge (spurious path) is now closed.",
-      color: "#10b981",
+      detail: "By conditioning on Summer, you compare ice cream sales only within the same season. The dashed association edge is now gone from the graph: the spurious path is closed.",
+      color: "var(--color-success)",
     };
   }
   return {
     status: "biased",
     label: "Biased: spurious positive correlation",
     explanation:
-      "Ice cream sales and drowning deaths look positively correlated — but only because Summer drives both. This is the classic confounder pattern.",
+      "Ice cream sales and drowning deaths look positively correlated, but only because Summer drives both. This is the classic confounder pattern.",
     detail:
       "The back-door path Ice Cream ← Summer → Drowning is open. You must control for Summer (or any sufficient adjustment set blocking this path) to get the true causal effect.",
     color: "#ef4444",
@@ -105,8 +129,8 @@ function getMediatorBias(controlled: Set<string>): BiasResult {
       status: "blocked",
       label: "Blocked: controlling for outcome",
       explanation:
-        "Conditioning on the outcome (Income) closes all paths to it. You cannot estimate the causal effect of Education on Income.",
-      detail: "Controlling for a descendant of your outcome introduces severe collider bias in many DAGs.",
+        "Conditioning on the outcome (Income) selects on the very result you are trying to explain; it biases the estimate rather than 'closing paths'. You cannot estimate the causal effect of Education on Income this way.",
+      detail: "Conditioning on the outcome (or its descendants) distorts the estimand and can induce collider-style selection bias.",
       color: "#94a3b8",
     };
   }
@@ -115,7 +139,7 @@ function getMediatorBias(controlled: Set<string>): BiasResult {
       status: "blocked",
       label: "Blocked: treatment controlled",
       explanation:
-        "Conditioning on the treatment (Education) removes its variation — no effect can be estimated.",
+        "Conditioning on the treatment (Education) removes its variation, so no effect can be estimated.",
       detail: "Always keep your treatment free to vary when estimating its effect.",
       color: "#94a3b8",
     };
@@ -128,14 +152,14 @@ function getMediatorBias(controlled: Set<string>): BiasResult {
         "By controlling for Job Quality (the mediator), you block the indirect path Education → Job Quality → Income. What remains is only the direct effect of Education on Income.",
       detail:
         "This is valid if you explicitly want to estimate the direct effect. But if you want the total effect, do NOT control for the mediator.",
-      color: "#d4af37",
+      color: "var(--color-accent)",
     };
   }
   return {
     status: "unbiased",
     label: "Total effect: direct + indirect",
     explanation:
-      "Without controlling for Job Quality, you capture the total causal effect of Education on Income — both the direct path and the indirect path through Job Quality.",
+      "Without controlling for Job Quality, you capture the total causal effect of Education on Income: both the direct path and the indirect path through Job Quality.",
     detail:
       "To estimate the total effect, leave mediators uncontrolled. To decompose effects into direct and indirect, use mediation analysis.",
     color: "#10b981",
@@ -162,7 +186,7 @@ function getColliderBias(controlled: Set<string>): BiasResult {
       status: "biased",
       label: "BIASED: collider conditioning!",
       explanation:
-        "Conditioning on Success (the collider) OPENS a spurious back-door path between Talent and Effort. They become negatively correlated even though they are causally independent.",
+        "Conditioning on Success (the collider) OPENS a spurious, non-causal path between Talent and Effort: the red dashed link now drawn in the graph. They become negatively correlated even though they are causally independent.",
       detail:
         "This is the 'explain-away' effect: among successful people, if someone is very talented, they may have needed less effort (and vice versa). This is purely a statistical artifact of conditioning on their shared effect.",
       color: "#ef4444",
@@ -172,7 +196,7 @@ function getColliderBias(controlled: Set<string>): BiasResult {
     status: "unbiased",
     label: "Unbiased: Talent ⊥ Effort",
     explanation:
-      "In the general population, Talent and Effort are independent — knowing someone's talent tells you nothing about their effort level.",
+      "In the general population, Talent and Effort are independent: knowing someone's talent tells you nothing about their effort level.",
     detail:
       "The path Talent → Success ← Effort is blocked because Success is a collider. Colliders block paths by default and only OPEN paths when conditioned upon.",
     color: "#10b981",
@@ -203,11 +227,11 @@ const SCENARIOS: Record<ScenarioId, ScenarioConfig> = {
     dag: CONFOUNDER_DAG,
     getBias: getConfounderBias,
     legend: [
-      { label: "Summer",         description: "Confounder — causes both treatment and outcome",  color: NODE_COLORS.confounder },
-      { label: "Ice Cream Sales", description: "Treatment — the variable we (naively) study",    color: NODE_COLORS.treatment  },
-      { label: "Drowning Deaths", description: "Outcome — what we are trying to explain",        color: NODE_COLORS.outcome    },
+      { label: "Summer",         description: "Confounder: causes both treatment and outcome",  color: NODE_COLORS.confounder },
+      { label: "Ice Cream Sales", description: "Treatment: the variable we (naively) study",    color: NODE_COLORS.treatment  },
+      { label: "Drowning Deaths", description: "Outcome: what we are trying to explain",        color: NODE_COLORS.outcome    },
     ],
-    tip: 'Try checking "Summer" — watch the dashed spurious arrow vanish from the bias analysis.',
+    tip: 'Try checking "Summer": the dashed spurious association between Ice Cream and Drowning disappears from the graph.',
   },
   mediator: {
     id: "mediator",
@@ -218,9 +242,9 @@ const SCENARIOS: Record<ScenarioId, ScenarioConfig> = {
     dag: MEDIATOR_DAG,
     getBias: getMediatorBias,
     legend: [
-      { label: "Education",   description: "Treatment — the cause we are studying",              color: NODE_COLORS.treatment },
-      { label: "Job Quality", description: "Mediator — lies on the causal path",                 color: NODE_COLORS.mediator  },
-      { label: "Income",      description: "Outcome — what education ultimately affects",        color: NODE_COLORS.outcome   },
+      { label: "Education",   description: "Treatment: the cause we are studying",              color: NODE_COLORS.treatment },
+      { label: "Job Quality", description: "Mediator: lies on the causal path",                 color: NODE_COLORS.mediator  },
+      { label: "Income",      description: "Outcome: what education ultimately affects",        color: NODE_COLORS.outcome   },
     ],
     tip: 'Control for "Job Quality" to isolate the direct effect of education on income.',
   },
@@ -233,11 +257,11 @@ const SCENARIOS: Record<ScenarioId, ScenarioConfig> = {
     dag: COLLIDER_DAG,
     getBias: getColliderBias,
     legend: [
-      { label: "Talent",  description: "Cause — independent upstream variable", color: NODE_COLORS.cause    },
-      { label: "Effort",  description: "Cause — independent upstream variable", color: NODE_COLORS.cause    },
-      { label: "Success", description: "Collider — caused by both talent and effort", color: NODE_COLORS.collider },
+      { label: "Talent",  description: "Cause: independent upstream variable", color: NODE_COLORS.cause    },
+      { label: "Effort",  description: "Cause: independent upstream variable", color: NODE_COLORS.cause    },
+      { label: "Success", description: "Collider: caused by both talent and effort", color: NODE_COLORS.collider },
     ],
-    tip: 'Try controlling for "Success" — watch how talent and effort become spuriously correlated!',
+    tip: 'Try controlling for "Success" and watch how talent and effort become spuriously correlated!',
   },
 };
 
@@ -248,6 +272,7 @@ interface ScenarioSectionProps {
 }
 
 export default function ScenarioSection({ scenarioId }: ScenarioSectionProps) {
+  const { fadeUp } = useGuideMotion();
   const [controlled, setControlled] = useState<Set<string>>(new Set());
   const scenario = SCENARIOS[scenarioId];
 
@@ -267,9 +292,9 @@ export default function ScenarioSection({ scenarioId }: ScenarioSectionProps) {
   return (
     <motion.div
       key={scenarioId}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
       className="space-y-6"
     >
       {/* Header */}
@@ -286,7 +311,7 @@ export default function ScenarioSection({ scenarioId }: ScenarioSectionProps) {
             >
               {scenario.concept}
             </span>
-            <span className="text-[11px] text-[#64748b]">{scenario.subtitle}</span>
+            <span className="text-[11px] text-[#475569]">{scenario.subtitle}</span>
           </div>
           <h3 className="text-lg font-bold text-white">{scenario.title}</h3>
         </div>
@@ -314,14 +339,14 @@ export default function ScenarioSection({ scenarioId }: ScenarioSectionProps) {
                   style={{ backgroundColor: item.color }}
                 />
                 <span className="text-xs font-semibold text-white">{item.label}</span>
-                <span className="text-[10px] text-[#64748b]">— {item.description}</span>
+                <span className="text-[10px] text-[#475569]">{item.description}</span>
               </div>
             ))}
           </div>
 
           {/* Tip */}
           <div className="flex items-start gap-2 bg-[#1e293b]/50 rounded-lg px-3 py-2 border border-[#334155]/50">
-            <span className="text-[#d4af37] text-sm shrink-0 mt-0.5">💡</span>
+            <span className="text-[var(--color-accent)] text-sm shrink-0 mt-0.5">💡</span>
             <p className="text-[11px] text-[#94a3b8] italic">{scenario.tip}</p>
           </div>
         </div>

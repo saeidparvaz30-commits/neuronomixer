@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useGuideMotion, GUIDE_VIEWPORT } from "@/lib/guideMotion";
 
 const W = 560;
 const H = 280;
@@ -56,6 +57,7 @@ const underfitEnd = 0.22;
 const overfitStart = 0.56;
 
 export default function LearningCurve() {
+  const { fadeUp } = useGuideMotion();
   // X-axis tick labels
   const xLabels = [
     { t: 0, label: "Low" },
@@ -65,9 +67,10 @@ export default function LearningCurve() {
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.3 }}
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={GUIDE_VIEWPORT}
       className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6"
     >
       {/* Header */}
@@ -75,9 +78,11 @@ export default function LearningCurve() {
         <div className="inline-flex items-center gap-2 bg-[#1e5d8a]/20 border border-[#1e5d8a]/40 rounded-full px-3 py-1 mb-2">
           <span className="text-xs font-semibold text-[#3bb4a4] uppercase tracking-wider">Section 4</span>
         </div>
-        <h2 className="text-xl font-bold text-white">Bias-Variance Tradeoff & Learning Curves</h2>
+        <h2 className="text-xl font-bold text-white">Bias-Variance Tradeoff & the Validation Curve</h2>
         <p className="text-sm text-[#94a3b8] mt-1">
-          Understanding when your model is too simple (high bias) or too complex (high variance).
+          Error versus model complexity (a validation curve; a learning curve would
+          instead plot error versus training-set size). Understand when your model
+          is too simple (high bias) or too complex (high variance).
         </p>
       </div>
 
@@ -100,7 +105,7 @@ export default function LearningCurve() {
             y={PAD.t}
             width={cx(overfitStart) - cx(underfitEnd)}
             height={CH}
-            fill="#22c55e"
+            fill="var(--color-success)"
             opacity={0.06}
           />
           {/* Overfitting */}
@@ -109,7 +114,7 @@ export default function LearningCurve() {
             y={PAD.t}
             width={cx(1) - cx(overfitStart)}
             height={CH}
-            fill="#f97316"
+            fill="var(--color-warning)"
             opacity={0.06}
           />
 
@@ -132,7 +137,7 @@ export default function LearningCurve() {
             y1={PAD.t}
             x2={cx(optT)}
             y2={PAD.t + CH}
-            stroke="#d4af37"
+            stroke="var(--color-accent)"
             strokeWidth="2"
             strokeDasharray="5 3"
           />
@@ -158,7 +163,7 @@ export default function LearningCurve() {
             cx={cx(optT)}
             cy={cy(optE)}
             r="5"
-            fill="#d4af37"
+            fill="var(--color-accent)"
             stroke="#0a0e1a"
             strokeWidth="2"
           />
@@ -167,15 +172,15 @@ export default function LearningCurve() {
           <text x={cx(underfitEnd / 2)} y={PAD.t + 16} fill="#ef4444" fontSize="10" textAnchor="middle" fontWeight="600" opacity={0.8}>
             Underfitting
           </text>
-          <text x={cx((underfitEnd + overfitStart) / 2)} y={PAD.t + 16} fill="#22c55e" fontSize="10" textAnchor="middle" fontWeight="600" opacity={0.8}>
+          <text x={cx((underfitEnd + overfitStart) / 2)} y={PAD.t + 16} fill="var(--color-success)" fontSize="10" textAnchor="middle" fontWeight="600" opacity={0.8}>
             Sweet Spot
           </text>
-          <text x={cx((overfitStart + 1) / 2)} y={PAD.t + 16} fill="#f97316" fontSize="10" textAnchor="middle" fontWeight="600" opacity={0.8}>
+          <text x={cx((overfitStart + 1) / 2)} y={PAD.t + 16} fill="var(--color-warning)" fontSize="10" textAnchor="middle" fontWeight="600" opacity={0.8}>
             Overfitting
           </text>
 
           {/* Optimal label */}
-          <text x={cx(optT) + 5} y={PAD.t + 30} fill="#d4af37" fontSize="9" fontWeight="600">
+          <text x={cx(optT) + 5} y={PAD.t + 30} fill="var(--color-accent)" fontSize="9" fontWeight="600">
             Optimal
           </text>
 
@@ -185,13 +190,13 @@ export default function LearningCurve() {
 
           {/* X-axis labels */}
           {xLabels.map(({ t, label }) => (
-            <text key={label} x={cx(t)} y={H - 8} fill="#64748b" fontSize="10" textAnchor="middle">
+            <text key={label} x={cx(t)} y={H - 8} fill="#475569" fontSize="10" textAnchor="middle">
               {label}
             </text>
           ))}
 
           {/* X-axis title */}
-          <text x={W / 2} y={H - PAD.b + 36} fill="#64748b" fontSize="10" textAnchor="middle">
+          <text x={W / 2} y={H - PAD.b + 36} fill="#475569" fontSize="10" textAnchor="middle">
             Model Complexity →
           </text>
 
@@ -199,7 +204,7 @@ export default function LearningCurve() {
           <text
             x={14}
             y={PAD.t + CH / 2}
-            fill="#64748b"
+            fill="#475569"
             fontSize="10"
             textAnchor="middle"
             transform={`rotate(-90, 14, ${PAD.t + CH / 2})`}
@@ -235,7 +240,7 @@ export default function LearningCurve() {
           },
           {
             title: "Sweet Spot",
-            color: "#22c55e",
+            color: "var(--color-success)",
             bgColor: "#22c55e",
             icon: "✓",
             items: [
@@ -247,7 +252,7 @@ export default function LearningCurve() {
           },
           {
             title: "Overfitting",
-            color: "#f97316",
+            color: "var(--color-warning)",
             bgColor: "#f97316",
             icon: "↗",
             items: [
@@ -287,7 +292,7 @@ export default function LearningCurve() {
 
       {/* Bias-Variance decomposition */}
       <div className="rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-5">
-        <h3 className="text-sm font-bold text-[#d4af37] mb-4">Bias-Variance Decomposition</h3>
+        <h3 className="text-sm font-bold text-[var(--color-accent)] mb-4">Bias-Variance Decomposition</h3>
         <div className="flex flex-wrap items-center gap-2 text-base font-mono mb-4">
           <span className="text-white font-bold">MSE</span>
           <span className="text-[#94a3b8]">=</span>
@@ -295,7 +300,7 @@ export default function LearningCurve() {
             Bias²
           </span>
           <span className="text-[#94a3b8]">+</span>
-          <span className="bg-[#f97316]/20 border border-[#f97316]/40 text-[#f97316] rounded-lg px-3 py-1.5 font-bold">
+          <span className="bg-[#f97316]/20 border border-[#f97316]/40 text-[var(--color-warning)] rounded-lg px-3 py-1.5 font-bold">
             Variance
           </span>
           <span className="text-[#94a3b8]">+</span>
@@ -312,7 +317,7 @@ export default function LearningCurve() {
             },
             {
               term: "Variance",
-              color: "#f97316",
+              color: "var(--color-warning)",
               desc: "Sensitivity to fluctuations in training data. A high-degree polynomial has high variance.",
             },
             {

@@ -151,7 +151,7 @@ export default function ForecastPlot({ data }: Props) {
           y={PAD.t}
           width={W - PAD.r - splitX}
           height={H - PAD.t - PAD.b}
-          fill="#d4af37"
+          fill="var(--color-accent)"
           opacity={0.03}
           clipPath="url(#fc-clip)"
         />
@@ -159,7 +159,7 @@ export default function ForecastPlot({ data }: Props) {
         {/* Prediction interval area */}
         <path
           d={intervalPolygon}
-          fill="#d4af37"
+          fill="var(--color-accent)"
           opacity={0.12}
           clipPath="url(#fc-clip)"
         />
@@ -168,7 +168,7 @@ export default function ForecastPlot({ data }: Props) {
         <path
           d={upperPath}
           fill="none"
-          stroke="#d4af37"
+          stroke="var(--color-accent)"
           strokeWidth={1}
           strokeDasharray="3,3"
           opacity={0.5}
@@ -179,7 +179,7 @@ export default function ForecastPlot({ data }: Props) {
             .map((v, i) => `${i === 0 ? "M" : "L"} ${toX(histLen - 1 + i, totalPoints)} ${toY(v, vMin, vMax)}`)
             .join(" ")}
           fill="none"
-          stroke="#d4af37"
+          stroke="var(--color-accent)"
           strokeWidth={1}
           strokeDasharray="3,3"
           opacity={0.5}
@@ -213,7 +213,7 @@ export default function ForecastPlot({ data }: Props) {
         <path
           d={fcPath}
           fill="none"
-          stroke="#d4af37"
+          stroke="var(--color-accent)"
           strokeWidth={2.5}
           strokeLinejoin="round"
           strokeLinecap="round"
@@ -238,7 +238,7 @@ export default function ForecastPlot({ data }: Props) {
           <span className="text-[11px] text-[#94a3b8]">Historical</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-5 h-0.5 border-t-2 border-dashed border-[#d4af37]" />
+          <div className="w-5 h-0.5 border-t-2 border-dashed border-[var(--color-accent)]" />
           <span className="text-[11px] text-[#94a3b8]">Forecast</span>
         </div>
         <div className="flex items-center gap-1.5">

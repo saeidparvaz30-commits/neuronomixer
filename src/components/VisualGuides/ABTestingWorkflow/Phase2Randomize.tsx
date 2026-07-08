@@ -2,7 +2,8 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Phase2State, RandomizationMethod, SIMULATED_COVARIATES } from "./types";
+import { useGuideMotion } from "@/lib/guideMotion";
+import { Phase2State, RandomizationMethod, SIMULATED_COVARIATES, normalCDF } from "./types";
 
 interface Props {
   state: Phase2State;
@@ -41,17 +42,29 @@ const METHODS: {
 ];
 
 export default function Phase2Randomize({ state, onChange, onNext, onBack }: Props) {
+  const { fadeUp } = useGuideMotion();
+
   function setMethod(m: RandomizationMethod) {
     onChange({ ...state, randomizationMethod: m });
   }
 
   const total = state.controlSize + state.treatmentSize;
 
+  // Covariate balance summary, computed from the same table data shown below
+  const allBalanced = SIMULATED_COVARIATES.every((c) => c.pValue > 0.05);
+
+  // Sample Ratio Mismatch (SRM) check: z-test of the observed split vs the
+  // intended 50/50 allocation. p < 0.001 is the conventional SRM alarm.
+  const srmZ =
+    total > 0 ? (state.controlSize - total / 2) / Math.sqrt(total * 0.25) : 0;
+  const srmP = 2 * (1 - normalCDF(Math.abs(srmZ)));
+  const srmOk = srmP >= 0.001;
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
       className="space-y-6"
     >
       {/* Method selection */}
@@ -61,14 +74,16 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
           Choose how participants will be assigned to control and treatment groups.
         </p>
 
-        <div className="space-y-3">
+        <div className="space-y-3" role="radiogroup" aria-label="Randomization method">
           {METHODS.map((m) => (
             <button
               key={m.id}
+              role="radio"
+              aria-checked={state.randomizationMethod === m.id}
               onClick={() => setMethod(m.id)}
               className={`w-full text-left rounded-xl border p-4 transition-all ${
                 state.randomizationMethod === m.id
-                  ? "border-[#d4af37] bg-[#1e293b]"
+                  ? "border-[var(--color-accent)] bg-[#1e293b]"
                   : "border-[#1e293b] bg-[#0f172a] hover:border-[#1e5d8a]"
               }`}
             >
@@ -76,7 +91,7 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
                 <div
                   className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg flex-shrink-0 mt-0.5 ${
                     state.randomizationMethod === m.id
-                      ? "bg-[#d4af37]/20 text-[#d4af37]"
+                      ? "bg-[#d4af37]/20 text-[var(--color-accent)]"
                       : "bg-[#1e293b] text-[#94a3b8]"
                   }`}
                 >
@@ -86,7 +101,7 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
                   <p
                     className={`text-sm font-semibold mb-1 ${
                       state.randomizationMethod === m.id
-                        ? "text-[#d4af37]"
+                        ? "text-[var(--color-accent)]"
                         : "text-white"
                     }`}
                   >
@@ -100,12 +115,12 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
                   <div
                     className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
                       state.randomizationMethod === m.id
-                        ? "border-[#d4af37]"
+                        ? "border-[var(--color-accent)]"
                         : "border-[#475569]"
                     }`}
                   >
                     {state.randomizationMethod === m.id && (
-                      <div className="w-2 h-2 rounded-full bg-[#d4af37]" />
+                      <div className="w-2 h-2 rounded-full bg-[var(--color-accent)]" />
                     )}
                   </div>
                 </div>
@@ -168,9 +183,12 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
       {/* Balance checker */}
       <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
         <h3 className="text-sm font-semibold text-white mb-1">Pre-experiment Balance Check</h3>
-        <p className="text-[12px] text-[#94a3b8] mb-4">
+        <p className="text-[12px] text-[#94a3b8] mb-1">
           Verify that key covariates are balanced between groups (p &gt; 0.05 = balanced).
           A well-randomized assignment shows no statistically significant differences.
+        </p>
+        <p className="text-[10px] text-[#475569] mb-4">
+          The table below is an illustrative example, not live simulation output.
         </p>
 
         <div className="overflow-x-auto">
@@ -240,17 +258,51 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
         <div className="mt-4 flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-sm bg-[#3bb4a4]/20 border border-[#3bb4a4]" />
-            <span className="text-[11px] text-[#94a3b8]">p &gt; 0.05 — balanced</span>
+            <span className="text-[11px] text-[#94a3b8]">p &gt; 0.05: balanced</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-sm bg-[#ef4444]/20 border border-[#ef4444]" />
-            <span className="text-[11px] text-[#94a3b8]">p ≤ 0.05 — imbalanced</span>
+            <span className="text-[11px] text-[#94a3b8]">p ≤ 0.05: imbalanced</span>
           </div>
           <div className="ml-auto">
-            <span className="text-[11px] font-semibold text-[#3bb4a4]">
-              ✓ All covariates balanced
+            <span
+              className={`text-[11px] font-semibold ${
+                allBalanced ? "text-[#3bb4a4]" : "text-[#ef4444]"
+              }`}
+            >
+              {allBalanced
+                ? "✓ All covariates balanced"
+                : "✗ At least one covariate imbalanced"}
             </span>
           </div>
+        </div>
+
+        {/* SRM check */}
+        <div className="mt-4 rounded-xl bg-[#1e293b] p-4">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <p className="text-[11px] font-semibold text-white">
+                Sample Ratio Mismatch (SRM) check
+              </p>
+              <p className="text-[11px] text-[#94a3b8] mt-0.5">
+                Observed split {state.controlSize.toLocaleString()} /{" "}
+                {state.treatmentSize.toLocaleString()} vs intended 50/50: z ={" "}
+                {srmZ.toFixed(3)}, p = {srmP.toFixed(3)}
+              </p>
+            </div>
+            <span
+              className={`text-[11px] font-semibold ${
+                srmOk ? "text-[#3bb4a4]" : "text-[#ef4444]"
+              }`}
+            >
+              {srmOk ? "✓ No mismatch detected" : "✗ SRM detected (p < 0.001): investigate before analyzing"}
+            </span>
+          </div>
+          <p className="text-[11px] text-[#94a3b8] mt-2 leading-relaxed">
+            In a real experiment, an assignment ratio that drifts from the plan
+            (p &lt; 0.001 here) usually signals a bug in the randomizer or logging,
+            and it invalidates downstream results.
+          </p>
         </div>
       </div>
 
@@ -272,7 +324,7 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
         </button>
         <button
           onClick={onNext}
-          className="px-6 py-3 rounded-xl font-semibold text-sm bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+          className="px-6 py-3 rounded-xl font-semibold text-sm bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
         >
           Start Data Collection →
         </button>

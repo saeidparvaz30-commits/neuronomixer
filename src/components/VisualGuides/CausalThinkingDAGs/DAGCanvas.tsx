@@ -54,15 +54,57 @@ function EdgeArrow({
   const from = getCenter(sourceNode);
   const to = getCenter(targetNode);
 
+  // ── Association edges: dashed, undirected, appear/disappear with conditioning ──
+  if (edge.association) {
+    if (edge.showWhenControlled && !edge.showWhenControlled.every((id) => controlled.has(id))) {
+      return null;
+    }
+    if (edge.hideWhenControlled && edge.hideWhenControlled.some((id) => controlled.has(id))) {
+      return null;
+    }
+    const aStart = startPoint(from, to, NODE_R + 2);
+    const aEnd = borderPoint(from, to, NODE_R + 2);
+    const color = edge.associationColor ?? "var(--color-accent)";
+    const midX = (aStart.x + aEnd.x) / 2;
+    const midY = (aStart.y + aEnd.y) / 2;
+    return (
+      <g style={{ transition: "all 0.3s ease" }}>
+        <line
+          x1={aStart.x}
+          y1={aStart.y}
+          x2={aEnd.x}
+          y2={aEnd.y}
+          stroke={color}
+          strokeWidth={2}
+          strokeDasharray="6 3"
+        />
+        {edge.label && (
+          <text
+            x={midX}
+            y={midY - 6}
+            textAnchor="middle"
+            fontSize="8"
+            fill={color}
+            style={{ pointerEvents: "none" }}
+          >
+            {edge.label}
+          </text>
+        )}
+      </g>
+    );
+  }
+
+  // ── Causal edges ──────────────────────────────────────────────────────────────
   const start = startPoint(from, to, NODE_R + 2);
   const end = borderPoint(from, to, NODE_R + 8); // extra for arrowhead
 
-  const isSourceControlled = controlled.has(edge.source);
-  const isTargetControlled = controlled.has(edge.target);
-  const isBlocked = isSourceControlled || isTargetControlled;
+  // Fade only edges OUT OF a controlled node: conditioning on a variable stops
+  // dependence from flowing THROUGH it (chain/fork). Edges INTO a controlled
+  // node stay solid; in particular, conditioning on a collider does NOT block
+  // its incoming causal arrows; it opens a path between its parents instead.
+  const isBlocked = controlled.has(edge.source);
 
-  const strokeColor = isBlocked ? "#334155" : edge.spurious ? "#d4af37" : "#94a3b8";
-  const markerId = edge.spurious ? "arrow-spurious" : "arrow-normal";
+  const strokeColor = isBlocked ? "#334155" : "#94a3b8";
 
   return (
     <line
@@ -72,8 +114,7 @@ function EdgeArrow({
       y2={end.y}
       stroke={strokeColor}
       strokeWidth={isBlocked ? 1 : 2}
-      strokeDasharray={edge.spurious ? "6 3" : undefined}
-      markerEnd={`url(#${markerId})`}
+      markerEnd="url(#arrow-normal)"
       opacity={isBlocked ? 0.3 : 1}
       style={{ transition: "all 0.3s ease" }}
     />
@@ -128,7 +169,7 @@ function NodeCircle({
           dominantBaseline="middle"
           fontSize={arr.length > 1 ? "9" : "10"}
           fontWeight="600"
-          fill={isControlled ? "#3bb4a4" : "#ffffff"}
+          fill={isControlled ? "#3bb4a4" : "#f1f5f9"}
           style={{ pointerEvents: "none", transition: "fill 0.3s ease" }}
         >
           {word}
@@ -199,7 +240,7 @@ export default function DAGCanvas({
           refY="3.5"
           orient="auto"
         >
-          <polygon points="0 0, 10 3.5, 0 7" fill="#d4af37" />
+          <polygon points="0 0, 10 3.5, 0 7" fill="var(--color-accent)" />
         </marker>
       </defs>
 

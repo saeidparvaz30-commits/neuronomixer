@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "A/B Testing: The Complete Workflow — NeuroNomixer Visual Guides",
     description:
-      "Step through every phase of a rigorous A/B experiment: design, randomize, collect, and analyze — all interactive, all in your browser.",
+      "Step through every phase of a rigorous A/B experiment: design, randomize, collect, and analyze, all interactive, all in your browser.",
     url: "https://www.neuronomixer.com/visual-guides/ab-testing-workflow",
     siteName: "NeuroNomixer",
     type: "website",

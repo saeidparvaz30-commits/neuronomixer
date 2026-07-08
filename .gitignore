@@ -58,3 +58,9 @@ next-env.d.ts
 # Claude memory (local only)
 .claude/
 .env*
+
+# Backups, spreadsheets, and office lock files (repo hygiene, 2026-07)
+*.tar.gz
+*.xlsx
+.~lock.*#
+sanity-backup*

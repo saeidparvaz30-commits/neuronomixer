@@ -16,7 +16,7 @@ export default function DecompositionViewer({ original, decomposition, labels }:
   const panels = [
     { title: "Observed", values: original, color: "#3bb4a4", showZero: false },
     { title: "Trend", values: trend, color: "#1e5d8a", showZero: false },
-    { title: "Seasonal", values: seasonal, color: "#d4af37", showZero: true },
+    { title: "Seasonal", values: seasonal, color: "var(--color-accent)", showZero: true },
     { title: "Residual", values: residual, color: "#94a3b8", showZero: true },
   ];
 

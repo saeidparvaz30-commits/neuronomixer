@@ -1,0 +1,167 @@
+"use client";
+
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { DetectionMethod, Point, mean, stdDev, quartiles } from "./types";
+
+type Props = {
+  method: DetectionMethod;
+  onMethodChange: (m: DetectionMethod) => void;
+  threshold: number;
+  onThresholdChange: (t: number) => void;
+  outlierIds: Set<number>;
+  points: Point[];
+};
+
+export default function DetectionMethodPanel({
+  method, onMethodChange, threshold, onThresholdChange, outlierIds, points,
+}: Props) {
+  const xs  = points.map(p => p.x);
+  const ys  = points.map(p => p.y);
+  const mx  = xs.length > 0 ? mean(xs) : 0;
+  const my  = ys.length > 0 ? mean(ys) : 0;
+  const sd  = xs.length > 1 ? stdDev(xs, mx) : 0;
+  const sdY = ys.length > 1 ? stdDev(ys, my) : 0;
+  const { q1, q3, iqr } = xs.length > 3 ? quartiles(xs) : { q1: 0, q3: 0, iqr: 0 };
+  const { q1: q1y, q3: q3y, iqr: iqrY } = ys.length > 3 ? quartiles(ys) : { q1: 0, q3: 0, iqr: 0 };
+  const lo  = method === "zscore" ? mx - threshold * sd : q1 - 1.5 * iqr;
+  const hi  = method === "zscore" ? mx + threshold * sd : q3 + 1.5 * iqr;
+  const loY = method === "zscore" ? my - threshold * sdY : q1y - 1.5 * iqrY;
+  const hiY = method === "zscore" ? my + threshold * sdY : q3y + 1.5 * iqrY;
+
+  const outlierList  = points.filter(p => outlierIds.has(p.id));
+  const outlierColor = method === "zscore" ? "#ef4444" : "var(--color-warning)";
+
+  return (
+    <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-4">
+      <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#94a3b8] mb-3">Detection Method</p>
+
+      {/* Toggle */}
+      <div className="flex gap-2 mb-4" role="radiogroup" aria-label="Detection method">
+        {(["zscore", "iqr"] as const).map(m => (
+          <button
+            key={m}
+            onClick={() => onMethodChange(m)} role="radio" aria-checked={method === m}
+            className={`flex-1 py-2 rounded-xl text-[11px] font-semibold transition-all border ${
+              method === m
+                ? m === "zscore"
+                  ? "bg-[#ef4444]/10 border-[#ef4444]/40 text-[#ef4444]"
+                  : "bg-[var(--color-warning)]/10 border-[var(--color-warning)]/40 text-[var(--color-warning)]"
+                : "bg-transparent border-[#1e293b] text-[#475569] hover:text-white hover:border-[#334155]"
+            }`}
+          >
+            {m === "zscore" ? "Z-Score" : "IQR"}
+          </button>
+        ))}
+      </div>
+
+      {/* Method-specific controls */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={method}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.2 }}
+        >
+          {method === "zscore" ? (
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-1.5">
+                <span className="text-[11px] text-[#94a3b8]">Threshold (σ)</span>
+                <span className="text-[11px] font-semibold text-[#ef4444]">{threshold.toFixed(1)}σ</span>
+              </div>
+              <input
+                aria-label="Z-score threshold in standard deviations" type="range" min="1" max="4" step="0.5" value={threshold}
+                onChange={e => onThresholdChange(Number(e.target.value))}
+                className="w-full h-1.5 rounded-full bg-[#1e293b] appearance-none cursor-pointer
+                  [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4
+                  [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full
+                  [&::-webkit-slider-thumb]:bg-[#ef4444] [&::-webkit-slider-thumb]:cursor-pointer"
+              />
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {[
+                  { label: "Mean (X / Y)",     value: `${mx.toFixed(1)} / ${my.toFixed(1)}`,  color: "#3bb4a4" },
+                  { label: "Std Dev (X / Y)",  value: `${sd.toFixed(1)} / ${sdY.toFixed(1)}`, color: "#3b82f6" },
+                  { label: "X fences",         value: `${lo.toFixed(1)} to ${hi.toFixed(1)}`,   color: "#ef4444" },
+                  { label: "Y fences",         value: `${loY.toFixed(1)} to ${hiY.toFixed(1)}`, color: "#ef4444" },
+                ].map(({ label, value, color }) => (
+                  <div key={label} className="rounded-lg bg-[#1e293b]/60 p-2">
+                    <p className="text-[9px] text-[#475569] mb-0.5">{label}</p>
+                    <p className="text-[12px] font-semibold" style={{ color }}>{value}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-[#475569] mt-2 leading-relaxed">
+                Flags points more than {threshold.toFixed(1)}σ from the mean on either axis.
+                Assumes a roughly normal distribution per axis.
+              </p>
+            </div>
+          ) : (
+            <div className="mb-4">
+              <div className="grid grid-cols-2 gap-2 mb-3">
+                {[
+                  { label: "Q1 (X / Y)",          value: `${q1.toFixed(1)} / ${q1y.toFixed(1)}`,   color: "var(--color-warning)" },
+                  { label: "Q3 (X / Y)",          value: `${q3.toFixed(1)} / ${q3y.toFixed(1)}`,   color: "var(--color-warning)" },
+                  { label: "IQR (X / Y)",         value: `${iqr.toFixed(1)} / ${iqrY.toFixed(1)}`, color: "var(--color-warning)" },
+                  { label: "1.5 × IQR (X / Y)",   value: `${(1.5*iqr).toFixed(1)} / ${(1.5*iqrY).toFixed(1)}`, color: "#94a3b8" },
+                  { label: "X fences",            value: `${lo.toFixed(1)} to ${hi.toFixed(1)}`,     color: "var(--color-warning)" },
+                  { label: "Y fences",            value: `${loY.toFixed(1)} to ${hiY.toFixed(1)}`,   color: "var(--color-warning)" },
+                ].map(({ label, value, color }) => (
+                  <div key={label} className="rounded-lg bg-[#1e293b]/60 p-2">
+                    <p className="text-[9px] text-[#475569] mb-0.5">{label}</p>
+                    <p className="text-[12px] font-semibold" style={{ color }}>{value}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-[#475569] leading-relaxed">
+                Flags points outside the 1.5×IQR fences on either axis. No normality assumption needed.
+              </p>
+            </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Detected outliers list */}
+      <div className="border-t border-white/[0.06] pt-3">
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#94a3b8]">Flagged Outliers</p>
+          <span
+            className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+            style={{
+              background: outlierList.length > 0 ? outlierColor + "20" : "#1e293b",
+              color: outlierList.length > 0 ? outlierColor : "#475569",
+            }}
+          >
+            {outlierList.length} / {points.length}
+          </span>
+        </div>
+        {outlierList.length === 0 ? (
+          <p className="text-[11px] text-[#475569] text-center py-2">No outliers detected with current settings</p>
+        ) : (
+          <div className="flex flex-col gap-1">
+            {outlierList.map(p => {
+              const zx = sd > 0 ? Math.abs((p.x - mx) / sd) : 0;
+              const zy = sdY > 0 ? Math.abs((p.y - my) / sdY) : 0;
+              const flaggedAxes = method === "zscore"
+                ? [zx > threshold ? "x" : null, zy > threshold ? "y" : null]
+                : [p.x < lo || p.x > hi ? "x" : null, p.y < loY || p.y > hiY ? "y" : null];
+              const axisLabel = flaggedAxes.filter(Boolean).join(",") || "x";
+              return (
+                <div key={p.id} className="flex items-center justify-between rounded-lg bg-[#1e293b]/40 px-2.5 py-1.5">
+                  <span className="text-[11px] font-medium text-white">
+                    #{p.id} ({p.x}, {p.y})
+                  </span>
+                  <span className="text-[10px] font-semibold" style={{ color: outlierColor }}>
+                    {method === "zscore"
+                      ? `max z = ${Math.max(zx, zy).toFixed(2)} (${axisLabel})`
+                      : `outside ${axisLabel} fence`}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

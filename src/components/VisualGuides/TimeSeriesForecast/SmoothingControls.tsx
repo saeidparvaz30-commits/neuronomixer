@@ -68,6 +68,7 @@ export default function SmoothingControls({
             step={1}
             value={maWindow}
             onChange={(e) => handleMaChange(Number(e.target.value))}
+            aria-label="Moving average window in months"
             className="w-full accent-[#3bb4a4]"
           />
           <div className="flex justify-between text-[10px] text-[#475569] mt-0.5">
@@ -113,7 +114,7 @@ export default function SmoothingControls({
               Weights recent data more heavily
             </p>
           </div>
-          <span className="text-[13px] font-mono font-bold text-[#d4af37] bg-[#d4af37]/10 px-3 py-1 rounded-lg">
+          <span className="text-[13px] font-mono font-bold text-[var(--color-accent)] bg-[#d4af37]/10 px-3 py-1 rounded-lg">
             α = {alpha.toFixed(2)}
           </span>
         </div>
@@ -126,7 +127,8 @@ export default function SmoothingControls({
             step={0.05}
             value={alpha}
             onChange={(e) => handleAlphaChange(Number(e.target.value))}
-            className="w-full accent-[#d4af37]"
+            aria-label="Exponential smoothing alpha"
+            className="w-full accent-[var(--color-accent)]"
           />
           <div className="flex justify-between text-[10px] text-[#475569] mt-0.5">
             <span>α=0.05 (slow)</span>
@@ -141,7 +143,7 @@ export default function SmoothingControls({
             color="#334155"
             height={160}
             overlayValues={esSmoothed}
-            overlayColor="#d4af37"
+            overlayColor="var(--color-accent)"
           />
         </div>
 
@@ -151,8 +153,8 @@ export default function SmoothingControls({
             <span className="text-[#475569]">Original</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-4 h-0.5 rounded bg-[#d4af37]" />
-            <span className="text-[#d4af37]">ES(α={alpha.toFixed(2)})</span>
+            <div className="w-4 h-0.5 rounded bg-[var(--color-accent)]" />
+            <span className="text-[var(--color-accent)]">ES(α={alpha.toFixed(2)})</span>
           </div>
         </div>
 

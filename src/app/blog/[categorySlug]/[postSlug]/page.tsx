@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import RichText from "@/components/Blog/RichText";
+import { BlogPostBody } from "@/components/Blog/BlogPostBody";
 import ReadTracker from "@/components/Blog/ReadTracker";
 import PostEngagement from "@/components/Blog/PostEngagement";
 import CommentsSection from "@/components/Blog/CommentsSection";
@@ -204,9 +205,9 @@ export default async function PostPage({
           </div>
 
           {/* Post body */}
-          <article className="prose prose-sm sm:prose-base lg:prose-lg max-w-none w-full mt-8 text-left text-gray-900">
+          <BlogPostBody authorName={post.author?.name}>
             <RichText value={post.body} />
-          </article>
+          </BlogPostBody>
 
           <PostEngagement
             postSlug={postSlug}

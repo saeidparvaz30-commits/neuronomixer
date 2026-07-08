@@ -24,7 +24,7 @@ export default function TemporalLeakageWarning({ onRead, alreadyRead }: Props) {
             height="14"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#f97316"
+            stroke="var(--color-warning)"
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -39,7 +39,7 @@ export default function TemporalLeakageWarning({ onRead, alreadyRead }: Props) {
             Critical Pitfall: Temporal Data Leakage
           </p>
           <p className="text-[12px] text-orange-300/60">
-            The most common mistake in time series modeling — and how to avoid it.
+            The most common mistake in time series modeling, and how to avoid it.
             {!expanded && (
               <span className="ml-1 text-[11px] text-orange-400/70 underline underline-offset-2">
                 Click to expand
@@ -61,7 +61,7 @@ export default function TemporalLeakageWarning({ onRead, alreadyRead }: Props) {
             height="16"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#f97316"
+            stroke="var(--color-warning)"
             strokeWidth="2"
             className={`transition-transform duration-200 opacity-60 ${expanded ? "rotate-180" : ""}`}
           >
@@ -102,17 +102,17 @@ export default function TemporalLeakageWarning({ onRead, alreadyRead }: Props) {
                 <p className="text-[12px] text-orange-200/70 leading-relaxed mb-2">
                   Suppose you normalise a feature (e.g., monthly sales) using the <em>global</em> min/max
                   across all 48 months before splitting into train/test. The normalisation parameters
-                  were computed using test-set values — future data leaked into the training pipeline.
+                  were computed using test-set values: future data leaked into the training pipeline.
                   Your model will appear to perform far better than it would in production.
                 </p>
                 <div className="bg-[#1e293b]/60 rounded-lg p-3 font-mono text-[11px]">
                   <p className="text-[#ef4444] mb-1">
-                    {`# WRONG — leaks test data into scaler`}
+                    {`# WRONG: leaks test data into scaler`}
                   </p>
                   <p className="text-[#94a3b8]">{`scaler.fit(all_data)  # includes future!`}</p>
                   <p className="text-[#94a3b8] mb-3">{`X_train = scaler.transform(train)`}</p>
                   <p className="text-[#3bb4a4] mb-1">
-                    {`# CORRECT — fit only on training data`}
+                    {`# CORRECT: fit only on training data`}
                   </p>
                   <p className="text-[#94a3b8]">{`scaler.fit(train_data)  # past only`}</p>
                   <p className="text-[#94a3b8]">{`X_test  = scaler.transform(test_data)`}</p>
@@ -127,7 +127,7 @@ export default function TemporalLeakageWarning({ onRead, alreadyRead }: Props) {
                 <ul className="space-y-2">
                   {[
                     {
-                      text: "Always use walk-forward (expanding or rolling window) cross-validation — never random k-fold.",
+                      text: "Always use walk-forward (expanding or rolling window) cross-validation, never random k-fold.",
                       icon: "📅",
                     },
                     {
@@ -172,7 +172,7 @@ export default function TemporalLeakageWarning({ onRead, alreadyRead }: Props) {
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  Marked as read — well done for taking this seriously!
+                  Marked as read. Well done for taking this seriously!
                 </div>
               )}
             </div>

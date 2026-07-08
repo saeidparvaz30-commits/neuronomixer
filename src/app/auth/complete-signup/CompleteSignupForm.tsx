@@ -16,6 +16,8 @@ export default function CompleteSignupForm({ userEmail, userName, roleHint }: Pr
   const params = useSearchParams();
   const initialRole =
     params.get("role") === "AUTHOR" || roleHint === "AUTHOR" ? "AUTHOR" : "SUBSCRIBER";
+  const guideParam = params.get("guide");
+  const redirectParam = params.get("redirect");
   const [role, setRole] = useState<"SUBSCRIBER" | "AUTHOR">(initialRole);
 
   useEffect(() => {
@@ -51,7 +53,17 @@ export default function CompleteSignupForm({ userEmail, userName, roleHint }: Pr
 
       // Force JWT refresh so middleware sees onboarded: true
       await update();
-      router.push("/blog");
+
+      // Credit any guide completion that prompted signup
+      if (guideParam) {
+        fetch("/api/guides/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ slugs: [guideParam] }),
+        }).catch(() => {});
+      }
+
+      router.push(redirectParam ?? "/blog");
     } catch {
       setError("Something went wrong. Please try again.");
     } finally {

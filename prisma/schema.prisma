@@ -72,6 +72,8 @@ model User {
   notifications       Notification[]
   cv                  AuthorCV?
   apiKey              AuthorApiKey?
+  guideCompletions    GuideCompletion[]
+  tokenUsages         TokenUsage[]
   createdAt          DateTime         @default(now())
 }
 
@@ -211,4 +213,97 @@ model AuthorApiKey {
   createdAt  DateTime  @default(now())
   lastUsedAt DateTime?
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model TokenUsage {
+  id           String   @id @default(cuid())
+  userId       String
+  activity     String
+  model        String
+  inputTokens  Int
+  outputTokens Int
+  totalTokens  Int
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([activity])
+  @@index([createdAt])
+}
+
+model GuideCompletion {
+  id          String   @id @default(cuid())
+  userId      String
+  guideSlug   String
+  score       Int      @default(0)
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, guideSlug])
+  @@index([userId])
+  @@index([guideSlug])
+}
+
+// ── Visual Guides curriculum ──────────────────────────────────────────────
+
+enum GuideVisibility {
+  DRAFT
+  PUBLISHED
+  HIDDEN
+}
+
+model GuideCategory {
+  id          String          @id @default(cuid())
+  slug        String          @unique
+  name        String
+  description String?         @db.Text
+  color       String
+  order       Int
+  visibility  GuideVisibility @default(DRAFT)
+  units       GuideUnit[]
+  guides      VisualGuide[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([order])
+}
+
+model GuideUnit {
+  id         String          @id @default(cuid())
+  slug       String          @unique
+  name       String
+  order      Int
+  categoryId String
+  visibility GuideVisibility @default(DRAFT)
+  category   GuideCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  guides     VisualGuide[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@unique([categoryId, order])
+  @@index([categoryId])
+}
+
+model VisualGuide {
+  id              String          @id @default(cuid())
+  slug            String          @unique
+  title           String
+  description     String          @db.Text
+  interactiveType String
+  audience        String          @default("Everyone")
+  order           Int
+  visibility      GuideVisibility @default(DRAFT)
+  implemented     Boolean         @default(false)
+  categoryId      String
+  unitId          String?
+  nextGuideSlug   String?
+  category        GuideCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  unit            GuideUnit?      @relation(fields: [unitId], references: [id], onDelete: SetNull)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@unique([categoryId, order])
+  @@index([categoryId])
+  @@index([unitId])
+  @@index([visibility])
 }

@@ -8,13 +8,20 @@ interface VerticalLine {
   label: string;
 }
 
+interface ShadedRange {
+  lo: number;
+  hi: number;
+  color: string;
+}
+
 interface HistogramPlotProps {
   values: number[];
   color: string;
   verticalLines?: VerticalLine[];
   width?: number;
   height?: number;
-  shadedRange?: { lo: number; hi: number; color: string };
+  shadedRange?: ShadedRange;
+  shadedRanges?: ShadedRange[];
   title?: string;
 }
 
@@ -25,6 +32,7 @@ export default function HistogramPlot({
   width = 560,
   height = 260,
   shadedRange,
+  shadedRanges,
   title,
 }: HistogramPlotProps) {
   const PAD = { l: 48, r: 20, t: title ? 32 : 16, b: 40 };
@@ -104,17 +112,23 @@ export default function HistogramPlot({
         );
       })}
 
-      {/* Shaded range */}
-      {shadedRange && (
-        <rect
-          x={Math.max(PAD.l, xScale(shadedRange.lo))}
-          y={PAD.t}
-          width={Math.min(xScale(shadedRange.hi), width - PAD.r) - Math.max(PAD.l, xScale(shadedRange.lo))}
-          height={chartH}
-          fill={shadedRange.color}
-          opacity={0.15}
-        />
-      )}
+      {/* Shaded ranges */}
+      {[...(shadedRange ? [shadedRange] : []), ...(shadedRanges ?? [])].map((sr, i) => {
+        const x0 = Math.max(PAD.l, xScale(sr.lo));
+        const x1 = Math.min(xScale(sr.hi), width - PAD.r);
+        if (x1 <= x0) return null;
+        return (
+          <rect
+            key={`sr-${i}`}
+            x={x0}
+            y={PAD.t}
+            width={x1 - x0}
+            height={chartH}
+            fill={sr.color}
+            opacity={0.15}
+          />
+        );
+      })}
 
       {/* Bars */}
       {bins.map((bin, i) => {
@@ -187,7 +201,7 @@ export default function HistogramPlot({
           <text
             x={xScale(t)}
             y={PAD.t + chartH + 14}
-            fill="#64748b"
+            fill="#475569"
             fontSize="9"
             textAnchor="middle"
           >
@@ -208,7 +222,7 @@ export default function HistogramPlot({
       <text
         x={14}
         y={PAD.t + chartH / 2}
-        fill="#64748b"
+        fill="#475569"
         fontSize="9"
         textAnchor="middle"
         transform={`rotate(-90, 14, ${PAD.t + chartH / 2})`}

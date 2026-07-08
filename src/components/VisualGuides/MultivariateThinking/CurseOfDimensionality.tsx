@@ -3,22 +3,27 @@
 import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 
-// Base 10 points in 2D
-const BASE_POINTS_2D = [
-  [0.2, 0.3], [0.8, 0.7], [0.1, 0.9], [0.5, 0.5], [0.9, 0.1],
-  [0.3, 0.6], [0.7, 0.4], [0.4, 0.8], [0.6, 0.2], [0.15, 0.55],
-];
+const NUM_POINTS = 10;
 
-// Pseudo-random deterministic extension for higher dims
-function extendPoint(base: number[], dim: number): number[] {
-  const result = [...base];
-  while (result.length < dim) {
-    const i = result.length;
-    // Deterministic formula based on index and base values
-    const v = (Math.sin(i * 2.399 + base[0] * 7.3 + base[1] * 13.1) * 0.5 + 0.5);
-    result.push(Math.max(0, Math.min(1, v)));
-  }
-  return result.slice(0, dim);
+// Deterministic seeded PRNG (mulberry32) so the same points are sampled for a
+// given dimension on every render. No Math.random in render scope.
+function mulberry32(seed: number) {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Sample n points uniformly from the unit hypercube [0,1]^d
+function samplePoints(n: number, d: number): number[][] {
+  const rand = mulberry32(1234 + d * 7919);
+  return Array.from({ length: n }, () =>
+    Array.from({ length: d }, () => rand())
+  );
 }
 
 function gammaHalf(n: number): number {
@@ -88,41 +93,53 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
   }
 
   const metrics = useMemo(() => {
-    // Avg nearest-neighbor distance approximation
-    const avgDist = 0.5 * Math.pow(10, -1 / dim) * Math.sqrt(dim);
+    // Sample 10 points uniformly from [0,1]^dim and compute BOTH displayed
+    // distance metrics directly from that sample.
+    const points = samplePoints(NUM_POINTS, dim);
+
+    let minD = Infinity;
+    let maxD = 0;
+    let nnSum = 0;
+    for (let i = 0; i < points.length; i++) {
+      let nearest = Infinity;
+      for (let j = 0; j < points.length; j++) {
+        if (i === j) continue;
+        const d = euclidean(points[i], points[j]);
+        if (d < nearest) nearest = d;
+        if (j > i) {
+          if (d < minD) minD = d;
+          if (d > maxD) maxD = d;
+        }
+      }
+      nnSum += nearest;
+    }
+    // Mean nearest-neighbor distance of the sampled points
+    const avgDist = nnSum / points.length;
+    // Distance concentration: max/min pairwise distance. In high dimensions
+    // this ratio approaches 1 (all points become nearly equidistant).
+    const distanceRatio = minD > 0 ? maxD / minD : Infinity;
 
     // Unit ball volume
     const ballVol = unitBallVolume(dim);
     const ballVolDisplay = ballVol < 1e-10 ? "≈ 0" : ballVol < 0.001 ? ballVol.toExponential(2) : ballVol.toFixed(4);
 
-    // Sparsity index: ratio max/min distance
-    const points = BASE_POINTS_2D.map((p) => extendPoint(p, dim));
-    let minD = Infinity;
-    let maxD = 0;
-    for (let i = 0; i < points.length; i++) {
-      for (let j = i + 1; j < points.length; j++) {
-        const d = euclidean(points[i], points[j]);
-        if (d < minD) minD = d;
-        if (d > maxD) maxD = d;
-      }
-    }
-    const sparsity = minD > 0 ? maxD / minD : 1 + dim * 0.3;
-
-    return { avgDist, ballVolDisplay, sparsity, ballVol };
+    return { points, avgDist, ballVolDisplay, distanceRatio, ballVol };
   }, [dim]);
 
-  // Project to 2D by taking first 2 coords
+  // Show the first 2 coordinates of the ACTUAL sampled points (re-sampled per
+  // dimension), so the scatter reflects the data the metrics are computed from.
   const projectedPoints = useMemo(() => {
-    return BASE_POINTS_2D.map((p) => {
-      const extended = extendPoint(p, Math.max(dim, 2));
-      return { x: extended[0], y: extended[1] };
-    });
-  }, [dim]);
+    return metrics.points.map((p) => ({
+      x: p[0],
+      y: dim >= 2 ? p[1] : 0.5,
+    }));
+  }, [metrics.points, dim]);
 
   const avgDistSeverity =
-    metrics.avgDist < 0.5 ? "green" : metrics.avgDist < 1.0 ? "orange" : "red";
-  const sparsitySeverity =
-    metrics.sparsity < 2.5 ? "green" : metrics.sparsity < 4 ? "orange" : "red";
+    metrics.avgDist < 0.5 ? "green" : metrics.avgDist < 1.5 ? "orange" : "red";
+  // Large ratio = distances informative (good); ratio near 1 = concentration (bad).
+  const ratioSeverity =
+    metrics.distanceRatio > 4 ? "green" : metrics.distanceRatio > 2 ? "orange" : "red";
   const ballVolSeverity =
     metrics.ballVol > 0.5 ? "green" : metrics.ballVol > 0.01 ? "orange" : "red";
 
@@ -149,7 +166,7 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
       <div className="mb-5">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-semibold text-white">
-            Dimensions: <span className="text-[#d4af37]">{dim}</span>
+            Dimensions: <span className="text-[var(--color-accent)]">{dim}</span>
           </span>
           <span className="text-xs px-2.5 py-1 rounded-full font-medium" style={{ color: dimLabelColor, background: `${dimLabelColor}18` }}>
             {dimLabel}
@@ -157,6 +174,7 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
         </div>
         <input
           type="range"
+          aria-label="Number of dimensions"
           min={1}
           max={100}
           value={dim}
@@ -176,9 +194,9 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
       </div>
 
       {/* SVG Scatter */}
-      <div className="rounded-xl border border-[#1e293b] bg-[#0a0f1e] p-3 mb-5 overflow-hidden">
+      <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-3 mb-5 overflow-hidden">
         <p className="text-[11px] text-[#475569] mb-2">
-          2D projection of 10 points (first 2 coordinates shown)
+          First 2 coordinates of the 10 sampled points (re-sampled at each dimension)
         </p>
         <svg
           viewBox={`0 0 ${W} ${H}`}
@@ -253,7 +271,7 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
             {metrics.avgDist.toFixed(3)}
           </p>
           <p className="text-[11px] text-[#475569] mt-1">
-            {avgDistSeverity === "green" ? "Manageable clustering" : avgDistSeverity === "orange" ? "Challenging distances" : "Points nearly equidistant"}
+            {avgDistSeverity === "green" ? "Neighbors are close" : avgDistSeverity === "orange" ? "Neighbors drifting apart" : "Nearest neighbor is far away"}
           </p>
         </div>
 
@@ -274,20 +292,20 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
           </p>
         </div>
 
-        {/* Sparsity Index */}
+        {/* Distance concentration ratio */}
         <div
           className="rounded-xl border p-4"
-          style={{ borderColor: `${severityColor(sparsitySeverity)}30`, background: `${severityColor(sparsitySeverity)}08` }}
+          style={{ borderColor: `${severityColor(ratioSeverity)}30`, background: `${severityColor(ratioSeverity)}08` }}
         >
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[11px] font-semibold uppercase tracking-wide text-[#94a3b8]">Sparsity Index</span>
-            <span className="w-2 h-2 rounded-full" style={{ background: severityColor(sparsitySeverity) }} />
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-[#94a3b8]">Max/Min Distance Ratio</span>
+            <span className="w-2 h-2 rounded-full" style={{ background: severityColor(ratioSeverity) }} />
           </div>
-          <p className="text-2xl font-bold" style={{ color: severityColor(sparsitySeverity) }}>
-            {metrics.sparsity.toFixed(2)}
+          <p className="text-2xl font-bold" style={{ color: severityColor(ratioSeverity) }}>
+            {metrics.distanceRatio > 99 ? ">99" : metrics.distanceRatio.toFixed(2)}
           </p>
           <p className="text-[11px] text-[#475569] mt-1">
-            {sparsitySeverity === "green" ? "Low ratio, distances meaningful" : sparsitySeverity === "orange" ? "Distance ratio widening" : "Extreme sparsity"}
+            {ratioSeverity === "green" ? "Large ratio: distances informative" : ratioSeverity === "orange" ? "Ratio shrinking toward 1" : "Ratio near 1: nearly equidistant"}
           </p>
         </div>
       </div>
@@ -303,7 +321,7 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
           </p>
           <p className="text-[12px] text-[#94a3b8] mt-0.5">
             At {dim} dimensions, your 10 data points occupy an astronomically large space.
-            Every point is nearly equidistant from every other — distance metrics lose their meaning.
+            every point is nearly equidistant from every other, and distance metrics lose their meaning.
           </p>
         </motion.div>
       )}

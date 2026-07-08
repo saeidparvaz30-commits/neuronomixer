@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useGuideMotion } from "@/lib/guideMotion";
 import { DAGNode, DAGEdge } from "./types";
 
 type BuildMode = "add" | "connect" | "delete";
@@ -37,6 +38,7 @@ interface AddNodeOverlay {
 }
 
 export default function CustomDAGBuilder() {
+  const { fadeUp, fadeIn, pop } = useGuideMotion();
   const svgRef = useRef<SVGSVGElement>(null);
   const [mode, setMode] = useState<BuildMode>("add");
   const [nodes, setNodes] = useState<DAGNode[]>([]);
@@ -119,12 +121,12 @@ export default function CustomDAGBuilder() {
       if (pendingSource === null) {
         setPendingSource(nodeId);
         const n = nodes.find((n) => n.id === nodeId);
-        setFeedback(`Source: "${n?.label}" — now click the target node`);
+        setFeedback(`Source: "${n?.label}". Now click the target node`);
         return;
       }
       if (pendingSource === nodeId) {
         setPendingSource(null);
-        setFeedback("Cancelled — can't connect a node to itself");
+        setFeedback("Cancelled: can't connect a node to itself");
         setTimeout(() => setFeedback(""), 2000);
         return;
       }
@@ -136,6 +138,24 @@ export default function CustomDAGBuilder() {
         setPendingSource(null);
         setFeedback("Edge already exists between these nodes");
         setTimeout(() => setFeedback(""), 2000);
+        return;
+      }
+      // Reject cycles: if the target can already reach the source, adding
+      // source -> target would create a loop, and DAGs are acyclic.
+      const reachable = new Set<string>();
+      const stack = [nodeId];
+      while (stack.length > 0) {
+        const cur = stack.pop()!;
+        if (reachable.has(cur)) continue;
+        reachable.add(cur);
+        for (const ed of edges) {
+          if (ed.source === cur) stack.push(ed.target);
+        }
+      }
+      if (reachable.has(pendingSource)) {
+        setPendingSource(null);
+        setFeedback("Rejected: that arrow would create a cycle. DAGs are acyclic (the A in DAG)");
+        setTimeout(() => setFeedback(""), 3000);
         return;
       }
       const id = uniqueEdgeId();
@@ -237,7 +257,7 @@ export default function CustomDAGBuilder() {
             dominantBaseline="middle"
             fontSize={arr.length > 1 ? "8" : "9"}
             fontWeight="600"
-            fill="#ffffff"
+            fill="#f1f5f9"
             style={{ pointerEvents: "none" }}
           >
             {word}
@@ -265,9 +285,9 @@ export default function CustomDAGBuilder() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
       className="space-y-5"
     >
       {/* Header */}
@@ -279,10 +299,12 @@ export default function CustomDAGBuilder() {
       </div>
 
       {/* Mode toolbar */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-2 flex-wrap" role="radiogroup" aria-label="Builder mode">
         {MODE_BUTTONS.map((btn) => (
           <button
             key={btn.id}
+            role="radio"
+            aria-checked={mode === btn.id}
             onClick={() => { setMode(btn.id); setPendingSource(null); setAddOverlay(null); }}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all ${
               mode === btn.id
@@ -290,7 +312,7 @@ export default function CustomDAGBuilder() {
                   ? "bg-red-500/20 border-red-500/50 text-red-300"
                   : btn.id === "connect"
                   ? "bg-[#3bb4a4]/20 border-[#3bb4a4]/50 text-[#3bb4a4]"
-                  : "bg-[#d4af37]/20 border-[#d4af37]/50 text-[#d4af37]"
+                  : "bg-[#d4af37]/20 border-[#d4af37]/50 text-[var(--color-accent)]"
                 : "bg-[#1e293b] border-[#334155] text-[#94a3b8] hover:text-white hover:border-[#475569]"
             }`}
           >
@@ -310,10 +332,10 @@ export default function CustomDAGBuilder() {
       </div>
 
       {/* Mode hint */}
-      <p className="text-[11px] text-[#64748b] -mt-2 italic">
+      <p className="text-[11px] text-[#475569] -mt-2 italic">
         {MODE_BUTTONS.find((b) => b.id === mode)?.hint}
         {mode === "connect" && pendingSource && (
-          <span className="text-[#3bb4a4]"> — source selected, click target</span>
+          <span className="text-[#3bb4a4]"> (source selected, click target)</span>
         )}
       </p>
 
@@ -384,10 +406,10 @@ export default function CustomDAGBuilder() {
                 onClick={() => setAddOverlay(null)}
               />
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.15 }}
+                variants={pop}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
                 className="fixed z-50 bg-[#1e293b] border border-[#334155] rounded-xl shadow-2xl p-4 w-72"
                 style={{
                   left: Math.min(addOverlay.x, window.innerWidth - 290),
@@ -423,7 +445,7 @@ export default function CustomDAGBuilder() {
                   <button
                     onClick={confirmAddNode}
                     disabled={!newLabel.trim()}
-                    className="flex-1 bg-[#d4af37] text-[#0a0e1a] rounded-lg py-1.5 text-sm font-bold disabled:opacity-40 hover:opacity-90 transition-opacity"
+                    className="flex-1 bg-[var(--color-accent)] text-[#0a0e1a] rounded-lg py-1.5 text-sm font-bold disabled:opacity-40 hover:opacity-90 transition-opacity"
                   >
                     Add
                   </button>
@@ -444,9 +466,10 @@ export default function CustomDAGBuilder() {
       <AnimatePresence>
         {feedback && (
           <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
+            variants={fadeIn}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
             className="text-xs text-[#3bb4a4] bg-[#3bb4a4]/10 border border-[#3bb4a4]/20 rounded-lg px-3 py-2"
           >
             {feedback}
@@ -471,7 +494,7 @@ export default function CustomDAGBuilder() {
                   style={{ backgroundColor: node.color }}
                 />
                 <span className="text-xs text-white font-medium">{node.label}</span>
-                <span className="text-[9px] text-[#64748b]">({node.role})</span>
+                <span className="text-[9px] text-[#475569]">({node.role})</span>
               </div>
             ))}
           </div>
@@ -480,7 +503,7 @@ export default function CustomDAGBuilder() {
 
       {/* Role legend */}
       <div className="bg-[#0a0e1a] rounded-xl border border-[#1e293b] p-4">
-        <p className="text-[11px] text-[#64748b] uppercase tracking-wider font-semibold mb-3">
+        <p className="text-[11px] text-[#475569] uppercase tracking-wider font-semibold mb-3">
           Node role guide
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
