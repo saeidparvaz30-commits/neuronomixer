@@ -45,6 +45,18 @@ const STATS_UNITS = [
   { slug: "resampling-modern-methods",          name: "Resampling & Modern Methods",            order: 15 },
 ] as const;
 
+// ── Data & Analysis units ────────────────────────────────────────────────────
+
+const DATA_UNITS = [
+  { slug: "where-data-comes-from",     name: "Where Data Comes From",   order: 1 },
+  { slug: "shaping-data",              name: "Shaping Data",            order: 2 },
+  { slug: "data-quality-and-cleaning", name: "Data Quality & Cleaning", order: 3 },
+  { slug: "exploring-data",            name: "Exploring Data",          order: 4 },
+  { slug: "engineering-features",      name: "Engineering Features",    order: 5 },
+  { slug: "special-data-types",        name: "Special Data Types",      order: 6 },
+  { slug: "pipelines-and-systems",     name: "Pipelines & Systems",     order: 7 },
+] as const;
+
 // ── Guide definitions ────────────────────────────────────────────────────────
 
 type GuideDef = {
@@ -554,8 +566,9 @@ const GUIDES: GuideDef[] = [
     unitSlug: "sampling-estimation",
   },
 
-  // ── Data & Analysis (no units) ──────────────────────────────────────────
+  // ── Data & Analysis ─────────────────────────────────────────────────────
 
+  // Unit 1: Where Data Comes From
   {
     slug: "what-is-data",
     title: "What Is Data? Types & Structures",
@@ -565,6 +578,7 @@ const GUIDES: GuideDef[] = [
     order: 1,
     implemented: true,
     categorySlug: "data-and-analysis",
+    unitSlug: "where-data-comes-from",
   },
   {
     slug: "how-datasets-are-built",
@@ -575,26 +589,66 @@ const GUIDES: GuideDef[] = [
     order: 2,
     implemented: true,
     categorySlug: "data-and-analysis",
+    unitSlug: "where-data-comes-from",
   },
+  {
+    slug: "data-collection-bias",
+    title: "The Data That Never Arrived",
+    description: "Pick a collection channel and watch the sample statistic drift from the truth, then armor Wald's bombers using survivorship logic.",
+    interactiveType: "Interactive Explorer",
+    audience: "Everyone",
+    order: 3,
+    implemented: true,
+    categorySlug: "data-and-analysis",
+    unitSlug: "where-data-comes-from",
+  },
+
+  // Unit 2: Shaping Data
+  {
+    slug: "tidy-data-and-reshaping",
+    title: "Tidy Data: One Row, One Observation",
+    description: "Pivot a messy wide table longer and back, watch every cell travel, and see why charts only work once data is tidy.",
+    interactiveType: "Interactive Explorer",
+    audience: "Beginners",
+    order: 4,
+    implemented: true,
+    categorySlug: "data-and-analysis",
+    unitSlug: "shaping-data",
+  },
+  {
+    slug: "joins-and-keys",
+    title: "Joins: How Tables Find Each Other",
+    description: "Run inner, left, right, and full outer joins on live tables, watch NULL fills appear, and trigger the duplicate-key fan-out explosion.",
+    interactiveType: "Interactive Explorer",
+    audience: "Students",
+    order: 5,
+    implemented: true,
+    categorySlug: "data-and-analysis",
+    unitSlug: "shaping-data",
+  },
+  {
+    slug: "groupby-aggregation",
+    title: "Split, Apply, Combine",
+    description: "Watch rows fly into group buckets and collapse into computed summaries, build a two-level pivot table, and translate questions into groupings.",
+    interactiveType: "Interactive Explorer",
+    audience: "Beginners",
+    order: 6,
+    implemented: true,
+    categorySlug: "data-and-analysis",
+    unitSlug: "shaping-data",
+  },
+
+  // Unit 3: Data Quality & Cleaning
   {
     slug: "missing-data",
     title: "Missing Data: Why It Matters",
     description: "Toggle between imputation strategies and watch a dataset table update in real time with accuracy tradeoffs.",
     interactiveType: "Before/After Comparator",
     audience: "Students",
-    order: 3,
+    order: 7,
     implemented: true,
     categorySlug: "data-and-analysis",
-  },
-  {
-    slug: "feature-scaling",
-    title: "Feature Scaling Playground",
-    description: "Switch between normalization, standardization, and min-max scaling and watch data points compress and expand.",
-    interactiveType: "Parameter Playground",
-    audience: "Students",
-    order: 4,
-    implemented: true,
-    categorySlug: "data-and-analysis",
+    unitSlug: "data-quality-and-cleaning",
   },
   {
     slug: "outlier-detection",
@@ -602,9 +656,45 @@ const GUIDES: GuideDef[] = [
     description: "Drag data points and watch the mean, median, and regression line react. Toggle detection methods to see which points get flagged.",
     interactiveType: "Interactive Scatter",
     audience: "Beginners",
-    order: 5,
+    order: 8,
     implemented: true,
     categorySlug: "data-and-analysis",
+    unitSlug: "data-quality-and-cleaning",
+  },
+  {
+    slug: "data-quality-dimensions",
+    title: "The Six Faces of Bad Data",
+    description: "Inject and repair defects while six live quality meters respond, then build validation rules that flag the offending rows.",
+    interactiveType: "Interactive Explorer",
+    audience: "Students",
+    order: 9,
+    implemented: true,
+    categorySlug: "data-and-analysis",
+    unitSlug: "data-quality-and-cleaning",
+  },
+
+  // Unit 4: Exploring Data
+  {
+    slug: "eda-workflow",
+    title: "Interrogating a Dataset",
+    description: "Step through a mystery dataset with planted sentinels, duplicates, and mislabels until every issue is discovered and logged.",
+    interactiveType: "Guided Investigation",
+    audience: "Students",
+    order: 10,
+    implemented: true,
+    categorySlug: "data-and-analysis",
+    unitSlug: "exploring-data",
+  },
+  {
+    slug: "data-distributions-applied",
+    title: "Data Distributions in Context",
+    description: "Read five realistic histograms like a practitioner: skew, heavy tails, hidden groups, sentinel spikes, and zero inflation, with computed diagnoses.",
+    interactiveType: "Applied Case Studies",
+    audience: "Students",
+    order: 11,
+    implemented: true,
+    categorySlug: "data-and-analysis",
+    unitSlug: "exploring-data",
   },
   {
     slug: "correlation-causation",
@@ -612,9 +702,34 @@ const GUIDES: GuideDef[] = [
     description: "Explore spurious correlations, reveal hidden confounding variables, and test your own variable pairs.",
     interactiveType: "Example Explorer",
     audience: "Everyone",
-    order: 6,
+    order: 12,
     implemented: true,
     categorySlug: "data-and-analysis",
+    unitSlug: "exploring-data",
+  },
+
+  // Unit 5: Engineering Features
+  {
+    slug: "feature-scaling",
+    title: "Feature Scaling Playground",
+    description: "Switch between normalization, standardization, and min-max scaling and watch data points compress and expand.",
+    interactiveType: "Parameter Playground",
+    audience: "Students",
+    order: 13,
+    implemented: true,
+    categorySlug: "data-and-analysis",
+    unitSlug: "engineering-features",
+  },
+  {
+    slug: "categorical-encoding",
+    title: "Turning Categories into Numbers",
+    description: "Toggle one-hot, ordinal, frequency, and target encoding, explode cardinality, and watch a live fit expose false structure and leakage.",
+    interactiveType: "Parameter Playground",
+    audience: "Data Scientists",
+    order: 14,
+    implemented: true,
+    categorySlug: "data-and-analysis",
+    unitSlug: "engineering-features",
   },
   {
     slug: "dimensionality-reduction",
@@ -622,29 +737,36 @@ const GUIDES: GuideDef[] = [
     description: "Watch 784-dimensional data collapse into clusters as you switch between methods and tune parameters.",
     interactiveType: "3D Scatter Explorer",
     audience: "Data Scientists",
-    order: 7,
+    order: 15,
     implemented: true,
     categorySlug: "data-and-analysis",
+    unitSlug: "engineering-features",
   },
+
+  // Unit 6: Special Data Types
   {
-    slug: "data-distributions-applied",
-    title: "Data Distributions in Context",
-    description: "Apply distribution knowledge to real-world datasets: sales, medical measurements, and social media engagement.",
-    interactiveType: "Applied Case Studies",
+    slug: "datetime-data",
+    title: "Time Is a Dirty Data Type",
+    description: "Shift timezones, step through DST's missing and ambiguous hours, resample events, and compare gap-fill policies on live data.",
+    interactiveType: "Interactive Explorer",
     audience: "Students",
-    order: 8,
-    implemented: false,
+    order: 16,
+    implemented: true,
     categorySlug: "data-and-analysis",
+    unitSlug: "special-data-types",
   },
+
+  // Unit 7: Pipelines & Systems
   {
     slug: "data-pipeline",
     title: "The Data Pipeline: Source to Insight",
     description: "Watch data particles flow through an animated ETL pipeline. Inject errors and see how validation gates respond.",
     interactiveType: "Animated Flowchart",
     audience: "Product Managers",
-    order: 9,
+    order: 17,
     implemented: true,
     categorySlug: "data-and-analysis",
+    unitSlug: "pipelines-and-systems",
   },
 
   // ── Machine Learning (no units) ─────────────────────────────────────────
@@ -1221,6 +1343,19 @@ async function main() {
       where: { slug: unit.slug },
       update: { name: unit.name, order: unit.order, categoryId: statsId },
       create: { slug: unit.slug, name: unit.name, order: unit.order, categoryId: statsId },
+    });
+  }
+
+  // Step 3b: Upsert Data & Analysis units
+  const dataId = catIdMap["data-and-analysis"];
+  if (!dataId) throw new Error("Data & Analysis category not found after upsert");
+
+  console.log("  Upserting Data & Analysis units…");
+  for (const unit of DATA_UNITS) {
+    await prisma.guideUnit.upsert({
+      where: { slug: unit.slug },
+      update: { name: unit.name, order: unit.order, categoryId: dataId },
+      create: { slug: unit.slug, name: unit.name, order: unit.order, categoryId: dataId },
     });
   }
 
