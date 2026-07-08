@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Data: a hand-built toy vocabulary ──────────────────────────────────────
@@ -244,6 +245,7 @@ function VectorBarChart({ values, color }: { values: number[]; color: string }) 
 
 export default function EmbeddingsClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
 
   const [hoveredWord, setHoveredWord] = useState<string | null>(null);
@@ -251,6 +253,14 @@ export default function EmbeddingsClient() {
   const [activeExample, setActiveExample] = useState<number | null>(null);
   const [hasInteractedPlot, setHasInteractedPlot] = useState(false);
   const [hasUsedArithmetic, setHasUsedArithmetic] = useState(false);
+
+  function handleReset() {
+    setHoveredWord(null);
+    setSelectedWord(null);
+    setActiveExample(null);
+    setHasInteractedPlot(false);
+    setHasUsedArithmetic(false);
+  }
 
   // Completion: fired when user clicked an arithmetic example AND interacted with the scatter plot
   const isComplete = hasInteractedPlot && hasUsedArithmetic;
@@ -298,33 +308,33 @@ export default function EmbeddingsClient() {
   const neighborWords = neighbors.map((n) => n.w);
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
+    <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="embeddings" score={100} />
-      <div className="max-w-[900px] mx-auto px-5 sm:px-8 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
-          <span className="text-[#334155]">/</span>
-          <span className="text-[#94a3b8]">LLMs</span>
-          <span className="text-[#334155]">/</span>
-          <span className="text-white">Embeddings: Words as Numbers in Space</span>
+          <span>/</span>
+          <span className="text-[#94a3b8]">Embeddings: Words as Numbers in Space</span>
         </nav>
 
         {/* Hero */}
         <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-[#ef4444]/15 border border-[#ef4444]/35 rounded-full px-3 py-1 mb-4">
-            <span className="text-xs font-semibold text-[#ef4444] uppercase tracking-wider">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               LLMs
             </span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Embeddings:{" "}
-            <span className="text-[#d4af37]">Words as Numbers in Space</span>
+            <span className="text-[var(--color-accent)]">Words as Numbers in Space</span>
           </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl leading-relaxed">
+          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-2xl">
             Explore a hand-built word embedding space. Click words, try arithmetic like
             king − man + woman ≈ queen, and see how meaning emerges from geometry. Every
             similarity number on this page is computed live from the vectors shown.
@@ -343,7 +353,7 @@ export default function EmbeddingsClient() {
           <div className="h-2 bg-[#0f172a] rounded-full overflow-hidden">
             <motion.div
               className="h-full rounded-full"
-              style={{ background: "linear-gradient(90deg, #ef4444, #d4af37)" }}
+              style={{ background: "linear-gradient(90deg, #ef4444, var(--color-accent))" }}
               animate={{ width: `${progressPct}%` }}
               transition={{ duration: 0.5 }}
             />
@@ -430,7 +440,7 @@ export default function EmbeddingsClient() {
                       y1={arrowTarget.ay}
                       x2={arrowTarget.x}
                       y2={arrowTarget.y}
-                      stroke="#d4af37"
+                      stroke="var(--color-accent)"
                       strokeWidth={2}
                       strokeDasharray="6 3"
                       markerEnd="url(#arrowhead)"
@@ -444,7 +454,7 @@ export default function EmbeddingsClient() {
 
                 <defs>
                   <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-                    <polygon points="0 0, 8 3, 0 6" fill="#d4af37" />
+                    <polygon points="0 0, 8 3, 0 6" fill="var(--color-accent)" />
                   </marker>
                 </defs>
 
@@ -481,7 +491,7 @@ export default function EmbeddingsClient() {
                           cx={cx} cy={cy}
                           r={r + 5}
                           fill="none"
-                          stroke={isResult ? "#d4af37" : color}
+                          stroke={isResult ? "var(--color-accent)" : color}
                           strokeWidth={1.5}
                           strokeOpacity={0.5}
                         />
@@ -504,7 +514,7 @@ export default function EmbeddingsClient() {
                           cx={cx} cy={cy}
                           r={r + 6}
                           fill="none"
-                          stroke="#d4af37"
+                          stroke="var(--color-accent)"
                           strokeWidth={1.5}
                           strokeOpacity={0.7}
                         />
@@ -513,7 +523,7 @@ export default function EmbeddingsClient() {
                         cx={cx} cy={cy} r={r}
                         fill={color}
                         fillOpacity={isArithmetic || isSelected || isResult ? 1 : 0.75}
-                        stroke={isResult ? "#d4af37" : "transparent"}
+                        stroke={isResult ? "var(--color-accent)" : "transparent"}
                         strokeWidth={isResult ? 2 : 0}
                       />
                       <text
@@ -521,7 +531,7 @@ export default function EmbeddingsClient() {
                         y={cy + 4}
                         fontSize={isSelected || isResult ? 12 : 10}
                         fontWeight={isSelected || isResult || isArithmetic ? "bold" : "normal"}
-                        fill={isResult ? "#d4af37" : isSelected || isArithmetic ? "white" : "#94a3b8"}
+                        fill={isResult ? "var(--color-accent)" : isSelected || isArithmetic ? "white" : "#94a3b8"}
                       >
                         {word}
                       </text>
@@ -613,11 +623,12 @@ export default function EmbeddingsClient() {
                     setActiveExample(activeExample === i ? null : i);
                     setHasUsedArithmetic(true);
                   }}
+                  aria-pressed={activeExample === i}
                   className="px-4 py-2 rounded-xl text-sm font-medium border transition-all"
                   style={{
                     background: activeExample === i ? "#d4af37" + "20" : "#0f172a",
                     borderColor: activeExample === i ? "#d4af37" + "70" : "#1e293b",
-                    color: activeExample === i ? "#d4af37" : "#94a3b8",
+                    color: activeExample === i ? "var(--color-accent)" : "#94a3b8",
                   }}
                 >
                   {ex.label}
@@ -686,7 +697,7 @@ export default function EmbeddingsClient() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.4 }}
-                      className="px-2.5 py-1 rounded-lg text-sm font-bold bg-[#d4af37]/20 text-[#d4af37]"
+                      className="px-2.5 py-1 rounded-lg text-sm font-bold bg-[#d4af37]/20 text-[var(--color-accent)]"
                     >
                       {analogy.top.w}
                     </motion.span>
@@ -706,13 +717,13 @@ export default function EmbeddingsClient() {
                       <div className="flex items-center gap-2">
                         <div className="w-24 h-1.5 rounded-full bg-[#1e293b] overflow-hidden">
                           <motion.div
-                            className="h-full rounded-full bg-[#d4af37]"
+                            className="h-full rounded-full bg-[var(--color-accent)]"
                             initial={{ width: 0 }}
                             animate={{ width: `${Math.max(0, analogy.top.sim) * 100}%` }}
                             transition={{ duration: 0.6, delay: 0.5 }}
                           />
                         </div>
-                        <span className="text-xs font-semibold text-[#d4af37]">
+                        <span className="text-xs font-semibold text-[var(--color-accent)]">
                           {analogy.top.sim.toFixed(2)}
                         </span>
                       </div>
@@ -806,7 +817,7 @@ export default function EmbeddingsClient() {
               {
                 title: "Recommendations",
                 icon: "🎯",
-                color: "#d4af37",
+                color: "var(--color-accent)",
                 desc: "Items close in embedding space are similar. If you liked article A, articles near A's embedding are surfaced next.",
               },
               {
@@ -833,9 +844,9 @@ export default function EmbeddingsClient() {
         {/* Gold insight box */}
         <div className="mb-10 rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/05 p-5">
           <div className="flex items-start gap-3">
-            <span className="text-[#d4af37] text-lg mt-0.5" aria-hidden>★</span>
+            <span className="text-[var(--color-accent)] text-lg mt-0.5" aria-hidden>★</span>
             <div>
-              <p className="text-sm font-semibold text-[#d4af37] mb-1">Key Insight</p>
+              <p className="text-sm font-semibold text-[var(--color-accent)] mb-1">Key Insight</p>
               <p className="text-sm text-[#94a3b8] leading-relaxed">
                 Modern LLMs use <strong className="text-white">contextual embeddings</strong>:
                 the same word gets a different vector depending on its context, so
@@ -850,25 +861,77 @@ export default function EmbeddingsClient() {
           </div>
         </div>
 
-        {/* Summary card → next guide */}
-        <div className="rounded-2xl border border-[#1e293b] bg-[#1e293b]/50 p-6">
-          <p className="text-xs text-[#475569] uppercase tracking-wider mb-2">Up Next</p>
-          <h3 className="text-lg font-bold text-white mb-1">Self-Attention</h3>
-          <p className="text-sm text-[#94a3b8] mb-4 leading-relaxed">
-            See how transformers decide which words to focus on when processing each token. The
-            mechanism that makes contextual embeddings possible.
-          </p>
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">Word Space Explored!</h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You clicked through the embedding space and made vector arithmetic land on real words.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <p className="text-[13px] text-[#94a3b8] leading-relaxed mb-4">
+                  You explored nearest neighbors by cosine similarity, ran classic analogies like
+                  king − man + woman ≈ queen, and looked inside the raw 16-dimensional vectors that
+                  make it all work.
+                </p>
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Meaning lives in geometry: words become vectors, similarity becomes
+                    distance, and relationships become directions you can add and subtract.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+                    Try Again
+                  </button>
+                  <Link href="/visual-guides/self-attention"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav */}
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+          <Link
+            href="/visual-guides"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+          >
+            ← All Guides
+          </Link>
           <Link
             href="/visual-guides/self-attention"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all"
-            style={{
-              background: "#ef4444" + "20",
-              color: "#ef4444",
-              border: "1px solid " + "#ef4444" + "40",
-            }}
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
-            Explore Self-Attention
-            <span aria-hidden>→</span>
+            Next Guide →
           </Link>
         </div>
 

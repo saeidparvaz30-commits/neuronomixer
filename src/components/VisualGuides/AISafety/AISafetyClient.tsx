@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion, GUIDE_VIEWPORT } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 const SCENARIOS = [
@@ -55,7 +56,7 @@ const NEAR_TERM  = [{ label: "Bias in hiring / lending", s: "high" }, { label: "
 const LONG_TERM  = [{ label: "Misaligned optimization", s: "spec" }, { label: "Loss of human oversight", s: "spec" }, { label: "Catastrophic misuse", s: "spec" }];
 const SEV: Record<string, string> = {
   high: "bg-[#ef4444]/15 text-[#ef4444] border-[#ef4444]/30",
-  med:  "bg-[#d4af37]/15 text-[#d4af37] border-[#d4af37]/30",
+  med:  "bg-[#d4af37]/15 text-[var(--color-accent)] border-[#d4af37]/30",
   spec: "bg-[#94a3b8]/10 text-[#94a3b8] border-[#94a3b8]/20",
 };
 const ACTIONS = [
@@ -69,7 +70,7 @@ const CORRIGIBLE_ZONE = { start: 40, end: 60 };
 
 function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
   return (
-    <button onClick={onToggle} className={`shrink-0 w-10 h-5 rounded-full relative transition-colors ${on ? "bg-[#3bb4a4]" : "bg-[#1e293b]"}`} aria-label="Toggle safety guardrails">
+    <button onClick={onToggle} aria-pressed={on} className={`shrink-0 w-10 h-5 rounded-full relative transition-colors ${on ? "bg-[#3bb4a4]" : "bg-[#1e293b]"}`} aria-label="Toggle safety guardrails">
       <motion.div className="absolute top-0.5 w-4 h-4 rounded-full bg-white shadow" animate={{ x: on ? 20 : 2 }} transition={{ type: "spring", stiffness: 400, damping: 30 }} />
     </button>
   );
@@ -77,6 +78,7 @@ function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
 
 export default function AISafetyClient() {
   const { data: session } = useSession();
+  const { card, stagger } = useGuideMotion();
   const completionFired = useRef(false);
   const sliderMovedRef = useRef(false);
   const [guardrails, setGuardrails] = useState<Record<string, boolean>>({});
@@ -89,6 +91,13 @@ export default function AISafetyClient() {
   const handleSlider = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSliderVal(Number(e.target.value));
     if (!sliderMovedRef.current) { sliderMovedRef.current = true; setSliderMoved(true); }
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setGuardrails({});
+    setSliderVal(50);
+    sliderMovedRef.current = false;
+    setSliderMoved(false);
   }, []);
 
   useEffect(() => {
@@ -110,26 +119,26 @@ export default function AISafetyClient() {
   return (
     <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="ai-safety" score={100} />
-      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6 flex-wrap">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
-          <span className="text-white/20">/</span>
-          <span className="text-[#ec4899]">Applied AI</span>
-          <span className="text-white/20">/</span>
-          <span className="text-white">AI Safety: Alignment in Practice</span>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
+            Visual Guides
+          </Link>
+          <span>/</span>
+          <span className="text-[#94a3b8]">AI Safety: Alignment in Practice</span>
         </nav>
 
         {/* Hero */}
         <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#ec4899]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#ec4899]">Applied AI</span>
-            <span className="w-6 h-px bg-[#ec4899]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">Applied AI</span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
-            AI Safety: <span className="text-[#ec4899]">Alignment in Practice</span>
+            AI Safety: <span className="text-[var(--color-accent)]">Alignment in Practice</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
             Five core ideas in AI safety: the alignment problem, training-time alignment with RLHF and Constitutional AI, evals and red teaming, corrigibility, and interpretability. Grounded in published work, with simulated demos clearly labeled.
@@ -166,12 +175,12 @@ export default function AISafetyClient() {
             Toggled: <span className="text-white font-bold">{Object.keys(guardrails).length}</span>/{SCENARIOS.length}
             {toggledAll && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="ml-2 text-[#3bb4a4]">✓ All scenarios explored</motion.span>}
           </p>
-          <div className="flex flex-col gap-4">
-            {SCENARIOS.map((sc, i) => {
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={GUIDE_VIEWPORT} className="flex flex-col gap-4">
+            {SCENARIOS.map((sc) => {
               const on = !!guardrails[sc.id];
               const out = on ? sc.with : sc.without;
               return (
-                <motion.div key={sc.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
+                <motion.div key={sc.id} variants={card}
                   className="rounded-2xl border bg-[#0f172a] p-5 transition-colors" style={{ borderColor: on ? "#3bb4a430" : "#ef444430" }}>
                   <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
                     <div>
@@ -184,13 +193,13 @@ export default function AISafetyClient() {
                     <motion.div key={on ? "on" : "off"} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} transition={{ duration: 0.2 }}
                       className="rounded-xl border px-4 py-3" style={{ borderColor: on ? "#3bb4a430" : "#ef444430", background: on ? "#3bb4a408" : "#ef444408" }}>
                       <p className="text-[10px] font-semibold uppercase tracking-wider mb-1.5" style={{ color: on ? "#3bb4a4" : "#ef4444" }}>{out.label} (simulated)</p>
-                      <p className="text-[12px] font-mono leading-relaxed" style={{ color: on ? "#94a3b8" : "#f87171" }}>{out.text}</p>
+                      <p className="text-[12px] font-mono leading-relaxed" style={{ color: on ? "#94a3b8" : "#ef4444" }}>{out.text}</p>
                     </motion.div>
                   </AnimatePresence>
                 </motion.div>
               );
             })}
-          </div>
+          </motion.div>
           <div className="mt-5 rounded-xl border border-[#1e293b] bg-[#0f172a] p-4">
             <p className="text-[12px] text-[#94a3b8] leading-relaxed">
               <strong className="text-white">The alignment problem</strong> is the challenge of getting AI systems to pursue the objectives their designers actually intend. Bostrom&apos;s paperclip maximizer is the classic thought experiment: an AI optimizing an innocent proxy objective can pursue it in harmful ways. Specification gaming is the real-world version. In OpenAI&apos;s 2016 CoastRunners example, a boat-racing agent learned to circle a lagoon collecting reward targets instead of finishing the race, because the game score was a flawed proxy for what its designers wanted.
@@ -202,9 +211,9 @@ export default function AISafetyClient() {
         <section className="mb-12">
           <h2 className="text-[18px] font-bold text-white mb-1">Section 2: Training-Time Alignment</h2>
           <p className="text-[12px] text-[#94a3b8] mb-5">Two of the most widely used alignment methods both work during training. They shape the model&apos;s weights before it is ever deployed.</p>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {TRAINING_METHODS.map((m, i) => (
-              <motion.div key={m.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={GUIDE_VIEWPORT} className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {TRAINING_METHODS.map((m) => (
+              <motion.div key={m.id} variants={card}
                 className="rounded-2xl border bg-[#0f172a] p-5" style={{ borderColor: `${m.color}30` }}>
                 <div className="flex items-start justify-between gap-2 mb-3">
                   <p className="text-[13px] font-bold text-white">{m.name}</p>
@@ -223,10 +232,10 @@ export default function AISafetyClient() {
                 <p className="text-[11px] leading-relaxed" style={{ color: m.color }}>{m.signal}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
           <div className="mt-4 rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-4">
             <p className="text-[12px] text-[#94a3b8] leading-relaxed">
-              <strong className="text-[#d4af37]">Common misconception:</strong> Constitutional AI is sometimes described as a filter that checks each output against the constitution at inference time. It is not. The constitution is used only during training, to generate critique-and-revision data and AI preference labels; the deployed model has that behavior baked into its weights, and no filter consults the principles at runtime.
+              <strong className="text-[var(--color-accent)]">Common misconception:</strong> Constitutional AI is sometimes described as a filter that checks each output against the constitution at inference time. It is not. The constitution is used only during training, to generate critique-and-revision data and AI preference labels; the deployed model has that behavior baked into its weights, and no filter consults the principles at runtime.
             </p>
           </div>
         </section>
@@ -235,9 +244,9 @@ export default function AISafetyClient() {
         <section className="mb-12">
           <h2 className="text-[18px] font-bold text-white mb-1">Section 3: Evals and Red Teaming</h2>
           <p className="text-[12px] text-[#94a3b8] mb-5">Training-time alignment is checked from the outside: adversarial testing before deployment, and safeguards once the system is live.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {EVAL_CARDS.map((t, i) => (
-              <motion.div key={t.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.07 }}
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={GUIDE_VIEWPORT} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {EVAL_CARDS.map((t) => (
+              <motion.div key={t.id} variants={card}
                 className="rounded-2xl border bg-[#0f172a] p-5" style={{ borderColor: "#ec489930" }}>
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <p className="text-[13px] font-bold text-white">{t.name}</p>
@@ -247,7 +256,7 @@ export default function AISafetyClient() {
                 <p className="text-[12px] text-[#94a3b8] leading-relaxed">{t.desc}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         {/* Section 4 - Corrigibility */}
@@ -335,24 +344,24 @@ export default function AISafetyClient() {
         <section className="mb-12">
           <h2 className="text-[18px] font-bold text-white mb-1">What Can You Do?</h2>
           <p className="text-[12px] text-[#94a3b8] mb-5">Practical actions for ML practitioners building real systems.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {ACTIONS.map((card, i) => (
-              <motion.div key={card.title} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}
-                className="rounded-2xl border bg-[#0f172a] p-5" style={{ borderColor: `${card.color}30` }}>
-                <p className="text-2xl mb-3">{card.icon}</p>
-                <p className="text-[13px] font-bold text-white mb-2">{card.title}</p>
-                <p className="text-[12px] text-[#94a3b8] leading-relaxed">{card.desc}</p>
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={GUIDE_VIEWPORT} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {ACTIONS.map((action) => (
+              <motion.div key={action.title} variants={card}
+                className="rounded-2xl border bg-[#0f172a] p-5" style={{ borderColor: `${action.color}30` }}>
+                <p className="text-2xl mb-3">{action.icon}</p>
+                <p className="text-[13px] font-bold text-white mb-2">{action.title}</p>
+                <p className="text-[12px] text-[#94a3b8] leading-relaxed">{action.desc}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </section>
 
         {/* Gold insight */}
         <div className="rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-6 mb-10">
           <div className="flex items-start gap-3">
-            <span className="text-[#d4af37] text-xl mt-0.5">💡</span>
+            <span className="text-[var(--color-accent)] text-xl mt-0.5">💡</span>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#d4af37] mb-2">Key Insight</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">Key Insight</p>
               <p className="text-[13px] text-white leading-relaxed">
                 AI safety is not just about sci-fi scenarios. The most impactful safety work today focuses on near-term harms: bias, misinformation, privacy. You don&apos;t need to worry about superintelligence to work on AI safety.
               </p>
@@ -360,22 +369,71 @@ export default function AISafetyClient() {
           </div>
         </div>
 
-        {/* Summary / completion */}
-        <div className="rounded-2xl border border-[#ec4899]/30 bg-[#ec4899]/5 p-6 mb-10">
-          <p className="text-[15px] font-bold text-white mb-1">You&apos;ve completed AI Safety: Alignment in Practice! 🎉</p>
-          <p className="text-[12px] text-[#94a3b8] mb-4">You explored the alignment problem, training-time alignment with RLHF and Constitutional AI, evals and red teaming, corrigibility, and interpretability.</p>
-          <Link href="/visual-guides" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-[#ec4899] text-white hover:opacity-90 transition-opacity">
-            ← Back to Visual Guides
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 mb-10 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">Alignment, Explored!</h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You toggled guardrails on every scenario and walked the full corrigibility spectrum.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <p className="text-[13px] text-[#94a3b8] leading-relaxed mb-4">
+                  You explored the alignment problem, training-time alignment with RLHF and
+                  Constitutional AI, evals and red teaming, corrigibility, and interpretability.
+                </p>
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Alignment is not a filter bolted on at the end. It is shaped during
+                    training, checked by evals and red teams, and verified, one day, by
+                    interpretability.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+                    Try Again
+                  </button>
+                  <Link href="/visual-guides/prompt-injection"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Footer nav */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link href="/visual-guides/rlhf" className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
             ← RLHF
           </Link>
-          <Link href="/visual-guides/ai-model-decision-guide" className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            Next: Which AI Model Should I Use? →
+          <Link href="/visual-guides/prompt-injection" className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+            Next: Prompt Injection →
           </Link>
         </div>
 

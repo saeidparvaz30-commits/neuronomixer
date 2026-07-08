@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useGuideMotion, GUIDE_VIEWPORT } from "@/lib/guideMotion";
 import HistogramPlot from "./HistogramPlot";
 
 // Fixed deterministic original data: 30 values from normal(50, 10)
@@ -47,6 +48,7 @@ interface BootstrapSectionProps {
 }
 
 export default function BootstrapSection({ onBootstrapDone }: BootstrapSectionProps) {
+  const { fadeUp } = useGuideMotion();
   const [bootstrapMeans, setBootstrapMeans] = useState<number[]>([]);
   const [isAnimating, setIsAnimating] = useState(false);
   const [ciLower, setCiLower] = useState(0);
@@ -145,9 +147,10 @@ export default function BootstrapSection({ onBootstrapDone }: BootstrapSectionPr
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={GUIDE_VIEWPORT}
       className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6"
     >
       {/* Header */}
@@ -184,7 +187,7 @@ export default function BootstrapSection({ onBootstrapDone }: BootstrapSectionPr
           <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-3">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-semibold text-[#94a3b8]">Original Sample (n=30)</span>
-              <span className="text-sm font-bold text-[#d4af37]">
+              <span className="text-sm font-bold text-[var(--color-accent)]">
                 x̄ = {sampleMean.toFixed(2)}
               </span>
             </div>
@@ -203,8 +206,8 @@ export default function BootstrapSection({ onBootstrapDone }: BootstrapSectionPr
                 const mx = ((sampleMean - origMin) / (origMax - origMin)) * 400;
                 return (
                   <g>
-                    <line x1={mx} y1={0} x2={mx} y2={90} stroke="#d4af37" strokeWidth="2" strokeDasharray="4 2" />
-                    <text x={mx + 4} y={12} fill="#d4af37" fontSize="9" fontWeight="600">mean</text>
+                    <line x1={mx} y1={0} x2={mx} y2={90} stroke="var(--color-accent)" strokeWidth="2" strokeDasharray="4 2" />
+                    <text x={mx + 4} y={12} fill="var(--color-accent)" fontSize="9" fontWeight="600">mean</text>
                   </g>
                 );
               })()}
@@ -215,7 +218,7 @@ export default function BootstrapSection({ onBootstrapDone }: BootstrapSectionPr
                   key={v}
                   x={((v - origMin) / (origMax - origMin)) * 400}
                   y={105}
-                  fill="#64748b"
+                  fill="#475569"
                   fontSize="8"
                   textAnchor="middle"
                 >
@@ -271,8 +274,8 @@ export default function BootstrapSection({ onBootstrapDone }: BootstrapSectionPr
                 isDone
                   ? "bg-[#1e293b] text-[#475569] cursor-not-allowed"
                   : isAnimating
-                  ? "bg-[#d4af37]/20 text-[#d4af37] border border-[#d4af37]/40 hover:opacity-90"
-                  : "bg-[#d4af37] text-[#0a0e1a] hover:opacity-90"
+                  ? "bg-[#d4af37]/20 text-[var(--color-accent)] border border-[#d4af37]/40 hover:opacity-90"
+                  : "bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90"
               }`}
             >
               {isDone ? "Done" : isAnimating ? "Pause" : bootstrapMeans.length > 0 ? "Resume" : "Run Bootstrap"}
@@ -290,7 +293,7 @@ export default function BootstrapSection({ onBootstrapDone }: BootstrapSectionPr
             <h3 className="text-xs font-semibold text-[#94a3b8] uppercase tracking-wide mb-3">Results</h3>
             <div className="space-y-2.5">
               {[
-                { label: "Sample Mean", value: sampleMean.toFixed(3), color: "#d4af37" },
+                { label: "Sample Mean", value: sampleMean.toFixed(3), color: "var(--color-accent)" },
                 { label: "Bootstrap SE", value: se > 0 ? se.toFixed(3) : "—", color: "#3bb4a4" },
                 {
                   label: "95% CI Lower",
@@ -322,7 +325,7 @@ export default function BootstrapSection({ onBootstrapDone }: BootstrapSectionPr
 
           {/* Method explanation */}
           <div className="rounded-xl border border-[#d4af37]/20 bg-[#d4af37]/5 p-4">
-            <h3 className="text-xs font-semibold text-[#d4af37] uppercase tracking-wide mb-3">How Bootstrap Works</h3>
+            <h3 className="text-xs font-semibold text-[var(--color-accent)] uppercase tracking-wide mb-3">How Bootstrap Works</h3>
             <ol className="space-y-2">
               {[
                 "Start with your original sample of n observations.",
@@ -332,7 +335,7 @@ export default function BootstrapSection({ onBootstrapDone }: BootstrapSectionPr
                 "Take the 2.5th and 97.5th percentiles as the 95% CI.",
               ].map((step, i) => (
                 <li key={i} className="flex gap-2 text-xs text-[#94a3b8]">
-                  <span className="text-[#d4af37] font-bold shrink-0">{i + 1}.</span>
+                  <span className="text-[var(--color-accent)] font-bold shrink-0">{i + 1}.</span>
                   <span>{step}</span>
                 </li>
               ))}

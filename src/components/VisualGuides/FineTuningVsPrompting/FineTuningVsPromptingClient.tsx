@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion, GUIDE_VIEWPORT } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -20,9 +21,9 @@ const TREE: Record<string, { q: string; yes?: string; no?: string; result?: { la
   q2: { q: "Is the model already good at your task?", yes: "rp", no: "q3" },
   q3: { q: "Do you need consistent style or format?", yes: "rft", no: "q4" },
   q4: { q: "Do you have GPU resources available?", yes: "rff", no: "rl" },
-  rp:  { q: "", result: { label: "Use Prompting", color: "#3bb4a4", desc: "The model already knows your domain or you lack labeled data. Engineer better prompts first — zero cost, instant." } },
+  rp:  { q: "", result: { label: "Use Prompting", color: "#3bb4a4", desc: "The model already knows your domain or you lack labeled data. Engineer better prompts first: zero cost, instant." } },
   rft: { q: "", result: { label: "Fine-Tune the Model", color: "#a855f7", desc: "You have data and need consistent output style. Fine-tuning bakes your format requirements directly into model weights." } },
-  rff: { q: "", result: { label: "Full Fine-Tuning", color: "#a855f7", desc: "You have data, GPUs, and deep domain needs. Full fine-tuning gives maximum control — all weights are updated." } },
+  rff: { q: "", result: { label: "Full Fine-Tuning", color: "#a855f7", desc: "You have data, GPUs, and deep domain needs. Full fine-tuning gives maximum control, since all weights are updated." } },
   rl:  { q: "", result: { label: "LoRA / QLoRA", color: "#d4af37", desc: "No heavy GPU? LoRA and QLoRA fine-tune only small adapter matrices, slashing memory usage by up to 10x with minimal quality loss." } },
 };
 
@@ -53,6 +54,7 @@ const SPECTRUM = [
 
 export default function FineTuningVsPromptingClient() {
   const { data: session } = useSession();
+  const { card, stagger } = useGuideMotion();
   const [treeNode, setTreeNode] = useState("q1");
   const [treePath, setTreePath] = useState<string[]>(["q1"]);
   const [treeComplete, setTreeComplete] = useState(false);
@@ -91,6 +93,12 @@ export default function FineTuningVsPromptingClient() {
     setTreeComplete(false);
   }
 
+  function handleGuideReset() {
+    treeReset();
+    setOpenTechs(new Set());
+    expandReported.current = 0;
+  }
+
   function toggleTech(id: string) {
     setOpenTechs(prev => {
       const next = new Set(prev);
@@ -110,29 +118,29 @@ export default function FineTuningVsPromptingClient() {
   return (
     <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={allComplete} guideSlug="fine-tuning-vs-prompting" score={100} />
-      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
-          <span className="text-white/20">/</span>
-          <span className="text-[#ef4444]">LLMs</span>
-          <span className="text-white/20">/</span>
-          <span className="text-white">Fine-Tuning vs Prompting</span>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
+            Visual Guides
+          </Link>
+          <span>/</span>
+          <span className="text-[#94a3b8]">Fine-Tuning vs Prompting</span>
         </nav>
 
         {/* Hero */}
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#ef4444]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#ef4444]">LLMs</span>
-            <span className="w-6 h-px bg-[#ef4444]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">LLMs</span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
-            Fine-Tuning <span className="text-[#ef4444]">vs</span> Prompting
+            Fine-Tuning <span className="text-[var(--color-accent)]">vs</span> Prompting
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
-            Both techniques customize LLM behavior — but they work very differently.
+            Both techniques customize LLM behavior, but they work very differently.
             Prompting writes better instructions. Fine-tuning updates model weights.
             Learn when to reach for each.
           </p>
@@ -159,7 +167,7 @@ export default function FineTuningVsPromptingClient() {
 
         {/* Section 1 — Comparison */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 1 — Side-by-Side Comparison</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 1: Side-by-Side Comparison</h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">Same task: classify customer sentiment. Two very different approaches.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {/* Prompting */}
@@ -174,7 +182,7 @@ export default function FineTuningVsPromptingClient() {
                 <p className="text-white ml-2">You are a sentiment classifier.</p>
                 <p className="text-[#94a3b8] mt-2">User:</p>
                 <p className="text-white ml-2">&ldquo;The product broke after 2 days.&rdquo;</p>
-                <p className="text-[#3bb4a4] mt-3">→ Output: <span className="text-[#d4af37]">Negative</span></p>
+                <p className="text-[#3bb4a4] mt-3">→ Output: <span className="text-[var(--color-accent)]">Negative</span></p>
               </div>
               <div className="space-y-2">
                 {METRICS.map(m => (
@@ -214,7 +222,7 @@ export default function FineTuningVsPromptingClient() {
 
         {/* Section 2 — Decision Tree */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 2 — Interactive Decision Tree</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 2: Interactive Decision Tree</h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">Answer yes/no questions to get a personalized recommendation.</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
             {/* Path trail */}
@@ -266,7 +274,7 @@ export default function FineTuningVsPromptingClient() {
 
         {/* Section 3 — Prompt Techniques */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 3 — Prompt Engineering Techniques</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 3: Prompt Engineering Techniques</h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">Expand at least two cards. Each technique has distinct strengths.</p>
           <div className="space-y-3">
             {TECHNIQUES.map(tech => {
@@ -274,7 +282,7 @@ export default function FineTuningVsPromptingClient() {
               return (
                 <div key={tech.id} className="rounded-2xl border overflow-hidden transition-colors"
                   style={{ borderColor: isOpen ? `${tech.color}40` : "#1e293b" }}>
-                  <button onClick={() => toggleTech(tech.id)}
+                  <button onClick={() => toggleTech(tech.id)} aria-expanded={isOpen}
                     className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-white/[0.02] transition-colors">
                     <div className="flex items-center gap-3">
                       <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: tech.color }} />
@@ -309,13 +317,13 @@ export default function FineTuningVsPromptingClient() {
 
         {/* Section 4 — Spectrum */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 4 — The Fine-Tuning Spectrum</h2>
-          <p className="text-[12px] text-[#94a3b8] mb-6">From zero-cost prompting to months-long pre-training — every step trades time and money for capability.</p>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 4: The Fine-Tuning Spectrum</h2>
+          <p className="text-[12px] text-[#94a3b8] mb-6">From zero-cost prompting to months-long pre-training, every step trades time and money for capability.</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 overflow-x-auto">
-            <div className="flex items-stretch gap-2 min-w-[480px]">
+            <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={GUIDE_VIEWPORT} className="flex items-stretch gap-2 min-w-[480px]">
               {SPECTRUM.map((step, i) => (
                 <React.Fragment key={step.label}>
-                  <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1, duration: 0.4 }}
+                  <motion.div variants={card}
                     className="flex-1 rounded-xl p-4 flex flex-col gap-3"
                     style={{ background: `${step.color}0d`, border: `1px solid ${step.color}30` }}>
                     <p className="text-[11px] font-bold text-white leading-tight">{step.label}</p>
@@ -341,37 +349,82 @@ export default function FineTuningVsPromptingClient() {
                   {i < SPECTRUM.length - 1 && <div className="flex items-center text-[#334155] text-[12px] flex-shrink-0">→</div>}
                 </React.Fragment>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
 
         {/* Gold insight */}
         <div className="rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-6 mb-12">
           <div className="flex items-start gap-3">
-            <span className="text-[#d4af37] text-xl mt-0.5">💡</span>
+            <span className="text-[var(--color-accent)] text-xl mt-0.5">💡</span>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#d4af37] mb-2">Key Insight</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">Key Insight</p>
               <p className="text-[13px] text-white leading-relaxed">
                 Most production AI applications use prompting + RAG first, then fine-tune only if prompting is
-                insufficient. Fine-tuning is often overkill for format or style changes — a well-crafted system
+                insufficient. Fine-tuning is often overkill for format or style changes: a well-crafted system
                 prompt gets you 80% of the way there at zero cost.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Summary card */}
-        <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 mb-10 flex items-center justify-between gap-4 flex-wrap">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8] mb-1">Up Next</p>
-            <p className="text-[15px] font-bold text-white">RAG Explained</p>
-            <p className="text-[12px] text-[#94a3b8] mt-1">You&apos;ve completed the LLMs section! Next up: Applied AI →</p>
-          </div>
-          <Link href="/visual-guides/rag-explained"
-            className="px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-[#ef4444] text-white hover:opacity-90 transition-opacity whitespace-nowrap">
-            Next Guide →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mb-10 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">Decision Made!</h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You walked the decision tree to a recommendation and explored the prompt engineering toolbox.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <p className="text-[13px] text-[#94a3b8] leading-relaxed mb-4">
+                  You compared prompting and fine-tuning on the same task, answered the questions
+                  that decide between them, and saw the cost/time spectrum from zero-shot prompts
+                  to training from scratch.
+                </p>
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Prompt first, fine-tune later: most tasks are solved with better
+                    instructions, and weights should only change when words are not enough.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button onClick={handleGuideReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+                    Try Again
+                  </button>
+                  <Link href="/visual-guides/rag-explained"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Nav */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">

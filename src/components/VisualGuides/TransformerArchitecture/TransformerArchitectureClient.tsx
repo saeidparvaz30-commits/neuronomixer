@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 type BlockId = "token-embedding" | "positional-encoding" | "mha" | "add-norm-1" | "ffn" | "add-norm-2" | "output-projection" | "softmax";
@@ -33,7 +34,7 @@ const BLOCKS: Block[] = [
     explanation: "A linear layer that maps the final hidden state to logits over the entire vocabulary (~50K tokens).",
     formula: "logits = h · W_vocab^T" },
   { id: "softmax", label: "Softmax", color: "#14532d", border: "#22c55e",
-    explanation: "Converts logits to probabilities. Temperature scaling happens here — higher temperature = flatter distribution = more random output.",
+    explanation: "Converts logits to probabilities. Temperature scaling happens here: higher temperature = flatter distribution = more random output.",
     formula: "P(tokenᵢ) = e^(logitᵢ/T) / Σe^(logitⱼ/T)" },
 ];
 
@@ -55,7 +56,7 @@ const SCALE_ROWS = [
 
 function BlockBtn({ block, selected, explored, onClick }: { block: Block; selected: boolean; explored: boolean; onClick: () => void }) {
   return (
-    <motion.button onClick={onClick} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+    <motion.button onClick={onClick} aria-pressed={selected} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
       className="w-full h-[50px] rounded-lg text-sm font-medium text-white flex items-center justify-between px-3"
       style={{ backgroundColor: selected ? block.color : `${block.color}cc`, border: `2px solid ${selected ? block.border : `${block.color}88`}`, boxShadow: selected ? `0 0 14px ${block.border}55` : undefined }}>
       <span>{block.label}</span>
@@ -67,7 +68,7 @@ function BlockBtn({ block, selected, explored, onClick }: { block: Block; select
 
 export default function TransformerArchitectureClient() {
   const { data: session } = useSession();
-  const completionFired = useRef(false);
+  const { card } = useGuideMotion();
   const [selected, setSelected] = useState<BlockId | null>(null);
   const [explored, setExplored] = useState<Set<BlockId>>(new Set());
   const [animDone, setAnimDone] = useState(false);
@@ -77,15 +78,12 @@ export default function TransformerArchitectureClient() {
   const isComplete = explored.size >= 6 && animDone;
   const progress = Math.min(Math.round(((explored.size / 6) * 0.7 + (animDone ? 1 : 0) * 0.3) * 100), 100);
 
-  useEffect(() => {
-    if (isComplete && !completionFired.current) {
-      completionFired.current = true;
-      if (session?.user) {
-        fetch("/api/visual-guides/complete", { method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ guideSlug: "transformer-architecture", score: 100 }) }).catch(() => {});
-      }
-    }
-  }, [isComplete, session?.user]);
+  function handleReset() {
+    setSelected(null);
+    setExplored(new Set());
+    setAnimDone(false);
+    setFlowStep(-1);
+  }
 
   function handleBlock(id: BlockId) {
     setSelected((p) => (p === id ? null : id));
@@ -109,21 +107,30 @@ export default function TransformerArchitectureClient() {
   const below = BLOCKS.filter((b) => !b.repeat).slice(2);
 
   return (
-    <main className="min-h-screen bg-[#0f172a] text-white px-4 py-10 max-w-5xl mx-auto">
+    <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="transformer-architecture" score={100} />
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
       {/* Breadcrumb */}
-      <nav className="text-xs text-[#94a3b8] mb-6 flex items-center gap-1.5 flex-wrap">
-        <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+        <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
+          Visual Guides
+        </Link>
         <span>/</span>
-        <span className="px-2 py-0.5 rounded-full text-white font-medium bg-[#ef4444]">LLMs</span>
-        <span>/</span>
-        <span className="text-white">The Transformer Architecture</span>
+        <span className="text-[#94a3b8]">The Transformer Architecture</span>
       </nav>
 
-      {/* Header */}
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">The Transformer Architecture</h1>
-        <p className="text-[#94a3b8] text-sm max-w-2xl">Click every block in the decoder stack to see what it does. GPT-style transformers stack these blocks N times to process and generate text.</p>
-      </header>
+      {/* Hero */}
+      <section className="mb-8">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="w-6 h-px bg-[var(--color-accent)]" />
+          <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">LLMs</span>
+          <span className="w-6 h-px bg-[var(--color-accent)]" />
+        </div>
+        <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
+          The Transformer <span className="text-[var(--color-accent)]">Architecture</span>
+        </h1>
+        <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">Click every block in the decoder stack to see what it does. GPT-style transformers stack these blocks N times to process and generate text.</p>
+      </section>
 
       {/* Progress bar */}
       <div className="mb-8">
@@ -236,26 +243,68 @@ export default function TransformerArchitectureClient() {
       </section>
 
       {/* Gold insight box */}
-      <div className="rounded-xl p-5 border border-[#d4af37] bg-[#d4af3710] mb-10">
-        <p className="text-sm font-semibold text-[#d4af37] mb-1">Key Insight</p>
+      <div className="rounded-xl p-5 border border-[#d4af37]/30 bg-[#d4af37]/5 mb-10">
+        <p className="text-sm font-semibold text-[var(--color-accent)] mb-1">Key Insight</p>
         <p className="text-[#94a3b8] text-sm leading-relaxed">
           The &ldquo;Attention Is All You Need&rdquo; paper (2017) by Vaswani et al. replaced RNNs entirely with attention.
-          It has over 100,000 citations — one of the most influential papers in AI history.
+          It has over 100,000 citations, making it one of the most influential papers in AI history.
         </p>
       </div>
 
-      {/* Summary card */}
+      {/* Completion card */}
       <AnimatePresence>
         {isComplete && (
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }}
-            className="rounded-xl p-5 border border-[#3bb4a4] bg-[#1e293b] mb-10">
-            <p className="text-[#3bb4a4] font-semibold mb-2">Guide complete!</p>
-            <p className="text-[#94a3b8] text-sm mb-4">You&apos;ve explored the full transformer stack. Up next: see how temperature and top-k sampling shape the output distribution.</p>
-            <Link href="/visual-guides/temperature-topk"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: "#1e5d8a" }}>
-              Next: Temperature &amp; Top-K →
-            </Link>
+          <motion.div
+            variants={card}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+          >
+            <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-5 h-px bg-[var(--color-accent)]" />
+                <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                  Guide Complete
+                </span>
+              </div>
+              <h2 className="text-2xl font-extrabold tracking-tight text-white">Stack Explored!</h2>
+              <p className="text-sm text-[#94a3b8] mt-1">
+                You clicked through the decoder stack and watched a token travel the full pipeline.
+              </p>
+            </div>
+
+            <div className="px-6 py-5">
+              <p className="text-[13px] text-[#94a3b8] leading-relaxed mb-4">
+                You explored embeddings, positional encoding, multi-head self-attention, residual
+                connections with layer norm, the feed-forward network, and the projection to
+                probabilities, plus how the same blocks scale from GPT-2 to frontier models.
+              </p>
+              <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
+                <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                  &quot;A transformer is a small set of blocks repeated N times: attention mixes
+                  information across tokens, and everything else just keeps that mixing stable.&quot;
+                </p>
+              </div>
+            </div>
+
+            <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+              <Link href="/visual-guides"
+                className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+                ← All Guides
+              </Link>
+              <div className="flex items-center gap-3">
+                <button onClick={handleReset}
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+                  Try Again
+                </button>
+                <Link href="/visual-guides/temperature-topk"
+                  className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+                  Next Guide →
+                </Link>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -265,6 +314,23 @@ export default function TransformerArchitectureClient() {
           Explore {Math.max(0, 6 - explored.size)} more block{Math.max(0, 6 - explored.size) !== 1 ? "s" : ""} and play the animation to complete this guide.
         </p>
       )}
-    </main>
+
+      {/* Footer nav */}
+      <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+        <Link
+          href="/visual-guides"
+          className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+        >
+          ← All Guides
+        </Link>
+        <Link
+          href="/visual-guides/temperature-topk"
+          className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+        >
+          Next Guide →
+        </Link>
+      </div>
+      </div>
+    </div>
   );
 }

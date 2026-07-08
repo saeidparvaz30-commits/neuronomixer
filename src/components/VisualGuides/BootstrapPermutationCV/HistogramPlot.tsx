@@ -201,7 +201,7 @@ export default function HistogramPlot({
           <text
             x={xScale(t)}
             y={PAD.t + chartH + 14}
-            fill="#64748b"
+            fill="#475569"
             fontSize="9"
             textAnchor="middle"
           >
@@ -222,7 +222,7 @@ export default function HistogramPlot({
       <text
         x={14}
         y={PAD.t + chartH / 2}
-        fill="#64748b"
+        fill="#475569"
         fontSize="9"
         textAnchor="middle"
         transform={`rotate(-90, 14, ${PAD.t + chartH / 2})`}
