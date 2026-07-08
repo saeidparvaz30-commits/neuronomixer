@@ -15,9 +15,19 @@ export async function authenticateApiKey(
 
   const record = await prisma.authorApiKey.findUnique({
     where: { key },
-    select: { userId: true, user: { select: { sanityAuthorId: true, role: true } } },
+    select: {
+      userId: true,
+      user: { select: { sanityAuthorId: true, role: true, suspended: true } },
+    },
   });
   if (!record) return null;
+  // Revoke access for suspended users and anyone no longer an author/admin (S7).
+  if (
+    record.user.suspended ||
+    (record.user.role !== "AUTHOR" && record.user.role !== "ADMIN")
+  ) {
+    return null;
+  }
 
   // Touch lastUsedAt (fire-and-forget)
   prisma.authorApiKey

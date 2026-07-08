@@ -5,11 +5,12 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 import { authConfig } from "./auth.config";
+import { checkRateLimit } from "./rateLimit";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: 30 * 60 }, // 30 min so stale claims self-heal (incl. edge middleware)
   providers: [
     Google,
     Credentials({
@@ -20,6 +21,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
+
+        // Throttle credential attempts per email to blunt brute force (S5).
+        const emailKey = String(credentials.email).toLowerCase();
+        const rl = checkRateLimit(`login:${emailKey}`, 5, 15 * 60 * 1000);
+        if (!rl.allowed) return null;
 
         // Verify reCAPTCHA if secret key is configured
         const secret = process.env.RECAPTCHA_SECRET_KEY;
@@ -75,17 +81,39 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return true;
     },
     async jwt({ token, user, trigger }) {
-      // On first sign-in OR forced update, load full user data from DB
-      if (user?.id || trigger === "update") {
-        const userId = (user?.id ?? token.id) as string;
-        const dbUser = await prisma.user.findUnique({ where: { id: userId } });
+      // Load full claims on first sign-in, on explicit update, OR when the stored
+      // tokenVersion has advanced (revocation after suspend / role change /
+      // password reset). This bounds a stale or compromised session to one refresh.
+      const needsLoad = Boolean(user?.id) || trigger === "update";
+      const userId = (user?.id ?? token.id) as string | undefined;
+      if (userId) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: userId },
+          select: {
+            id: true,
+            role: true,
+            vip: true,
+            onboarded: true,
+            suspended: true,
+            image: true,
+            tokenVersion: true,
+          },
+        });
         if (dbUser) {
-          token.id = dbUser.id;
-          token.role = dbUser.role;
-          token.vip = dbUser.vip;
-          token.onboarded = dbUser.onboarded;
-          token.suspended = dbUser.suspended;
-          token.picture = dbUser.image ?? token.picture;
+          if (needsLoad || (token.tokenVersion as number | undefined) !== dbUser.tokenVersion) {
+            token.id = dbUser.id;
+            token.role = dbUser.role;
+            token.vip = dbUser.vip;
+            token.onboarded = dbUser.onboarded;
+            token.suspended = dbUser.suspended;
+            token.tokenVersion = dbUser.tokenVersion;
+            token.picture = dbUser.image ?? token.picture;
+          }
+        } else if (!user?.id) {
+          // The id came from an existing token but the user no longer exists
+          // (account deleted). Neutralize authorization so the stale JWT is useless.
+          token.role = undefined;
+          token.suspended = true;
         }
       }
       return token;
@@ -96,6 +124,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         (session.user as any).role = token.role;
         (session.user as any).vip = token.vip;
         (session.user as any).onboarded = token.onboarded;
+        (session.user as any).suspended = token.suspended;
         if (token.picture) session.user.image = token.picture as string;
       }
       return session;

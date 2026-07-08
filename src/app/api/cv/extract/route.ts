@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -74,6 +75,15 @@ export async function POST(req: NextRequest) {
   const role = (session?.user as any)?.role;
   if (!session?.user || (role !== "AUTHOR" && role !== "ADMIN")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  // Cap AI-cost abuse: max 5 extractions per user per hour (S8).
+  const rl = checkRateLimit(`cv-extract:${session.user.id}`, 5, 60 * 60 * 1000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many extraction attempts. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
+    );
   }
 
   let formData: FormData;

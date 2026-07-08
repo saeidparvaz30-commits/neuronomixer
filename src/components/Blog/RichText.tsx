@@ -128,9 +128,9 @@ const components: PortableTextComponents = {
 
   block: {
     h1: ({ children }) => (
-      <h1 className="text-3xl md:text-4xl font-bold my-6 text-black">
+      <h2 className="text-2xl md:text-3xl font-semibold my-4 text-gray-800">
         {children}
-      </h1>
+      </h2>
     ),
     h2: ({ children }) => (
       <h2 className="text-2xl md:text-3xl font-semibold my-4 text-gray-800">
