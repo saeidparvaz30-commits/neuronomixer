@@ -10,7 +10,7 @@ import MiniChallenge from "./MiniChallenge";
 function RawSourceVisual() {
   const cards = [
     { label: "sales_FINAL_v2.csv", color: "#ef4444", rotate: -3, lines: ["Date,Product,Rev???", "2024-01,Widget??,$1,240", "2024-01,Widget??,???"] },
-    { label: "GET /api/users",     color: "#f59e0b", rotate: 2,  lines: ['{"users":[', '  {???name???:???Alice???', '  "id":null,"email":""}]}'] },
+    { label: "GET /api/users",     color: "var(--color-warning)", rotate: 2,  lines: ['{"users":[', '  {???name???:???Alice???', '  "id":null,"email":""}]}'] },
     { label: "form_log.txt",       color: "#a855f7", rotate: -2, lines: ["Name: Alice Sm??h", "Email: alic@", "Phone: ???-???-????"] },
     { label: "sensor_data.txt",    color: "#94a3b8", rotate: 3,  lines: ["10:23:01 temp=23.5", "10:23:02 temp=ERR", "10:23:03 --------"] },
   ];
@@ -23,9 +23,9 @@ function RawSourceVisual() {
           animate={{ opacity: 1, y: 0, rotate: card.rotate }}
           transition={{ delay: i * 0.08, type: "spring", bounce: 0.3 }}
           className="rounded-lg border bg-[#0f172a] overflow-hidden shadow-xl"
-          style={{ borderColor: card.color + "40" }}
+          style={{ borderColor: `color-mix(in srgb, ${card.color} 25%, transparent)` }}
         >
-          <div className="px-2 py-1 text-[9px] font-semibold truncate" style={{ background: card.color + "18", color: card.color }}>{card.label}</div>
+          <div className="px-2 py-1 text-[9px] font-semibold truncate" style={{ background: `color-mix(in srgb, ${card.color} 9%, transparent)`, color: card.color }}>{card.label}</div>
           <div className="px-2 py-1.5 font-mono space-y-0.5">
             {card.lines.map((line, j) => (
               <div key={j} className={`text-[9px] ${j === 1 ? "line-through opacity-50 text-[#475569]" : "text-[#94a3b8]"}`}>{line}</div>
@@ -47,25 +47,25 @@ function CollectionVisual() {
 
   return (
     <div className="bg-[#1e293b]/20 rounded-xl border border-[#1e293b] overflow-hidden mb-6 p-4">
-      <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#f59e0b] mb-3">Live Collection</p>
+      <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[var(--color-warning)] mb-3">Live Collection</p>
       <svg width="100%" height="110" viewBox="0 0 520 110" className="overflow-visible">
         {/* Source boxes */}
         {sources.map((s) => (
           <g key={s.id}>
-            <rect x="4" y={s.y - 10} width="48" height="20" rx="5" fill="#f59e0b18" stroke="#f59e0b44" />
-            <text x="28" y={s.y + 5} textAnchor="middle" fontSize="9" fill="#f59e0b" fontFamily="monospace">{s.id}</text>
+            <rect x="4" y={s.y - 10} width="48" height="20" rx="5" fill="#f9731618" stroke="#f9731644" />
+            <text x="28" y={s.y + 5} textAnchor="middle" fontSize="9" fill="var(--color-warning)" fontFamily="monospace">{s.id}</text>
           </g>
         ))}
 
         {/* Dashed lines from sources to staging */}
         {sources.map((s) => (
-          <line key={`line-${s.id}`} x1="54" y1={s.y} x2="370" y2="55" stroke="#f59e0b" strokeWidth="1" strokeDasharray="4 3" opacity="0.3" />
+          <line key={`line-${s.id}`} x1="54" y1={s.y} x2="370" y2="55" stroke="var(--color-warning)" strokeWidth="1" strokeDasharray="4 3" opacity="0.3" />
         ))}
 
         {/* Traveling dots per source — pure SVG SMIL so they stay on the lines */}
         {sources.map((s, si) =>
           [0, 1, 2].map((j) => (
-            <circle key={`${s.id}-${j}`} r="3" fill="#f59e0b">
+            <circle key={`${s.id}-${j}`} r="3" fill="var(--color-warning)">
               <animateMotion dur="1.6s" begin={`${si * 0.3 + j * 0.55}s`} repeatCount="indefinite"
                 path={`M54,${s.y} L370,55`} />
               <animate attributeName="opacity" values="0;1;1;0" dur="1.6s" begin={`${si * 0.3 + j * 0.55}s`} repeatCount="indefinite" />
@@ -74,10 +74,10 @@ function CollectionVisual() {
         )}
 
         {/* Staging area */}
-        <rect x="370" y="20" width="140" height="70" rx="8" fill="#f59e0b10" stroke="#f59e0b40" />
+        <rect x="370" y="20" width="140" height="70" rx="8" fill="#f9731610" stroke="#f9731640" />
         <text x="440" y="46" textAnchor="middle" fontSize="8" fill="#94a3b8" fontFamily="monospace">staging_area</text>
         {["id,name,revenue", "1,Alice,4500", "2,Bob,null", "3,Carol,8200"].map((row, ri) => (
-          <motion.text key={ri} x="440" y={58 + ri * 9} textAnchor="middle" fontSize="7" fill={ri === 0 ? "#f59e0b" : "#6b7280"} fontFamily="monospace"
+          <motion.text key={ri} x="440" y={58 + ri * 9} textAnchor="middle" fontSize="7" fill={ri === 0 ? "var(--color-warning)" : "#475569"} fontFamily="monospace"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 + ri * 0.3 }}>
             {row}
           </motion.text>
@@ -163,7 +163,7 @@ function CleaningVisual() {
                     className="px-3 py-2 text-[11px] whitespace-nowrap"
                     style={{
                       background: isErr ? "#3a1a1a" : isFix ? "#0f2a28" : rowBg(ri),
-                      color: isErr ? "#fca5a5" : isFix ? "#6ee7b7" : "#f1f5f9",
+                      color: isErr ? "#ef4444" : isFix ? "var(--color-success)" : "#f1f5f9",
                     }}
                   >
                     {val === null ? <span className="italic text-[#475569]">null</span> : String(val)}
@@ -217,8 +217,8 @@ function TransformationVisual() {
 
   const transforms = [
     { from: ["first_name", "last_name"], to: "full_name",       icon: "🔗", color: "#3b82f6" },
-    { from: ["birth_date"],              to: "age",             icon: "🧮", color: "#8b5cf6" },
-    { from: ["purchase_amount"],         to: "spend_tier",      icon: "📊", color: "#f59e0b" },
+    { from: ["birth_date"],              to: "age",             icon: "🧮", color: "#a855f7" },
+    { from: ["purchase_amount"],         to: "spend_tier",      icon: "📊", color: "var(--color-warning)" },
     { from: ["purchase_date"],           to: "day_of_week",     icon: "📅", color: "#3bb4a4" },
   ];
 
@@ -250,7 +250,7 @@ function TransformationVisual() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={step > i ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
               className="px-2 py-0.5 rounded text-[11px] font-mono font-semibold border"
-              style={{ background: t.color + "18", borderColor: t.color + "44", color: t.color }}
+              style={{ background: `color-mix(in srgb, ${t.color} 9%, transparent)`, borderColor: `color-mix(in srgb, ${t.color} 27%, transparent)`, color: t.color }}
             >
               {t.to}
             </motion.span>
@@ -291,32 +291,32 @@ function AnalysisReadyVisual() {
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#d4af37]">Analysis-Ready Dataset</p>
+        <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[var(--color-accent)]">Analysis-Ready Dataset</p>
         {/* Quality ring */}
         <div className="flex items-center gap-2">
           <svg width="52" height="52" viewBox="0 0 52 52">
             <circle cx="26" cy="26" r={r} fill="none" stroke="#1e293b" strokeWidth="4" />
-            <motion.circle cx="26" cy="26" r={r} fill="none" stroke="#d4af37" strokeWidth="4"
+            <motion.circle cx="26" cy="26" r={r} fill="none" stroke="var(--color-accent)" strokeWidth="4"
               strokeLinecap="round" strokeDasharray={`${pct * circumference} ${circumference}`}
               strokeDashoffset={circumference * 0.25}
               initial={{ strokeDasharray: `0 ${circumference}` }}
               animate={{ strokeDasharray: `${pct * circumference} ${circumference}` }}
               transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
             />
-            <text x="26" y="31" textAnchor="middle" fontSize="9" fontWeight="bold" fill="#d4af37" fontFamily="Inter, sans-serif">98%</text>
+            <text x="26" y="31" textAnchor="middle" fontSize="9" fontWeight="bold" fill="var(--color-accent)" fontFamily="Inter, sans-serif">98%</text>
           </svg>
           <span className="text-[10px] text-[#94a3b8]">Quality</span>
         </div>
       </div>
 
-      <div className="rounded-xl border border-[#d4af37]/20 overflow-hidden overflow-x-auto shadow-[0_0_24px_rgba(212,175,55,0.06)]">
+      <div className="rounded-xl border border-[var(--color-accent)]/20 overflow-hidden overflow-x-auto shadow-[0_0_24px_rgba(212,175,55,0.06)]">
         <table className="w-full border-collapse min-w-max">
           <thead>
             <tr className="bg-[#1e293b]">
               {cols.map((c) => (
                 <th key={c.key} scope="col" className="px-3 py-2 text-left whitespace-nowrap">
                   <span className="text-[11px] font-semibold text-white">{c.label}</span>
-                  <span className="ml-1.5 text-[9px] text-[#d4af37]/60 font-normal">{c.type}</span>
+                  <span className="ml-1.5 text-[9px] text-[var(--color-accent)]/60 font-normal">{c.type}</span>
                 </th>
               ))}
             </tr>
@@ -336,8 +336,8 @@ function AnalysisReadyVisual() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
         {stats.map((s) => (
           <motion.div key={s.label} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-            className="rounded-lg border border-[#d4af37]/20 bg-[#d4af37]/5 px-3 py-2 flex items-center gap-2">
-            <span className="text-[#d4af37] text-[13px]">{s.icon}</span>
+            className="rounded-lg border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 px-3 py-2 flex items-center gap-2">
+            <span className="text-[var(--color-accent)] text-[13px]">{s.icon}</span>
             <span className="text-[11px] font-medium text-white">{s.label}</span>
           </motion.div>
         ))}
@@ -351,14 +351,14 @@ function AnalysisReadyVisual() {
 function RawSourceEdu() {
   const sources = [
     { icon: "📋", title: "Web Forms",         desc: "User-submitted data with typos, missing fields, inconsistent formats." },
-    { icon: "🔌", title: "APIs",              desc: "JSON responses from third-party services — structures change without warning." },
+    { icon: "🔌", title: "APIs",              desc: "JSON responses from third-party services; structures change without warning." },
     { icon: "📡", title: "Sensors / IoT",     desc: "Time-series readings with gaps, sensor errors, and duplicate timestamps." },
     { icon: "🗄️", title: "Legacy Databases",  desc: "Old tables with deprecated columns, mixed encodings, and undocumented fields." },
   ];
   return (
     <div>
       <p className="text-[13px] text-[#94a3b8] mb-4 leading-relaxed">
-        Raw data is data in its original, unprocessed form — pulled directly from the source with no cleaning, standardization, or transformation applied. It is almost never analysis-ready.
+        Raw data is data in its original, unprocessed form, pulled directly from the source with no cleaning, standardization, or transformation applied. It is almost never analysis-ready.
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
         {sources.map((s) => (
@@ -375,7 +375,7 @@ function RawSourceEdu() {
         <p className="text-[11px] font-semibold text-[#ef4444] mb-1.5 uppercase tracking-wide">Common problems in raw data</p>
         <div className="flex flex-wrap gap-2">
           {["No standardization", "Duplicate records", "Missing values", "Mixed formats", "Encoding issues"].map((p) => (
-            <span key={p} className="px-2 py-0.5 rounded-full text-[11px] bg-[#ef4444]/10 text-[#fca5a5] border border-[#ef4444]/20">{p}</span>
+            <span key={p} className="px-2 py-0.5 rounded-full text-[11px] bg-[#ef4444]/10 text-[#ef4444] border border-[#ef4444]/20">{p}</span>
           ))}
         </div>
       </div>
@@ -396,14 +396,14 @@ function CollectionEdu() {
   return (
     <div>
       <p className="text-[13px] text-[#94a3b8] mb-4 leading-relaxed">
-        Collection is the process of gathering data from disparate sources and landing it in a single unified location — typically a staging area, data warehouse, or data lake.
+        Collection is the process of gathering data from disparate sources and landing it in a single unified location, typically a staging area, data warehouse, or data lake.
       </p>
 
       {/* Simulated API call */}
       <div className="rounded-xl border border-[#1e293b] bg-[#0f172a] overflow-hidden mb-4">
         <div className="flex items-center gap-2 px-3 py-2 bg-[#1e293b] border-b border-[#334155]">
           <div className="w-2 h-2 rounded-full bg-[#ef4444]" />
-          <div className="w-2 h-2 rounded-full bg-[#f59e0b]" />
+          <div className="w-2 h-2 rounded-full bg-[var(--color-warning)]" />
           <div className="w-2 h-2 rounded-full bg-[#3bb4a4]" />
           <span className="ml-2 text-[11px] font-mono text-[#94a3b8]">GET /api/sales?from=2024-01-01&to=2024-12-31</span>
         </div>
@@ -411,8 +411,8 @@ function CollectionEdu() {
           {apiState === "idle" && <p className="text-[12px] text-[#475569] font-mono">Connecting...</p>}
           {apiState === "loading" && (
             <div className="flex items-center gap-2">
-              <motion.div className="w-4 h-4 rounded-full border-2 border-[#f59e0b] border-t-transparent" animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }} />
-              <span className="text-[12px] font-mono text-[#f59e0b]">Fetching...</span>
+              <motion.div className="w-4 h-4 rounded-full border-2 border-[var(--color-warning)] border-t-transparent" animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }} />
+              <span className="text-[12px] font-mono text-[var(--color-warning)]">Fetching...</span>
             </div>
           )}
           {apiState === "done" && (
@@ -440,17 +440,17 @@ function CollectionEdu() {
         <div className="flex gap-1 mb-3">
           {(["etl", "elt"] as const).map((m) => (
             <button key={m} onClick={() => setEtlMode(m)}
-              className={`px-4 py-1.5 rounded-lg text-[12px] font-semibold border transition-all ${etlMode === m ? "bg-[#f59e0b] border-[#f59e0b] text-[#0a0e1a]" : "border-[#1e293b] text-[#94a3b8] hover:border-[#334155]"}`}>
+              className={`px-4 py-1.5 rounded-lg text-[12px] font-semibold border transition-all ${etlMode === m ? "bg-[var(--color-warning)] border-[var(--color-warning)] text-[#0a0e1a]" : "border-[#1e293b] text-[#94a3b8] hover:border-[#334155]"}`}>
               {m.toUpperCase()}
             </button>
           ))}
         </div>
         <AnimatePresence mode="wait">
           <motion.div key={etlMode} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
-            className="rounded-xl bg-[#f59e0b]/5 border border-[#f59e0b]/20 p-3 text-[12px] text-[#94a3b8] leading-relaxed">
+            className="rounded-xl bg-[var(--color-warning)]/5 border border-[var(--color-warning)]/20 p-3 text-[12px] text-[#94a3b8] leading-relaxed">
             {etlMode === "etl"
               ? "ETL (Extract → Transform → Load): Data is transformed before loading into the warehouse. Preferred when the target storage is limited or the schema is well-defined."
-              : "ELT (Extract → Load → Transform): Raw data is loaded first, then transformed inside the warehouse. Preferred with cloud warehouses that have massive compute — transforms happen at query time."
+              : "ELT (Extract → Load → Transform): Raw data is loaded first, then transformed inside the warehouse. Preferred with cloud warehouses that have massive compute; transforms happen at query time."
             }
           </motion.div>
         </AnimatePresence>
@@ -470,7 +470,7 @@ function CleaningEdu() {
   return (
     <div>
       <p className="text-[13px] text-[#94a3b8] mb-4 leading-relaxed">
-        Cleaning transforms messy raw data into reliable, consistent records. It is the most time-consuming step of any data pipeline — data scientists spend up to 80% of their time here.
+        Cleaning transforms messy raw data into reliable, consistent records. It is the most time-consuming step of any data pipeline; data scientists spend up to 80% of their time here.
       </p>
       <div className="flex flex-col gap-2">
         {ops.map((op) => (
@@ -497,7 +497,7 @@ function TransformationEdu() {
   return (
     <div>
       <p className="text-[13px] text-[#94a3b8] mb-4 leading-relaxed">
-        Transformation reshapes data to make it more useful for analysis. The goal is feature engineering — creating new variables from existing ones that capture more signal for models and reports.
+        Transformation reshapes data to make it more useful for analysis. The goal is feature engineering: creating new variables from existing ones that capture more signal for models and reports.
       </p>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
         {types.map((t) => (
@@ -540,9 +540,9 @@ function AnalysisReadyEdu() {
           </div>
         ))}
       </div>
-      <div className="rounded-xl bg-[#d4af37]/5 border border-[#d4af37]/20 p-3 text-[12px] text-[#94a3b8] leading-relaxed">
-        <strong className="text-[#d4af37]">Data Dictionary: </strong>
-        Every production dataset should have one — a document describing each column&apos;s name, type, valid value range, and meaning. It prevents misinterpretation downstream.
+      <div className="rounded-xl bg-[var(--color-accent)]/5 border border-[var(--color-accent)]/20 p-3 text-[12px] text-[#94a3b8] leading-relaxed">
+        <strong className="text-[var(--color-accent)]">Data Dictionary: </strong>
+        Every production dataset should have one: a document describing each column&apos;s name, type, valid value range, and meaning. It prevents misinterpretation downstream.
       </div>
     </div>
   );
@@ -603,7 +603,7 @@ function StageContentInner({ stageId, color, isPassed, isCompleted, isVisible, o
             disabled={!isPassed}
             className={`px-6 py-2.5 rounded-xl text-[13px] font-semibold transition-all ${
               isPassed
-                ? "bg-[#d4af37] text-[#0a0e1a] hover:opacity-90"
+                ? "bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90"
                 : "bg-[#1e293b] text-[#475569] cursor-not-allowed"
             }`}
           >
@@ -613,7 +613,7 @@ function StageContentInner({ stageId, color, isPassed, isCompleted, isVisible, o
       )}
       {isCompleted && (
         <p className="text-[12px] text-[#3bb4a4] text-right">
-          ✓ Stage completed — you can always revisit this content.
+          ✓ Stage completed. You can always revisit this content.
         </p>
       )}
     </div>

@@ -61,7 +61,7 @@ export default function DistanceVisualization({
               y1={dotY}
               x2={meanX}
               y2={dotY}
-              stroke="#d4af37"
+              stroke="var(--color-accent)"
               strokeWidth={1}
               strokeOpacity={0.45}
               strokeDasharray="3 2"
@@ -73,7 +73,7 @@ export default function DistanceVisualization({
                 y={dotY - 6}
                 textAnchor={dotX < meanX ? "end" : "start"}
                 fontSize={9}
-                fill="#d4af37"
+                fill="var(--color-accent)"
                 opacity={0.85}
                 fontFamily="monospace"
               >
@@ -94,7 +94,7 @@ export default function DistanceVisualization({
         y={axisY + 38}
         textAnchor="middle"
         fontSize={9}
-        fill="#d4af37"
+        fill="var(--color-accent)"
         opacity={0.7}
         fontFamily="sans-serif"
       >

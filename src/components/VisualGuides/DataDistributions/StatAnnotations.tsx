@@ -29,7 +29,7 @@ function SkewnessBadge({ label }: { label: string }) {
   return (
     <span
       className="inline-block px-2 py-0.5 rounded-full text-[9px] font-semibold"
-      style={{ background: color + "22", color }}
+      style={{ background: `color-mix(in srgb, ${color} 13%, transparent)`, color }}
     >
       {label}
     </span>
@@ -82,7 +82,7 @@ export default function StatAnnotations({ stats, color }: Props) {
           </p>
           <span
             className="inline-block px-2 py-0.5 rounded-full text-[9px] font-semibold"
-            style={{ background: color + "22", color }}
+            style={{ background: `color-mix(in srgb, ${color} 13%, transparent)`, color }}
           >
             {stats.kurtosisLabel}
           </span>

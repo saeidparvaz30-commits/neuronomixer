@@ -24,7 +24,7 @@ function getBagState(selectedNodeId: string | null): BagState {
       drawnColor: null,
       highlightColor: null,
       annotation: null,
-      title: "Full bag — 5 red + 3 blue",
+      title: "Full bag: 5 red + 3 blue",
       sub: "Click any tree node to see the conditional sample space.",
     };
   }
@@ -94,7 +94,7 @@ function getBagState(selectedNodeId: string | null): BagState {
     drawnColor: null,
     highlightColor: null,
     annotation: null,
-    title: "Full bag — 5 red + 3 blue",
+    title: "Full bag: 5 red + 3 blue",
     sub: null,
   };
 }
@@ -210,7 +210,7 @@ function MarbleBagView({ selectedNodeId }: { selectedNodeId: string | null }) {
                   cy={m.cy}
                   r={R}
                   fill={fillColor(m.color)}
-                  stroke={isHighlighted ? "#d4af37" : strokeColor(m.color)}
+                  stroke={isHighlighted ? "var(--color-accent)" : strokeColor(m.color)}
                   strokeWidth={isHighlighted ? 3 : 1.5}
                   opacity={isDimmed ? 0.28 : 1}
                   filter={isHighlighted ? "url(#marble-glow-gold)" : undefined}
@@ -248,7 +248,7 @@ function MarbleBagView({ selectedNodeId }: { selectedNodeId: string | null }) {
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fontSize={15}
-                  fill="#64748b"
+                  fill="#475569"
                   fontWeight="bold"
                   style={{ userSelect: "none" }}
                 >
@@ -279,7 +279,7 @@ function MarbleBagView({ selectedNodeId }: { selectedNodeId: string | null }) {
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="px-4 py-2 rounded-xl bg-[#d4af37]/10 border border-[#d4af37]/30 text-[13px] font-semibold text-[#d4af37] font-mono text-center"
+            className="px-4 py-2 rounded-xl bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/30 text-[13px] font-semibold text-[var(--color-accent)] font-mono text-center"
           >
             {annotation}
           </motion.div>
@@ -354,7 +354,7 @@ function filterLabel(filter: GridFilter, _scenario: ScenarioType): FilterInfo | 
     test_positive: {
       headline: "Filtered: Everyone who tests positive",
       sub: "Blue = true positive (disease). Gold = false positive (healthy). Only 1 of 11 has the disease.",
-      annotation: "P(Test+) ≈ 10.85% — 11 of 100 people",
+      annotation: "P(Test+) ≈ 10.85%: 11 of 100 people",
     },
     disease_and_positive: {
       headline: "Filtered: Disease AND Test+",
@@ -363,7 +363,7 @@ function filterLabel(filter: GridFilter, _scenario: ScenarioType): FilterInfo | 
     },
     disease_and_negative: {
       headline: "Filtered: Disease AND Test−",
-      sub: "Rare outcome — a disease carrier who tests negative (false negative).",
+      sub: "Rare outcome: a disease carrier who tests negative (false negative).",
       annotation: "P(Test− | Disease) = 0.05",
     },
     healthy_and_positive: {
@@ -398,7 +398,7 @@ function filterLabel(filter: GridFilter, _scenario: ScenarioType): FilterInfo | 
       annotation: "P(Factory A | Defective) = 2/4 = 50% in grid (exact: 52.6%)",
     },
     factory_a_ok_items: {
-      headline: "Filtered: Factory A — OK items",
+      headline: "Filtered: Factory A, OK items",
       sub: "95% of Factory A's items pass quality control.",
       annotation: "P(OK | Factory A) = 0.95",
     },
@@ -408,7 +408,7 @@ function filterLabel(filter: GridFilter, _scenario: ScenarioType): FilterInfo | 
       annotation: "P(Factory B | Defective) = 2/4 = 50% in grid (exact: 47.4%)",
     },
     factory_b_ok_items: {
-      headline: "Filtered: Factory B — OK items",
+      headline: "Filtered: Factory B, OK items",
       sub: "97% of Factory B's items pass quality control.",
       annotation: "P(OK | Factory B) = 0.97",
     },
@@ -468,7 +468,7 @@ export default function SampleSpaceAnimator({
             exit={{ opacity: 0 }}
             className="px-3 py-2 rounded-xl bg-[#1e293b]/50 border border-[#1e293b] text-[11px] text-[#475569]"
           >
-            Full sample space — {total} squares. Click a tree node to filter.
+            Full sample space: {total} squares. Click a tree node to filter.
           </motion.div>
         )}
       </AnimatePresence>
@@ -479,7 +479,7 @@ export default function SampleSpaceAnimator({
         <span className="font-bold text-white">{visibleCount}</span>
         <span className="text-[#94a3b8]">/ {total}</span>
         {filter !== "all" && (
-          <span className="text-[#d4af37] font-semibold ml-1">
+          <span className="text-[var(--color-accent)] font-semibold ml-1">
             ({((visibleCount / total) * 100).toFixed(1)}%)
           </span>
         )}
@@ -490,7 +490,7 @@ export default function SampleSpaceAnimator({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="ml-auto px-3 py-1 rounded-full bg-[#d4af37]/10 border border-[#d4af37]/30 text-[11px] font-semibold text-[#d4af37] font-mono"
+              className="ml-auto px-3 py-1 rounded-full bg-[var(--color-accent)]/10 border border-[var(--color-accent)]/30 text-[11px] font-semibold text-[var(--color-accent)] font-mono"
             >
               {info.annotation}
             </motion.span>
@@ -514,7 +514,7 @@ export default function SampleSpaceAnimator({
                 initial={false}
                 animate={show ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
                 exit={{ opacity: 0, scale: 0 }}
-                transition={{ duration: 0.25, delay: show ? 0 : Math.random() * 0.12 }}
+                transition={{ duration: 0.25, delay: show ? 0 : (sq.id % 5) * 0.024 }}
                 title={sq.innerLabel ?? sq.category}
                 className="aspect-square rounded-[2px] flex items-center justify-center"
                 style={{ backgroundColor: sq.color }}
@@ -547,7 +547,7 @@ function Legend({ scenario }: { scenario: ScenarioType }) {
       return [
         { color: "#3b82f6", label: "Disease + Test+" },
         { color: "#1e40af", label: "Disease + Test−" },
-        { color: "#d4af37", label: "Healthy + Test+" },
+        { color: "var(--color-accent)", label: "Healthy + Test+" },
         { color: "#334155", label: "Healthy + Test−" },
       ];
     }
@@ -559,10 +559,10 @@ function Legend({ scenario }: { scenario: ScenarioType }) {
     }
     // manufacturing
     return [
-      { color: "#d4af37", label: "Factory A — Defective" },
-      { color: "#b8860b", label: "Factory A — OK" },
-      { color: "#3bb4a4", label: "Factory B — Defective" },
-      { color: "#1e5d8a", label: "Factory B — OK" },
+      { color: "var(--color-accent)", label: "Factory A: Defective" },
+      { color: "#b8860b", label: "Factory A: OK" },
+      { color: "#3bb4a4", label: "Factory B: Defective" },
+      { color: "#1e5d8a", label: "Factory B: OK" },
     ];
   }, [scenario]);
 

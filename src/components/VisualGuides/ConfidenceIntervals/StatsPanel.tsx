@@ -31,7 +31,7 @@ export default function StatsPanel({ intervals, confidenceLevel }: Props) {
   const diff = Math.abs(coverCount - confidenceLevel);
 
   const coverColor =
-    diff <= 3 ? "#3bb4a4" : coverCount > confidenceLevel ? "#d4af37" : "#f97316";
+    diff <= 3 ? "#3bb4a4" : coverCount > confidenceLevel ? "var(--color-accent)" : "#f97316";
 
   const interpretation =
     diff <= 3
@@ -39,7 +39,7 @@ export default function StatsPanel({ intervals, confidenceLevel }: Props) {
       : `Coverage is ${coverCount > confidenceLevel ? "above" : "below"} the nominal ${confidenceLevel}% in this run. With ${intervals.length} intervals, deviations of this size in either direction are ordinary chance variation, not a better or worse procedure.`;
 
   const rows = [
-    { label: "Confidence Level", value: `${confidenceLevel}%`, color: "#d4af37" },
+    { label: "Confidence Level", value: `${confidenceLevel}%`, color: "var(--color-accent)" },
     { label: "Sample Size (n)", value: `${SAMPLE_N}`, color: "#94a3b8" },
     { label: "True Mean (μ)", value: `${TRUE_MEAN}`, color: "#94a3b8" },
     { label: "t critical (df = 29)", value: t.toFixed(3), color: "#94a3b8" },
@@ -109,7 +109,7 @@ export default function StatsPanel({ intervals, confidenceLevel }: Props) {
       <div
         className="rounded-xl p-3"
         style={{
-          background: coverColor + "10",
+          background: `color-mix(in srgb, ${coverColor} 6%, transparent)`,
           borderLeft: `3px solid ${coverColor}`,
         }}
       >

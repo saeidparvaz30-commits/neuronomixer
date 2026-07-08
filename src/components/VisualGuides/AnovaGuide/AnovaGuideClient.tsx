@@ -79,7 +79,7 @@ export default function AnovaGuideClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "anova-comparing-groups", score: 8 }),
+        body: JSON.stringify({ guideSlug: "anova-comparing-groups", score: 100 }),
       }).catch(() => {});
     }
   }, [isComplete, session?.user]);
@@ -113,7 +113,7 @@ export default function AnovaGuideClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={isComplete} guideSlug="anova-comparing-groups" score={8} />
+      <GuideCompletion isComplete={isComplete} guideSlug="anova-comparing-groups" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -133,18 +133,18 @@ export default function AnovaGuideClient() {
           className="mb-10"
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               STATISTICS
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
             <span className="text-[11px] text-[#475569] uppercase tracking-[1.5px]">
               UNIT 8: COMPARING GROUPS
             </span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             ANOVA:{" "}
-            <span className="text-[#d4af37]">Comparing Many Groups</span>
+            <span className="text-[var(--color-accent)]">Comparing Many Groups</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             Analyze whether means differ across groups. Decompose variance into between-group
@@ -216,7 +216,7 @@ export default function AnovaGuideClient() {
             onClick={() => runAnova(groups)}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Run ANOVA
           </motion.button>
@@ -226,11 +226,11 @@ export default function AnovaGuideClient() {
               animate={{ opacity: 1, x: 0 }}
               className="text-[12px] font-mono"
               aria-live="polite"
-              style={{ color: statistics.pValue < 0.05 ? "#4ade80" : "#f87171" }}
+              style={{ color: statistics.pValue < 0.05 ? "var(--color-success)" : "#ef4444" }}
             >
               F({statistics.dfBetween}, {statistics.dfWithin}) = {statistics.fStatistic.toFixed(2)},
               p = {statistics.pValue < 0.001 ? "< 0.001" : statistics.pValue.toFixed(3)}
-              {statistics.pValue < 0.05 ? " ✓ Significant" : " — Not significant"}
+              {statistics.pValue < 0.05 ? " ✓ Significant" : " ✗ Not significant"}
             </motion.span>
           )}
         </div>
@@ -263,7 +263,7 @@ export default function AnovaGuideClient() {
                 Post-hoc comparisons appear when ANOVA is significant (p &lt; 0.05).
                 {statistics && statistics.pValue >= 0.05 && (
                   <span className="block mt-1 text-[#94a3b8]">
-                    Current p = {statistics.pValue.toFixed(3)} — try the "Strong Differences" preset.
+                    Current p = {statistics.pValue.toFixed(3)}. Try the "Strong Differences" preset.
                   </span>
                 )}
               </p>
@@ -288,13 +288,13 @@ export default function AnovaGuideClient() {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/t-tests-proportion-tests"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             ← t-Tests &amp; Proportion Tests
           </Link>
           <Link
             href="/visual-guides/nonparametric-tests"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Nonparametric Tests →
           </Link>

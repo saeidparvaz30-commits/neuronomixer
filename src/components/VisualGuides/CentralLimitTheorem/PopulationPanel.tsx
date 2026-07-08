@@ -117,7 +117,7 @@ export const DIST_CONFIGS: Record<
   },
   uniform: {
     label: "Uniform",
-    color: "#d4af37",
+    color: "var(--color-accent)",
     description: "Every value equally likely. Flat histogram, no center tendency.",
   },
   skewed: {
@@ -164,7 +164,7 @@ export default function PopulationPanel({
     <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
       <h2 className="text-[13px] font-bold text-white mb-1">Population Shape</h2>
       <p className="text-[11px] text-[#475569] mb-4">
-        Choose a population. Each has a very different shape — but sample means will always converge.
+        Choose a population. Each has a very different shape, but sample means will always converge.
       </p>
 
       <div className="grid grid-cols-2 gap-2">

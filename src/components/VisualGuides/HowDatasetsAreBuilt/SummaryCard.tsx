@@ -28,7 +28,7 @@ export default function SummaryCard({ onReset }: { onReset: () => void }) {
         </div>
         <h2 className="text-2xl font-extrabold tracking-tight text-white">You&apos;ve walked the full pipeline! 🎉</h2>
         <p className="text-sm text-[#94a3b8] mt-1">
-          All 5 stages completed — from raw, messy sources to a clean, analysis-ready dataset.
+          All 5 stages completed: from raw, messy sources to a clean, analysis-ready dataset.
         </p>
       </div>
 
@@ -70,10 +70,10 @@ export default function SummaryCard({ onReset }: { onReset: () => void }) {
         </div>
 
         {/* Key takeaway */}
-        <div className="rounded-xl border-l-4 border-[#d4af37] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
-          <p className="text-[12px] font-semibold text-[#d4af37] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
+        <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[var(--color-accent)]/5 border border-[var(--color-accent)]/20 p-4 mb-2">
+          <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">Key Takeaway</p>
           <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
-            &quot;Real-world data is never clean. Every dataset you work with has been through a pipeline like this — or should be.
+            &quot;Real-world data is never clean. Every dataset you work with has been through a pipeline like this, or should be.
             The quality of your analysis is only as good as the quality of your data preparation.&quot;
           </p>
         </div>
@@ -82,12 +82,12 @@ export default function SummaryCard({ onReset }: { onReset: () => void }) {
       {/* Footer */}
       <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
         <Link href="/visual-guides"
-          className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+          className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
           ← All Guides
         </Link>
         <div className="flex items-center gap-3">
           <button onClick={onReset}
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
             Try Again
           </button>
           <Link href="/visual-guides/missing-data"

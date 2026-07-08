@@ -48,17 +48,19 @@ export default function ScenarioSelector({
       <p className="text-[11px] font-semibold uppercase tracking-widest text-[#94a3b8] mb-3">
         Choose a Scenario
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2" role="radiogroup" aria-label="Choose a scenario">
         {OPTIONS.map((opt) => {
           const isActive = current === opt.id;
           const wasVisited = visited.has(opt.id);
           return (
             <button
               key={opt.id}
+              role="radio"
+              aria-checked={isActive}
               onClick={() => onChange(opt.id)}
               className={`relative text-left p-3 rounded-xl border transition-all ${
                 isActive
-                  ? "border-[#d4af37]/60 bg-[#d4af37]/8"
+                  ? "border-[var(--color-accent)]/60 bg-[var(--color-accent)]/8"
                   : "border-[#1e293b] hover:border-[#334155] hover:bg-[#1e293b]/40"
               }`}
             >
@@ -71,7 +73,7 @@ export default function ScenarioSelector({
                 </span>
                 <span
                   className={`text-[13px] font-semibold transition-colors ${
-                    isActive ? "text-[#d4af37]" : "text-white"
+                    isActive ? "text-[var(--color-accent)]" : "text-white"
                   }`}
                 >
                   {opt.label}
@@ -83,7 +85,7 @@ export default function ScenarioSelector({
               {isActive && (
                 <motion.div
                   layoutId="scenario-indicator"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#d4af37] rounded-b-xl"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--color-accent)] rounded-b-xl"
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}

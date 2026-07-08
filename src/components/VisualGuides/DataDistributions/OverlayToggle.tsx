@@ -43,7 +43,7 @@ export default function OverlayToggle({
           checked={showOverlay}
           onChange={e => onToggle(e.target.checked)}
           className="w-4 h-4 rounded"
-          style={{ accentColor: "#d4af37" }}
+          style={{ accentColor: "var(--color-accent)" }}
         />
         <span className="text-[12px] font-semibold text-[#f1f5f9]">
           Compare with another distribution
@@ -67,7 +67,7 @@ export default function OverlayToggle({
               />
               <div
                 className="rounded-xl border p-4 space-y-3"
-                style={{ borderColor: overlayColor + "40", background: overlayColor + "08" }}
+                style={{ borderColor: `color-mix(in srgb, ${overlayColor} 25%, transparent)`, background: `color-mix(in srgb, ${overlayColor} 3%, transparent)` }}
               >
                 <ParameterSliders
                   dist={overlayDistribution}

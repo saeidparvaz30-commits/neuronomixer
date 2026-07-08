@@ -27,8 +27,8 @@ export default function PipelineFlow({ activeStage, completedStages, onSelectSta
                 whileTap={{ scale: 0.96 }}
                 className="flex flex-col items-center gap-1.5 px-3 py-2 rounded-xl border transition-all relative"
                 style={{
-                  borderColor: isActive ? stage.color : isDone ? stage.color + "50" : "#1e293b",
-                  background: isActive ? stage.color + "18" : isDone ? stage.color + "0a" : "transparent",
+                  borderColor: isActive ? stage.color : isDone ? `color-mix(in srgb, ${stage.color} 31%, transparent)` : "#1e293b",
+                  background: isActive ? `color-mix(in srgb, ${stage.color} 9%, transparent)` : isDone ? `color-mix(in srgb, ${stage.color} 4%, transparent)` : "transparent",
                   minWidth: 80,
                 }}
               >

@@ -51,6 +51,7 @@ export default function LikelihoodPanel({
           max={1.0}
           step={0.01}
           value={sensitivity}
+          aria-label="Sensitivity"
           onChange={(e) => onSensitivityChange(Number(e.target.value))}
           className="w-full"
           style={{ accentColor: "#3bb4a4" }}
@@ -71,7 +72,7 @@ export default function LikelihoodPanel({
             <span className="text-[12px] text-white font-medium">Specificity</span>
             <span className="text-[10px] text-[#475569] ml-1.5">{w.specificityFormula}</span>
           </div>
-          <span className="text-[13px] font-mono font-bold text-[#d4af37]">
+          <span className="text-[13px] font-mono font-bold text-[var(--color-accent)]">
             {(specificity * 100).toFixed(0)}%
           </span>
         </div>
@@ -81,13 +82,14 @@ export default function LikelihoodPanel({
           max={1.0}
           step={0.01}
           value={specificity}
+          aria-label="Specificity"
           onChange={(e) => onSpecificityChange(Number(e.target.value))}
           className="w-full"
-          style={{ accentColor: "#d4af37" }}
+          style={{ accentColor: "var(--color-accent)" }}
         />
         <p className="text-[10px] text-[#475569]">
           {w.specificityDesc}{" "}
-          <span className="text-[#d4af37] font-semibold">
+          <span className="text-[var(--color-accent)] font-semibold">
             {(specificity * 100).toFixed(0)}%
           </span>{" "}
           of the time

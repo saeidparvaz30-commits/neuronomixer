@@ -15,7 +15,7 @@ function getInterpretation(result: ExperimentResult, pValue: number, alpha: numb
   if (result === "reject") {
     return `The p-value (${pValue.toFixed(4)}) is below α (${alpha.toFixed(2)}), so we reject the null hypothesis. The observed difference is statistically significant at this significance level. This could be a true effect (power) or a false positive (Type I error) if H₀ is actually true.`;
   }
-  return `The p-value (${pValue.toFixed(4)}) exceeds α (${alpha.toFixed(2)}), so we fail to reject the null hypothesis. This does not prove H₀ is true — it only means we don't have enough evidence to reject it. The |t-stat| of ${Math.abs(tStat).toFixed(3)} was not extreme enough.`;
+  return `The p-value (${pValue.toFixed(4)}) exceeds α (${alpha.toFixed(2)}), so we fail to reject the null hypothesis. This does not prove H₀ is true; it only means we don't have enough evidence to reject it. The |t-stat| of ${Math.abs(tStat).toFixed(3)} was not extreme enough.`;
 }
 
 export default function TestResults({ result, tStat, pValue, alpha }: TestResultsProps) {
@@ -44,7 +44,7 @@ export default function TestResults({ result, tStat, pValue, alpha }: TestResult
               </p>
               <p
                 className="text-[22px] font-black tracking-tight leading-none"
-                style={{ color: result === "reject" ? "#f87171" : "#94a3b8" }}
+                style={{ color: result === "reject" ? "#ef4444" : "#94a3b8" }}
               >
                 {result === "reject" ? "REJECTED" : "FAILED TO REJECT"}
               </p>
@@ -61,7 +61,7 @@ export default function TestResults({ result, tStat, pValue, alpha }: TestResult
               <p className="text-[9px] text-[#475569] mb-1">p-value</p>
               <p
                 className="text-[14px] font-bold font-mono"
-                style={{ color: pValue < alpha ? "#f87171" : "#94a3b8" }}
+                style={{ color: pValue < alpha ? "#ef4444" : "#94a3b8" }}
               >
                 {pValue < 0.0001 ? "< 0.0001" : pValue.toFixed(4)}
               </p>
@@ -70,7 +70,7 @@ export default function TestResults({ result, tStat, pValue, alpha }: TestResult
               <p className="text-[9px] text-[#475569] mb-1">Significant at α={alpha.toFixed(2)}</p>
               <p
                 className="text-[14px] font-bold"
-                style={{ color: result === "reject" ? "#f87171" : "#94a3b8" }}
+                style={{ color: result === "reject" ? "#ef4444" : "#94a3b8" }}
               >
                 {result === "reject" ? "YES" : "NO"}
               </p>

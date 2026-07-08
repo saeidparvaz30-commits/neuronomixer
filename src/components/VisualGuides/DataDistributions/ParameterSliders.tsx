@@ -49,6 +49,7 @@ function Slider({ label, symbol, value, min, max, step, color, onChange }: Slide
         <input
           type="range"
           min={min} max={max} step={step} value={value}
+          aria-label={label}
           onChange={e => onChange(Number(e.target.value))}
           className="absolute inset-x-0 w-full cursor-pointer opacity-0 h-6 z-10"
           style={{ margin: 0 }}
@@ -60,7 +61,7 @@ function Slider({ label, symbol, value, min, max, step, color, onChange }: Slide
             left: `${pct}%`,
             backgroundColor: color,
             border: "2.5px solid #0f172a",
-            boxShadow: `0 0 0 3px ${color}50, 0 2px 6px rgba(0,0,0,0.6)`,
+            boxShadow: `0 0 0 3px color-mix(in srgb, ${color} 31%, transparent), 0 2px 6px rgba(0,0,0,0.6)`,
           }}
         />
       </div>
@@ -132,7 +133,7 @@ export default function ParameterSliders({
               onChange={v => onUniform({ ...uniformParams, b: Math.max(v, uniformParams.a + 1) })}
             />
             <p className="text-[10px] text-[#475569] font-mono">
-              U({uniformParams.a}, {uniformParams.b}) — enforces a &lt; b
+              U({uniformParams.a}, {uniformParams.b}): enforces a &lt; b
             </p>
           </>
         )}
@@ -145,7 +146,7 @@ export default function ParameterSliders({
               onChange={v => onExponential({ lambda: v })}
             />
             <p className="text-[10px] text-[#475569] font-mono">
-              Exp(λ={exponentialParams.lambda.toFixed(2)}) — mean = {(1 / exponentialParams.lambda).toFixed(2)}
+              Exp(λ={exponentialParams.lambda.toFixed(2)}): mean = {(1 / exponentialParams.lambda).toFixed(2)}
             </p>
             <p className="text-[9px] text-[#334155]">λ = 1/mean (higher λ → shorter mean)</p>
           </>
@@ -159,7 +160,7 @@ export default function ParameterSliders({
               onChange={v => onPoisson({ lambda: v })}
             />
             <p className="text-[10px] text-[#475569] font-mono">
-              Poisson(λ={poissonParams.lambda.toFixed(1)}) — discrete counts
+              Poisson(λ={poissonParams.lambda.toFixed(1)}): discrete counts
             </p>
             <p className="text-[9px] text-[#334155]">λ = expected events per interval</p>
           </>

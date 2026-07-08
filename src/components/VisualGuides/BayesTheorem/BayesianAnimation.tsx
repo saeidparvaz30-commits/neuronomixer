@@ -77,8 +77,8 @@ export default function BayesianAnimation({
             }}
             className="px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition-all"
             style={{
-              borderColor: visibleStep === s ? "#d4af37" : "#1e293b",
-              color: visibleStep === s ? "#d4af37" : "#475569",
+              borderColor: visibleStep === s ? "var(--color-accent)" : "#1e293b",
+              color: visibleStep === s ? "var(--color-accent)" : "#475569",
               background: visibleStep === s ? "#d4af3715" : "transparent",
             }}
           >
@@ -113,7 +113,7 @@ export default function BayesianAnimation({
                     animate={{ height: `${tpH}%` }}
                     exit={{ height: 0 }}
                     transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-                    style={{ background: "#d4af37" }}
+                    style={{ background: "var(--color-accent)" }}
                   >
                     {tpH > 15 && (
                       <span className="text-[8px] font-bold text-[#0a0e1a] px-1 text-center leading-tight">
@@ -250,7 +250,7 @@ export default function BayesianAnimation({
               className="rounded-xl border border-[#1e293b] p-3 space-y-1"
             >
               <p className="text-[11px] font-semibold text-white">
-                Step 1 — Prior (Before Testing)
+                Step 1: Prior (Before Testing)
               </p>
               <div className="flex gap-4 flex-wrap">
                 <span className="text-[11px] text-[#3bb4a4]">
@@ -276,15 +276,15 @@ export default function BayesianAnimation({
               className="rounded-xl border border-[#1e293b] p-3 space-y-2"
             >
               <p className="text-[11px] font-semibold text-white">
-                Step 2 — Apply the Test
+                Step 2: Apply the Test
               </p>
               <div className="grid grid-cols-2 gap-2 text-[10px]">
                 <div>
-                  <span className="text-[#d4af37] font-semibold">TP (gold):</span>
+                  <span className="text-[var(--color-accent)] font-semibold">TP (gold):</span>
                   <span className="text-[#94a3b8] ml-1">{fmt(tp)} {w.testPositive} AND truly {w.hasCondition}</span>
                 </div>
                 <div>
-                  <span className="text-[#1e5d8a] font-semibold" style={{ color: "#6ba3c8" }}>FN (blue):</span>
+                  <span className="text-[#1e5d8a] font-semibold" style={{ color: "#93c5fd" }}>FN (blue):</span>
                   <span className="text-[#94a3b8] ml-1">{fmt(fn)} truly {w.hasCondition} but are missed</span>
                 </div>
                 <div>
@@ -306,17 +306,17 @@ export default function BayesianAnimation({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.35 }}
-              className="rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-3 space-y-2"
+              className="rounded-xl border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 p-3 space-y-2"
             >
-              <p className="text-[11px] font-semibold text-[#d4af37]">
-                Step 3 — Among Test Positives Only
+              <p className="text-[11px] font-semibold text-[var(--color-accent)]">
+                Step 3: Among Test Positives Only
               </p>
               <p className="text-[10px] text-[#94a3b8]">
                 Of the{" "}
                 <span className="text-white font-semibold">{fmt(tp + fp)}</span> {w.entityPlural} that {w.testPositive}:
               </p>
               <div className="flex gap-3 flex-wrap">
-                <span className="text-[11px] font-semibold text-[#d4af37]">
+                <span className="text-[11px] font-semibold text-[var(--color-accent)]">
                   TP: {fmt(tp)}
                 </span>
                 <span className="text-[11px] text-[#94a3b8]">|</span>
@@ -324,11 +324,11 @@ export default function BayesianAnimation({
                   FP: {fmt(fp)}
                 </span>
               </div>
-              <div className="rounded-lg bg-[#0f172a] border border-[#d4af37]/40 px-3 py-2">
+              <div className="rounded-lg bg-[#0f172a] border border-[var(--color-accent)]/40 px-3 py-2">
                 <p className="text-[10px] text-[#94a3b8] font-mono">
                   P({sc.conditionName} | {sc.testName}) = {fmt(tp)} / ({fmt(tp)} + {fmt(fp)})
                 </p>
-                <p className="text-[16px] font-black text-[#d4af37] mt-0.5">
+                <p className="text-[16px] font-black text-[var(--color-accent)] mt-0.5">
                   ≈ {(posterior * 100).toFixed(2)}%
                 </p>
               </div>
@@ -339,7 +339,7 @@ export default function BayesianAnimation({
         {/* Color legend */}
         <div className="flex gap-3 flex-wrap">
           {[
-            { color: "#d4af37", label: "True Positive (TP)" },
+            { color: "var(--color-accent)", label: "True Positive (TP)" },
             { color: "#1e5d8a", label: "False Negative (FN)" },
             { color: "#ef4444", label: "False Positive (FP)" },
             { color: "#1e293b", border: "#334155", label: "True Negative (TN)" },

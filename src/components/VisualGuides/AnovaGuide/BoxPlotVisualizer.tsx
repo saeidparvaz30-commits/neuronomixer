@@ -135,7 +135,7 @@ export default function BoxPlotVisualizer({ groups, grandMean, highlightGroup }:
             y1={yScale(grandMean)}
             x2={SVG_W - PADDING_RIGHT}
             y2={yScale(grandMean)}
-            stroke="#d4af37"
+            stroke="var(--color-accent)"
             strokeWidth={1.5}
             strokeDasharray="4,3"
             opacity={0.7}
@@ -143,7 +143,7 @@ export default function BoxPlotVisualizer({ groups, grandMean, highlightGroup }:
           <text
             x={SVG_W - PADDING_RIGHT + 2}
             y={yScale(grandMean) + 4}
-            fill="#d4af37"
+            fill="var(--color-accent)"
             fontSize={8}
           >
             x̄
@@ -268,7 +268,7 @@ export default function BoxPlotVisualizer({ groups, grandMean, highlightGroup }:
 
       <div className="mt-2 flex items-center gap-3 flex-wrap">
         <div className="flex items-center gap-1.5">
-          <div className="w-4 h-px border-t border-dashed border-[#d4af37]" />
+          <div className="w-4 h-px border-t border-dashed border-[var(--color-accent)]" />
           <span className="text-[10px] text-[#94a3b8]">Grand mean</span>
         </div>
         <div className="flex items-center gap-1.5">

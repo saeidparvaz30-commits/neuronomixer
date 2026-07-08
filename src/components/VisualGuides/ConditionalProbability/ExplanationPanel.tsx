@@ -20,18 +20,18 @@ const EXPLANATIONS: Record<ScenarioType, ScenarioExplanation> = {
   medical_testing: {
     title: "Why the Base Rate Matters",
     context:
-      "When a disease is rare (1% prevalence), most people who test positive are actually healthy — even when the test catches 95% of true cases (its sensitivity; overall accuracy here is about 90%). This is the \"base rate fallacy\" — ignoring how common the condition is.",
+      "When a disease is rare (1% prevalence), most people who test positive are actually healthy, even when the test catches 95% of true cases (its sensitivity; overall accuracy here is about 90%). This is the \"base rate fallacy\": ignoring how common the condition is.",
     insight:
-      "With 1000 people: ~10 have the disease. The test correctly identifies ~9.5 of them (Test+). But of the 990 healthy people, 10% also test positive — that is ~99 false positives. So of ~108 total positives, only ~9 are true positives.",
+      "With 1000 people: ~10 have the disease. The test correctly identifies ~9.5 of them (Test+). But of the 990 healthy people, 10% also test positive: that is ~99 false positives. So of ~108 total positives, only ~9 are true positives.",
     keyTakeaway:
       "P(Disease | Test+) ≈ 8.8%, not 95%. Rare events require tests with very low false-positive rates to avoid being swamped by false positives.",
   },
   marbles: {
     title: "Without Replacement Changes Everything",
     context:
-      "When you draw a marble and keep it, the composition of the urn changes. The probability of the second draw depends on what happened first — these events are not independent.",
+      "When you draw a marble and keep it, the composition of the urn changes. The probability of the second draw depends on what happened first; these events are not independent.",
     insight:
-      "Starting with 5 red and 3 blue: P(Red 1st) = 5/8. After drawing red, only 4 red and 3 blue remain — P(Red 2nd | Red 1st) = 4/7 ≈ 0.571. But P(Red 2nd | Blue 1st) = 5/7 ≈ 0.714. The first draw changes the second.",
+      "Starting with 5 red and 3 blue: P(Red 1st) = 5/8. After drawing red, only 4 red and 3 blue remain: P(Red 2nd | Red 1st) = 4/7 ≈ 0.571. But P(Red 2nd | Blue 1st) = 5/7 ≈ 0.714. The first draw changes the second.",
     keyTakeaway:
       "Sampling without replacement creates dependence. Conditional probabilities track how the sample space shrinks after each event.",
   },
@@ -70,7 +70,7 @@ export default function ExplanationPanel({ scenario, selectedNodeId }: Explanati
 
         {/* Numerical walkthrough */}
         <div className="p-3 rounded-xl bg-[#1e293b]/60 border border-[#1e293b]">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-[#d4af37] mb-1.5">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-[var(--color-accent)] mb-1.5">
             Step-by-Step
           </p>
           <p className="text-[12px] text-[#94a3b8] leading-relaxed">{exp.insight}</p>

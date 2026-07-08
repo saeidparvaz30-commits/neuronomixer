@@ -114,7 +114,7 @@ export default function TreeBuilder({ tree, selectedNodeId, onNodeClick }: TreeB
                 y1={from.y}
                 x2={to.x}
                 y2={to.y}
-                stroke={isOnPath ? "#d4af37" : "#334155"}
+                stroke={isOnPath ? "var(--color-accent)" : "#334155"}
                 strokeWidth={isOnPath ? 2.5 : 1.5}
                 strokeLinecap="round"
               />
@@ -126,7 +126,7 @@ export default function TreeBuilder({ tree, selectedNodeId, onNodeClick }: TreeB
                 dominantBaseline="middle"
                 fontSize={9}
                 fontWeight="600"
-                fill={isOnPath ? "#d4af37" : "#94a3b8"}
+                fill={isOnPath ? "var(--color-accent)" : "#94a3b8"}
                 style={{ userSelect: "none" }}
               >
                 {branch.fractionLabel ?? branch.probability}
@@ -165,7 +165,7 @@ export default function TreeBuilder({ tree, selectedNodeId, onNodeClick }: TreeB
           key={highlighted.calculation}
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mt-2 px-3 py-2 rounded-xl bg-[#1e293b] border border-[#d4af37]/20 text-[11px] text-[#d4af37] font-mono leading-relaxed"
+          className="mt-2 px-3 py-2 rounded-xl bg-[#1e293b] border border-[var(--color-accent)]/20 text-[11px] text-[var(--color-accent)] font-mono leading-relaxed"
         >
           {highlighted.calculation}
         </motion.div>

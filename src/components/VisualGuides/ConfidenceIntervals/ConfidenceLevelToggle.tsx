@@ -26,9 +26,9 @@ export default function ConfidenceLevelToggle({ current, onChange }: Props) {
               aria-pressed={active}
               className="px-4 py-2 rounded-xl text-[12px] font-semibold border transition-all"
               style={{
-                borderColor: active ? "#d4af37" : "#1e293b",
+                borderColor: active ? "var(--color-accent)" : "#1e293b",
                 color: active ? "#0a0e1a" : "#475569",
-                background: active ? "#d4af37" : "transparent",
+                background: active ? "var(--color-accent)" : "transparent",
               }}
             >
               {level}% CI

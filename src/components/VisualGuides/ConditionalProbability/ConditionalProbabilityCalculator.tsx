@@ -39,11 +39,11 @@ export default function ConditionalProbabilityCalculator({
               </div>
               <div className="mt-2 space-y-0.5">
                 <div className="flex items-start gap-3">
-                  <span className="text-[#d4af37] min-w-[80px]">numerator:</span>
+                  <span className="text-[var(--color-accent)] min-w-[80px]">numerator:</span>
                   <span className="text-white">{keyResult.numerator}</span>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-[#d4af37] min-w-[80px]">denominator:</span>
+                  <span className="text-[var(--color-accent)] min-w-[80px]">denominator:</span>
                   <span className="text-white">{keyResult.denominator}</span>
                 </div>
                 <div className="flex items-start gap-3 pt-1 border-t border-[#1e293b]">

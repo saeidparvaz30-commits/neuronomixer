@@ -60,7 +60,7 @@ export default function DataBuilder({ groups, onGroupsChange }: DataBuilderProps
         <select
           value={selectedPreset}
           onChange={e => handlePresetChange(e.target.value as PresetKey)}
-          className="w-full bg-[#1e293b] border border-[#334155] text-white text-[13px] rounded-xl px-3 py-2 focus:outline-none focus:border-[#d4af37] transition-colors"
+          className="w-full bg-[#1e293b] border border-[#334155] text-white text-[13px] rounded-xl px-3 py-2 focus:outline-none focus:border-[var(--color-accent)] transition-colors"
         >
           {(Object.entries(PRESETS) as [PresetKey, typeof PRESETS[PresetKey]][]).map(([key, { label }]) => (
             <option key={key} value={key}>

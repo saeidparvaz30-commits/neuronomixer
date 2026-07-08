@@ -179,9 +179,9 @@ export default function DataGroups({
         <line
           x1={groupBCenter - 22} y1={meanBY}
           x2={groupBCenter + 22} y2={meanBY}
-          stroke="#d4af37" strokeWidth="2.5"
+          stroke="var(--color-accent)" strokeWidth="2.5"
         />
-        <text x={groupBCenter + 26} y={meanBY + 4} fill="#d4af37" fontSize="8" fontWeight="600">
+        <text x={groupBCenter + 26} y={meanBY + 4} fill="var(--color-accent)" fontSize="8" fontWeight="600">
           x̄={meanB.toFixed(2)}
         </text>
 
@@ -229,14 +229,14 @@ export default function DataGroups({
       <div className="flex items-center gap-5 mt-2">
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-[#3bb4a4]" />
-          <span className="text-[10px] text-[#94a3b8]">Group A — mean=0</span>
+          <span className="text-[10px] text-[#94a3b8]">Group A: mean=0</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-[#1e5d8a]" />
-          <span className="text-[10px] text-[#94a3b8]">Group B — mean={effectSize.toFixed(1)}</span>
+          <span className="text-[10px] text-[#94a3b8]">Group B: mean={effectSize.toFixed(1)}</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-8 h-0.5 bg-[#d4af37]" />
+          <div className="w-8 h-0.5 bg-[var(--color-accent)]" />
           <span className="text-[10px] text-[#94a3b8]">Group mean</span>
         </div>
       </div>

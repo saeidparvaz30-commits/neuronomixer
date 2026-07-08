@@ -75,15 +75,17 @@ function ScenarioSelector({
 }) {
   const keys = Object.keys(SCENARIO_LABELS) as ScenarioKey[];
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Scenario">
       {keys.map(k => (
         <button
           key={k}
+          role="radio"
+          aria-checked={active === k}
           onClick={() => onSelect(k)}
           className={`px-3 py-1.5 rounded-xl text-[12px] font-semibold transition-colors ${
             active === k
-              ? "bg-[#d4af37] text-[#0a0e1a]"
-              : "border border-[#1e293b] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37]"
+              ? "bg-[var(--color-accent)] text-[#0a0e1a]"
+              : "border border-[#1e293b] text-[#94a3b8] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
           }`}
         >
           {SCENARIO_LABELS[k]}
@@ -148,7 +150,7 @@ function TableBuilder({
                     min="0"
                     value={val}
                     onChange={e => setCell(i, j, parseInt(e.target.value) || 0)}
-                    className={`w-16 text-center bg-[#1e293b] text-white rounded-lg border px-2 py-1 text-[12px] focus:outline-none focus:border-[#d4af37] transition-colors ${
+                    className={`w-16 text-center bg-[#1e293b] text-white rounded-lg border px-2 py-1 text-[12px] focus:outline-none focus:border-[var(--color-accent)] transition-colors ${
                       val < 0
                         ? "border-red-500"
                         : "border-[#334155] hover:border-[#475569]"
@@ -168,7 +170,7 @@ function TableBuilder({
                 {total}
               </td>
             ))}
-            <td className="p-2 text-center text-[#d4af37] font-bold">
+            <td className="p-2 text-center text-[var(--color-accent)] font-bold">
               {gt}
             </td>
           </tr>
@@ -176,7 +178,7 @@ function TableBuilder({
       </table>
       <button
         onClick={onReset}
-        className="mt-3 px-3 py-1.5 rounded-xl text-[11px] font-semibold border border-[#1e293b] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+        className="mt-3 px-3 py-1.5 rounded-xl text-[11px] font-semibold border border-[#1e293b] text-[#94a3b8] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
       >
         Reset to Scenario
       </button>
@@ -331,7 +333,7 @@ function DecompositionPanel({
 
   function cellColor(contrib: number): string {
     if (contrib < 1) return "#3bb4a4";
-    if (contrib < 5) return "#f59e0b";
+    if (contrib < 5) return "var(--color-warning)";
     return "#ef4444";
   }
 
@@ -386,7 +388,7 @@ function DecompositionPanel({
               <td colSpan={4} className="p-2 text-right text-[#94a3b8] font-semibold">
                 χ² =
               </td>
-              <td className="p-2 text-center text-[#d4af37] font-bold font-mono text-[13px]">
+              <td className="p-2 text-center text-[var(--color-accent)] font-bold font-mono text-[13px]">
                 {fmt(chiSq, 4)}
               </td>
             </tr>
@@ -452,7 +454,7 @@ function DecompositionPanel({
       <div className="flex gap-4 mt-3 flex-wrap">
         {[
           { color: "#3bb4a4", label: "< 1 (low)" },
-          { color: "#f59e0b", label: "1–5 (moderate)" },
+          { color: "var(--color-warning)", label: "1–5 (moderate)" },
           { color: "#ef4444", label: "> 5 (high)" },
         ].map(item => (
           <div key={item.label} className="flex items-center gap-1.5">
@@ -491,7 +493,7 @@ function TestResultCard({
           <p className="text-[10px] text-[#475569] uppercase tracking-wide mb-1">
             Chi-Square Statistic
           </p>
-          <p className="text-4xl font-black text-[#d4af37] font-mono">
+          <p className="text-4xl font-black text-[var(--color-accent)] font-mono">
             {fmt(chiSq, 3)}
           </p>
         </div>
@@ -510,7 +512,7 @@ function TestResultCard({
           <p className="text-[10px] text-[#475569] uppercase tracking-wide mb-1">
             p-value
           </p>
-          <p className="text-2xl font-bold font-mono" style={{ color: reject ? "#4ade80" : "#94a3b8" }}>
+          <p className="text-2xl font-bold font-mono" style={{ color: reject ? "var(--color-success)" : "#94a3b8" }}>
             {fmtP(pValue)}
           </p>
         </div>
@@ -520,7 +522,7 @@ function TestResultCard({
       <div
         className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-semibold border ${
           reject
-            ? "bg-[#4ade80]/10 text-[#4ade80] border-[#4ade80]/30"
+            ? "bg-[var(--color-success)]/10 text-[var(--color-success)] border-[var(--color-success)]/30"
             : "bg-[#1e293b] text-[#94a3b8] border-[#334155]"
         }`}
       >
@@ -536,7 +538,7 @@ function TestResultCard({
             <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
-            Fail to reject H₀ — insufficient evidence of dependence (p ≥ 0.05)
+            Fail to reject H₀: insufficient evidence of dependence (p ≥ 0.05)
           </>
         )}
       </div>
@@ -571,7 +573,7 @@ function AssociationPanel({
   const effectColors = {
     weak: "text-[#94a3b8]",
     moderate: "text-amber-400",
-    strong: "text-[#4ade80]",
+    strong: "text-[var(--color-success)]",
   };
 
   return (
@@ -602,7 +604,7 @@ function AssociationPanel({
             {fmt(measures.phi, 3)}
           </p>
           <p className="text-[10px] text-[#475569] mt-2">
-            √(χ² / n) — equivalent to Pearson&apos;s r for 2×2 tables
+            √(χ² / n), equivalent to Pearson&apos;s r for 2×2 tables
           </p>
         </div>
       )}
@@ -659,8 +661,8 @@ function AssociationPanel({
         <div className="flex gap-4 flex-wrap">
           {[
             { range: "0 – 0.10", label: "Weak", color: "#475569" },
-            { range: "0.10 – 0.30", label: "Moderate", color: "#f59e0b" },
-            { range: "0.30+", label: "Strong", color: "#4ade80" },
+            { range: "0.10 – 0.30", label: "Moderate", color: "var(--color-warning)" },
+            { range: "0.30+", label: "Strong", color: "var(--color-success)" },
           ].map(item => (
             <div key={item.label} className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-full" style={{ background: item.color }} />
@@ -687,8 +689,8 @@ function CompletionCard({ onReset }: { onReset: () => void }) {
     >
       <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
         <div className="flex items-center gap-2 mb-1">
-          <span className="w-5 h-px bg-[#d4af37]" />
-          <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[#d4af37]">
+          <span className="w-5 h-px bg-[var(--color-accent)]" />
+          <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
             Guide Complete
           </span>
         </div>
@@ -718,13 +720,13 @@ function CompletionCard({ onReset }: { onReset: () => void }) {
           ))}
         </ul>
 
-        <div className="rounded-xl border-l-4 border-[#d4af37] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4">
-          <p className="text-[12px] font-semibold text-[#d4af37] mb-1.5 uppercase tracking-wide">
+        <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[var(--color-accent)]/5 border border-[var(--color-accent)]/20 p-4">
+          <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
             Key Takeaway
           </p>
           <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
             &quot;The chi-square test tells you whether an association exists, but Cramér&apos;s V tells
-            you how strong it is — statistical significance and practical significance are not the same thing.&quot;
+            you how strong it is: statistical significance and practical significance are not the same thing.&quot;
           </p>
         </div>
       </div>
@@ -732,20 +734,20 @@ function CompletionCard({ onReset }: { onReset: () => void }) {
       <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
         <Link
           href="/visual-guides"
-          className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+          className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
         >
           ← All Guides
         </Link>
         <div className="flex items-center gap-3">
           <button
             onClick={onReset}
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             Try Again
           </button>
           <Link
             href="/visual-guides/regression-to-mean"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Regression to the Mean →
           </Link>
@@ -873,7 +875,7 @@ export default function ChiSquareGuideClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "chi-square-independence", score: 7 }),
+        body: JSON.stringify({ guideSlug: "chi-square-independence", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -909,18 +911,18 @@ export default function ChiSquareGuideClient() {
           className="mb-8"
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               STATISTICS
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
             <span className="text-[11px] text-[#475569] uppercase tracking-[1.5px]">
               UNIT 9: ASSOCIATION &amp; DEPENDENCE
             </span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Chi-Square{" "}
-            <span className="text-[#d4af37]">Test of Independence</span>
+            <span className="text-[var(--color-accent)]">Test of Independence</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
             Discover whether two categorical variables are associated. Build contingency
@@ -977,7 +979,7 @@ export default function ChiSquareGuideClient() {
           className="mb-5"
         >
           <Card>
-            <SectionHeading>Step 1 — Select a Scenario &amp; Edit the Table</SectionHeading>
+            <SectionHeading>Step 1: Select a Scenario &amp; Edit the Table</SectionHeading>
 
             <ScenarioSelector active={activeScenario} onSelect={loadScenario} />
 
@@ -1006,7 +1008,7 @@ export default function ChiSquareGuideClient() {
           className="mb-5"
         >
           <Card>
-            <SectionHeading>Step 2 — Expected Frequencies</SectionHeading>
+            <SectionHeading>Step 2: Expected Frequencies</SectionHeading>
             {lowExpectedWarning && (
               <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[11px] font-semibold">
                 <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -1029,7 +1031,7 @@ export default function ChiSquareGuideClient() {
           className="mb-5"
         >
           <Card>
-            <SectionHeading>Step 3 — Chi-Square Decomposition</SectionHeading>
+            <SectionHeading>Step 3: Chi-Square Decomposition</SectionHeading>
             <DecompositionPanel
               table={table}
               expected={expected}
@@ -1048,7 +1050,7 @@ export default function ChiSquareGuideClient() {
           className="mb-5"
         >
           <Card>
-            <SectionHeading>Step 4 — Test Result</SectionHeading>
+            <SectionHeading>Step 4: Test Result</SectionHeading>
             <TestResultCard
               chiSq={chiSq}
               df={df}
@@ -1068,7 +1070,7 @@ export default function ChiSquareGuideClient() {
           className="mb-5"
         >
           <Card>
-            <SectionHeading>Step 5 — Association Measures</SectionHeading>
+            <SectionHeading>Step 5: Association Measures</SectionHeading>
             <p className="text-[12px] text-[#475569] mb-4">
               Effect size quantifies practical significance beyond the p-value.
               {rows === 2 && cols === 2
@@ -1094,19 +1096,19 @@ export default function ChiSquareGuideClient() {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/correlation-covariance"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             ← Correlation &amp; Covariance
           </Link>
           <Link
             href="/visual-guides/regression-to-mean"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Regression to the Mean →
           </Link>
         </div>
 
-        <GuideCompletion isComplete={allComplete} guideSlug="chi-square-independence" score={7} />
+        <GuideCompletion isComplete={allComplete} guideSlug="chi-square-independence" score={100} />
       </div>
     </div>
   );

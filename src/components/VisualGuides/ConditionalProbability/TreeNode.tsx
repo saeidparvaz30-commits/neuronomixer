@@ -30,10 +30,10 @@ export default function TreeNode({
   const opacity = isSelected ? 1 : isOnPath ? 0.9 : 1;
   const strokeWidth = isSelected ? 3 : isOnPath ? 2.5 : 1.5;
   const strokeColor = isSelected
-    ? "#d4af37"
+    ? "var(--color-accent)"
     : isOnPath
     ? node.color
-    : `${node.color}60`;
+    : `color-mix(in srgb, ${node.color} 38%, transparent)`;
 
   return (
     <motion.g

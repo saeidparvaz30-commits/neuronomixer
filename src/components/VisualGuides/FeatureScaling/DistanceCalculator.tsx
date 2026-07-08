@@ -38,8 +38,8 @@ function DistanceCalculatorInner({ selectedPair }: Props) {
       {/* Selected points */}
       <div className="flex gap-3 mb-4 flex-wrap">
         {[{ label: "A", pt: ptA }, { label: "B", pt: ptB }].map(({ label, pt }) => (
-          <div key={label} className="flex items-center gap-2 rounded-lg bg-[#1e293b]/40 border border-[#d4af37]/30 px-3 py-1.5">
-            <div className="w-5 h-5 rounded-full bg-[#d4af37] text-[#0a0e1a] text-[10px] font-bold flex items-center justify-center flex-shrink-0">{label}</div>
+          <div key={label} className="flex items-center gap-2 rounded-lg bg-[#1e293b]/40 border border-[var(--color-accent)]/30 px-3 py-1.5">
+            <div className="w-5 h-5 rounded-full bg-[var(--color-accent)] text-[#0a0e1a] text-[10px] font-bold flex items-center justify-center flex-shrink-0">{label}</div>
             <div className="text-[11px]">
               <span className="text-[#94a3b8]">Age </span><span className="text-white font-semibold">{pt.age}</span>
               <span className="text-[#475569] mx-1">·</span>
@@ -89,7 +89,7 @@ function DistanceCalculatorInner({ selectedPair }: Props) {
       {/* Insight */}
       <div className="mt-4 rounded-xl border border-[#1e293b] bg-[#1e293b]/20 p-3 text-[11px] text-[#94a3b8] leading-relaxed">
         <strong className="text-white block mb-1">Why this matters</strong>
-        KNN uses distance to find nearest neighbors. With raw data, salary differences (in $1,000s) dwarf age differences — the algorithm treats salary as orders of magnitude more important.
+        KNN uses distance to find nearest neighbors. With raw data, salary differences (in $1,000s) dwarf age differences; the algorithm treats salary as orders of magnitude more important.
         After scaling, both features contribute <em className="text-white">equally</em> to the distance calculation.
       </div>
     </div>

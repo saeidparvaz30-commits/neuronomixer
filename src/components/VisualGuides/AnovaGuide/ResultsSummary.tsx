@@ -21,8 +21,8 @@ function etaLabel(eta: number): string {
 }
 
 function etaColor(eta: number): string {
-  if (eta >= 0.14) return "#4ade80";
-  if (eta >= 0.06) return "#d4af37";
+  if (eta >= 0.14) return "var(--color-success)";
+  if (eta >= 0.06) return "var(--color-accent)";
   return "#94a3b8";
 }
 
@@ -46,7 +46,7 @@ export default function ResultsSummary({ statistics, isComplete }: ResultsSummar
   return (
     <div
       className="rounded-2xl border bg-[#0f172a] p-5"
-      style={{ borderColor: significant ? "#16a34a" : "#1e293b" }}
+      style={{ borderColor: significant ? "var(--color-success)" : "#1e293b" }}
     >
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-[13px] font-semibold text-white uppercase tracking-wider">
@@ -69,12 +69,12 @@ export default function ResultsSummary({ statistics, isComplete }: ResultsSummar
       {/* Key finding */}
       <div
         className="rounded-xl p-4 mb-4"
-        style={{ background: significant ? "#14532d" : "#1e293b", border: significant ? "1px solid #16a34a" : "1px solid transparent" }}
+        style={{ background: significant ? "#14532d" : "#1e293b", border: significant ? "1px solid var(--color-success)" : "1px solid transparent" }}
       >
         <p
           className="text-[14px] font-semibold leading-snug"
           aria-live="polite"
-          style={{ color: significant ? "#4ade80" : "#f87171" }}
+          style={{ color: significant ? "var(--color-success)" : "#ef4444" }}
         >
           The four teaching methods{" "}
           <strong>{significant ? "do differ significantly" : "do not differ significantly"}</strong>{" "}
@@ -123,11 +123,11 @@ export default function ResultsSummary({ statistics, isComplete }: ResultsSummar
       <div className="flex items-center justify-between pt-4 border-t border-[#1e293b]">
         <p className="text-[11px] text-[#475569]">
           {isComplete
-            ? "All criteria met — guide marked complete."
+            ? "All criteria met. Guide marked complete."
             : "Complete all 5 progress steps to finish this guide."}
         </p>
         {isComplete && (
-          <span className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-[#1e293b] text-[#3bb4a4] border border-[#16a34a]">
+          <span className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-[#1e293b] text-[#3bb4a4] border border-[var(--color-success)]">
             Completed
           </span>
         )}

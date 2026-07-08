@@ -43,8 +43,8 @@ export default function StatsPanel({
             whileTap={{ scale: 0.97 }}
             className="rounded-xl border p-2.5 text-left transition-colors"
             style={{
-              borderColor: (m.active && ["mean","median","std"].includes(m.key)) ? m.color + "60" : "#1e293b",
-              background: (m.active && ["mean","median","std"].includes(m.key)) ? m.color + "0d" : "transparent",
+              borderColor: (m.active && ["mean","median","std"].includes(m.key)) ? `color-mix(in srgb, ${m.color} 38%, transparent)` : "#1e293b",
+              background: (m.active && ["mean","median","std"].includes(m.key)) ? `color-mix(in srgb, ${m.color} 5%, transparent)` : "transparent",
               cursor: ["mean","median","std"].includes(m.key) ? "pointer" : "default",
             }}
           >

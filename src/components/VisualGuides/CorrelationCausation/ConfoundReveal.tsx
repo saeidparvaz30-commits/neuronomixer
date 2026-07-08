@@ -35,8 +35,8 @@ export default function ConfoundReveal({ onReveal }: Props) {
         </div>
         <div className="text-right">
           <p className="text-[10px] text-[#475569] uppercase tracking-wide">Pearson r</p>
-          <p className="text-[24px] font-black text-[#d4af37]">{r.toFixed(2)}</p>
-          <p className="text-[10px] text-[#d4af37]">very strong positive</p>
+          <p className="text-[24px] font-black text-[var(--color-accent)]">{r.toFixed(2)}</p>
+          <p className="text-[10px] text-[var(--color-accent)]">very strong positive</p>
         </div>
       </div>
 
@@ -59,7 +59,7 @@ export default function ConfoundReveal({ onReveal }: Props) {
         <line
           x1={toX(0)}  y1={toY(reg.intercept)}
           x2={toX(50)} y2={toY(reg.intercept + reg.slope * 50)}
-          stroke="#d4af37" strokeWidth="2" strokeDasharray="6 3" opacity="0.85"
+          stroke="var(--color-accent)" strokeWidth="2" strokeDasharray="6 3" opacity="0.85"
         />
 
         {/* Animated data points */}
@@ -80,7 +80,7 @@ export default function ConfoundReveal({ onReveal }: Props) {
           <motion.div key="btn" initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <button
               onClick={handleReveal}
-              className="w-full py-3 rounded-xl bg-[#d4af37] text-[#0a0e1a] font-semibold text-[13px] hover:opacity-90 transition-opacity"
+              className="w-full py-3 rounded-xl bg-[var(--color-accent)] text-[#0a0e1a] font-semibold text-[13px] hover:opacity-90 transition-opacity"
             >
               Reveal the Hidden Variable →
             </button>
@@ -100,7 +100,7 @@ export default function ConfoundReveal({ onReveal }: Props) {
             <div className="rounded-xl border-l-4 border-[#3bb4a4] bg-[#3bb4a4]/5 p-3">
               <p className="text-[12px] font-semibold text-[#3bb4a4] mb-1">The Hidden Variable: Season / Temperature</p>
               <p className="text-[12px] text-[#94a3b8] leading-relaxed">
-                Both ice cream sales <em>and</em> shark attacks increase in summer — because warm weather brings
+                Both ice cream sales <em>and</em> shark attacks increase in summer, because warm weather brings
                 more people to the beach.{" "}
                 <strong className="text-white">Temperature (via season) causes both.</strong>{" "}
                 Ice cream doesn&apos;t cause sharks; they share a common cause.

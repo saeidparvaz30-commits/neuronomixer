@@ -201,7 +201,7 @@ function AccuracyChart({ trainAcc, validAcc, currentK }: { trainAcc: number[]; v
 
       {/* Current K indicator */}
       <line x1={tx(currentK)} y1={PAD.t} x2={tx(currentK)} y2={PAD.t + IH}
-        stroke="#d4af37" strokeWidth="1.5" strokeDasharray="3,2" />
+        stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="3,2" />
 
       {yTicks.map(v => (
         <text key={v} x={PAD.l - 3} y={ty(v) + 3} textAnchor="end" fill="#475569" fontSize="7">{v}</text>
@@ -243,7 +243,7 @@ export default function KNNClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "knn", score: 6 }),
+        body: JSON.stringify({ guideSlug: "knn", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -284,7 +284,7 @@ export default function KNNClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="knn" score={6} />
+      <GuideCompletion isComplete={allComplete} guideSlug="knn" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
         <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
           <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
@@ -364,11 +364,11 @@ export default function KNNClient() {
               <div className="mt-4">
                 <div className="flex justify-between mb-1">
                   <span className="text-[11px] text-white">K (number of neighbors)</span>
-                  <span className="text-[11px] font-mono text-[#d4af37]">K = {k}</span>
+                  <span className="text-[11px] font-mono text-[var(--color-accent)]">K = {k}</span>
                 </div>
-                <input type="range" min={1} max={20} step={1} value={k}
+                <input type="range" min={1} max={20} step={1} value={k} aria-label="K (number of neighbors)"
                   onChange={e => handleKChange(Number(e.target.value))}
-                  className="w-full" style={{ accentColor: "#d4af37" }} />
+                  className="w-full" style={{ accentColor: "var(--color-accent)" }} />
                 <p className={`text-[10px] mt-1 ${k <= 2 || k >= 15 ? "text-[#ef4444]/80" : "text-[#3bb4a4]"}`}>
                   {kLabel}
                 </p>
@@ -382,7 +382,7 @@ export default function KNNClient() {
               <div className="flex items-center gap-4 mt-2 text-[10px]">
                 <span className="flex items-center gap-1"><span className="inline-block w-4 h-0.5 bg-[#3b82f6]" /> Training</span>
                 <span className="flex items-center gap-1"><span className="inline-block w-4 h-0.5 bg-[#f97316]" /> Validation</span>
-                <span className="text-[#d4af37]">│ current K</span>
+                <span className="text-[var(--color-accent)]">│ current K</span>
               </div>
               <p className="text-[10px] text-[#475569] mt-2 leading-relaxed">
                 Both curves are computed from the actual points: training accuracy scores the visible
@@ -447,9 +447,9 @@ export default function KNNClient() {
             {/* Key concepts */}
             <div className="space-y-3">
               {[
-                { k: 1, label: "K=1", desc: "Overfitting — each point is its own boundary. Noise has too much influence.", color: "#ef4444" },
-                { k: 5, label: "K=5", desc: "Balanced — typically good generalization for most datasets.", color: "#3bb4a4" },
-                { k: 20, label: "K=20", desc: "Underfitting — boundaries too smooth, may miss real patterns.", color: "#d4af37" },
+                { k: 1, label: "K=1", desc: "Overfitting: each point is its own boundary. Noise has too much influence.", color: "#ef4444" },
+                { k: 5, label: "K=5", desc: "Balanced: typically good generalization for most datasets.", color: "#3bb4a4" },
+                { k: 20, label: "K=20", desc: "Underfitting: boundaries too smooth, may miss real patterns.", color: "var(--color-accent)" },
               ].map(({ k: pk, label, desc, color }) => (
                 <button key={label} onClick={() => handleKChange(pk)}
                   className="w-full text-left rounded-xl border border-[#1e293b] p-3 hover:border-[#334155] transition-colors">
@@ -463,7 +463,7 @@ export default function KNNClient() {
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link href="/visual-guides/k-means"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
             ← Previous Guide
           </Link>
           <Link href="/visual-guides/svm"

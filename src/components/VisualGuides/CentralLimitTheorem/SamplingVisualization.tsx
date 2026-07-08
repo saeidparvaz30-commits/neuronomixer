@@ -41,7 +41,7 @@ export default function SamplingVisualization({
         </h2>
         <span className="text-[11px] font-mono text-[#475569]">
           Samples drawn:{" "}
-          <span className="text-[#d4af37] font-bold">{sampleMeans.length}</span>
+          <span className="text-[var(--color-accent)] font-bold">{sampleMeans.length}</span>
         </span>
       </div>
       <p className="text-[11px] text-[#475569] mb-3">
@@ -80,7 +80,7 @@ export default function SamplingVisualization({
           binCount={binCount}
           width={380}
           height={200}
-          barColor="#d4af37"
+          barColor="var(--color-accent)"
           showNormalOverlay={showOverlay}
           overlayMean={overlayMean}
           overlaySd={theoreticalSE}
@@ -111,7 +111,7 @@ export default function SamplingVisualization({
             <span className="text-[9px] text-[#475569]">Theoretical normal (CLT prediction)</span>
           </div>
           <div className="flex items-center gap-1 ml-3">
-            <div className="w-3 h-3 rounded-sm bg-[#d4af37] opacity-70" />
+            <div className="w-3 h-3 rounded-sm bg-[var(--color-accent)] opacity-70" />
             <span className="text-[9px] text-[#475569]">Empirical sample means</span>
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function SamplingVisualization({
           {" | "}SD ={" "}
           <span className="text-[#94a3b8]">{stdDev(sampleMeans).toFixed(2)}</span>
           {" | "}Predicted SE ={" "}
-          <span className="text-[#d4af37]">{theoreticalSE.toFixed(2)}</span>
+          <span className="text-[var(--color-accent)]">{theoreticalSE.toFixed(2)}</span>
         </div>
       )}
     </div>

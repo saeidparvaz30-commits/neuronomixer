@@ -89,9 +89,9 @@ export default function InteractiveBlocks({
       </div>
 
       {/* Your Risk highlight */}
-      <div className="rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5 px-4 py-3 text-center">
+      <div className="rounded-xl border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 px-4 py-3 text-center">
         <p className="text-[10px] uppercase tracking-[1.5px] text-[#94a3b8] mb-1">Posterior Probability</p>
-        <p className="text-[36px] font-black text-[#d4af37] leading-none">
+        <p className="text-[36px] font-black text-[var(--color-accent)] leading-none">
           {(posterior * 100).toFixed(1)}%
         </p>
       </div>

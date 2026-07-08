@@ -13,13 +13,15 @@ interface Props {
 
 export default function MethodSelector({ method, onChange }: Props) {
   return (
-    <div className="flex gap-2 flex-wrap">
+    <div className="flex gap-2 flex-wrap" role="radiogroup" aria-label="Dimensionality reduction method">
       {METHODS.map(m => {
         const meta = METHOD_META[m];
         const active = m === method;
         return (
           <button
             key={m}
+            role="radio"
+            aria-checked={active}
             onClick={() => onChange(m)}
             className="relative px-4 py-2 rounded-xl text-[12px] font-semibold transition-colors border"
             style={{

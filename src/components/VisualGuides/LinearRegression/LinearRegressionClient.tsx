@@ -105,7 +105,7 @@ function RegressionScatter({
           <line key={p.id}
             x1={tx(p.x)} y1={ty(p.y)}
             x2={tx(p.x)} y2={ty(yhat)}
-            stroke="#d4af37" strokeWidth="1.5" opacity="0.6" strokeDasharray="2,1"
+            stroke="var(--color-accent)" strokeWidth="1.5" opacity="0.6" strokeDasharray="2,1"
           />
         );
       })}
@@ -127,7 +127,7 @@ function RegressionScatter({
           key={p.id}
           cx={tx(p.x)} cy={ty(p.y)}
           r="7"
-          fill="#d4af37" stroke="#0f172a" strokeWidth="1.5"
+          fill="var(--color-accent)" stroke="#0f172a" strokeWidth="1.5"
           animate={{ cx: tx(p.x), cy: ty(p.y) }}
           transition={{ duration: 0.15 }}
           onMouseDown={e => handleMouseDown(e, p.id)}
@@ -181,7 +181,7 @@ function LossCurve({ reg }: { reg: ReturnType<typeof computeRegression> }) {
       <path d={path} fill="none" stroke="#3bb4a4" strokeWidth="1.5" />
       {/* Current slope */}
       <motion.circle cx={tx(center)} cy={ty(baseMse)} r="5"
-        fill="#d4af37" stroke="#0f172a" strokeWidth="1"
+        fill="var(--color-accent)" stroke="#0f172a" strokeWidth="1"
         animate={{ cx: tx(center), cy: ty(baseMse) }}
         transition={{ duration: 0.3 }}
       />
@@ -190,7 +190,7 @@ function LossCurve({ reg }: { reg: ReturnType<typeof computeRegression> }) {
       <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="8">Slope</text>
       <text x={8} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="8"
         transform={`rotate(-90, 8, ${PAD.t + IH / 2})`}>MSE</text>
-      <text x={tx(center) + 8} y={ty(baseMse) - 4} fill="#d4af37" fontSize="7">optimal</text>
+      <text x={tx(center) + 8} y={ty(baseMse) - 4} fill="var(--color-accent)" fontSize="7">optimal</text>
     </svg>
   );
 }
@@ -215,7 +215,7 @@ export default function LinearRegressionClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "linear-regression", score: 8 }),
+        body: JSON.stringify({ guideSlug: "linear-regression", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -248,7 +248,7 @@ export default function LinearRegressionClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="linear-regression" score={8} />
+      <GuideCompletion isComplete={allComplete} guideSlug="linear-regression" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
@@ -308,9 +308,9 @@ export default function LinearRegressionClient() {
               <div className="space-y-3">
                 {[
                   { label: "Slope (β₁)", value: reg.slope.toFixed(3), color: "#3bb4a4" },
-                  { label: "Intercept (β₀)", value: reg.intercept.toFixed(3), color: "#d4af37" },
+                  { label: "Intercept (β₀)", value: reg.intercept.toFixed(3), color: "var(--color-accent)" },
                   { label: "R²", value: reg.r2.toFixed(4), color: "#a855f7", desc: reg.r2 >= 0.7 ? "Strong fit" : reg.r2 >= 0.3 ? "Moderate fit" : "Weak fit" },
-                  { label: "Pearson r", value: reg.pearsonR.toFixed(4), color: "#06b6d4" },
+                  { label: "Pearson r", value: reg.pearsonR.toFixed(4), color: "#3bb4a4" },
                   { label: "MSE", value: reg.mse.toFixed(3), color: "#ef4444" },
                   { label: "N points", value: String(points.length), color: "#475569" },
                 ].map(({ label, value, color, desc }) => (
@@ -343,13 +343,13 @@ export default function LinearRegressionClient() {
               <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">Display</p>
               <div className="space-y-2">
                 {[
-                  { label: "Show residuals", value: showResiduals, set: setShowResiduals, color: "#d4af37" },
+                  { label: "Show residuals", value: showResiduals, set: setShowResiduals, color: "var(--color-accent)" },
                   { label: "Show ~95% prediction band", value: showCI, set: setShowCI, color: "#3bb4a4" },
                 ].map(({ label, value, set, color }) => (
                   <button key={label}
                     onClick={() => set(!value)}
                     className="w-full flex items-center justify-between px-3 py-2 rounded-lg border transition-colors"
-                    style={{ borderColor: value ? color : "#1e293b", background: value ? color + "10" : "transparent" }}>
+                    style={{ borderColor: value ? color : "#1e293b", background: value ? `color-mix(in srgb, ${color} 6%, transparent)` : "transparent" }}>
                     <span className="text-[11px]" style={{ color: value ? color : "#94a3b8" }}>{label}</span>
                     <div className={`w-8 h-4 rounded-full transition-colors relative ${value ? "bg-[currentColor]" : "bg-[#1e293b]"}`}
                       style={{ color: value ? color : undefined }}>
@@ -393,7 +393,7 @@ export default function LinearRegressionClient() {
                   </span>
                   {showResiduals && (
                     <span className="flex items-center gap-1">
-                      <span className="inline-block w-4 border-t border-dashed border-[#d4af37]" /> residuals
+                      <span className="inline-block w-4 border-t border-dashed border-[var(--color-accent)]" /> residuals
                     </span>
                   )}
                 </div>
@@ -417,7 +417,7 @@ export default function LinearRegressionClient() {
                 <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">Loss Landscape (MSE)</p>
                 <LossCurve reg={reg} />
                 <p className="text-[10px] text-[#475569] mt-2 leading-relaxed">
-                  The gold dot is always at the minimum — ordinary least squares finds the exact optimal slope analytically.
+                  The gold dot is always at the minimum: ordinary least squares finds the exact optimal slope analytically.
                 </p>
               </div>
 
@@ -426,7 +426,7 @@ export default function LinearRegressionClient() {
                 <div className="relative h-6 rounded-full bg-[#1e293b] overflow-hidden mb-3">
                   <motion.div
                     className="h-full rounded-full"
-                    style={{ background: "linear-gradient(90deg, #ef4444, #d4af37, #3bb4a4)" }}
+                    style={{ background: "linear-gradient(90deg, #ef4444, var(--color-accent), #3bb4a4)" }}
                     animate={{ width: `${Math.max(0, reg.r2 * 100)}%` }}
                     transition={{ duration: 0.4 }}
                   />
@@ -438,9 +438,9 @@ export default function LinearRegressionClient() {
                 </div>
                 <div className="space-y-2 text-[10px]">
                   <div className="flex justify-between">
-                    <span className="text-[#ef4444]">0 — No fit</span>
-                    <span className="text-[#d4af37]">0.5 — Moderate</span>
-                    <span className="text-[#3bb4a4]">1 — Perfect</span>
+                    <span className="text-[#ef4444]">0: No fit</span>
+                    <span className="text-[var(--color-accent)]">0.5: Moderate</span>
+                    <span className="text-[#3bb4a4]">1: Perfect</span>
                   </div>
                 </div>
                 <div className="mt-3 pt-3 border-t border-[#1e293b]">
@@ -456,7 +456,7 @@ export default function LinearRegressionClient() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
                 { title: "Ordinary Least Squares", body: "Finds the line that minimizes the sum of squared residuals (vertical distances from points to line).", color: "#3bb4a4" },
-                { title: "Residuals", body: "The difference between actual y and predicted ŷ. Ideally: small, random, no pattern.", color: "#d4af37" },
+                { title: "Residuals", body: "The difference between actual y and predicted ŷ. Ideally: small, random, no pattern.", color: "var(--color-accent)" },
                 { title: "Assumptions", body: "Linearity, independence, homoscedasticity, normality of residuals. Violations hurt inference.", color: "#a855f7" },
               ].map(({ title, body, color }) => (
                 <div key={title} className="rounded-xl border border-[#1e293b] p-4">
@@ -471,7 +471,7 @@ export default function LinearRegressionClient() {
         {/* Nav */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link href="/visual-guides/what-is-ml"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
             ← Previous Guide
           </Link>
           <Link href="/visual-guides/decision-trees"

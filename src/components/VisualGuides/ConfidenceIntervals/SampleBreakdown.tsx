@@ -183,7 +183,7 @@ export default function SampleBreakdown({ interval, confidenceLevel }: Props) {
               <p className="text-[10px] text-[#94a3b8] mb-0.5">
                 {confidenceLevel}% Confidence Interval
               </p>
-              <p className="text-[14px] font-black font-mono text-[#d4af37]">
+              <p className="text-[14px] font-black font-mono text-[var(--color-accent)]">
                 [{interval.lower.toFixed(3)}, {interval.upper.toFixed(3)}]
               </p>
             </div>
@@ -216,7 +216,7 @@ export default function SampleBreakdown({ interval, confidenceLevel }: Props) {
                   className="text-[12px] font-black"
                   style={{ color: borderColor }}
                 >
-                  {interval.containsTruth ? "YES — interval captures truth" : "NO — interval misses truth"}
+                  {interval.containsTruth ? "YES: interval captures truth" : "NO: interval misses truth"}
                 </p>
               </div>
             </div>
@@ -258,14 +258,14 @@ export default function SampleBreakdown({ interval, confidenceLevel }: Props) {
               y1={4}
               x2={trueLine}
               y2={SVG_H - 4}
-              stroke="#d4af37"
+              stroke="var(--color-accent)"
               strokeWidth="1.5"
             />
             {/* Labels */}
             <text x={mcx} y={SVG_H - 4} textAnchor="middle" fill="#94a3b8" fontSize="7">
               x̄={interval.mean.toFixed(1)}
             </text>
-            <text x={trueLine + 2} y={10} fill="#d4af37" fontSize="7">
+            <text x={trueLine + 2} y={10} fill="var(--color-accent)" fontSize="7">
               μ=100
             </text>
             <text x={lx1} y={SVG_H / 2 - 7} textAnchor="middle" fill={borderColor} fontSize="7">

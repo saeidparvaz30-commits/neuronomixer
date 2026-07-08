@@ -40,15 +40,15 @@ function getDynamicInsight(state: TestingState): string {
   if (effectSize === 0) {
     if (observedTypeI !== null) {
       const diff = Math.abs(observedTypeI - alpha * 100);
-      if (diff < 2) return `Excellent! With no effect, your Type I rate (${observedTypeI.toFixed(1)}%) is tracking close to α (${(alpha * 100).toFixed(0)}%) — as expected by theory.`;
+      if (diff < 2) return `Excellent! With no effect, your Type I rate (${observedTypeI.toFixed(1)}%) is tracking close to α (${(alpha * 100).toFixed(0)}%), as expected by theory.`;
       return `With no effect, the Type I rate (${observedTypeI.toFixed(1)}%) should converge to α (${(alpha * 100).toFixed(0)}%) with more runs.`;
     }
   }
 
   if (effectSize > 0 && power !== null) {
-    if (power < 50) return `Power is low (${power.toFixed(1)}%). Consider increasing sample size from ${sampleSize} — try 200 or 300 — or use a larger effect size.`;
+    if (power < 50) return `Power is low (${power.toFixed(1)}%). Consider increasing sample size from ${sampleSize} (try 200 or 300), or use a larger effect size.`;
     if (power < 80) return `Power is moderate (${power.toFixed(1)}%). The standard benchmark is 80%. Increase n or effect size to reach it.`;
-    return `Good power (${power.toFixed(1)}%) — you're reliably detecting the effect. Total experiments: ${total.toLocaleString()}.`;
+    return `Good power (${power.toFixed(1)}%): you're reliably detecting the effect. Total experiments: ${total.toLocaleString()}.`;
   }
 
   return `Running strong with ${total.toLocaleString()} experiments. Try different parameter combinations to explore the full landscape.`;
@@ -83,7 +83,7 @@ export default function ResultsTracker({ state }: ResultsTrackerProps) {
         ].map(({ label, value }) => (
           <div key={label} className="flex items-center justify-between">
             <span className="text-[10px] text-[#475569]">{label}</span>
-            <span className="text-[10px] font-mono text-[#d4af37]">{value}</span>
+            <span className="text-[10px] font-mono text-[var(--color-accent)]">{value}</span>
           </div>
         ))}
       </div>
@@ -91,9 +91,9 @@ export default function ResultsTracker({ state }: ResultsTrackerProps) {
       {/* Observed rates */}
       <div className="grid grid-cols-3 gap-2 mb-4">
         {[
-          { label: "Obs. Type I", value: observedTypeI, color: "#f87171" },
-          { label: "Obs. Type II", value: observedTypeII, color: "#fb923c" },
-          { label: "Obs. Power", value: observedPower, color: "#4ade80" },
+          { label: "Obs. Type I", value: observedTypeI, color: "#ef4444" },
+          { label: "Obs. Type II", value: observedTypeII, color: "var(--color-warning)" },
+          { label: "Obs. Power", value: observedPower, color: "var(--color-success)" },
         ].map(({ label, value, color }) => (
           <div key={label} className="rounded-lg border border-[#1e293b] p-2.5 text-center">
             <p className="text-[8px] text-[#475569] mb-1">{label}</p>
@@ -119,7 +119,7 @@ export default function ResultsTracker({ state }: ResultsTrackerProps) {
         </p>
       )}
       {experimentsCompleted >= 100 && state.scenariosExplored.size < 3 && (
-        <p className="text-[9px] text-[#d4af37] mt-3 text-center">
+        <p className="text-[9px] text-[var(--color-accent)] mt-3 text-center">
           Explore {3 - state.scenariosExplored.size} more parameter combination(s) to complete
         </p>
       )}

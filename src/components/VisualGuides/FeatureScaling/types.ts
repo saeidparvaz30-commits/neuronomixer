@@ -63,9 +63,9 @@ export function euclidean(a: { x: number; y: number }, b: { x: number; y: number
 export const METHOD_META = {
   raw: {
     label:   "Raw",
-    color:   "#d4af37",
+    color:   "var(--color-accent)",
     formula: "x_raw = x  (no transformation)\ny_raw = y",
-    tagline: "No transformation applied — features remain on their original scales.",
+    tagline: "No transformation applied; features remain on their original scales.",
     xLabel:  "Age (years)",
     yLabel:  "Salary ($)",
     // axis bounds in data space

@@ -24,7 +24,7 @@ export default function PosteriorResult({
   const pct = (posterior * 100).toFixed(2);
 
   // Color coding
-  let posteriorColor = "#d4af37"; // yellow < 1%
+  let posteriorColor = "var(--color-accent)"; // yellow < 1%
   if (posterior > 0.05) posteriorColor = "#ef4444"; // red > 5%
   else if (posterior > 0.01) posteriorColor = "#f97316"; // orange 1-5%
 
@@ -32,7 +32,7 @@ export default function PosteriorResult({
   let interpretation: string;
   if (posterior > 0.5) {
     interpretation =
-      "This test is quite informative — a positive result suggests a real risk.";
+      "This test is quite informative: a positive result suggests a real risk.";
   } else if (posterior >= 0.1) {
     interpretation =
       "Important! Even though you tested positive, your actual risk is lower than the test accuracy suggests.";
@@ -52,7 +52,7 @@ export default function PosteriorResult({
   return (
     <div
       className="rounded-2xl border bg-[#0f172a] p-6 space-y-4"
-      style={{ borderColor: posteriorColor + "50" }}
+      style={{ borderColor: `color-mix(in srgb, ${posteriorColor} 31%, transparent)` }}
     >
       <div>
         <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-1">
@@ -85,14 +85,14 @@ export default function PosteriorResult({
       {/* Interpretation */}
       <div
         className="rounded-xl border p-3"
-        style={{ borderColor: posteriorColor + "30", background: posteriorColor + "08" }}
+        style={{ borderColor: `color-mix(in srgb, ${posteriorColor} 19%, transparent)`, background: `color-mix(in srgb, ${posteriorColor} 3%, transparent)` }}
       >
         <p className="text-[12px] text-[#f1f5f9] leading-relaxed">{interpretation}</p>
       </div>
 
       {/* Formula breakdown */}
       <div className="rounded-xl border border-[#1e293b] bg-[#0f172a]/50 p-3 space-y-1">
-        <p className="text-[10px] font-semibold text-[#d4af37] uppercase tracking-[1px] mb-2">
+        <p className="text-[10px] font-semibold text-[var(--color-accent)] uppercase tracking-[1px] mb-2">
           Bayes Formula
         </p>
         <p className="text-[10px] text-[#475569] font-mono leading-relaxed">

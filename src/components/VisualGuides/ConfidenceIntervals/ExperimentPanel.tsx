@@ -20,7 +20,7 @@ export default function ExperimentPanel({
         {/* Generate button */}
         <button
           onClick={onGenerate}
-          className="px-6 py-2.5 rounded-xl text-[13px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity flex-shrink-0"
+          className="px-6 py-2.5 rounded-xl text-[13px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity flex-shrink-0"
         >
           Generate 100 Samples
         </button>
@@ -47,7 +47,7 @@ export default function ExperimentPanel({
             <p className="text-[10px] text-[#475569] uppercase tracking-wide mb-0.5">
               Confidence Level
             </p>
-            <p className="text-[14px] font-black text-[#d4af37]">
+            <p className="text-[14px] font-black text-[var(--color-accent)]">
               {confidenceLevel}%
             </p>
           </div>

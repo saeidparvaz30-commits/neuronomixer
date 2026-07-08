@@ -35,7 +35,7 @@ function Slider({
     <div>
       <div className="flex items-center justify-between mb-1.5">
         <span className="text-[12px] text-white font-medium">{label}</span>
-        <span className="text-[12px] font-mono text-[#d4af37]">{display}</span>
+        <span className="text-[12px] font-mono text-[var(--color-accent)]">{display}</span>
       </div>
       <input
         type="range"
@@ -44,7 +44,7 @@ function Slider({
         step={step}
         value={value}
         onChange={e => onChange(Number(e.target.value))}
-        className="w-full accent-[#d4af37]"
+        className="w-full accent-[var(--color-accent)]"
         style={{ accentColor: color }}
         aria-label={label}
       />

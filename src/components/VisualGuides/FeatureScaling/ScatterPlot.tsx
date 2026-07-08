@@ -102,7 +102,7 @@ function ScatterPlotInner({ method, selectedPair, onSelectPoint }: Props) {
             <g key={i}>
               {/* Selection ring */}
               {isSel && (
-                <motion.circle cx={cx} cy={cy} r={14} fill="none" stroke="#d4af37"
+                <motion.circle cx={cx} cy={cy} r={14} fill="none" stroke="var(--color-accent)"
                   strokeWidth="2" opacity="0.7"
                   animate={{ r: [12, 14, 12] }}
                   transition={{ duration: 1.5, repeat: Infinity }}
@@ -112,8 +112,8 @@ function ScatterPlotInner({ method, selectedPair, onSelectPoint }: Props) {
               <motion.circle
                 cx={cx} cy={cy}
                 r={isHov || isSel ? 8 : 6}
-                fill={isSel ? "#d4af37" : "#3b82f6"}
-                stroke={isSel ? "#fff" : isHov ? "#d4af37" : "rgba(255,255,255,0.3)"}
+                fill={isSel ? "var(--color-accent)" : "#3b82f6"}
+                stroke={isSel ? "#fff" : isHov ? "var(--color-accent)" : "rgba(255,255,255,0.3)"}
                 strokeWidth={isSel ? "2" : "1"}
                 animate={{ cx, cy, r: isHov || isSel ? 8 : 6 }}
                 transition={{ duration: 0.45, ease: "easeInOut" }}
@@ -128,7 +128,7 @@ function ScatterPlotInner({ method, selectedPair, onSelectPoint }: Props) {
 
               {/* Selection label */}
               {isSel && (
-                <text cx={cx} cy={cy - 14} textAnchor="middle" fontSize="8" fill="#d4af37" fontFamily="Inter,sans-serif">
+                <text cx={cx} cy={cy - 14} textAnchor="middle" fontSize="8" fill="var(--color-accent)" fontFamily="Inter,sans-serif">
                   <tspan x={cx} dy={-14}>{selIdx === 0 ? "A" : "B"}</tspan>
                 </text>
               )}

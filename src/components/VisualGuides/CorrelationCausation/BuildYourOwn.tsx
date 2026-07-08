@@ -44,18 +44,18 @@ function CorrectDiagram() {
 function ChainDiagram() {
   return (
     <svg viewBox="0 0 320 90" width="100%" className="block">
-      <rect x="4" y="30" width="76" height="28" rx="5" fill="#1e293b" stroke="#d4af37" strokeWidth="1.5" />
-      <text x="42" y="48" textAnchor="middle" fontSize="8.5" fill="#d4af37" fontFamily="Inter,sans-serif">Temperature</text>
-      <line x1="82" y1="44" x2="110" y2="44" stroke="#d4af37" strokeWidth="1.5" />
-      <polygon points="117,44 108,39 108,49" fill="#d4af37" />
-      <rect x="119" y="30" width="82" height="28" rx="5" fill="#1e293b" stroke="#d4af37" strokeWidth="1.5" />
-      <text x="160" y="48" textAnchor="middle" fontSize="8.5" fill="#d4af37" fontFamily="Inter,sans-serif">Beach Visitors</text>
-      <line x1="203" y1="44" x2="231" y2="44" stroke="#d4af37" strokeWidth="1.5" />
-      <polygon points="238,44 229,39 229,49" fill="#d4af37" />
+      <rect x="4" y="30" width="76" height="28" rx="5" fill="#1e293b" stroke="var(--color-accent)" strokeWidth="1.5" />
+      <text x="42" y="48" textAnchor="middle" fontSize="8.5" fill="var(--color-accent)" fontFamily="Inter,sans-serif">Temperature</text>
+      <line x1="82" y1="44" x2="110" y2="44" stroke="var(--color-accent)" strokeWidth="1.5" />
+      <polygon points="117,44 108,39 108,49" fill="var(--color-accent)" />
+      <rect x="119" y="30" width="82" height="28" rx="5" fill="#1e293b" stroke="var(--color-accent)" strokeWidth="1.5" />
+      <text x="160" y="48" textAnchor="middle" fontSize="8.5" fill="var(--color-accent)" fontFamily="Inter,sans-serif">Beach Visitors</text>
+      <line x1="203" y1="44" x2="231" y2="44" stroke="var(--color-accent)" strokeWidth="1.5" />
+      <polygon points="238,44 229,39 229,49" fill="var(--color-accent)" />
       <rect x="240" y="30" width="76" height="28" rx="5" fill="#1e293b" stroke="#475569" strokeWidth="1" />
       <text x="278" y="44" textAnchor="middle" fontSize="8.5" fill="#f1f5f9" fontFamily="Inter,sans-serif">Shark</text>
       <text x="278" y="55" textAnchor="middle" fontSize="8.5" fill="#f1f5f9" fontFamily="Inter,sans-serif">Attacks</text>
-      <line x1="160" y1="58" x2="160" y2="72" stroke="#d4af37" strokeWidth="1" strokeDasharray="3 2" />
+      <line x1="160" y1="58" x2="160" y2="72" stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="3 2" />
       <text x="160" y="82" textAnchor="middle" fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">Ice Cream Sales also via Beach Visitors</text>
     </svg>
   );
@@ -79,21 +79,21 @@ const DIAGRAMS: {
     title: "Direct Causation",
     badge: "Incorrect",
     color: "#ef4444",
-    explanation: "Assuming ice cream causes shark attacks because they correlate. No mechanism exists — this is a spurious causal claim. Correlation alone can never establish causation.",
+    explanation: "Assuming ice cream causes shark attacks because they correlate. No mechanism exists; this is a spurious causal claim. Correlation alone can never establish causation.",
   },
   {
     id: "correct",
     title: "Common Cause",
     badge: "Correct ✓",
     color: "#3bb4a4",
-    explanation: "Temperature (season) causes both ice cream sales and shark attacks. They're correlated but neither causes the other. This is confounding — the third variable explains everything.",
+    explanation: "Temperature (season) causes both ice cream sales and shark attacks. They're correlated but neither causes the other. This is confounding: the third variable explains everything.",
   },
   {
     id: "chain",
     title: "Causal Chain",
     badge: "Also valid",
-    color: "#d4af37",
-    explanation: "Temperature drives beach visitors, which drives both shark attacks and ice cream sales. The effect is mediated — still causal, but indirect through an intermediate variable.",
+    color: "var(--color-accent)",
+    explanation: "Temperature drives beach visitors, which drives both shark attacks and ice cream sales. The effect is mediated: still causal, but indirect through an intermediate variable.",
   },
 ];
 
@@ -146,7 +146,7 @@ export default function BuildYourOwn({ onSelect }: Props) {
                         height: "200%",
                         top: "-50%",
                         left: "-50%",
-                        background: `conic-gradient(from 0deg, transparent 0%, ${d.color}88 7%, ${d.color} 12%, ${d.color}88 17%, transparent 24%)`,
+                        background: `conic-gradient(from 0deg, transparent 0%, color-mix(in srgb, ${d.color} 53%, transparent) 7%, ${d.color} 12%, color-mix(in srgb, ${d.color} 53%, transparent) 17%, transparent 24%)`,
                         transformOrigin: "50% 50%",
                         animation: "diagram-beam-spin 2.4s linear infinite",
                         animationDelay: `${-(i * 0.8)}s`,
@@ -167,7 +167,7 @@ export default function BuildYourOwn({ onSelect }: Props) {
                     <p className="text-[11px] font-semibold text-white">{d.title}</p>
                     <span
                       className="text-[9px] font-semibold px-2 py-0.5 rounded-full"
-                      style={{ color: d.color, background: d.color + "20", border: `1px solid ${d.color}44` }}
+                      style={{ color: d.color, background: `color-mix(in srgb, ${d.color} 13%, transparent)`, border: `1px solid color-mix(in srgb, ${d.color} 27%, transparent)` }}
                     >
                       {d.badge}
                     </span>
@@ -188,7 +188,7 @@ export default function BuildYourOwn({ onSelect }: Props) {
               key={sel.id}
               initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
               className="rounded-xl border-l-4 p-3"
-              style={{ borderColor: sel.color, background: sel.color + "0d" }}
+              style={{ borderColor: sel.color, background: `color-mix(in srgb, ${sel.color} 5%, transparent)` }}
             >
               <p className="text-[11px] font-semibold mb-1" style={{ color: sel.color }}>{sel.title}</p>
               <p className="text-[12px] text-[#94a3b8] leading-relaxed">{sel.explanation}</p>

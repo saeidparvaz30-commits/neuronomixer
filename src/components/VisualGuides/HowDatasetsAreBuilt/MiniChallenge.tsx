@@ -20,9 +20,9 @@ const C1_ROWS = [
 
 type C1Problem = { key: string; rowIdx: number; testCol?: string; anyCol?: boolean; hint: string };
 const C1_PROBLEMS: C1Problem[] = [
-  { key: "null", rowIdx: 1, testCol: "revenue", hint: "Null revenue — missing numeric values break aggregations and model training." },
-  { key: "date", rowIdx: 2, testCol: "date",    hint: "Date '12/01/2024' mixes formats — the rest use ISO YYYY-MM-DD standard." },
-  { key: "dup",  rowIdx: 4, anyCol: true,       hint: "Exact duplicate of Row 1 — same id, name, city, revenue, and date." },
+  { key: "null", rowIdx: 1, testCol: "revenue", hint: "Null revenue: missing numeric values break aggregations and model training." },
+  { key: "date", rowIdx: 2, testCol: "date",    hint: "Date '12/01/2024' mixes formats; the rest use ISO YYYY-MM-DD standard." },
+  { key: "dup",  rowIdx: 4, anyCol: true,       hint: "Exact duplicate of Row 1: same id, name, city, revenue, and date." },
 ];
 
 function matchProblem(rowIdx: number, col: string): C1Problem | null {
@@ -63,7 +63,7 @@ function Challenge1({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
       <p className="text-[13px] text-[#94a3b8] mb-2">
         Click on cells that contain data quality problems. Find all{" "}
         <strong className="text-white">3 issues</strong>.{" "}
-        <span className="text-[#d4af37]">{found.size}/3 found</span>
+        <span className="text-[var(--color-accent)]">{found.size}/3 found</span>
       </p>
 
       <div className="overflow-x-auto rounded-xl border border-[#1e293b]">
@@ -90,8 +90,8 @@ function Challenge1({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
                       key={col}
                       onClick={() => handleCell(ri, col)}
                       className={`px-3 py-2 text-[12px] cursor-pointer select-none transition-colors relative group ${
-                        isFound ? "bg-[#ef4444]/15 text-[#fca5a5]" :
-                        isWrong ? "bg-red-900/20 text-[#fca5a5]"   :
+                        isFound ? "bg-[#ef4444]/15 text-[#ef4444]" :
+                        isWrong ? "bg-red-900/20 text-[#ef4444]"   :
                         "text-[#f1f5f9] hover:bg-white/5"
                       }`}
                     >
@@ -100,7 +100,7 @@ function Challenge1({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
 
                       {/* Hover tooltip on found cells */}
                       {isFound && (
-                        <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 px-2.5 py-1.5 rounded-lg bg-[#1e293b] border border-[#ef4444]/30 text-[10px] text-[#fca5a5] leading-snug pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">
+                        <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 px-2.5 py-1.5 rounded-lg bg-[#1e293b] border border-[#ef4444]/30 text-[10px] text-[#ef4444] leading-snug pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">
                           {problem!.hint}
                           <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[#1e293b]" />
                         </div>
@@ -117,7 +117,7 @@ function Challenge1({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
       <AnimatePresence>
         {tooltip && (
           <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            className="mt-2 px-3 py-2 rounded-lg bg-[#ef4444]/10 border border-[#ef4444]/30 text-[12px] text-[#fca5a5]">
+            className="mt-2 px-3 py-2 rounded-lg bg-[#ef4444]/10 border border-[#ef4444]/30 text-[12px] text-[#ef4444]">
             {tooltip}
           </motion.div>
         )}
@@ -125,7 +125,7 @@ function Challenge1({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
 
       {isPassed && (
         <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
-          className="mt-2 px-3 py-2 rounded-lg bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 text-[12px] text-[#6ee7b7]">
+          className="mt-2 px-3 py-2 rounded-lg bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 text-[12px] text-[var(--color-success)]">
           All 3 problems found! Nulls, format inconsistencies, and duplicates appear in virtually every real-world dataset. Hover the red cells to review each issue.
         </motion.div>
       )}
@@ -272,8 +272,8 @@ function Challenge2({ isPassed, onPass, isVisible }: { isPassed: boolean; onPass
                   ref={(el) => { snippetEls.current[s.id] = el; }}
                   onClick={() => pickSnippet(s.id)}
                   className={`text-left px-3 py-2 rounded-lg border text-[11px] font-mono whitespace-pre transition-all ${
-                    isSelected ? "border-[#d4af37]   bg-[#d4af37]/10  text-[#d4af37]  cursor-pointer"           :
-                    isMatched  ? "border-[#3bb4a4]   bg-[#3bb4a4]/10  text-[#6ee7b7]  cursor-default opacity-80" :
+                    isSelected ? "border-[var(--color-accent)]   bg-[var(--color-accent)]/10  text-[var(--color-accent)]  cursor-pointer"           :
+                    isMatched  ? "border-[#3bb4a4]   bg-[#3bb4a4]/10  text-[var(--color-success)]  cursor-default opacity-80" :
                     "border-[#1e293b] bg-[#1e293b]/30 text-[#94a3b8] hover:border-[#334155] hover:text-white cursor-pointer"
                   }`}
                 >
@@ -304,7 +304,7 @@ function Challenge2({ isPassed, onPass, isVisible }: { isPassed: boolean; onPass
                   className={`px-3 py-3 rounded-lg border min-h-[48px] transition-all ${
                     isMatched ? "border-[#3bb4a4] bg-[#3bb4a4]/10 cursor-default"            :
                     isError   ? "border-[#ef4444] bg-[#ef4444]/10 cursor-pointer"            :
-                    selected  ? "border-[#334155] bg-[#1e293b]/30 cursor-pointer hover:border-[#d4af37]/50" :
+                    selected  ? "border-[#334155] bg-[#1e293b]/30 cursor-pointer hover:border-[var(--color-accent)]/50" :
                     "border-[#1e293b] bg-[#1e293b]/20 cursor-default"
                   }`}
                 >
@@ -314,7 +314,7 @@ function Challenge2({ isPassed, onPass, isVisible }: { isPassed: boolean; onPass
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     )}
-                    <span className={`text-[12px] font-semibold ${isMatched ? "text-[#6ee7b7]" : "text-white"}`}>{label}</span>
+                    <span className={`text-[12px] font-semibold ${isMatched ? "text-[var(--color-success)]" : "text-white"}`}>{label}</span>
                   </div>
                   {/* Show which snippet was matched (review mode) */}
                   {isMatched && matchedSnippet && (
@@ -331,7 +331,7 @@ function Challenge2({ isPassed, onPass, isVisible }: { isPassed: boolean; onPass
 
       {isPassed && (
         <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
-          className="mt-3 px-3 py-2 rounded-lg bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 text-[12px] text-[#6ee7b7]">
+          className="mt-3 px-3 py-2 rounded-lg bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 text-[12px] text-[var(--color-success)]">
           All sources matched! These are the raw inputs that land in your staging area during the collection phase.
         </motion.div>
       )}
@@ -347,9 +347,9 @@ const FIX_ITEMS_BASE = [
     id: "null",  label: "revenue",  rawVal: "N/A",
     options: ["Replace with median", "Remove row", "Leave as-is"],
     correctOpt: "Replace with median", cleanVal: "4750.00",
-    correctExp: "Imputation with the median preserves the row and avoids bias from extreme values — the whole record is saved.",
+    correctExp: "Imputation with the median preserves the row and avoids bias from extreme values; the whole record is saved.",
     wrongHints: {
-      "Remove row":  "Removing the row loses valid data in other columns — imputation preserves the full record.",
+      "Remove row":  "Removing the row loses valid data in other columns; imputation preserves the full record.",
       "Leave as-is": "Leaving N/A will break numeric operations and model training downstream.",
     } as Record<string, string>,
   },
@@ -357,9 +357,9 @@ const FIX_ITEMS_BASE = [
     id: "typo",  label: "city",     rawVal: "new yrok",
     options: ["Correct to New York", "Delete value", "Leave as-is"],
     correctOpt: "Correct to New York", cleanVal: "New York",
-    correctExp: "Fuzzy string matching (e.g. Levenshtein distance) catches these typos automatically — 'new yrok' is clearly 'New York'.",
+    correctExp: "Fuzzy string matching (e.g. Levenshtein distance) catches these typos automatically; 'new yrok' is clearly 'New York'.",
     wrongHints: {
-      "Delete value": "Deleting turns it null — the typo is fixable via fuzzy matching, so correct it instead.",
+      "Delete value": "Deleting turns it null; the typo is fixable via fuzzy matching, so correct it instead.",
       "Leave as-is":  "Typos cause inconsistent groupings; 'new yrok' and 'New York' appear as separate cities.",
     } as Record<string, string>,
   },
@@ -367,10 +367,10 @@ const FIX_ITEMS_BASE = [
     id: "fmt",   label: "revenue",  rawVal: "$1,200.00",
     options: ["Strip to 1200.00", "Convert to string", "Leave as-is"],
     correctOpt: "Strip to 1200.00", cleanVal: "1200.00",
-    correctExp: "Stripping the $ and commas converts the value to a proper float — arithmetic and aggregation work correctly.",
+    correctExp: "Stripping the $ and commas converts the value to a proper float; arithmetic and aggregation work correctly.",
     wrongHints: {
-      "Convert to string": "Keeping it as a string means arithmetic and aggregation fail — numeric type is required.",
-      "Leave as-is":       "The $ sign and commas break numeric aggregation — always standardize to a raw numeric type.",
+      "Convert to string": "Keeping it as a string means arithmetic and aggregation fail; numeric type is required.",
+      "Leave as-is":       "The $ sign and commas break numeric aggregation; always standardize to a raw numeric type.",
     } as Record<string, string>,
   },
 ];
@@ -416,8 +416,8 @@ function Challenge3({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
                 transition={{ duration: 0.3 }}
                 className={`px-2 py-0.5 rounded font-mono text-[12px] border ${
                   isFixed
-                    ? "bg-[#3bb4a4]/15 text-[#6ee7b7] border-[#3bb4a4]/30"
-                    : "bg-[#ef4444]/10 text-[#fca5a5] border-[#ef4444]/30"
+                    ? "bg-[#3bb4a4]/15 text-[var(--color-success)] border-[#3bb4a4]/30"
+                    : "bg-[#ef4444]/10 text-[#ef4444] border-[#ef4444]/30"
                 }`}
               >
                 {isFixed ? item.cleanVal : item.rawVal}
@@ -439,8 +439,8 @@ function Challenge3({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
                     disabled={isFixed}
                     className={`px-3 py-1.5 rounded-lg text-[12px] font-medium border transition-all ${
                       isFixed && isCorrectOpt
-                        ? "border-[#3bb4a4] bg-[#3bb4a4]/10 text-[#6ee7b7]"
-                        : "border-[#334155] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37] disabled:opacity-40 disabled:cursor-not-allowed"
+                        ? "border-[#3bb4a4] bg-[#3bb4a4]/10 text-[var(--color-success)]"
+                        : "border-[#334155] text-[#94a3b8] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] disabled:opacity-40 disabled:cursor-not-allowed"
                     }`}
                   >
                     {opt}
@@ -452,12 +452,12 @@ function Challenge3({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
             <AnimatePresence mode="wait">
               {isFixed ? (
                 <motion.p key="correct" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                  className="text-[11px] text-[#6ee7b7] leading-relaxed">
+                  className="text-[11px] text-[var(--color-success)] leading-relaxed">
                   ✓ {item.correctExp}
                 </motion.p>
               ) : hint ? (
                 <motion.p key="hint" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                  className="text-[11px] text-[#fca5a5]">
+                  className="text-[11px] text-[#ef4444]">
                   {hint}
                 </motion.p>
               ) : null}
@@ -467,7 +467,7 @@ function Challenge3({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
       })}
       {isPassed && (
         <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
-          className="px-3 py-2 rounded-lg bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 text-[12px] text-[#6ee7b7]">
+          className="px-3 py-2 rounded-lg bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 text-[12px] text-[var(--color-success)]">
           Data fixed! Imputation, typo correction, and type standardization form the backbone of any cleaning pipeline.
         </motion.div>
       )}
@@ -512,7 +512,7 @@ function Challenge4({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
     <div>
       <p className="text-[13px] text-[#94a3b8] mb-3">
         Create a{" "}
-        <code className="text-[#d4af37] bg-[#d4af37]/10 px-1 rounded text-[12px]">full_name</code> column by merging{" "}
+        <code className="text-[var(--color-accent)] bg-[var(--color-accent)]/10 px-1 rounded text-[12px]">full_name</code> column by merging{" "}
         <code className="text-[#3b82f6] bg-[#3b82f6]/10 px-1 rounded text-[12px]">first_name</code> and{" "}
         <code className="text-[#3b82f6] bg-[#3b82f6]/10 px-1 rounded text-[12px]">last_name</code>.
       </p>
@@ -549,9 +549,9 @@ function Challenge4({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
       </div>
       {isPassed ? (
         <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
-          className="px-3 py-2 rounded-lg bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 text-[12px] text-[#6ee7b7]">
+          className="px-3 py-2 rounded-lg bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 text-[12px] text-[var(--color-success)]">
           Feature created! Your formula:{" "}
-          <code className="text-[#d4af37] bg-[#d4af37]/10 px-1 rounded">{formula || "accepted"}</code> — column merging is one of the most common transformation operations in any data pipeline.
+          <code className="text-[var(--color-accent)] bg-[var(--color-accent)]/10 px-1 rounded">{formula || "accepted"}</code>. Column merging is one of the most common transformation operations in any data pipeline.
         </motion.div>
       ) : (
         <>
@@ -562,16 +562,16 @@ function Challenge4({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
               onChange={(e) => setFormula(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && submit()}
               placeholder='e.g. first_name + " " + last_name'
-              className="flex-1 px-3 py-2 rounded-xl bg-[#1e293b] border border-[#334155] text-[13px] text-white placeholder-[#475569] focus:outline-none focus:border-[#d4af37]/50"
+              className="flex-1 px-3 py-2 rounded-xl bg-[#1e293b] border border-[#334155] text-[13px] text-white placeholder-[#475569] focus:outline-none focus:border-[var(--color-accent)]/50"
             />
-            <button onClick={submit} className="px-4 py-2 rounded-xl bg-[#d4af37] text-[#0a0e1a] text-[13px] font-semibold hover:opacity-90 transition-opacity">
+            <button onClick={submit} className="px-4 py-2 rounded-xl bg-[var(--color-accent)] text-[#0a0e1a] text-[13px] font-semibold hover:opacity-90 transition-opacity">
               Apply
             </button>
           </div>
           <AnimatePresence>
             {error && (
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="mt-2 text-[11px] text-[#fca5a5]">
+                className="mt-2 text-[11px] text-[#ef4444]">
                 {error}
               </motion.p>
             )}
@@ -589,21 +589,21 @@ const TF_QS = [
     id: "nulls",
     q: "This dataset has null values.",
     correct: false,
-    trueExp:  "Actually no — the dataset shows 0 nulls. All missing values were handled in the Cleaning stage via imputation.",
-    falseExp: "Correct! The Cleaning stage resolved all null values — the table confirms 0 nulls remain.",
+    trueExp:  "Actually no: the dataset shows 0 nulls. All missing values were handled in the Cleaning stage via imputation.",
+    falseExp: "Correct! The Cleaning stage resolved all null values; the table confirms 0 nulls remain.",
   },
   {
     id: "derived",
     q: "The spend_tier column is a derived feature.",
     correct: true,
     trueExp:  "Correct! spend_tier was engineered during Transformation by binning purchase_amount into Low / Medium / High categories.",
-    falseExp: "Actually, spend_tier did not exist in the raw data — it was created during the Transformation stage.",
+    falseExp: "Actually, spend_tier did not exist in the raw data; it was created during the Transformation stage.",
   },
   {
     id: "mlready",
     q: "This dataset is ready for machine learning without further changes.",
     correct: true,
-    trueExp:  "Correct! The data is clean, consistently typed, and has engineered features — it can go straight into a model pipeline.",
+    trueExp:  "Correct! The data is clean, consistently typed, and has engineered features; it can go straight into a model pipeline.",
     falseExp: "Actually, this dataset is ML-ready: clean, typed, and feature-engineered. Further preprocessing would be algorithm-specific, not data preparation.",
   },
 ];
@@ -664,10 +664,10 @@ function Challenge5({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
                     disabled={isCorrect}   // only lock once answered correctly
                     className={`px-4 py-1.5 rounded-lg text-[12px] font-semibold border transition-all ${
                       isCorrect && isCorrectOpt
-                        ? "border-[#3bb4a4] bg-[#3bb4a4]/15 text-[#6ee7b7]"
+                        ? "border-[#3bb4a4] bg-[#3bb4a4]/15 text-[var(--color-success)]"
                         : isWrong && isChosen
-                        ? "border-[#ef4444] bg-[#ef4444]/15 text-[#fca5a5]"
-                        : "border-[#334155] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37] disabled:opacity-40 disabled:cursor-not-allowed"
+                        ? "border-[#ef4444] bg-[#ef4444]/15 text-[#ef4444]"
+                        : "border-[#334155] text-[#94a3b8] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] disabled:opacity-40 disabled:cursor-not-allowed"
                     }`}
                   >
                     {val ? "True" : "False"}
@@ -682,7 +682,7 @@ function Challenge5({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className={`text-[11px] leading-relaxed ${isCorrect ? "text-[#6ee7b7]" : "text-[#fca5a5]"}`}
+                  className={`text-[11px] leading-relaxed ${isCorrect ? "text-[var(--color-success)]" : "text-[#ef4444]"}`}
                 >
                   {ans ? q.trueExp : q.falseExp}
                 </motion.p>
@@ -693,7 +693,7 @@ function Challenge5({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
       })}
       {isPassed && (
         <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
-          className="px-3 py-2 rounded-lg bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 text-[12px] text-[#6ee7b7]">
+          className="px-3 py-2 rounded-lg bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 text-[12px] text-[var(--color-success)]">
           Quality check passed! You can now confidently hand this dataset to a data scientist or ML engineer.
         </motion.div>
       )}

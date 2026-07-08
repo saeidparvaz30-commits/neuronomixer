@@ -57,7 +57,7 @@ function CorrelationChartInner({ points, xLabel, yLabel, xRange, yRange, showReg
         <line
           x1={toSvgX(xRange[0], ...xRange)} y1={toSvgY(reg.intercept + reg.slope * xRange[0], ...yRange)}
           x2={toSvgX(xRange[1], ...xRange)} y2={toSvgY(reg.intercept + reg.slope * xRange[1], ...yRange)}
-          stroke="#d4af37" strokeWidth="2" strokeDasharray="6 3" opacity="0.85"
+          stroke="var(--color-accent)" strokeWidth="2" strokeDasharray="6 3" opacity="0.85"
         />
       )}
 
@@ -86,7 +86,7 @@ function CorrelationChartInner({ points, xLabel, yLabel, xRange, yRange, showReg
 
       {/* R value */}
       {rValue !== undefined && (
-        <text x={PAD.l + IW - 4} y={PAD.t + 14} textAnchor="end" fontSize="10" fontWeight="600" fill="#d4af37" fontFamily="Inter,sans-serif">
+        <text x={PAD.l + IW - 4} y={PAD.t + 14} textAnchor="end" fontSize="10" fontWeight="600" fill="var(--color-accent)" fontFamily="Inter,sans-serif">
           r = {rValue.toFixed(2)}
         </text>
       )}

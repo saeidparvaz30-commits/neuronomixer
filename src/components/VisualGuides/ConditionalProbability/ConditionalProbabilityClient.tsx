@@ -26,10 +26,10 @@ const MEDICAL_TREE = {
   nodes: [
     { id: "root", label: "Start", level: 0, siblingIndex: 0, siblingCount: 1, color: "#1e293b" },
     { id: "disease", label: "Disease", sublabel: "0.01", level: 1, siblingIndex: 0, siblingCount: 2, color: "#3b82f6" },
-    { id: "no_disease", label: "No Disease", sublabel: "0.99", level: 1, siblingIndex: 1, siblingCount: 2, color: "#64748b" },
+    { id: "no_disease", label: "No Disease", sublabel: "0.99", level: 1, siblingIndex: 1, siblingCount: 2, color: "#475569" },
     { id: "d_pos", label: "Test+", sublabel: "0.95", level: 2, siblingIndex: 0, siblingCount: 4, color: "#3b82f6", isLeaf: true, jointProbability: "0.0095" },
     { id: "d_neg", label: "Test−", sublabel: "0.05", level: 2, siblingIndex: 1, siblingCount: 4, color: "#1e40af", isLeaf: true, jointProbability: "0.0005" },
-    { id: "nd_pos", label: "Test+", sublabel: "0.10", level: 2, siblingIndex: 2, siblingCount: 4, color: "#d4af37", isLeaf: true, jointProbability: "0.099" },
+    { id: "nd_pos", label: "Test+", sublabel: "0.10", level: 2, siblingIndex: 2, siblingCount: 4, color: "var(--color-accent)", isLeaf: true, jointProbability: "0.099" },
     { id: "nd_neg", label: "Test−", sublabel: "0.90", level: 2, siblingIndex: 3, siblingCount: 4, color: "#334155", isLeaf: true, jointProbability: "0.891" },
   ],
   branches: [
@@ -65,9 +65,9 @@ const MARBLE_TREE = {
 const MANUFACTURING_TREE = {
   nodes: [
     { id: "root", label: "Item", level: 0, siblingIndex: 0, siblingCount: 1, color: "#1e293b" },
-    { id: "fa", label: "Factory A", sublabel: "0.4", level: 1, siblingIndex: 0, siblingCount: 2, color: "#d4af37" },
+    { id: "fa", label: "Factory A", sublabel: "0.4", level: 1, siblingIndex: 0, siblingCount: 2, color: "var(--color-accent)" },
     { id: "fb", label: "Factory B", sublabel: "0.6", level: 1, siblingIndex: 1, siblingCount: 2, color: "#3bb4a4" },
-    { id: "fa_d", label: "Defect", sublabel: "0.05", level: 2, siblingIndex: 0, siblingCount: 4, color: "#d4af37", isLeaf: true, jointProbability: "0.020" },
+    { id: "fa_d", label: "Defect", sublabel: "0.05", level: 2, siblingIndex: 0, siblingCount: 4, color: "var(--color-accent)", isLeaf: true, jointProbability: "0.020" },
     { id: "fa_ok", label: "OK", sublabel: "0.95", level: 2, siblingIndex: 1, siblingCount: 4, color: "#b8860b", isLeaf: true, jointProbability: "0.380" },
     { id: "fb_d", label: "Defect", sublabel: "0.03", level: 2, siblingIndex: 2, siblingCount: 4, color: "#3bb4a4", isLeaf: true, jointProbability: "0.018" },
     { id: "fb_ok", label: "OK", sublabel: "0.97", level: 2, siblingIndex: 3, siblingCount: 4, color: "#1e5d8a", isLeaf: true, jointProbability: "0.582" },
@@ -92,7 +92,7 @@ function buildMedicalGrid(): GridSquare[] {
   const categories: Array<{ cat: GridSquare["category"]; count: number; color: string }> = [
     { cat: "disease_positive", count: 1, color: "#3b82f6" },
     { cat: "disease_negative", count: 0, color: "#1e40af" },
-    { cat: "healthy_positive", count: 10, color: "#d4af37" },
+    { cat: "healthy_positive", count: 10, color: "var(--color-accent)" },
     { cat: "healthy_negative", count: 89, color: "#334155" },
   ];
   let id = 0;
@@ -120,7 +120,7 @@ function buildManufacturingGrid(): GridSquare[] {
   // Factory B: 60 squares — 2 defective (rounded from 1.8), 58 ok
   const squares: GridSquare[] = [];
   const items: Array<{ cat: GridSquare["category"]; count: number; color: string; label: string }> = [
-    { cat: "factory_a_defect", count: 2, color: "#d4af37", label: "A!" },
+    { cat: "factory_a_defect", count: 2, color: "var(--color-accent)", label: "A!" },
     { cat: "factory_a_ok", count: 38, color: "#b8860b", label: "A" },
     { cat: "factory_b_defect", count: 2, color: "#3bb4a4", label: "B!" },
     { cat: "factory_b_ok", count: 58, color: "#1e5d8a", label: "B" },
@@ -272,7 +272,7 @@ export default function ConditionalProbabilityClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "conditional-probability", score: 11 }),
+        body: JSON.stringify({ guideSlug: "conditional-probability", score: 100 }),
       }).catch(() => {});
     }
   }, [isComplete, session?.user]);
@@ -335,7 +335,7 @@ export default function ConditionalProbabilityClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={isComplete} guideSlug="conditional-probability" score={11} />
+      <GuideCompletion isComplete={isComplete} guideSlug="conditional-probability" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -350,15 +350,15 @@ export default function ConditionalProbabilityClient() {
         {/* Hero */}
         <section className="mb-10">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               PROBABILITY
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Conditional Probability{" "}
-            <span className="text-[#d4af37]">&amp; Independence</span>
+            <span className="text-[var(--color-accent)]">&amp; Independence</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             When you know Event B happened, how does that change the probability of Event A? Build trees,
@@ -514,12 +514,12 @@ export default function ConditionalProbabilityClient() {
               {
                 term: "Independence",
                 symbol: "P(A|B) = P(A)",
-                def: "Events are independent when knowing B happened gives no information about A. Otherwise they are dependent — knowledge of one updates the other.",
+                def: "Events are independent when knowing B happened gives no information about A. Otherwise they are dependent: knowledge of one updates the other.",
               },
             ].map((c) => (
               <div key={c.term} className="p-3 rounded-xl bg-[#1e293b]/60 border border-[#1e293b]">
                 <p className="text-[11px] font-bold text-white mb-0.5">{c.term}</p>
-                <p className="text-[10px] font-mono text-[#d4af37] mb-1.5">{c.symbol}</p>
+                <p className="text-[10px] font-mono text-[var(--color-accent)] mb-1.5">{c.symbol}</p>
                 <p className="text-[11px] text-[#94a3b8] leading-relaxed">{c.def}</p>
               </div>
             ))}
@@ -530,13 +530,13 @@ export default function ConditionalProbabilityClient() {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/probability-fundamentals"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             ← Previous: Probability Fundamentals
           </Link>
           <Link
             href="/visual-guides/bayes-theorem"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Next: Bayes Theorem →
           </Link>

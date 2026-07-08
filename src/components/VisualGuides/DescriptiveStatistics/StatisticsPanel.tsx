@@ -32,7 +32,7 @@ export default function StatisticsPanel({
     <div>
       {/* Section: Measures of Center */}
       <div className="mb-5">
-        <h3 className="text-[11px] font-bold uppercase tracking-[2px] text-[#d4af37] mb-3">
+        <h3 className="text-[11px] font-bold uppercase tracking-[2px] text-[var(--color-accent)] mb-3">
           Measures of Center
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -40,13 +40,13 @@ export default function StatisticsPanel({
             name="Mean (μ)"
             formula="Σx / n"
             value={`$${fmt(stats.mean)}k`}
-            description="Sum divided by count. Sensitive to outliers — one extreme salary pulls it far."
+            description="Sum divided by count. Sensitive to outliers: one extreme salary pulls it far."
           />
           <StatCard
             name="Median (M)"
             formula="middle value"
             value={`$${fmt(stats.median)}k`}
-            description="The middle value when sorted. Robust to outliers — great for skewed data."
+            description="The middle value when sorted. Robust to outliers: great for skewed data."
           />
           <StatCard
             name="Mode"
@@ -79,8 +79,8 @@ export default function StatisticsPanel({
             layout
             className={`rounded-2xl border p-4 transition-colors duration-200 cursor-pointer ${
               showDistanceViz
-                ? "border-[#d4af37]/60 bg-[#1e293b]"
-                : "border-[#1e293b] bg-[#0f172a] hover:border-[#d4af37]/40"
+                ? "border-[var(--color-accent)]/60 bg-[#1e293b]"
+                : "border-[#1e293b] bg-[#0f172a] hover:border-[var(--color-accent)]/40"
             }`}
             onMouseEnter={() => onStdDevHover(true)}
             onMouseLeave={() => onStdDevHover(false)}
@@ -89,7 +89,7 @@ export default function StatisticsPanel({
               <span className="text-[13px] font-semibold text-white">
                 Std Dev (σ)
               </span>
-              <span className="text-[18px] font-black text-[#d4af37] tabular-nums">
+              <span className="text-[18px] font-black text-[var(--color-accent)] tabular-nums">
                 ${fmt(stats.stdDev)}k
               </span>
             </div>
@@ -98,7 +98,7 @@ export default function StatisticsPanel({
             </code>
             <p className="text-[11px] text-[#94a3b8] leading-relaxed">
               Square root of variance. Same units as data.{" "}
-              <span className="text-[#d4af37]/80">
+              <span className="text-[var(--color-accent)]/80">
                 Hover to see distances on chart.
               </span>
             </p>

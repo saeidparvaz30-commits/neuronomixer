@@ -1,6 +1,6 @@
 // ── Color and label constants ─────────────────────────────────────────────────
 
-export const GROUP_COLORS = ["#1e5d8a", "#3bb4a4", "#ec4899", "#f59e0b"] as const;
+export const GROUP_COLORS = ["#1e5d8a", "#3bb4a4", "#ec4899", "var(--color-warning)"] as const;
 export const GROUP_NAMES = ["Method A", "Method B", "Method C", "Method D"] as const;
 
 // ── Interfaces ────────────────────────────────────────────────────────────────

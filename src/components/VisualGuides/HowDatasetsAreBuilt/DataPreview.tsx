@@ -13,8 +13,8 @@ type DataPreviewProps = {
 };
 
 const HIGHLIGHT_STYLES: Record<HighlightType, string> = {
-  error: "bg-[#ef4444]/10 text-[#fca5a5]",
-  fixed: "bg-[#3bb4a4]/10 text-[#6ee7b7]",
+  error: "bg-[#ef4444]/10 text-[#ef4444]",
+  fixed: "bg-[#3bb4a4]/10 text-[var(--color-success)]",
   new:   "bg-[#3b82f6]/10 text-[#93c5fd]",
 };
 

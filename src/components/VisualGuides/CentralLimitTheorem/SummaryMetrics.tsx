@@ -33,7 +33,7 @@ function MetricRow({ label, value, sub, highlight, matchIndicator }: MetricRowPr
         )}
         <span
           className="text-[12px] font-mono font-bold"
-          style={{ color: highlight ? "#d4af37" : "#f1f5f9" }}
+          style={{ color: highlight ? "var(--color-accent)" : "#f1f5f9" }}
         >
           {value}
         </span>
@@ -65,23 +65,23 @@ export default function SummaryMetrics({
       <h2 className="text-[13px] font-bold text-white mb-0.5">Summary Metrics</h2>
       <p className="text-[10px] text-[#475569] mb-4">
         CLT predicts: SE ={" "}
-        <span className="font-mono text-[#d4af37]">σ/√n</span>. Watch it converge.
+        <span className="font-mono text-[var(--color-accent)]">σ/√n</span>. Watch it converge.
       </p>
 
       <div>
         <MetricRow
           label="Sample size"
-          sub="n — values per draw"
+          sub="n: values per draw"
           value={String(sampleSize)}
         />
         <MetricRow
           label="Samples drawn"
-          sub="N — total draws"
+          sub="N: total draws"
           value={String(N)}
         />
         <MetricRow
           label="Empirical mean of means"
-          sub="x̄̄ — average sample mean"
+          sub="x̄̄: average sample mean"
           value={N > 0 ? empiricalMean.toFixed(2) : "—"}
         />
         <MetricRow
@@ -92,7 +92,7 @@ export default function SummaryMetrics({
         />
         <MetricRow
           label="Theoretical SE"
-          sub="σ/√n — CLT prediction"
+          sub="σ/√n: CLT prediction"
           value={theoreticalSE.toFixed(2)}
           highlight
         />
@@ -108,8 +108,8 @@ export default function SummaryMetrics({
           }}
         >
           {seMatchGood
-            ? "Empirical SD is within 10% of theoretical SE — the CLT is working!"
-            : `Difference: ${Math.abs(((empiricalSD - theoreticalSE) / theoreticalSE) * 100).toFixed(1)}% off — draw more samples to converge.`}
+            ? "Empirical SD is within 10% of theoretical SE: the CLT is working!"
+            : `Difference: ${Math.abs(((empiricalSD - theoreticalSE) / theoreticalSE) * 100).toFixed(1)}% off. Draw more samples to converge.`}
         </div>
       )}
 

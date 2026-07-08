@@ -26,7 +26,7 @@ function MiniChart({ data, color = "#3bb4a4" }: { data: { x: number; y: number }
       <line
         x1={tx(xMin - xPad)} y1={ty(reg.intercept + reg.slope * (xMin - xPad))}
         x2={tx(xMax + xPad)} y2={ty(reg.intercept + reg.slope * (xMax + xPad))}
-        stroke="#d4af37" strokeWidth="1.5" strokeDasharray="4 2" opacity="0.8"
+        stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="4 2" opacity="0.8"
       />
       {data.map((pt, i) => <circle key={i} cx={tx(pt.x)} cy={ty(pt.y)} r="4.5" fill={color} opacity="0.9" />)}
     </svg>
@@ -87,7 +87,7 @@ export default function SpuriousCorrelationSandbox({ onGenerate }: Props) {
 
         <button
           onClick={handleGenerate}
-          className="w-full py-2.5 rounded-xl border border-[#334155] text-white text-[12px] font-semibold hover:border-[#d4af37] hover:text-[#d4af37] transition-colors mb-3"
+          className="w-full py-2.5 rounded-xl border border-[#334155] text-white text-[12px] font-semibold hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors mb-3"
         >
           Generate Random Pair →
         </button>
@@ -109,7 +109,7 @@ export default function SpuriousCorrelationSandbox({ onGenerate }: Props) {
                     {/* Border base */}
                     <div
                       className="absolute inset-0 rounded-xl transition-colors duration-300"
-                      style={{ background: strong ? "#d4af37" : "#1e293b" }}
+                      style={{ background: strong ? "var(--color-accent)" : "#1e293b" }}
                     />
                     {/* Spinning beam — only on high-correlation cards */}
                     {strong && (
@@ -121,7 +121,7 @@ export default function SpuriousCorrelationSandbox({ onGenerate }: Props) {
                             height: "200%",
                             top: "-50%",
                             left: "-50%",
-                            background: `conic-gradient(from 0deg, transparent 0%, #d4af3788 7%, #d4af37 12%, #d4af3788 17%, transparent 24%)`,
+                            background: `conic-gradient(from 0deg, transparent 0%, #d4af3788 7%, var(--color-accent) 12%, #d4af3788 17%, transparent 24%)`,
                             transformOrigin: "50% 50%",
                             animation: "spurious-beam-spin 2s linear infinite",
                             animationDelay: `${-(i * 0.7)}s`,
@@ -137,11 +137,11 @@ export default function SpuriousCorrelationSandbox({ onGenerate }: Props) {
                       <MiniChart data={pair} color="#3bb4a4" />
                       <div className="flex justify-between items-center mt-1.5">
                         <span className="text-[9px] text-[#475569]">Random A vs B</span>
-                        <span className="text-[11px] font-bold" style={{ color: strong ? "#d4af37" : "#3bb4a4" }}>
+                        <span className="text-[11px] font-bold" style={{ color: strong ? "var(--color-accent)" : "#3bb4a4" }}>
                           r = {r.toFixed(2)}
                         </span>
                       </div>
-                      {strong && <p className="text-[9px] text-[#d4af37] mt-0.5">Surprisingly high — pure chance!</p>}
+                      {strong && <p className="text-[9px] text-[var(--color-accent)] mt-0.5">Surprisingly high: pure chance!</p>}
                     </div>
                   </div>
                 );
@@ -154,7 +154,7 @@ export default function SpuriousCorrelationSandbox({ onGenerate }: Props) {
           With enough random pairs, you&apos;ll find high correlations by chance alone.
           This is called <strong className="text-white">p-hacking</strong> or the{" "}
           <strong className="text-white">multiple comparisons problem</strong>.
-          The correlation is mathematically real — the causal meaning is not.
+          The correlation is mathematically real; the causal meaning is not.
         </p>
       </div>
     </div>

@@ -56,7 +56,7 @@ export default function ToggleRobustAlternatives({
             <div className="mt-4 p-4 rounded-2xl border border-[#3bb4a4]/30 bg-[#1e293b]/50">
               <p className="text-[11px] text-[#94a3b8] mb-4 leading-relaxed">
                 Try dragging the $150k person down to $60k: the mean drops by about $4.5k
-                and the SD falls from ~$28k to ~$18k, but trimmed mean/MAD barely budge — they{" "}
+                and the SD falls from ~$28k to ~$18k, but trimmed mean/MAD barely budge; they{" "}
                 <span className="text-[#3bb4a4]">ignore</span> extreme values. Drag it back
                 out to the $160k cap to see the reverse.
               </p>
@@ -71,7 +71,7 @@ export default function ToggleRobustAlternatives({
                   name="MAD"
                   formula="median(|x - M|)"
                   value={`$${mad.toFixed(1)}k`}
-                  description="Median Absolute Deviation — robust measure of spread, insensitive to extreme values."
+                  description="Median Absolute Deviation: robust measure of spread, insensitive to extreme values."
                 />
               </div>
             </div>

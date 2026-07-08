@@ -21,7 +21,7 @@ function ScalingToggleInner({ active, onChange }: Props) {
             aria-checked={isActive}
             aria-label={`${meta.label} scaling`}
             onClick={() => onChange(m)}
-            className={`relative px-4 py-2 rounded-lg text-[13px] font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37] ${
+            className={`relative px-4 py-2 rounded-lg text-[13px] font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${
               isActive ? "text-[#0a0e1a]" : "text-[#94a3b8] hover:text-white"
             }`}
           >

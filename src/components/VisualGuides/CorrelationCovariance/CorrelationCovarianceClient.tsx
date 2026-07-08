@@ -116,13 +116,13 @@ function fmtTick(v: number): string {
 }
 
 function dotColor(r: number): string {
-  if (r > 0.3) return "#10b981";
+  if (r > 0.3) return "var(--color-success)";
   if (r < -0.3) return "#ef4444";
   return "#94a3b8";
 }
 
 function rColor(r: number): string {
-  if (r > 0.7) return "#10b981";
+  if (r > 0.7) return "var(--color-success)";
   if (r > 0.3) return "#6ee7b7";
   if (r < -0.7) return "#ef4444";
   if (r < -0.3) return "#fca5a5";
@@ -227,7 +227,7 @@ function MiniScatter({
         <line
           x1={sx(lx1)} y1={sy(ly1)}
           x2={sx(lx2)} y2={sy(ly2)}
-          stroke="#d4af37"
+          stroke="var(--color-accent)"
           strokeWidth="1.5"
           strokeDasharray="4 2"
           opacity="0.85"
@@ -259,7 +259,7 @@ const ANSCOMBE_DATASETS = [
   {
     id: "III",
     points: ANSCOMBE_III,
-    color: "#d4af37",
+    color: "var(--color-accent)",
     description: "Perfectly linear except for a single outlier. Without that point r would be 1.000; the outlier drags r down to 0.816 and tilts the regression line.",
   },
   {
@@ -295,12 +295,12 @@ function AnscombeQuartet({ onViewed }: { onViewed: () => void }) {
             { label: "Slope", value: "≈ 0.500" },
           ].map(({ label, value }) => (
             <div key={label} className="flex items-center gap-1.5">
-              <span className="text-[12px] font-bold text-[#d4af37]">{label}</span>
+              <span className="text-[12px] font-bold text-[var(--color-accent)]">{label}</span>
               <span className="text-[12px] text-white">{value}</span>
             </div>
           ))}
         </div>
-        <p className="text-[11px] text-[#d4af37] font-semibold mt-3">
+        <p className="text-[11px] text-[var(--color-accent)] font-semibold mt-3">
           Always visualize your data! Same r, completely different patterns.
         </p>
       </div>
@@ -315,7 +315,7 @@ function AnscombeQuartet({ onViewed }: { onViewed: () => void }) {
               key={ds.id}
               className="rounded-2xl border p-3 cursor-pointer transition-colors"
               style={{
-                borderColor: isSelected ? "#d4af37" : "#1e293b",
+                borderColor: isSelected ? "var(--color-accent)" : "#1e293b",
                 background: "#0f172a",
               }}
               onClick={() => handleSelect(ds.id)}
@@ -362,7 +362,7 @@ function CausationCard({
 }) {
   const [revealed, setRevealed] = useState(false);
   const exploredRef = useRef(false);
-  const colors = ["#3bb4a4", "#1e5d8a", "#d4af37"] as const;
+  const colors = ["#3bb4a4", "#1e5d8a", "var(--color-accent)"] as const;
   const color = colors[index % colors.length];
 
   function handleReveal() {
@@ -391,11 +391,11 @@ function CausationCard({
             <p className="text-[9px] font-semibold uppercase tracking-[1px] text-[#ef4444] mb-1">
               Naive (wrong) conclusion
             </p>
-            <p className="text-[12px] text-[#fca5a5]">{example.naiveConclusion}</p>
+            <p className="text-[12px] text-[#ef4444]">{example.naiveConclusion}</p>
           </div>
           <div className="rounded-xl border border-[#1e293b] p-2.5">
             <p className="text-[9px] text-[#475569] mb-0.5">Correlation</p>
-            <p className="text-[18px] font-black text-[#d4af37]">r ≈ {example.correlationValue.toFixed(2)}</p>
+            <p className="text-[18px] font-black text-[var(--color-accent)]">r ≈ {example.correlationValue.toFixed(2)}</p>
           </div>
         </div>
       </div>
@@ -403,7 +403,7 @@ function CausationCard({
       {!revealed ? (
         <button
           onClick={handleReveal}
-          className="w-full py-2 rounded-xl text-[12px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+          className="w-full py-2 rounded-xl text-[12px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
         >
           Reveal Lurking Variable
         </button>
@@ -411,9 +411,9 @@ function CausationCard({
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl border border-[#d4af37]/40 bg-[#d4af37]/8 p-3"
+          className="rounded-xl border border-[var(--color-accent)]/40 bg-[var(--color-accent)]/8 p-3"
         >
-          <p className="text-[10px] font-semibold uppercase tracking-[1px] text-[#d4af37] mb-1">
+          <p className="text-[10px] font-semibold uppercase tracking-[1px] text-[var(--color-accent)] mb-1">
             Lurking (Confounding) Variable
           </p>
           <p className="text-[12px] text-[#f1f5f9] leading-relaxed">{example.lurkingVariable}</p>
@@ -467,7 +467,7 @@ export default function CorrelationCovarianceClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "correlation-covariance", score: 8 }),
+        body: JSON.stringify({ guideSlug: "correlation-covariance", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -510,19 +510,19 @@ export default function CorrelationCovarianceClient() {
         {/* Hero */}
         <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               UNIT 9: ASSOCIATION &amp; DEPENDENCE
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Correlation &amp;{" "}
-            <span className="text-[#d4af37]">Covariance</span>
+            <span className="text-[var(--color-accent)]">Covariance</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             Explore Pearson r, Spearman ρ, Kendall τ, and covariance through interactive scatter plots.
-            Uncover Anscombe&apos;s Quartet — four datasets with identical statistics but wildly different shapes —
+            Uncover Anscombe&apos;s Quartet, four datasets with identical statistics but wildly different shapes,
             and learn why correlation never implies causation.
           </p>
         </section>
@@ -561,10 +561,11 @@ export default function CorrelationCovarianceClient() {
           {TABS.map((tab) => (
             <button
               key={tab.id}
+              aria-pressed={activeTab === tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 py-2 rounded-lg text-[12px] font-semibold transition-colors ${
                 activeTab === tab.id
-                  ? "bg-[#d4af37] text-[#0a0e1a]"
+                  ? "bg-[var(--color-accent)] text-[#0a0e1a]"
                   : "text-[#94a3b8] hover:text-white"
               }`}
             >
@@ -616,7 +617,7 @@ export default function CorrelationCovarianceClient() {
                   <p className="text-[13px] text-[#94a3b8] leading-relaxed">
                     A high correlation between X and Y doesn&apos;t mean X causes Y. It could be that Y causes X,
                     a third variable Z causes both, or it&apos;s pure coincidence. Click{" "}
-                    <span className="text-[#d4af37] font-semibold">Reveal Lurking Variable</span> on at least 2 cards below.
+                    <span className="text-[var(--color-accent)] font-semibold">Reveal Lurking Variable</span> on at least 2 cards below.
                   </p>
                 </div>
                 {CAUSATION_EXAMPLES.map((ex, i) => (
@@ -636,19 +637,19 @@ export default function CorrelationCovarianceClient() {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/nonparametric-tests"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             ← Nonparametric Tests
           </Link>
           <Link
             href="/visual-guides/chi-square-independence"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Chi-Square Test →
           </Link>
         </div>
 
-        <GuideCompletion isComplete={allComplete} guideSlug="correlation-covariance" score={8} />
+        <GuideCompletion isComplete={allComplete} guideSlug="correlation-covariance" score={100} />
       </div>
     </div>
   );
@@ -773,7 +774,7 @@ function InteractiveScatterLifted({
           <select
             value={preset}
             onChange={(e) => handlePresetChange(e.target.value as PresetKey)}
-            className="text-[12px] bg-[#1e293b] text-white border border-[#334155] rounded-lg px-2.5 py-1 focus:outline-none focus:border-[#d4af37] cursor-pointer"
+            className="text-[12px] bg-[#1e293b] text-white border border-[#334155] rounded-lg px-2.5 py-1 focus:outline-none focus:border-[var(--color-accent)] cursor-pointer"
           >
             {(Object.keys(PRESET_LABELS) as PresetKey[]).map((k) => (
               <option key={k} value={k}>{PRESET_LABELS[k]}</option>
@@ -781,7 +782,7 @@ function InteractiveScatterLifted({
           </select>
           <button
             onClick={handleReset}
-            className="text-[11px] px-2.5 py-1 rounded-lg border border-[#1e293b] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="text-[11px] px-2.5 py-1 rounded-lg border border-[#1e293b] text-[#94a3b8] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             Reset
           </button>
@@ -790,7 +791,7 @@ function InteractiveScatterLifted({
               type="checkbox"
               checked={showCovariance}
               onChange={(e) => setShowCovariance(e.target.checked)}
-              className="accent-[#d4af37] w-3.5 h-3.5"
+              className="accent-[var(--color-accent)] w-3.5 h-3.5"
             />
             Show Covariance Quadrants
           </label>
@@ -823,13 +824,13 @@ function InteractiveScatterLifted({
                 x={toSvgX(stats.meanX, range.xMin, range.xMax)} y={PAD.t}
                 width={Math.max(0, PAD.l + IW - toSvgX(stats.meanX, range.xMin, range.xMax))}
                 height={Math.max(0, toSvgY(stats.meanY, range.yMin, range.yMax) - PAD.t)}
-                fill="#10b981" opacity="0.07"
+                fill="var(--color-success)" opacity="0.07"
               />
               <rect
                 x={PAD.l} y={toSvgY(stats.meanY, range.yMin, range.yMax)}
                 width={Math.max(0, toSvgX(stats.meanX, range.xMin, range.xMax) - PAD.l)}
                 height={Math.max(0, PAD.t + IH - toSvgY(stats.meanY, range.yMin, range.yMax))}
-                fill="#10b981" opacity="0.07"
+                fill="var(--color-success)" opacity="0.07"
               />
               <rect
                 x={PAD.l} y={PAD.t}
@@ -886,7 +887,7 @@ function InteractiveScatterLifted({
             <line
               x1={toSvgX(lx1, range.xMin, range.xMax)} y1={toSvgY(ly1, range.yMin, range.yMax)}
               x2={toSvgX(lx2, range.xMin, range.xMax)} y2={toSvgY(ly2, range.yMin, range.yMax)}
-              stroke="#d4af37" strokeWidth="1.8" opacity="0.85"
+              stroke="var(--color-accent)" strokeWidth="1.8" opacity="0.85"
             />
           )}
 
@@ -938,7 +939,7 @@ function InteractiveScatterLifted({
           </div>
           <div className="rounded-xl border border-[#1e293b] p-2.5">
             <p className="text-[9px] uppercase tracking-[1px] text-[#475569] mb-0.5">Significance</p>
-            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${stats.pValue < 0.05 ? "bg-[#10b981]/20 text-[#10b981]" : "bg-[#475569]/20 text-[#94a3b8]"}`}>
+            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${stats.pValue < 0.05 ? "bg-[var(--color-success)]/20 text-[var(--color-success)]" : "bg-[#475569]/20 text-[#94a3b8]"}`}>
               {stats.pValue < 0.05 ? "Significant" : "Not sig."}
             </span>
           </div>
@@ -946,7 +947,7 @@ function InteractiveScatterLifted({
 
         <div className="rounded-xl border border-[#1e293b] p-2.5">
           <p className="text-[9px] uppercase tracking-[1px] text-[#475569] mb-1">OLS Line</p>
-          <p className="text-[11px] font-mono text-[#d4af37]">
+          <p className="text-[11px] font-mono text-[var(--color-accent)]">
             ŷ = {stats.slope.toFixed(3)}x {stats.intercept >= 0 ? "+" : "−"} {Math.abs(stats.intercept).toFixed(3)}
           </p>
         </div>

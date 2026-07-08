@@ -18,7 +18,7 @@ const NODE_POSITIONS = [
   { x: 80, y: 150 },
   { x: 220, y: 150 },
 ];
-const GROUP_COLORS = ["#1e5d8a", "#3bb4a4", "#ec4899", "#f59e0b"];
+const GROUP_COLORS = ["#1e5d8a", "#3bb4a4", "#ec4899", "var(--color-warning)"];
 
 function fmt(n: number, dec = 2): string {
   return n.toFixed(dec);
@@ -72,7 +72,7 @@ export default function PostHocComparison({ comparisons, onViewed }: PostHocComp
         </h2>
         <span className="text-[10px] px-2 py-0.5 rounded-full" style={{
           background: significantPairs.length > 0 ? "#14532d" : "#1e293b",
-          color: significantPairs.length > 0 ? "#4ade80" : "#94a3b8",
+          color: significantPairs.length > 0 ? "var(--color-success)" : "#94a3b8",
         }}>
           {significantPairs.length} significant pair{significantPairs.length !== 1 ? "s" : ""}
         </span>
@@ -83,14 +83,16 @@ export default function PostHocComparison({ comparisons, onViewed }: PostHocComp
       </p>
 
       {/* View toggle */}
-      <div className="flex items-center gap-1 mb-4 p-1 bg-[#1e293b] rounded-xl w-fit">
+      <div className="flex items-center gap-1 mb-4 p-1 bg-[#1e293b] rounded-xl w-fit" role="radiogroup" aria-label="Comparison view">
         {(["matrix", "network"] as ViewMode[]).map(mode => (
           <button
             key={mode}
+            role="radio"
+            aria-checked={viewMode === mode}
             onClick={() => handleViewToggle(mode)}
             className="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-colors capitalize"
             style={{
-              background: viewMode === mode ? "#d4af37" : "transparent",
+              background: viewMode === mode ? "var(--color-accent)" : "transparent",
               color: viewMode === mode ? "#0a0e1a" : "#94a3b8",
             }}
           >
@@ -144,13 +146,13 @@ export default function PostHocComparison({ comparisons, onViewed }: PostHocComp
                                 className="rounded-lg px-1.5 py-1 inline-block min-w-[56px]"
                                 style={{
                                   background: comp.significant ? "#14532d" : "#1e293b",
-                                  border: comp.significant ? "1px solid #16a34a" : "1px solid #334155",
+                                  border: comp.significant ? "1px solid var(--color-success)" : "1px solid #334155",
                                 }}
                               >
                                 <div className="font-mono text-white text-[10px]">
                                   {comp.meanDiff > 0 ? "+" : ""}{fmt(comp.meanDiff, 1)}
                                 </div>
-                                <div style={{ color: comp.significant ? "#4ade80" : "#94a3b8" }} className="text-[9px]">
+                                <div style={{ color: comp.significant ? "var(--color-success)" : "#94a3b8" }} className="text-[9px]">
                                   p={fmtP(comp.pValueAdjusted)}
                                 </div>
                               </div>
@@ -182,7 +184,7 @@ export default function PostHocComparison({ comparisons, onViewed }: PostHocComp
                                           p = {fmtP(comp.pValueAdjusted)}
                                         </span>
                                         {comp.significant ? (
-                                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#14532d] text-[#4ade80]">SIG</span>
+                                          <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#14532d] text-[var(--color-success)]">SIG</span>
                                         ) : (
                                           <span className="px-1.5 py-0.5 rounded text-[9px] bg-[#334155] text-[#94a3b8]">n.s.</span>
                                         )}
@@ -202,7 +204,7 @@ export default function PostHocComparison({ comparisons, onViewed }: PostHocComp
             </div>
             <div className="flex items-center gap-4 mt-3">
               <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded border border-[#16a34a] bg-[#14532d]" />
+                <div className="w-3 h-3 rounded border border-[var(--color-success)] bg-[#14532d]" />
                 <span className="text-[10px] text-[#94a3b8]">Significant (p &lt; 0.05)</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -237,7 +239,7 @@ export default function PostHocComparison({ comparisons, onViewed }: PostHocComp
                       y1={p1.y}
                       x2={p2.x}
                       y2={p2.y}
-                      stroke={comp.significant ? "#4ade80" : "#334155"}
+                      stroke={comp.significant ? "var(--color-success)" : "#334155"}
                       strokeWidth={comp.significant ? 2.5 : 1}
                       strokeDasharray={comp.significant ? "none" : "3,3"}
                       opacity={comp.significant ? 0.9 : 0.4}
@@ -263,7 +265,7 @@ export default function PostHocComparison({ comparisons, onViewed }: PostHocComp
             </div>
             <div className="flex items-center justify-center gap-4 mt-2">
               <div className="flex items-center gap-1.5">
-                <div className="w-6 h-0.5 bg-[#4ade80]" />
+                <div className="w-6 h-0.5 bg-[var(--color-success)]" />
                 <span className="text-[10px] text-[#94a3b8]">Significant</span>
               </div>
               <div className="flex items-center gap-1.5">

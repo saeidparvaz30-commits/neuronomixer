@@ -70,7 +70,7 @@ export default function IndependenceChecker({ scenario, onChecked }: Independenc
       {/* Definition reminder */}
       <div className="mb-4 p-3 rounded-xl bg-[#1e293b]/60 border border-[#1e293b] text-[11px] text-[#94a3b8] leading-relaxed">
         Two events A and B are <span className="text-white font-semibold">independent</span> if{" "}
-        <span className="font-mono text-[#d4af37]">P(A|B) = P(A)</span>. Knowing B happened does not
+        <span className="font-mono text-[var(--color-accent)]">P(A|B) = P(A)</span>. Knowing B happened does not
         change the probability of A.
       </div>
 
@@ -103,13 +103,13 @@ export default function IndependenceChecker({ scenario, onChecked }: Independenc
       {diff !== null && (
         <div className="mb-3 text-[11px] font-mono text-[#94a3b8]">
           |P(A|B) − P(A)| ={" "}
-          <span className={diff < 0.01 ? "text-[#3bb4a4] font-semibold" : "text-[#d4af37] font-semibold"}>
+          <span className={diff < 0.01 ? "text-[#3bb4a4] font-semibold" : "text-[var(--color-accent)] font-semibold"}>
             {diff.toFixed(4)}
           </span>
           {diff < 0.01 ? (
             <span className="text-[#3bb4a4]"> &lt; 0.01 (threshold)</span>
           ) : (
-            <span className="text-[#d4af37]"> ≥ 0.01 (threshold)</span>
+            <span className="text-[var(--color-accent)]"> ≥ 0.01 (threshold)</span>
           )}
         </div>
       )}
@@ -120,7 +120,7 @@ export default function IndependenceChecker({ scenario, onChecked }: Independenc
         disabled={!canCheck}
         className={`w-full py-2 rounded-xl text-[13px] font-semibold transition-all ${
           canCheck
-            ? "bg-[#d4af37] text-[#0a0e1a] hover:opacity-90"
+            ? "bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90"
             : "bg-[#1e293b] text-[#475569] cursor-not-allowed"
         }`}
       >
@@ -139,7 +139,7 @@ export default function IndependenceChecker({ scenario, onChecked }: Independenc
             className={`mt-4 p-4 rounded-xl border ${
               result === "independent"
                 ? "bg-[#3bb4a4]/8 border-[#3bb4a4]/30"
-                : "bg-[#d4af37]/8 border-[#d4af37]/30"
+                : "bg-[var(--color-accent)]/8 border-[var(--color-accent)]/30"
             }`}
           >
             <div className="flex items-center gap-2 mb-1.5">
@@ -148,13 +148,13 @@ export default function IndependenceChecker({ scenario, onChecked }: Independenc
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               ) : (
-                <svg className="w-4 h-4 text-[#d4af37] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
+                <svg className="w-4 h-4 text-[var(--color-accent)] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               )}
               <span
                 className={`text-[13px] font-bold ${
-                  result === "independent" ? "text-[#3bb4a4]" : "text-[#d4af37]"
+                  result === "independent" ? "text-[#3bb4a4]" : "text-[var(--color-accent)]"
                 }`}
               >
                 Events are {result === "independent" ? "Independent" : "Dependent"}
@@ -163,7 +163,7 @@ export default function IndependenceChecker({ scenario, onChecked }: Independenc
             <p className="text-[11px] text-[#94a3b8] leading-snug">
               {result === "independent"
                 ? "P(A|B) ≈ P(A). Knowing event B occurred does not change the probability of A. The events have no influence on each other."
-                : "P(A|B) ≠ P(A). Knowing event B occurred changes the probability of A. The events are linked — this is the core of conditional probability."}
+                : "P(A|B) ≠ P(A). Knowing event B occurred changes the probability of A. The events are linked; this is the core of conditional probability."}
             </p>
           </motion.div>
         )}
@@ -198,7 +198,7 @@ function InputRow({ label, hint, value, onChange, placeholder }: InputRowProps) 
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           className="w-full bg-[#1e293b] border border-[#334155] rounded-lg px-3 py-1.5 text-[13px] text-white font-mono
-            placeholder-[#475569] focus:outline-none focus:border-[#d4af37]/60 transition-colors"
+            placeholder-[#475569] focus:outline-none focus:border-[var(--color-accent)]/60 transition-colors"
         />
       </div>
     </div>

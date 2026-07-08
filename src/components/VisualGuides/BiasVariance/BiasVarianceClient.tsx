@@ -50,7 +50,7 @@ function Bullseye({
           fill={ringColors[i]} stroke="#334155" strokeWidth="1" />
       ))}
       {/* Bullseye center */}
-      <circle cx={C} cy={C} r={R * 0.1} fill="#d4af37" opacity="0.9" />
+      <circle cx={C} cy={C} r={R * 0.1} fill="var(--color-accent)" opacity="0.9" />
 
       {/* Crosshairs */}
       <line x1={C - R * 0.08} y1={C} x2={C + R * 0.08} y2={C} stroke="white" strokeWidth="1" opacity="0.6" />
@@ -79,8 +79,8 @@ function Bullseye({
       {darts.length > 0 && (
         <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <circle cx={tx(cx)} cy={ty(cy)} r="8"
-            fill="none" stroke="#d4af37" strokeWidth="2" strokeDasharray="3,2" />
-          <circle cx={tx(cx)} cy={ty(cy)} r="2" fill="#d4af37" />
+            fill="none" stroke="var(--color-accent)" strokeWidth="2" strokeDasharray="3,2" />
+          <circle cx={tx(cx)} cy={ty(cy)} r="2" fill="var(--color-accent)" />
         </motion.g>
       )}
     </svg>
@@ -94,8 +94,8 @@ function QuadrantDiagram({ bias, variance }: { bias: number; variance: number })
 
   const quadrants = [
     { label: "Low Bias\nLow Variance", desc: "Accurate & consistent", pos: "top-left", color: "#3bb4a4", ideal: true },
-    { label: "Low Bias\nHigh Variance", desc: "Accurate but inconsistent", pos: "top-right", color: "#d4af37", ideal: false },
-    { label: "High Bias\nLow Variance", desc: "Consistent but wrong", pos: "bottom-left", color: "#f59e0b", ideal: false },
+    { label: "Low Bias\nHigh Variance", desc: "Accurate but inconsistent", pos: "top-right", color: "var(--color-accent)", ideal: false },
+    { label: "High Bias\nLow Variance", desc: "Consistent but wrong", pos: "bottom-left", color: "var(--color-warning)", ideal: false },
     { label: "High Bias\nHigh Variance", desc: "Worst of both worlds", pos: "bottom-right", color: "#ef4444", ideal: false },
   ];
 
@@ -108,7 +108,7 @@ function QuadrantDiagram({ bias, variance }: { bias: number; variance: number })
           key={q.pos}
           animate={{ opacity: i === activeIdx ? 1 : 0.35, scale: i === activeIdx ? 1.02 : 1 }}
           className="rounded-xl border p-3"
-          style={{ borderColor: i === activeIdx ? q.color : "#1e293b", background: i === activeIdx ? q.color + "10" : "#0f172a" }}
+          style={{ borderColor: i === activeIdx ? q.color : "#1e293b", background: i === activeIdx ? `color-mix(in srgb, ${q.color} 6%, transparent)` : "#0f172a" }}
         >
           <p className="text-[11px] font-bold whitespace-pre-line leading-tight mb-1" style={{ color: q.color }}>
             {q.label}
@@ -142,7 +142,7 @@ export default function BiasVarianceClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "bias-variance", score: 6 }),
+        body: JSON.stringify({ guideSlug: "bias-variance", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -254,7 +254,7 @@ export default function BiasVarianceClient() {
                     <span className="text-[11px] text-white">{label}</span>
                     <span className="text-[11px] font-mono" style={{ color }}>{value.toFixed(2)}</span>
                   </div>
-                  <input type="range" min={min} max={max} step={step} value={value}
+                  <input type="range" min={min} max={max} step={step} value={value} aria-label={label}
                     onChange={e => set(Number(e.target.value))}
                     className="w-full" style={{ accentColor: color }} />
                 </div>
@@ -263,7 +263,7 @@ export default function BiasVarianceClient() {
               <div className="rounded-lg border border-[#1e293b] p-3 mb-4">
                 <div className="flex justify-between text-[11px] mb-1.5">
                   <span className="text-[#475569]">Expected sq. error (bias² + 2σ²)</span>
-                  <span className="font-mono text-[#d4af37]">{expectedSqError.toFixed(3)}</span>
+                  <span className="font-mono text-[var(--color-accent)]">{expectedSqError.toFixed(3)}</span>
                 </div>
                 <div className="flex justify-between text-[11px] mb-1.5">
                   <span className="text-[#475569]">Bias² component</span>
@@ -282,7 +282,7 @@ export default function BiasVarianceClient() {
               <div className="flex gap-2">
                 <motion.button onClick={() => throwDarts(20)}
                   whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-                  className="flex-1 py-2 rounded-lg text-[12px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+                  className="flex-1 py-2 rounded-lg text-[12px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
                   Throw 20 darts
                 </motion.button>
                 <button
@@ -302,8 +302,8 @@ export default function BiasVarianceClient() {
               <div className="grid grid-cols-2 gap-2">
                 {[
                   { label: "Ideal", bias: 0, variance: 0.15, color: "#3bb4a4" },
-                  { label: "Overfit", bias: 0, variance: 0.9, color: "#d4af37" },
-                  { label: "Underfit", bias: 1.0, variance: 0.15, color: "#f59e0b" },
+                  { label: "Overfit", bias: 0, variance: 0.9, color: "var(--color-accent)" },
+                  { label: "Underfit", bias: 1.0, variance: 0.15, color: "var(--color-warning)" },
                   { label: "Both bad", bias: 0.8, variance: 0.8, color: "#ef4444" },
                 ].map(({ label, bias: pb, variance: pv, color }) => (
                   <button key={label}
@@ -339,11 +339,11 @@ export default function BiasVarianceClient() {
                     <span className="text-[10px] text-[#94a3b8]">Dart</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#d4af37]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-accent)]" />
                     <span className="text-[10px] text-[#94a3b8]">Centre (gold)</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full border-2 border-dashed border-[#d4af37]" />
+                    <div className="w-2.5 h-2.5 rounded-full border-2 border-dashed border-[var(--color-accent)]" />
                     <span className="text-[10px] text-[#94a3b8]">Centroid</span>
                   </div>
                 </div>
@@ -389,8 +389,8 @@ export default function BiasVarianceClient() {
                   </div>
                 ))}
                 <div className="flex justify-between text-[11px] font-semibold pt-2 border-t border-[#1e293b]">
-                  <span className="text-[#d4af37]">Total MSE</span>
-                  <span className="font-mono text-[#d4af37]">{(expectedSqError + 0.05).toFixed(3)}</span>
+                  <span className="text-[var(--color-accent)]">Total MSE</span>
+                  <span className="font-mono text-[var(--color-accent)]">{(expectedSqError + 0.05).toFixed(3)}</span>
                 </div>
               </div>
             </div>
@@ -398,7 +398,7 @@ export default function BiasVarianceClient() {
             {/* ML connection */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {[
-                { title: "High Bias (Underfitting)", body: "Model is too simple. Misses patterns in training data. High training AND test error.", color: "#f59e0b" },
+                { title: "High Bias (Underfitting)", body: "Model is too simple. Misses patterns in training data. High training AND test error.", color: "var(--color-warning)" },
                 { title: "High Variance (Overfitting)", body: "Model memorizes training data. Works perfectly on training but fails on new data.", color: "#a855f7" },
                 { title: "Sweet Spot", body: "Regularization, cross-validation, and the right model complexity minimize total error.", color: "#3bb4a4" },
               ].map(({ title, body, color }) => (
@@ -414,7 +414,7 @@ export default function BiasVarianceClient() {
         {/* Nav */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link href="/visual-guides/regression-to-mean"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
             ← Previous Guide
           </Link>
           <Link href="/visual-guides/what-is-ml"
@@ -423,7 +423,7 @@ export default function BiasVarianceClient() {
           </Link>
         </div>
 
-        <GuideCompletion isComplete={allComplete} guideSlug="bias-variance" score={6} />
+        <GuideCompletion isComplete={allComplete} guideSlug="bias-variance" score={100} />
       </div>
     </div>
   );

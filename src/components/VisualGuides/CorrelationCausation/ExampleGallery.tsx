@@ -25,7 +25,7 @@ function MiniScatter({ data, groupColors }: { data: { x: number; y: number; grou
       <line
         x1={tx(xMin - xP)} y1={ty(reg.intercept + reg.slope * (xMin - xP))}
         x2={tx(xMax + xP)} y2={ty(reg.intercept + reg.slope * (xMax + xP))}
-        stroke="#d4af37" strokeWidth="1.5" strokeDasharray="4 2" opacity="0.7"
+        stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="4 2" opacity="0.7"
       />
       {data.map((pt, i) => (
         <circle key={i} cx={tx(pt.x)} cy={ty(pt.y)} r="5.5" fill={groupColors[pt.group] || "#3bb4a4"} opacity="0.9" />
@@ -36,8 +36,8 @@ function MiniScatter({ data, groupColors }: { data: { x: number; y: number; grou
 
 const GROUP_COLORS: Record<number, Record<string, string>> = {
   0: { "non-smoker": "#3bb4a4", "smoker": "#ef4444" },
-  1: { "low-ses": "#3b82f6", "high-ses": "#d4af37" },
-  2: { "developing": "#6b7280", "emerging": "#f97316", "developed": "#d4af37" },
+  1: { "low-ses": "#3b82f6", "high-ses": "var(--color-accent)" },
+  2: { "developing": "#475569", "emerging": "#f97316", "developed": "var(--color-accent)" },
   3: { "active": "#3bb4a4", "passive": "#ef4444" },
   4: { "low-density": "#3bb4a4", "high-density": "#f97316" },
 };
@@ -64,7 +64,7 @@ export default function ExampleGallery() {
             >
               <div className="flex items-start justify-between gap-2">
                 <p className="text-[12px] font-semibold text-white leading-snug">{ex.title}</p>
-                <span className="text-[11px] font-bold text-[#d4af37] flex-shrink-0">r {ex.r}</span>
+                <span className="text-[11px] font-bold text-[var(--color-accent)] flex-shrink-0">r {ex.r}</span>
               </div>
               <p className="text-[10px] text-[#475569] mt-1.5 truncate">{ex.var1} vs {ex.var2}</p>
               <div className="flex items-center gap-1.5 mt-2">
@@ -95,7 +95,7 @@ export default function ExampleGallery() {
                       ))}
                     </div>
                     <div className="rounded-lg border-l-4 p-2.5"
-                      style={{ borderColor: ex.confoundColor, background: ex.confoundColor + "08" }}>
+                      style={{ borderColor: ex.confoundColor, background: `color-mix(in srgb, ${ex.confoundColor} 3%, transparent)` }}>
                       <p className="text-[11px] text-[#94a3b8] leading-relaxed">{ex.explanation}</p>
                     </div>
                   </div>

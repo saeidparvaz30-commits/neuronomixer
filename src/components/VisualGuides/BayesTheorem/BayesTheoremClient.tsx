@@ -43,7 +43,7 @@ export default function BayesTheoremClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "bayes-theorem", score: 7 }),
+        body: JSON.stringify({ guideSlug: "bayes-theorem", score: 100 }),
       }).catch(() => {});
     }
   }, [isComplete, session?.user]);
@@ -124,7 +124,7 @@ export default function BayesTheoremClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={isComplete} guideSlug="bayes-theorem" score={7} />
+      <GuideCompletion isComplete={isComplete} guideSlug="bayes-theorem" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -139,15 +139,15 @@ export default function BayesTheoremClient() {
         {/* Hero */}
         <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Statistics
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Bayes Theorem:{" "}
-            <span className="text-[#d4af37]">Update Your Beliefs</span>
+            <span className="text-[var(--color-accent)]">Update Your Beliefs</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             A test is 95% accurate. You test positive. What&apos;s the probability you have the disease?
@@ -242,7 +242,7 @@ export default function BayesTheoremClient() {
               <button
                 onClick={handleRevealActuals}
                 disabled={!state.intuitionApplied}
-                className="mt-2 px-8 py-3.5 rounded-xl text-[15px] font-bold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+                className="mt-2 px-8 py-3.5 rounded-xl text-[15px] font-bold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Show Actuals →
               </button>
@@ -307,13 +307,13 @@ export default function BayesTheoremClient() {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/conditional-probability"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             ← Previous: Conditional Probability
           </Link>
           <Link
             href="/visual-guides/random-variables-expected-value"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Next: Random Variables →
           </Link>

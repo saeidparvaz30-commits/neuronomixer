@@ -149,20 +149,20 @@ export default function CentralLimitTheoremClient() {
           transition={{ duration: 0.4 }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               STATISTICS
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             The Central Limit Theorem{" "}
-            <span className="text-[#d4af37]">in Action</span>
+            <span className="text-[var(--color-accent)]">in Action</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             See how sampling distributions converge to a bell curve regardless of the
-            original population shape. Pick any distribution — uniform, skewed, bimodal —
-            draw random samples and watch the magic happen.
+            original population shape. Pick any distribution: uniform, skewed, or bimodal.
+            Then draw random samples and watch the magic happen.
           </p>
         </motion.section>
 
@@ -286,13 +286,13 @@ export default function CentralLimitTheoremClient() {
               {
                 title: "The n ≥ 30 Rule of Thumb",
                 desc: "For mildly non-normal distributions, n = 30 often gives a reasonably normal sampling distribution. But it is a heuristic, not a law: heavy tails or extreme skew can need hundreds of observations, and distributions without finite variance never converge at all.",
-                color: "#d4af37",
+                color: "var(--color-accent)",
               },
             ].map(({ title, desc, color }) => (
               <div
                 key={title}
                 className="rounded-xl p-3"
-                style={{ background: color + "0a", border: `1px solid ${color}20` }}
+                style={{ background: `color-mix(in srgb, ${color} 4%, transparent)`, border: `1px solid color-mix(in srgb, ${color} 13%, transparent)` }}
               >
                 <p className="text-[11px] font-bold mb-1.5" style={{ color }}>
                   {title}
@@ -307,13 +307,13 @@ export default function CentralLimitTheoremClient() {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/data-distributions"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             ← Data Distributions
           </Link>
           <Link
             href="/visual-guides/confidence-intervals"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Confidence Intervals →
           </Link>

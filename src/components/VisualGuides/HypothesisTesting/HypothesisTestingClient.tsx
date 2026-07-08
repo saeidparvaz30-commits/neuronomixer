@@ -55,7 +55,7 @@ export default function HypothesisTestingClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "hypothesis-testing", score: 9 }),
+        body: JSON.stringify({ guideSlug: "hypothesis-testing", score: 100 }),
       }).catch(() => {});
     }
   }, [isComplete, session?.user]);
@@ -183,7 +183,7 @@ export default function HypothesisTestingClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={isComplete} guideSlug="hypothesis-testing" score={9} />
+      <GuideCompletion isComplete={isComplete} guideSlug="hypothesis-testing" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -203,15 +203,15 @@ export default function HypothesisTestingClient() {
           className="mb-10"
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               STATISTICS
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Hypothesis Testing:{" "}
-            <span className="text-[#d4af37]">A Visual Experiment</span>
+            <span className="text-[var(--color-accent)]">A Visual Experiment</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             Design A/B tests. Run 1000 experiments. Watch the confusion matrix
@@ -278,13 +278,13 @@ export default function HypothesisTestingClient() {
               <div className="rounded-xl border border-[#1e293b] bg-[#0f172a] p-3">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-[11px] text-[#94a3b8]">Running 1000 experiments…</span>
-                  <span className="text-[11px] font-mono text-[#d4af37]">
+                  <span className="text-[11px] font-mono text-[var(--color-accent)]">
                     {bulkProgress} / 1000
                   </span>
                 </div>
                 <div className="h-1.5 rounded-full bg-[#1e293b] overflow-hidden">
                   <motion.div
-                    className="h-full rounded-full bg-[#d4af37]"
+                    className="h-full rounded-full bg-[var(--color-accent)]"
                     animate={{ width: `${(bulkProgress / 1000) * 100}%` }}
                     transition={{ duration: 0.1 }}
                   />
@@ -333,7 +333,7 @@ export default function HypothesisTestingClient() {
                 disabled={isRunning}
                 whileHover={{ scale: isRunning ? 1 : 1.02 }}
                 whileTap={{ scale: isRunning ? 1 : 0.98 }}
-                className="px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Run Single Experiment
               </motion.button>
@@ -343,7 +343,7 @@ export default function HypothesisTestingClient() {
                 disabled={isRunning}
                 whileHover={{ scale: isRunning ? 1 : 1.02 }}
                 whileTap={{ scale: isRunning ? 1 : 0.98 }}
-                className="px-5 py-2.5 rounded-xl text-[13px] font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-5 py-2.5 rounded-xl text-[13px] font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Run 1000 Experiments
               </motion.button>
@@ -393,13 +393,13 @@ export default function HypothesisTestingClient() {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/sample-size-margin-of-error"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             ← Sample Size, Margin of Error &amp; Survey Design
           </Link>
           <Link
             href="/visual-guides/p-values"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             P-Values Demystified →
           </Link>

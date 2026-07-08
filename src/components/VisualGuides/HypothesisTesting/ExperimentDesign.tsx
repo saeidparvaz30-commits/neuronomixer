@@ -22,7 +22,7 @@ function effectLabel(es: number): string {
 
 function effectExplanation(es: number): string {
   if (es === 0) {
-    return "Effect size is 0 — the null hypothesis is true. Any rejection will be a Type I error (false positive).";
+    return "Effect size is 0: the null hypothesis is true. Any rejection will be a Type I error (false positive).";
   }
   if (es <= 0.2) {
     return "Very small real effect. Detecting it reliably requires a large sample size.";
@@ -38,7 +38,7 @@ function effectExplanation(es: number): string {
 
 function sliderBackground(value: number, min: number, max: number): string {
   const pct = ((value - min) / (max - min)) * 100;
-  return `linear-gradient(to right, #d4af37 ${pct}%, #1e293b ${pct}%)`;
+  return `linear-gradient(to right, var(--color-accent) ${pct}%, #1e293b ${pct}%)`;
 }
 
 export default function ExperimentDesign({
@@ -59,19 +59,19 @@ export default function ExperimentDesign({
           width: 16px;
           height: 16px;
           border-radius: 50%;
-          background: #d4af37;
+          background: var(--color-accent);
           cursor: pointer;
           border: 2px solid #0f172a;
-          box-shadow: 0 0 0 2px #d4af37;
+          box-shadow: 0 0 0 2px var(--color-accent);
         }
         .ht-slider::-moz-range-thumb {
           width: 16px;
           height: 16px;
           border-radius: 50%;
-          background: #d4af37;
+          background: var(--color-accent);
           cursor: pointer;
           border: 2px solid #0f172a;
-          box-shadow: 0 0 0 2px #d4af37;
+          box-shadow: 0 0 0 2px var(--color-accent);
         }
         .ht-slider {
           -webkit-appearance: none;
@@ -96,7 +96,7 @@ export default function ExperimentDesign({
       <div className="mb-5">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[12px] text-white font-medium">Effect Size (Cohen's d)</span>
-          <span className="text-[12px] font-mono text-[#d4af37]">{effectSize.toFixed(1)}</span>
+          <span className="text-[12px] font-mono text-[var(--color-accent)]">{effectSize.toFixed(1)}</span>
         </div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] text-[#475569]">No effect (null true)</span>
@@ -109,6 +109,7 @@ export default function ExperimentDesign({
           max={2.0}
           step={0.1}
           value={effectSize}
+          aria-label="Effect size (Cohen's d)"
           disabled={isRunning}
           onChange={e => onEffectSizeChange(Number(e.target.value))}
           style={{ background: sliderBackground(effectSize, 0, 2.0) }}
@@ -135,7 +136,7 @@ export default function ExperimentDesign({
       <div className="mb-5">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[12px] text-white font-medium">Sample Size (n per group)</span>
-          <span className="text-[12px] font-mono text-[#d4af37]">{sampleSize}</span>
+          <span className="text-[12px] font-mono text-[var(--color-accent)]">{sampleSize}</span>
         </div>
         <input
           type="range"
@@ -144,6 +145,7 @@ export default function ExperimentDesign({
           max={500}
           step={10}
           value={sampleSize}
+          aria-label="Sample size per group"
           disabled={isRunning}
           onChange={e => onSampleSizeChange(Number(e.target.value))}
           style={{ background: sliderBackground(sampleSize, 10, 500) }}
@@ -158,7 +160,7 @@ export default function ExperimentDesign({
       <div className="mb-4">
         <div className="flex items-center justify-between mb-1">
           <span className="text-[12px] text-white font-medium">Significance Level (α)</span>
-          <span className="text-[12px] font-mono text-[#d4af37]">{alpha.toFixed(2)}</span>
+          <span className="text-[12px] font-mono text-[var(--color-accent)]">{alpha.toFixed(2)}</span>
         </div>
         <input
           type="range"
@@ -167,6 +169,7 @@ export default function ExperimentDesign({
           max={0.20}
           step={0.01}
           value={alpha}
+          aria-label="Significance level (alpha)"
           disabled={isRunning}
           onChange={e => onAlphaChange(Number(e.target.value))}
           style={{ background: sliderBackground(alpha, 0.01, 0.20) }}
@@ -198,7 +201,7 @@ export default function ExperimentDesign({
         </div>
         <div className="flex justify-between">
           <span>Reject if p &lt;</span>
-          <span className="font-mono text-[#d4af37]">{alpha.toFixed(2)}</span>
+          <span className="font-mono text-[var(--color-accent)]">{alpha.toFixed(2)}</span>
         </div>
       </div>
     </div>

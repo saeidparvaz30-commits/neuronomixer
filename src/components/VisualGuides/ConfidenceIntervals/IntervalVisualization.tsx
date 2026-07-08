@@ -54,7 +54,7 @@ export default function IntervalVisualization({
     if (diff <= 3)
       return `This is exactly what we expect for ${confidenceLevel}% confidence intervals!`;
     if (coverCount > confidenceLevel) return "Great coverage!";
-    return "Slightly lower than expected — just chance variation.";
+    return "Slightly lower than expected: just chance variation.";
   };
 
   const handleMouseEnter = useCallback(
@@ -106,7 +106,7 @@ export default function IntervalVisualization({
         </p>
         <p className="text-[11px] text-[#94a3b8]">
           <span className="text-[#3bb4a4] font-bold">{coverCount}</span> of 100
-          intervals contain the true mean (green) —{" "}
+          intervals contain the true mean (green).{" "}
           <span className="text-[#f1f5f9]">{interpretationText()}</span>
         </p>
       </div>
@@ -122,7 +122,7 @@ export default function IntervalVisualization({
           <span className="text-[#94a3b8]">Misses μ=100</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-px h-3 bg-[#d4af37]" />
+          <div className="w-px h-3 bg-[var(--color-accent)]" />
           <span className="text-[#94a3b8]">True mean (μ=100)</span>
         </div>
       </div>
@@ -160,14 +160,14 @@ export default function IntervalVisualization({
             y1={PAD_T - 4}
             x2={trueLine}
             y2={PAD_T + intervals.length * ROW_H + 4}
-            stroke="#d4af37"
+            stroke="var(--color-accent)"
             strokeWidth="1.5"
             strokeDasharray="3,3"
           />
           <text
             x={trueLine + 3}
             y={PAD_T - 6}
-            fill="#d4af37"
+            fill="var(--color-accent)"
             fontSize="8"
             fontWeight="600"
           >
@@ -228,7 +228,7 @@ export default function IntervalVisualization({
                     width={INNER_W}
                     height={ROW_H}
                     fill="#d4af3712"
-                    stroke="#d4af37"
+                    stroke="var(--color-accent)"
                     strokeWidth="0.5"
                     rx="1"
                   />

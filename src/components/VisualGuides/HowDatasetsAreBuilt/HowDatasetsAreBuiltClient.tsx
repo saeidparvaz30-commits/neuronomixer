@@ -12,7 +12,7 @@ import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 type Particle = { id: number; x: number; y: number; color: string; dx: number; dy: number };
 function makeParticles(): Particle[] {
-  const colors = ["#d4af37", "#3bb4a4", "#3b82f6", "#a855f7", "#ffffff"];
+  const colors = ["var(--color-accent)", "#3bb4a4", "#3b82f6", "#a855f7", "#ffffff"];
   return Array.from({ length: 28 }, (_, i) => ({
     id: i, x: 30 + Math.random() * 50, y: 30 + Math.random() * 40,
     color: colors[i % colors.length],
@@ -43,7 +43,7 @@ export default function HowDatasetsAreBuiltClient() {
         fetch("/api/visual-guides/complete", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ guideSlug: "how-datasets-are-built", score: 5 }),
+          body: JSON.stringify({ guideSlug: "how-datasets-are-built", score: 100 }),
         }).catch(() => {});
       }
       return () => clearTimeout(t);
@@ -89,7 +89,7 @@ export default function HowDatasetsAreBuiltClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="how-datasets-are-built" score={5} />
+      <GuideCompletion isComplete={allComplete} guideSlug="how-datasets-are-built" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Hero */}
@@ -104,7 +104,7 @@ export default function HowDatasetsAreBuiltClient() {
             <span className="text-[var(--color-accent)]">From Raw to Ready</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
-            Follow data through every stage of the pipeline — from messy raw sources to clean, structured, analysis-ready datasets. Click each stage to explore and solve real challenges.
+            Follow data through every stage of the pipeline, from messy raw sources to clean, structured, analysis-ready datasets. Click each stage to explore and solve real challenges.
           </p>
         </section>
 
@@ -112,7 +112,7 @@ export default function HowDatasetsAreBuiltClient() {
         <div className="mb-8">
           <div className="relative h-1.5 rounded-full bg-[#1e293b] overflow-hidden">
             <motion.div className="absolute left-0 top-0 h-full rounded-full"
-              style={{ background: "linear-gradient(90deg,#1e5d8a,#3bb4a4,#d4af37)" }}
+              style={{ background: "linear-gradient(90deg,#1e5d8a,#3bb4a4,var(--color-accent))" }}
               initial={{ width: "0%" }}
               animate={{ width: `${(completedCount / STAGE_CONFIGS.length) * 100}%` }}
               transition={{ duration: 0.5, ease: "easeOut" }}

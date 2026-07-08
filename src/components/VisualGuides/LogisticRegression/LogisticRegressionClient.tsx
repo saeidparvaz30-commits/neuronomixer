@@ -238,7 +238,7 @@ function InteractiveSCurve({
       {/* Animated S-curve */}
       <motion.path
         d={sCurvePath(b0, b1)}
-        stroke="#d4af37"
+        stroke="var(--color-accent)"
         strokeWidth="2.5"
         fill="none"
         animate={{ d: sCurvePath(b0, b1) }}
@@ -251,10 +251,10 @@ function InteractiveSCurve({
           <line
             x1={tx(inflection)} y1={ty(0.5)}
             x2={tx(inflection)} y2={ty(0.5) - 40}
-            stroke="#d4af37" strokeWidth="1" strokeDasharray="3,2" opacity="0.6"
+            stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="3,2" opacity="0.6"
           />
-          <circle cx={tx(inflection)} cy={ty(0.5)} r="4" fill="#d4af37" opacity="0.9" />
-          <text x={tx(inflection) + 6} y={ty(0.5) - 12} fill="#d4af37" fontSize="8">
+          <circle cx={tx(inflection)} cy={ty(0.5)} r="4" fill="var(--color-accent)" opacity="0.9" />
+          <text x={tx(inflection) + 6} y={ty(0.5) - 12} fill="var(--color-accent)" fontSize="8">
             50% @ {inflection.toFixed(1)}h
           </text>
         </g>
@@ -307,9 +307,9 @@ function ThresholdScatter({
       <line
         x1={PAD.l} y1={ty(threshold)}
         x2={PAD.l + IW} y2={ty(threshold)}
-        stroke="#d4af37" strokeWidth="1.5" strokeDasharray="5,3"
+        stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="5,3"
       />
-      <text x={PAD.l + IW + 2} y={ty(threshold) + 3} fill="#d4af37" fontSize="7.5">
+      <text x={PAD.l + IW + 2} y={ty(threshold) + 3} fill="var(--color-accent)" fontSize="7.5">
         {(threshold * 100).toFixed(0)}%
       </text>
 
@@ -318,7 +318,7 @@ function ThresholdScatter({
         <line
           x1={tx(clampedThreshX)} y1={PAD.t}
           x2={tx(clampedThreshX)} y2={PAD.t + IH}
-          stroke="#d4af37" strokeWidth="1.5" strokeDasharray="5,3"
+          stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="5,3"
         />
       )}
 
@@ -411,18 +411,18 @@ function CalibrationPlot({ b0, b1 }: { b0: number; b1: number }) {
           <line
             x1={ctxP(d.predicted)} y1={ctyP(d.predicted)}
             x2={ctxP(d.predicted)} y2={ctyP(d.actual)}
-            stroke="#d4af37" strokeWidth="1" opacity="0.4"
+            stroke="var(--color-accent)" strokeWidth="1" opacity="0.4"
           />
           <circle
             cx={ctxP(d.predicted)}
             cy={ctyP(d.actual)}
             r="6"
-            fill="#d4af37"
+            fill="var(--color-accent)"
             opacity="0.85"
             stroke="#0f172a"
             strokeWidth="1"
           />
-          <text x={ctxP(d.predicted)} y={ctyP(d.actual) - 9} textAnchor="middle" fill="#d4af37" fontSize="7">
+          <text x={ctxP(d.predicted)} y={ctyP(d.actual) - 9} textAnchor="middle" fill="var(--color-accent)" fontSize="7">
             {(d.actual * 100).toFixed(0)}%
           </text>
         </g>
@@ -458,7 +458,7 @@ function ProgressDots({ steps }: { steps: { label: string; done: boolean }[] }) 
 
 // ─── Slider ────────────────────────────────────────────────────────────────────
 function Slider({
-  label, value, min, max, step, onChange, color = "#d4af37",
+  label, value, min, max, step, onChange, color = "var(--color-accent)",
 }: {
   label: string; value: number; min: number; max: number;
   step: number; onChange: (v: number) => void; color?: string;
@@ -470,7 +470,7 @@ function Slider({
         <span className="text-[12px] font-mono" style={{ color }}>{value.toFixed(2)}</span>
       </div>
       <input
-        type="range" min={min} max={max} step={step} value={value}
+        type="range" min={min} max={max} step={step} value={value} aria-label={label}
         onChange={e => onChange(parseFloat(e.target.value))}
         className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
         style={{ accentColor: color }}
@@ -566,7 +566,7 @@ export default function LogisticRegressionClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "logistic-regression", score: 8 }),
+        body: JSON.stringify({ guideSlug: "logistic-regression", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -586,7 +586,7 @@ export default function LogisticRegressionClient() {
   ];
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-20">
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -604,15 +604,15 @@ export default function LogisticRegressionClient() {
           transition={{ duration: 0.4 }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               UNIT 11: GENERALIZED MODELS
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Logistic Regression:{" "}
-            <span className="text-[#d4af37]">Predicting Yes or No</span>
+            <span className="text-[var(--color-accent)]">Predicting Yes or No</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             Linear regression fails at binary outcomes. The logistic S-curve keeps predictions
@@ -689,13 +689,13 @@ export default function LogisticRegressionClient() {
             <div className="rounded-xl border border-[#ef4444]/30 bg-[#ef444410] p-4">
               <p className="text-[12px] text-[#ef4444] font-semibold mb-1">Linear: Breaks the rules</p>
               <p className="text-[11px] text-[#94a3b8] leading-relaxed">
-                Linear regression predicts negative probabilities and values above 1 — both mathematically impossible for a probability.
+                Linear regression predicts negative probabilities and values above 1, both mathematically impossible for a probability.
               </p>
             </div>
             <div className="rounded-xl border border-[#3bb4a4]/30 bg-[#3bb4a410] p-4">
               <p className="text-[12px] text-[#3bb4a4] font-semibold mb-1">Logistic: Stays bounded</p>
               <p className="text-[11px] text-[#94a3b8] leading-relaxed">
-                The sigmoid function squashes any real-valued linear combination into the (0, 1) interval — always a valid probability.
+                The sigmoid function squashes any real-valued linear combination into the (0, 1) interval, always a valid probability.
               </p>
             </div>
           </div>
@@ -743,20 +743,20 @@ export default function LogisticRegressionClient() {
                 value={b1}
                 min={0.1} max={3.0} step={0.05}
                 onChange={setB1}
-                color="#d4af37"
+                color="var(--color-accent)"
               />
             </div>
 
             <div className="flex items-center justify-between flex-wrap gap-3">
               <p className="text-[11px] text-[#475569]">
                 Inflection point (50% probability):{" "}
-                <span className="text-[#d4af37] font-semibold font-mono">
+                <span className="text-[var(--color-accent)] font-semibold font-mono">
                   {isFinite(inflection) ? `${inflection.toFixed(2)} hours` : "—"}
                 </span>
               </p>
               <button
                 onClick={() => { setB0(LOGISTIC_INTERCEPT); setB1(LOGISTIC_SLOPE); }}
-                className="px-3 py-1.5 rounded-xl text-[11px] font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                className="px-3 py-1.5 rounded-xl text-[11px] font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
               >
                 Reset to fit
               </button>
@@ -788,7 +788,7 @@ export default function LogisticRegressionClient() {
                 value={threshold}
                 min={0.01} max={0.99} step={0.01}
                 onChange={handleThresholdChange}
-                color="#d4af37"
+                color="var(--color-accent)"
               />
             </div>
 
@@ -863,7 +863,7 @@ export default function LogisticRegressionClient() {
                   label="Specificity"
                   value={`${(metrics.specificity * 100).toFixed(1)}%`}
                   desc={`Of actual fails, correctly rejected ${metrics.tn} out of ${metrics.tn + metrics.fp}`}
-                  color="#60a5fa"
+                  color="#93c5fd"
                 />
                 <MetricCard
                   label="Precision"
@@ -875,7 +875,7 @@ export default function LogisticRegressionClient() {
                   label="F1 Score"
                   value={metrics.f1.toFixed(3)}
                   desc="Harmonic mean of precision and sensitivity"
-                  color="#d4af37"
+                  color="var(--color-accent)"
                 />
               </div>
               <div className="mt-3 pt-3 border-t border-[#1e293b] flex justify-between items-center">
@@ -989,9 +989,9 @@ export default function LogisticRegressionClient() {
                 </p>
               </div>
 
-              <div className="rounded-xl border border-[#d4af37]/30 bg-[#d4af3710] p-4">
-                <p className="text-[10px] text-[#d4af37] uppercase tracking-widest mb-2">β₁ (Slope)</p>
-                <p className="text-3xl font-black font-mono text-[#d4af37]">{b1.toFixed(3)}</p>
+              <div className="rounded-xl border border-[var(--color-accent)]/30 bg-[#d4af3710] p-4">
+                <p className="text-[10px] text-[var(--color-accent)] uppercase tracking-widest mb-2">β₁ (Slope)</p>
+                <p className="text-3xl font-black font-mono text-[var(--color-accent)]">{b1.toFixed(3)}</p>
                 <p className="text-[10px] text-[#94a3b8] mt-1">
                   Per-hour change in log-odds
                 </p>
@@ -1010,7 +1010,7 @@ export default function LogisticRegressionClient() {
               <p className="text-[12px] text-white font-semibold mb-2">Interpretation</p>
               <p className="text-[12px] text-[#94a3b8] leading-relaxed">
                 For each additional study hour, the <strong className="text-white">odds of passing multiply by {oddsRatioDisplay}</strong>.
-                This represents a <strong className="text-[#d4af37]">{oddsRatioIncrease}% increase</strong> in the odds of passing.
+                This represents a <strong className="text-[var(--color-accent)]">{oddsRatioIncrease}% increase</strong> in the odds of passing.
               </p>
             </div>
 
@@ -1026,7 +1026,7 @@ export default function LogisticRegressionClient() {
             {!oddsRatioInterpreted ? (
               <button
                 onClick={() => setOddsRatioInterpreted(true)}
-                className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
               >
                 Mark as read
               </button>
@@ -1063,8 +1063,8 @@ export default function LogisticRegressionClient() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
               {[
                 { title: "On the diagonal", desc: "Predicted probability matches actual fraction. Perfect calibration.", color: "#3bb4a4" },
-                { title: "Below diagonal", desc: "Model is overconfident — predicted too high relative to actual outcomes.", color: "#ef4444" },
-                { title: "Above diagonal", desc: "Model is underconfident — actual rate exceeds the predicted probability.", color: "#60a5fa" },
+                { title: "Below diagonal", desc: "Model is overconfident: predicted too high relative to actual outcomes.", color: "#ef4444" },
+                { title: "Above diagonal", desc: "Model is underconfident: actual rate exceeds the predicted probability.", color: "#93c5fd" },
               ].map(({ title, desc, color }) => (
                 <div key={title} className="rounded-xl border border-[#1e293b] p-3">
                   <p className="text-[11px] font-semibold mb-1" style={{ color }}>{title}</p>
@@ -1098,7 +1098,7 @@ export default function LogisticRegressionClient() {
               {
                 title: "Maximum Likelihood",
                 body: "Logistic regression is fitted by maximizing the log-likelihood of observed outcomes, not by minimizing squared error.",
-                color: "#d4af37",
+                color: "var(--color-accent)",
               },
               {
                 title: "Log-Odds (Logit)",
@@ -1108,7 +1108,7 @@ export default function LogisticRegressionClient() {
               {
                 title: "Threshold Choice",
                 body: "The 0.5 default threshold is not always optimal. Use ROC curves or domain knowledge to pick the right trade-off for your context.",
-                color: "#60a5fa",
+                color: "#93c5fd",
               },
             ].map(({ title, body, color }) => (
               <div key={title} className="rounded-xl border border-[#1e293b] p-4">
@@ -1123,19 +1123,19 @@ export default function LogisticRegressionClient() {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/regression-diagnostics"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             ← Regression Diagnostics
           </Link>
           <Link
             href="/visual-guides/count-models-poisson"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Count Models: Poisson →
           </Link>
         </div>
 
-        <GuideCompletion isComplete={allComplete} guideSlug="logistic-regression" score={8} />
+        <GuideCompletion isComplete={allComplete} guideSlug="logistic-regression" score={100} />
 
       </div>
     </div>

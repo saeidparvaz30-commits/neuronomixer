@@ -161,12 +161,12 @@ function ElbowChart({ elbowData, currentK }: { elbowData: { k: number; inertia: 
       <line x1={PAD.l} y1={PAD.t + IH} x2={PAD.l + IW} y2={PAD.t + IH} stroke="#334155" strokeWidth="1" />
       <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={PAD.t + IH} stroke="#334155" strokeWidth="1" />
       {[2, 3, 4, 5, 6].map(k => (
-        <text key={k} x={tx(k)} y={PAD.t + IH + 14} textAnchor="middle" fill={k === currentK ? "#d4af37" : "#475569"} fontSize="9">{k}</text>
+        <text key={k} x={tx(k)} y={PAD.t + IH + 14} textAnchor="middle" fill={k === currentK ? "var(--color-accent)" : "#475569"} fontSize="9">{k}</text>
       ))}
       {elbowData.length > 1 && <path d={path} fill="none" stroke="#3bb4a4" strokeWidth="2" />}
       {elbowData.map(d => (
         <motion.circle key={d.k} cx={tx(d.k)} cy={ty(d.inertia)} r={d.k === currentK ? 6 : 4}
-          fill={d.k === currentK ? "#d4af37" : "#3bb4a4"}
+          fill={d.k === currentK ? "var(--color-accent)" : "#3bb4a4"}
           initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}
         />
       ))}
@@ -202,7 +202,7 @@ export default function KMeansClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "k-means", score: 6 }),
+        body: JSON.stringify({ guideSlug: "k-means", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -381,7 +381,7 @@ export default function KMeansClient() {
                 </p>
                 <div className="flex items-center gap-2 text-[11px] text-[#475569]">
                   <span>⭐ = centroid</span>
-                  {inertia > 0 && <span className="font-mono text-[#d4af37]">Inertia: {inertia.toFixed(0)}</span>}
+                  {inertia > 0 && <span className="font-mono text-[var(--color-accent)]">Inertia: {inertia.toFixed(0)}</span>}
                 </div>
               </div>
 
@@ -429,11 +429,11 @@ export default function KMeansClient() {
               <div className="mb-4">
                 <div className="flex justify-between mb-1">
                   <span className="text-[11px] text-white">Number of clusters (K)</span>
-                  <span className="text-[11px] font-mono text-[#d4af37]">{k}</span>
+                  <span className="text-[11px] font-mono text-[var(--color-accent)]">{k}</span>
                 </div>
-                <input type="range" min={2} max={6} step={1} value={k}
+                <input type="range" min={2} max={6} step={1} value={k} aria-label="Number of clusters (K)"
                   onChange={e => { setK(Number(e.target.value)); resetCentroids(); }}
-                  className="w-full" style={{ accentColor: "#d4af37" }} />
+                  className="w-full" style={{ accentColor: "var(--color-accent)" }} />
                 <div className="flex justify-between text-[9px] text-[#334155] mt-0.5">
                   {[2,3,4,5,6].map(v => <span key={v}>{v}</span>)}
                 </div>
@@ -444,14 +444,14 @@ export default function KMeansClient() {
                 {phase === "setup" && centroids.length === k && (
                   <motion.button onClick={startAlgorithm}
                     whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-                    className="w-full py-2 rounded-xl text-[12px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+                    className="w-full py-2 rounded-xl text-[12px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
                     Start Algorithm
                   </motion.button>
                 )}
                 {phase === "running" && (
                   <div className="flex gap-2">
                     <button onClick={runStep} disabled={isPlaying}
-                      className="flex-1 py-2 rounded-xl text-[12px] font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors disabled:opacity-40">
+                      className="flex-1 py-2 rounded-xl text-[12px] font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors disabled:opacity-40">
                       Step
                     </button>
                     <button onClick={() => setIsPlaying(!isPlaying)}
@@ -506,7 +506,7 @@ export default function KMeansClient() {
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link href="/visual-guides/decision-trees"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
             ← Previous Guide
           </Link>
           <Link href="/visual-guides/knn"
@@ -515,7 +515,7 @@ export default function KMeansClient() {
           </Link>
         </div>
 
-        <GuideCompletion isComplete={allComplete} guideSlug="k-means" score={6} />
+        <GuideCompletion isComplete={allComplete} guideSlug="k-means" score={100} />
       </div>
     </div>
   );

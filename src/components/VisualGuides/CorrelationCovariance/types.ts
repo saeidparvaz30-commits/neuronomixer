@@ -314,7 +314,7 @@ export const CAUSATION_EXAMPLES: CausationExample[] = [
     xLabel: "Ice Cream Sales (units/day)",
     yLabel: "Drowning Deaths (per month)",
     description:
-      "Both ice cream sales and drowning rates spike in summer months. When you plot them together the correlation looks alarming — r ≈ 0.85.",
+      "Both ice cream sales and drowning rates spike in summer months. When you plot them together the correlation looks alarming: r ≈ 0.85.",
     lurkingVariable:
       "Season (Temperature) is the true driver. Hot weather makes people buy more ice cream AND swim more often, increasing drowning risk. Ice cream causes neither.",
     naiveConclusion: "Ice cream sales cause drowning deaths.",
@@ -326,7 +326,7 @@ export const CAUSATION_EXAMPLES: CausationExample[] = [
     xLabel: "Shoe Size (EU)",
     yLabel: "Reading Score",
     description:
-      "In a sample of children aged 5–13, bigger shoe sizes strongly predict better reading scores — r ≈ 0.90. Should we buy bigger shoes?",
+      "In a sample of children aged 5–13, bigger shoe sizes strongly predict better reading scores: r ≈ 0.90. Should we buy bigger shoes?",
     lurkingVariable:
       "Age is the hidden driver. Older children have larger feet AND have had more years of schooling. Neither shoe size causes reading ability.",
     naiveConclusion: "Bigger shoe size improves reading ability.",
@@ -340,7 +340,7 @@ export const CAUSATION_EXAMPLES: CausationExample[] = [
     description:
       "Early studies found moderate positive correlation (r ≈ 0.55) between coffee intake and cardiovascular risk, causing coffee scares.",
     lurkingVariable:
-      "Smoking was the confound — heavy coffee drinkers of that era were also more likely to smoke, which actually drives the heart risk. After adjusting for smoking the coffee effect disappears or reverses.",
+      "Smoking was the confound: heavy coffee drinkers of that era were also more likely to smoke, which actually drives the heart risk. After adjusting for smoking the coffee effect disappears or reverses.",
     naiveConclusion: "Drinking coffee causes heart disease.",
     correlationValue: 0.55,
     points: buildCausation3(),

@@ -27,15 +27,15 @@ export default function StatCard({
       layout
       className={`rounded-2xl border p-4 transition-colors duration-200 cursor-default ${
         highlight
-          ? "border-[#d4af37]/60 bg-[#1e293b]"
-          : "border-[#1e293b] bg-[#0f172a] hover:border-[#d4af37]/40"
+          ? "border-[var(--color-accent)]/60 bg-[#1e293b]"
+          : "border-[#1e293b] bg-[#0f172a] hover:border-[var(--color-accent)]/40"
       }`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
       <div className="flex items-start justify-between gap-2 mb-1">
         <span className="text-[13px] font-semibold text-white">{name}</span>
-        <span className="text-[18px] font-black text-[#d4af37] tabular-nums whitespace-nowrap">
+        <span className="text-[18px] font-black text-[var(--color-accent)] tabular-nums whitespace-nowrap">
           {value}
         </span>
       </div>

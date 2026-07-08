@@ -37,7 +37,7 @@ export default function SimulationControls({
           >
             Sample Size per Draw
           </label>
-          <span className="text-[13px] font-bold text-[#d4af37] font-mono">n = {sampleSize}</span>
+          <span className="text-[13px] font-bold text-[var(--color-accent)] font-mono">n = {sampleSize}</span>
         </div>
 
         <div className="relative">
@@ -56,7 +56,7 @@ export default function SimulationControls({
             disabled={isRunning}
             className="w-full h-1.5 rounded-full appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
-              background: `linear-gradient(to right, #d4af37 0%, #d4af37 ${((sampleSize - 5) / 495) * 100}%, #1e293b ${((sampleSize - 5) / 495) * 100}%, #1e293b 100%)`,
+              background: `linear-gradient(to right, var(--color-accent) 0%, var(--color-accent) ${((sampleSize - 5) / 495) * 100}%, #1e293b ${((sampleSize - 5) / 495) * 100}%, #1e293b 100%)`,
               // Webkit thumb
               WebkitAppearance: "none",
             }}
@@ -67,16 +67,16 @@ export default function SimulationControls({
               width: 16px;
               height: 16px;
               border-radius: 50%;
-              background: #d4af37;
+              background: var(--color-accent);
               cursor: pointer;
               border: 2px solid #0f172a;
-              box-shadow: 0 0 0 1px #d4af37;
+              box-shadow: 0 0 0 1px var(--color-accent);
             }
             #sample-size-slider::-moz-range-thumb {
               width: 16px;
               height: 16px;
               border-radius: 50%;
-              background: #d4af37;
+              background: var(--color-accent);
               cursor: pointer;
               border: 2px solid #0f172a;
             }
@@ -97,7 +97,7 @@ export default function SimulationControls({
         <button
           onClick={onDrawOne}
           disabled={isRunning}
-          className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
         >
           Draw 1 Sample
         </button>
@@ -106,7 +106,7 @@ export default function SimulationControls({
           onClick={onRunThousand}
           disabled={isRunning}
           aria-live="polite"
-          className="px-4 py-2 rounded-xl text-[12px] font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="px-4 py-2 rounded-xl text-[12px] font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {isRunning ? "Running…" : "Run 1000×"}
         </button>

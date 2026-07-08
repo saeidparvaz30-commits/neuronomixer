@@ -11,18 +11,18 @@ interface PowerAnalysisProps {
 
 const cards = [
   {
-    title: "Type I Error (α — False Positive)",
+    title: "Type I Error (α: False Positive)",
     color: "#ef4444",
     badge: "α",
     badgeBg: "#ef444420",
     body: "Rejecting H₀ when it is actually true. If you set α = 0.05, you accept a 5% chance of falsely detecting an effect. Under the null hypothesis, p-values are uniformly distributed, so exactly α fraction will fall below the threshold by chance.",
   },
   {
-    title: "Type II Error (β — False Negative)",
+    title: "Type II Error (β: False Negative)",
     color: "#f97316",
     badge: "β",
     badgeBg: "#f9731620",
-    body: "Failing to reject H₀ when H₁ is actually true. This happens when your sample is too small, the effect is too weak, or α is set too strictly. Type II errors mean you miss real effects — this is why underpowered studies are dangerous.",
+    body: "Failing to reject H₀ when H₁ is actually true. This happens when your sample is too small, the effect is too weak, or α is set too strictly. Type II errors mean you miss real effects; this is why underpowered studies are dangerous.",
   },
   {
     title: "Statistical Power (1 − β)",
@@ -34,7 +34,7 @@ const cards = [
 ];
 
 const howToIncreasePower = [
-  "Increase sample size (n) — the most reliable lever",
+  "Increase sample size (n): the most reliable lever",
   "Increase the true effect size (harder to control in practice)",
   "Raise α from 0.01 to 0.05 (accepts more Type I errors)",
   "Use a one-tailed test if directional hypothesis is justified",
@@ -76,7 +76,7 @@ export default function PowerAnalysis({ alpha, power, onViewed }: PowerAnalysisP
           <span className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#94a3b8]">
             Understanding Power and Errors
           </span>
-          <span className="text-[10px] font-mono text-[#d4af37] bg-[#d4af37]/10 px-1.5 py-0.5 rounded">
+          <span className="text-[10px] font-mono text-[var(--color-accent)] bg-[var(--color-accent)]/10 px-1.5 py-0.5 rounded">
             α={alpha.toFixed(2)} / Power≈{power}
           </span>
         </div>
@@ -131,7 +131,7 @@ export default function PowerAnalysis({ alpha, power, onViewed }: PowerAnalysisP
                 <ul className="space-y-1.5">
                   {howToIncreasePower.map((item, i) => (
                     <li key={i} className="flex items-start gap-2">
-                      <span className="text-[#d4af37] text-[10px] mt-0.5">→</span>
+                      <span className="text-[var(--color-accent)] text-[10px] mt-0.5">→</span>
                       <span className="text-[11px] text-[#94a3b8] leading-relaxed">{item}</span>
                     </li>
                   ))}
@@ -140,7 +140,7 @@ export default function PowerAnalysis({ alpha, power, onViewed }: PowerAnalysisP
 
               {/* Tradeoff note */}
               <p className="mt-4 text-[11px] text-[#475569] leading-relaxed">
-                <span className="text-[#d4af37] font-semibold">Key tradeoff:</span> Lowering α reduces Type I errors but increases Type II errors (lower power). Note that the Type I error rate is fixed by your choice of α no matter how large the sample gets. What a bigger n buys you is a lower β at the same α, or room to choose a stricter α without sacrificing power.
+                <span className="text-[var(--color-accent)] font-semibold">Key tradeoff:</span> Lowering α reduces Type I errors but increases Type II errors (lower power). Note that the Type I error rate is fixed by your choice of α no matter how large the sample gets. What a bigger n buys you is a lower β at the same α, or room to choose a stricter α without sacrificing power.
               </p>
             </div>
           </motion.div>

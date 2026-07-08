@@ -55,7 +55,7 @@ function DecisionScatter({
           <rect key={`${i}-${j}`}
             x={tx(cx - 50 / gridN)} y={ty(cy + 50 / gridN)}
             width={IW / gridN} height={IH / gridN}
-            fill={label === 1 ? "#3bb4a4" : "#d4af37"}
+            fill={label === 1 ? "#3bb4a4" : "var(--color-accent)"}
             opacity="0.12"
           />
         );
@@ -119,7 +119,7 @@ function DecisionScatter({
           y1={pendingSplit.axis === "x" ? PAD.t : ty(pendingSplit.value)}
           x2={pendingSplit.axis === "x" ? tx(pendingSplit.value) : PAD.l + IW}
           y2={pendingSplit.axis === "x" ? PAD.t + IH : ty(pendingSplit.value)}
-          stroke="#d4af37" strokeWidth="1.5" strokeDasharray="4,3" opacity="0.7"
+          stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="4,3" opacity="0.7"
           animate={{ opacity: [0.4, 0.8, 0.4] }} transition={{ repeat: Infinity, duration: 1.2 }}
         />
       )}
@@ -130,7 +130,7 @@ function DecisionScatter({
           key={p.id}
           cx={tx(p.x)} cy={ty(p.y)}
           r="6"
-          fill={p.label === 1 ? "#3bb4a4" : "#d4af37"}
+          fill={p.label === 1 ? "#3bb4a4" : "var(--color-accent)"}
           stroke="#0f172a" strokeWidth="1.5"
           initial={{ scale: 0 }} animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 400, damping: 25, delay: p.id * 0.01 }}
@@ -159,14 +159,14 @@ function TreeDiagram({ root }: { root: TreeNode | null }) {
     const pct = (node.accuracy * 100).toFixed(0);
     const ones = node.points.filter(p => p.label === 1).length;
     const zeros = node.points.length - ones;
-    const color = node.predictedLabel === 1 ? "#3bb4a4" : "#d4af37";
+    const color = node.predictedLabel === 1 ? "#3bb4a4" : "var(--color-accent)";
 
     return (
       <div className="flex flex-col items-center">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
           className="rounded-xl border p-3 min-w-[120px] text-center"
-          style={{ borderColor: color + "60", background: color + "10" }}
+          style={{ borderColor: `color-mix(in srgb, ${color} 38%, transparent)`, background: `color-mix(in srgb, ${color} 6%, transparent)` }}
         >
           {node.split ? (
             <p className="text-[11px] font-bold font-mono text-white mb-1">
@@ -226,7 +226,7 @@ export default function DecisionTreesClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "decision-trees", score: 8 }),
+        body: JSON.stringify({ guideSlug: "decision-trees", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -357,13 +357,15 @@ export default function DecisionTreesClient() {
             {/* Dataset */}
             <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
               <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">Dataset</p>
-              <div className="space-y-2">
+              <div className="space-y-2" role="radiogroup" aria-label="Dataset">
                 {(Object.entries(DATASETS) as [keyof typeof DATASETS, string][]).map(([key, label]) => (
                   <button key={key}
+                    role="radio"
+                    aria-checked={datasetKey === key}
                     onClick={() => loadDataset(key)}
                     className={`w-full px-3 py-2 rounded-lg border text-[11px] text-left transition-colors ${
                       datasetKey === key
-                        ? "border-[#d4af37]/60 bg-[#d4af37]/10 text-[#d4af37]"
+                        ? "border-[var(--color-accent)]/60 bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
                         : "border-[#1e293b] text-[#94a3b8] hover:border-[#334155] hover:text-white"
                     }`}>
                     {label}
@@ -376,7 +378,7 @@ export default function DecisionTreesClient() {
                   <span className="text-[#475569]">Class 1</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-[#d4af37]" />
+                  <div className="w-3 h-3 rounded-full bg-[var(--color-accent)]" />
                   <span className="text-[#475569]">Class 0</span>
                 </div>
               </div>
@@ -386,13 +388,15 @@ export default function DecisionTreesClient() {
             <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
               <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">Add Split</p>
 
-              <div className="flex gap-2 mb-3">
+              <div className="flex gap-2 mb-3" role="radiogroup" aria-label="Split axis">
                 {(["x", "y"] as const).map(ax => (
                   <button key={ax}
+                    role="radio"
+                    aria-checked={splitAxis === ax}
                     onClick={() => { setSplitAxis(ax); setSplitValue(null); }}
                     className={`flex-1 py-2 rounded-lg text-[12px] font-semibold border transition-colors ${
                       splitAxis === ax
-                        ? "border-[#d4af37] bg-[#d4af37]/10 text-[#d4af37]"
+                        ? "border-[var(--color-accent)] bg-[var(--color-accent)]/10 text-[var(--color-accent)]"
                         : "border-[#1e293b] text-[#475569] hover:text-white"
                     }`}>
                     Split on {ax.toUpperCase()}
@@ -401,8 +405,8 @@ export default function DecisionTreesClient() {
               </div>
 
               {splitValue !== null ? (
-                <div className="rounded-lg border border-[#d4af37]/30 bg-[#d4af37]/5 p-3 mb-3">
-                  <p className="text-[10px] text-[#d4af37] mb-1">Preview split</p>
+                <div className="rounded-lg border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 p-3 mb-3">
+                  <p className="text-[10px] text-[var(--color-accent)] mb-1">Preview split</p>
                   <p className="text-[13px] font-mono text-white">
                     {splitAxis.toUpperCase()} ≤ {splitValue.toFixed(1)}
                   </p>
@@ -417,7 +421,7 @@ export default function DecisionTreesClient() {
                 onClick={applySplit}
                 disabled={splitValue === null}
                 whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-                className="w-full py-2 rounded-lg text-[12px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-full py-2 rounded-lg text-[12px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 Apply Split
               </motion.button>
@@ -433,8 +437,8 @@ export default function DecisionTreesClient() {
               <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">Tree Metrics</p>
               <div className="space-y-2">
                 {[
-                  { label: "Accuracy", value: `${(accuracy * 100).toFixed(1)}%`, color: accuracy > 0.8 ? "#3bb4a4" : accuracy > 0.6 ? "#d4af37" : "#ef4444" },
-                  { label: "Splits", value: String(splitsAdded), color: "#d4af37" },
+                  { label: "Accuracy", value: `${(accuracy * 100).toFixed(1)}%`, color: accuracy > 0.8 ? "#3bb4a4" : accuracy > 0.6 ? "var(--color-accent)" : "#ef4444" },
+                  { label: "Splits", value: String(splitsAdded), color: "var(--color-accent)" },
                   { label: "Points", value: String(points.length), color: "#475569" },
                   { label: "Root Gini", value: tree ? tree.gini.toFixed(3) : "—", color: "#a855f7" },
                 ].map(({ label, value, color }) => (
@@ -497,7 +501,7 @@ export default function DecisionTreesClient() {
         {/* Nav */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link href="/visual-guides/linear-regression"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
             ← Previous Guide
           </Link>
           <Link href="/visual-guides/k-means"
@@ -506,7 +510,7 @@ export default function DecisionTreesClient() {
           </Link>
         </div>
 
-        <GuideCompletion isComplete={allComplete} guideSlug="decision-trees" score={8} />
+        <GuideCompletion isComplete={allComplete} guideSlug="decision-trees" score={100} />
       </div>
     </div>
   );

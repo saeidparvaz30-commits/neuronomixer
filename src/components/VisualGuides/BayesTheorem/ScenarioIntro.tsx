@@ -62,7 +62,7 @@ export default function ScenarioIntro({
       </div>
 
       {/* Scenario description */}
-      <p className="text-[13px] text-[#94a3b8] leading-relaxed border-l-2 border-[#d4af37] pl-3">
+      <p className="text-[13px] text-[#94a3b8] leading-relaxed border-l-2 border-[var(--color-accent)] pl-3">
         {sc.description}
       </p>
 
@@ -74,7 +74,7 @@ export default function ScenarioIntro({
             className="rounded-xl border border-[#1e293b] bg-[#1e293b]/30 p-3 text-center"
           >
             <p className="text-[9px] uppercase tracking-[1.5px] text-[#475569] mb-1">{label}</p>
-            <p className="text-[18px] sm:text-[22px] font-black text-[#d4af37] leading-none">
+            <p className="text-[18px] sm:text-[22px] font-black text-[var(--color-accent)] leading-none">
               {value}
             </p>
           </div>
@@ -90,7 +90,7 @@ export default function ScenarioIntro({
           <p className="text-[14px] text-white leading-snug">
             {sc.guessQuestion}
           </p>
-          <p className="text-[11px] font-mono text-[#8b5cf6] mt-1">
+          <p className="text-[11px] font-mono text-[#a855f7] mt-1">
             {sc.guessSubtext}
           </p>
         </div>
@@ -107,14 +107,15 @@ export default function ScenarioIntro({
           max={100}
           step={1}
           value={state.intuition}
+          aria-label="Your gut estimate percentage"
           onChange={(e) => onIntuitionChange(Number(e.target.value))}
           disabled={state.intuitionApplied}
           className="w-full disabled:opacity-60 disabled:cursor-not-allowed"
-          style={{ accentColor: "#8b5cf6" }}
+          style={{ accentColor: "#a855f7" }}
         />
         <div className="flex justify-between text-[9px] text-[#334155]">
           <span>0%</span>
-          <span className="text-[#8b5cf6] font-semibold">Your guess: {state.intuition}%</span>
+          <span className="text-[#a855f7] font-semibold">Your guess: {state.intuition}%</span>
           <span>100%</span>
         </div>
 
@@ -129,7 +130,7 @@ export default function ScenarioIntro({
           ) : (
             <button
               onClick={onApplyIntuition}
-              className="w-full px-4 py-2.5 rounded-lg text-[13px] font-bold bg-[#8b5cf6] text-white hover:bg-[#7c3aed] transition-colors"
+              className="w-full px-4 py-2.5 rounded-lg text-[13px] font-bold bg-[#a855f7] text-white hover:opacity-90 transition-opacity"
             >
               Apply Guess
             </button>

@@ -72,7 +72,7 @@ export default function VarianceDecomposer({
     return (
       <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} className="w-full h-auto max-w-[460px]">
         {/* Grand mean line */}
-        <line x1={PAD_L} y1={yScale(grandMean)} x2={SVG_W - PAD_R} y2={yScale(grandMean)} stroke="#d4af37" strokeWidth={1.5} strokeDasharray="4,3" />
+        <line x1={PAD_L} y1={yScale(grandMean)} x2={SVG_W - PAD_R} y2={yScale(grandMean)} stroke="var(--color-accent)" strokeWidth={1.5} strokeDasharray="4,3" />
         {/* Individual deviations */}
         {allVals.slice(0, Math.min(N, 40)).map((v, i) => {
           const x = PAD_L + (i / Math.min(N, 40) - 1) * plotW + plotW;
@@ -85,7 +85,7 @@ export default function VarianceDecomposer({
             </g>
           );
         })}
-        <text x={SVG_W - PAD_R} y={yScale(grandMean) - 4} textAnchor="end" fill="#d4af37" fontSize={9}>x̄</text>
+        <text x={SVG_W - PAD_R} y={yScale(grandMean) - 4} textAnchor="end" fill="var(--color-accent)" fontSize={9}>x̄</text>
       </svg>
     );
   }
@@ -96,7 +96,7 @@ export default function VarianceDecomposer({
     return (
       <svg viewBox={`0 0 ${SVG_W} ${SVG_H}`} className="w-full h-auto max-w-[460px]">
         {/* Grand mean line */}
-        <line x1={PAD_L} y1={yScale(grandMean)} x2={SVG_W - PAD_R} y2={yScale(grandMean)} stroke="#d4af37" strokeWidth={1.5} strokeDasharray="4,3" />
+        <line x1={PAD_L} y1={yScale(grandMean)} x2={SVG_W - PAD_R} y2={yScale(grandMean)} stroke="var(--color-accent)" strokeWidth={1.5} strokeDasharray="4,3" />
         {groups.map((g, gi) => {
           const gMean = mean(g.values);
           const cx = PAD_L + groupSlotW * gi + groupSlotW / 2;
@@ -114,7 +114,7 @@ export default function VarianceDecomposer({
             </g>
           );
         })}
-        <text x={SVG_W - PAD_R} y={yScale(grandMean) - 4} textAnchor="end" fill="#d4af37" fontSize={9}>x̄</text>
+        <text x={SVG_W - PAD_R} y={yScale(grandMean) - 4} textAnchor="end" fill="var(--color-accent)" fontSize={9}>x̄</text>
       </svg>
     );
   }
@@ -185,10 +185,10 @@ export default function VarianceDecomposer({
           {/* Step 0: Intro */}
           {currentStep === 0 && (
             <div className="text-center py-6">
-              <div className="text-5xl mb-4 text-[#d4af37] font-black">SS</div>
+              <div className="text-5xl mb-4 text-[var(--color-accent)] font-black">SS</div>
               <p className="text-[#94a3b8] text-[14px] max-w-[500px] mx-auto">
                 ANOVA decomposes total variability into <strong className="text-white">between-group</strong> and <strong className="text-white">within-group</strong> components.
-                Press <span className="text-[#d4af37]">Next</span> to begin the variance decomposition.
+                Press <span className="text-[var(--color-accent)]">Next</span> to begin the variance decomposition.
               </p>
               <p className="text-[12px] text-[#475569] mt-3 font-mono">
                 SS<sub>Total</sub> = SS<sub>Between</sub> + SS<sub>Within</sub>
@@ -205,7 +205,7 @@ export default function VarianceDecomposer({
                 </span>
                 <h3 className="text-white font-semibold text-[15px] mb-1">SS_Total: Total Variability</h3>
                 <p className="text-[#94a3b8] text-[12px] mb-3">
-                  Each vertical line shows how far a data point strays from the <span className="text-[#d4af37]">grand mean</span>.
+                  Each vertical line shows how far a data point strays from the <span className="text-[var(--color-accent)]">grand mean</span>.
                   Squaring and summing all these distances gives SS_Total.
                 </p>
               </div>
@@ -306,7 +306,7 @@ export default function VarianceDecomposer({
                 </div>
               </div>
               <p className="text-[11px] text-[#94a3b8]">
-                η² = {fmt(stats.etaSquared, 3)} — {stats.etaSquared >= 0.14 ? "large" : stats.etaSquared >= 0.06 ? "medium" : "small"} effect size
+                η² = {fmt(stats.etaSquared, 3)}: {stats.etaSquared >= 0.14 ? "large" : stats.etaSquared >= 0.06 ? "medium" : "small"} effect size
               </p>
             </div>
           )}
@@ -334,9 +334,9 @@ export default function VarianceDecomposer({
                   <div className="text-[10px] text-[#94a3b8] mb-1">MS_Within</div>
                   <div className="text-[18px] font-black text-white font-mono">{fmt(stats.msWithin)}</div>
                 </div>
-                <div className="rounded-xl p-3 text-center" style={{ background: stats.pValue < 0.05 ? "#14532d" : "#1e293b", border: stats.pValue < 0.05 ? "1px solid #16a34a" : "1px solid transparent" }}>
+                <div className="rounded-xl p-3 text-center" style={{ background: stats.pValue < 0.05 ? "#14532d" : "#1e293b", border: stats.pValue < 0.05 ? "1px solid var(--color-success)" : "1px solid transparent" }}>
                   <div className="text-[10px] text-[#94a3b8] mb-1">F-statistic</div>
-                  <div className="text-[24px] font-black font-mono" style={{ color: stats.pValue < 0.05 ? "#4ade80" : "#d4af37" }}>
+                  <div className="text-[24px] font-black font-mono" style={{ color: stats.pValue < 0.05 ? "var(--color-success)" : "var(--color-accent)" }}>
                     {fmt(stats.fStatistic)}
                   </div>
                 </div>
@@ -361,8 +361,8 @@ export default function VarianceDecomposer({
                       <td className="py-2 px-2 text-right font-mono text-[#94a3b8]">{fmt(stats.ssBetween)}</td>
                       <td className="py-2 px-2 text-right font-mono text-[#94a3b8]">{stats.dfBetween}</td>
                       <td className="py-2 px-2 text-right font-mono text-[#94a3b8]">{fmt(stats.msBetween)}</td>
-                      <td className="py-2 px-2 text-right font-mono text-[#d4af37] font-bold">{fmt(stats.fStatistic)}</td>
-                      <td className="py-2 pl-2 text-right font-mono" style={{ color: stats.pValue < 0.05 ? "#4ade80" : "#f87171" }}>
+                      <td className="py-2 px-2 text-right font-mono text-[var(--color-accent)] font-bold">{fmt(stats.fStatistic)}</td>
+                      <td className="py-2 pl-2 text-right font-mono" style={{ color: stats.pValue < 0.05 ? "var(--color-success)" : "#ef4444" }}>
                         {fmtP(stats.pValue)}
                       </td>
                     </tr>
@@ -403,7 +403,7 @@ export default function VarianceDecomposer({
           onClick={handlePrev}
           disabled={currentStep === 0}
           aria-label="Previous decomposition step"
-          className="px-4 py-2 rounded-xl text-[12px] font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          className="px-4 py-2 rounded-xl text-[12px] font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
         >
           ← Previous
         </button>
@@ -414,7 +414,7 @@ export default function VarianceDecomposer({
           onClick={handleNext}
           disabled={currentStep === MAX_STEP}
           aria-label="Next decomposition step"
-          className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
+          className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
         >
           Next →
         </button>

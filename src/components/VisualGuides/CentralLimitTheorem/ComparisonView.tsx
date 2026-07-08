@@ -19,7 +19,7 @@ function getInsightText(count: number): { text: string; color: string } {
   if (count < 100)
     return { text: "Notice the bell curve emerging!", color: "#3bb4a4" };
   if (count < 1000)
-    return { text: "The CLT in action! Converging to normal!", color: "#d4af37" };
+    return { text: "The CLT in action! Converging to normal!", color: "var(--color-accent)" };
   return {
     text: "1000 samples: the distribution of means is now close to normal, whatever the population shape.",
     color: "#a855f7",
@@ -28,7 +28,7 @@ function getInsightText(count: number): { text: string; color: string } {
 
 const DIST_COLORS: Record<DistributionType, string> = {
   normal: "#3bb4a4",
-  uniform: "#d4af37",
+  uniform: "var(--color-accent)",
   skewed: "#ef4444",
   bimodal: "#a855f7",
 };
@@ -90,7 +90,7 @@ export default function ComparisonView({
         {/* Sampling Distribution */}
         <div>
           <div className="flex items-center gap-1.5 mb-1.5">
-            <div className="w-2 h-2 rounded-full flex-shrink-0 bg-[#d4af37]" />
+            <div className="w-2 h-2 rounded-full flex-shrink-0 bg-[var(--color-accent)]" />
             <p className="text-[10px] font-semibold text-[#94a3b8]">
               Sample Means (n={sampleSize})
             </p>
@@ -109,7 +109,7 @@ export default function ComparisonView({
                 binCount={15}
                 width={200}
                 height={120}
-                barColor="#d4af37"
+                barColor="var(--color-accent)"
               />
             )}
           </div>

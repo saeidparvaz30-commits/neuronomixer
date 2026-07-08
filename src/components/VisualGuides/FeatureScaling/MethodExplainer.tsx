@@ -14,14 +14,14 @@ const CONTENT: Record<ScalingMethod, { heading: string; body: string; pros: stri
   },
   raw: {
     heading: "Raw (No Scaling)",
-    body:    "Features retain their original units — Age in years, Salary in dollars. Distance-based algorithms will be dominated by whichever feature has the largest absolute range.",
+    body:    "Features retain their original units: Age in years, Salary in dollars. Distance-based algorithms will be dominated by whichever feature has the largest absolute range.",
     pros:    ["Interpretable values", "No information loss", "Works fine for tree-based models"],
     cons:    ["Distance algorithms skewed by scale", "Gradient descent converges slowly", "Regularization applies unequally"],
     usedBy:  ["Decision Trees", "Random Forests", "Naive Bayes"],
   },
   normalized: {
     heading: "Min-Max Normalization (0–1)",
-    body:    "Maps each feature to [0, 1] by subtracting the min and dividing by the range. Easy to interpret but highly sensitive to outliers — one extreme value compresses everything else.",
+    body:    "Maps each feature to [0, 1] by subtracting the min and dividing by the range. Easy to interpret but highly sensitive to outliers: one extreme value compresses everything else.",
     pros:    ["Bounded output [0, 1]", "Natural fit for pixel data (0–255)", "Intuitive scale"],
     cons:    ["Sensitive to outliers", "New data can fall outside [0, 1]", "Doesn't center at 0"],
     usedBy:  ["KNN", "Neural Networks", "Image processing"],
@@ -36,7 +36,7 @@ const CONTENT: Record<ScalingMethod, { heading: string; body: string; pros: stri
 };
 
 const COLOR: Record<ScalingMethod, string> = {
-  raw:          "#d4af37",
+  raw:          "var(--color-accent)",
   normalized:   "#3bb4a4",
   meannorm:     "#a855f7",
   standardized: "#3b82f6",
@@ -83,7 +83,7 @@ function MethodExplainerInner({ method }: Props) {
             <div className="flex flex-wrap gap-1.5">
               {c.usedBy.map((a) => (
                 <span key={a} className="text-[10px] px-2 py-0.5 rounded-full border font-medium"
-                  style={{ color, borderColor: color + "44", background: color + "12" }}>
+                  style={{ color, borderColor: `color-mix(in srgb, ${color} 27%, transparent)`, background: `color-mix(in srgb, ${color} 7%, transparent)` }}>
                   {a}
                 </span>
               ))}

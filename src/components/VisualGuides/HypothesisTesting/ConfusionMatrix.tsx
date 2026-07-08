@@ -68,7 +68,7 @@ function MatrixCell({ label, sublabel, count, total, bg, textColor, badge, badge
           transition={{ duration: 0.5, ease: "easeOut" }}
         />
       </div>
-      <p className="text-[9px] mt-1" style={{ color: textColor + "aa" }}>
+      <p className="text-[9px] mt-1" style={{ color: `color-mix(in srgb, ${textColor} 67%, transparent)` }}>
         {pct(count, total)} of all experiments
       </p>
     </div>
@@ -119,7 +119,7 @@ export default function ConfusionMatrix({ matrix, total }: ConfusionMatrixProps)
           count={tp}
           total={total}
           bg="#22c55e"
-          textColor="#4ade80"
+          textColor="var(--color-success)"
         />
         <MatrixCell
           label="False Positive"
@@ -127,7 +127,7 @@ export default function ConfusionMatrix({ matrix, total }: ConfusionMatrixProps)
           count={fp}
           total={total}
           bg="#ef4444"
-          textColor="#f87171"
+          textColor="#ef4444"
           badge="α"
           badgeColor="#ef4444"
         />
@@ -146,7 +146,7 @@ export default function ConfusionMatrix({ matrix, total }: ConfusionMatrixProps)
           count={fn}
           total={total}
           bg="#f97316"
-          textColor="#fb923c"
+          textColor="var(--color-warning)"
           badge="β"
           badgeColor="#f97316"
         />
@@ -156,16 +156,16 @@ export default function ConfusionMatrix({ matrix, total }: ConfusionMatrixProps)
           count={tn}
           total={total}
           bg="#3b82f6"
-          textColor="#60a5fa"
+          textColor="#93c5fd"
         />
       </div>
 
       {/* Summary rates */}
       <div className="grid grid-cols-3 gap-2 pt-4 border-t border-white/[0.06]">
         {[
-          { label: "Type I Rate", value: typeIRate, color: "#f87171", desc: "FP / (FP+TN)" },
-          { label: "Type II Rate", value: typeIIRate, color: "#fb923c", desc: "FN / (FN+TP)" },
-          { label: "Power (1−β)", value: power, color: "#4ade80", desc: "TP / (TP+FN)" },
+          { label: "Type I Rate", value: typeIRate, color: "#ef4444", desc: "FP / (FP+TN)" },
+          { label: "Type II Rate", value: typeIIRate, color: "var(--color-warning)", desc: "FN / (FN+TP)" },
+          { label: "Power (1−β)", value: power, color: "var(--color-success)", desc: "TP / (TP+FN)" },
         ].map(({ label, value, color, desc }) => (
           <div key={label} className="text-center">
             <p className="text-[8px] text-[#475569] mb-0.5">{label}</p>

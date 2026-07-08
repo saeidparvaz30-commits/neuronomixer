@@ -89,7 +89,7 @@ export default function DataTable({ stage }: Props) {
               <tr key={r.dept} className="border-b border-[#1e293b]/50">
                 <td className="px-3 py-2 text-white font-medium">{r.dept}</td>
                 <td className="px-3 py-2 text-[#3bb4a4]">{r.count}</td>
-                <td className="px-3 py-2 text-[#d4af37]">${r.mean_salary.toLocaleString()}</td>
+                <td className="px-3 py-2 text-[var(--color-accent)]">${r.mean_salary.toLocaleString()}</td>
                 <td className="px-3 py-2 text-[#94a3b8]">${r.std.toLocaleString()}</td>
               </tr>
             ))}
@@ -132,7 +132,7 @@ export default function DataTable({ stage }: Props) {
                   <td className={`px-3 py-1.5 font-mono text-[10px] ${row.id === 5 && stage !== "clean" && stage !== "transform" ? "text-[#ef4444]" : "text-[#94a3b8]"}`}>
                     {row.salary === null ? "—" : isTransform ? row.salary : `$${(row.salary as number).toLocaleString()}`}
                   </td>
-                  <td className={`px-3 py-1.5 ${row.dept === "Marketting" ? "text-[#eab308]" : "text-[#94a3b8]"}`}>
+                  <td className={`px-3 py-1.5 ${row.dept === "Marketting" ? "text-[var(--color-warning)]" : "text-[#94a3b8]"}`}>
                     {row.dept ?? "—"}
                   </td>
                   <td className="px-3 py-1.5">
@@ -141,7 +141,7 @@ export default function DataTable({ stage }: Props) {
                         <span
                           key={iss}
                           className="px-1.5 py-0.5 rounded text-[8px] font-semibold"
-                          style={{ background: ISSUE_META[iss].color + "20", color: ISSUE_META[iss].color }}
+                          style={{ background: `color-mix(in srgb, ${ISSUE_META[iss].color} 13%, transparent)`, color: ISSUE_META[iss].color }}
                         >
                           {ISSUE_META[iss].label}
                         </span>

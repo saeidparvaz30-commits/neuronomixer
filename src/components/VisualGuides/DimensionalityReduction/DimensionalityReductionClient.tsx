@@ -69,7 +69,7 @@ export default function DimensionalityReductionClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "dimensionality-reduction", score: 6 }),
+        body: JSON.stringify({ guideSlug: "dimensionality-reduction", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -103,7 +103,7 @@ export default function DimensionalityReductionClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="dimensionality-reduction" score={6} />
+      <GuideCompletion isComplete={allComplete} guideSlug="dimensionality-reduction" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -211,15 +211,15 @@ export default function DimensionalityReductionClient() {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/correlation-causation"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             ← Previous Guide
           </Link>
           <Link
-            href="/visual-guides/data-distributions-applied"
+            href="/visual-guides/data-pipeline"
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
-            Next: Data Distributions in Context →
+            Next: Data Pipeline →
           </Link>
         </div>
       </div>

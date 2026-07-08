@@ -38,7 +38,7 @@ export default function ConfidenceIntervalsClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "confidence-intervals", score: 8 }),
+        body: JSON.stringify({ guideSlug: "confidence-intervals", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -89,7 +89,7 @@ export default function ConfidenceIntervalsClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="confidence-intervals" score={8} />
+      <GuideCompletion isComplete={allComplete} guideSlug="confidence-intervals" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -109,21 +109,21 @@ export default function ConfidenceIntervalsClient() {
           transition={{ duration: 0.4 }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#d4af37]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#d4af37]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               STATISTICS
             </span>
-            <span className="w-6 h-px bg-[#d4af37]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
             Confidence Intervals:{" "}
-            <span className="text-[#d4af37]">What They Actually Mean</span>
+            <span className="text-[var(--color-accent)]">What They Actually Mean</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[680px]">
             Run 100 repeated experiments. Each draws a sample of{" "}
             <span className="text-white font-semibold">n = 30</span> from a
             population with μ = {TRUE_MEAN} and computes a confidence interval.
-            Watch how many capture the true mean — and how width changes with
+            Watch how many capture the true mean, and how width changes with
             confidence level.
           </p>
         </motion.section>
@@ -250,16 +250,16 @@ export default function ConfidenceIntervalsClient() {
               </p>
               <p className="text-[12px] text-[#94a3b8] leading-relaxed">
                 It means: if you repeated the experiment many times,{" "}
-                <span className="text-[#d4af37] font-semibold">
+                <span className="text-[var(--color-accent)] font-semibold">
                   ~{confidenceLevel}% of the intervals you construct
                 </span>{" "}
                 would contain the true parameter.
               </p>
               <div
                 className="rounded-xl p-3 text-[11px] text-[#94a3b8] leading-relaxed"
-                style={{ background: "#d4af3710", borderLeft: "3px solid #d4af37" }}
+                style={{ background: "#d4af3710", borderLeft: "3px solid var(--color-accent)" }}
               >
-                The true mean is either in any given interval or it is not — the
+                The true mean is either in any given interval or it is not; the
                 randomness is in the <em>procedure</em>, not the parameter.
               </div>
             </div>
@@ -285,7 +285,7 @@ export default function ConfidenceIntervalsClient() {
                     <span
                       className="text-[10px] font-semibold w-12 flex-shrink-0"
                       style={{
-                        color: level === confidenceLevel ? "#d4af37" : "#475569",
+                        color: level === confidenceLevel ? "var(--color-accent)" : "#475569",
                       }}
                     >
                       {level}% CI
@@ -296,7 +296,7 @@ export default function ConfidenceIntervalsClient() {
                         style={{
                           width: `${(approxWidth / (2 * 2.576 * (intervals.length > 0 ? intervals.reduce((a, ci) => a + ci.sd / Math.sqrt(30), 0) / intervals.length : 2.74))) * 100}%`,
                           background:
-                            level === confidenceLevel ? "#d4af37" : "#334155",
+                            level === confidenceLevel ? "var(--color-accent)" : "#334155",
                         }}
                       />
                     </div>
@@ -318,13 +318,13 @@ export default function ConfidenceIntervalsClient() {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/p-values"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             ← P-Values
           </Link>
           <Link
             href="/visual-guides/hypothesis-testing"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Hypothesis Testing →
           </Link>

@@ -157,7 +157,7 @@ export const REAL_EXAMPLES: RealExample[] = [
     var2: "Heart disease risk (%)",
     r: signedR(COFFEE_DATA),
     confound: "Smoking status",
-    confoundColor: "#6b7280",
+    confoundColor: "#475569",
     explanation: "Early studies linked coffee to heart disease. But smokers drink more coffee AND have higher heart disease risk. In this sketch the pooled correlation is strong (r = +0.75), yet within each smoking group it is essentially zero (r = -0.04 for non-smokers, +0.01 for smokers): the group offset, not coffee, drives the link.",
     data: COFFEE_DATA,
   },
@@ -168,8 +168,8 @@ export const REAL_EXAMPLES: RealExample[] = [
     var2: "Annual income ($1000s)",
     r: signedR(EDUCATION_DATA),
     confound: "Socioeconomic background",
-    confoundColor: "#d4af37",
-    explanation: "Education and income are strongly correlated. But wealthier families self-select into more education. Both causation and confounding are at play — it's genuinely complex.",
+    confoundColor: "var(--color-accent)",
+    explanation: "Education and income are strongly correlated. But wealthier families self-select into more education. Both causation and confounding are at play; it's genuinely complex.",
     data: EDUCATION_DATA,
   },
   {
@@ -180,7 +180,7 @@ export const REAL_EXAMPLES: RealExample[] = [
     r: signedR(CHOCOLATE_DATA),
     confound: "Country wealth (GDP)",
     confoundColor: "#a855f7",
-    explanation: "Wealthy countries eat more chocolate AND produce more Nobel laureates — driven by wealth and education infrastructure, not cocoa. A famous spurious correlation (Messerli 2012 reported r = 0.79 across countries).",
+    explanation: "Wealthy countries eat more chocolate AND produce more Nobel laureates, driven by wealth and education infrastructure, not cocoa. A famous spurious correlation (Messerli 2012 reported r = 0.79 across countries).",
     data: CHOCOLATE_DATA,
   },
   {

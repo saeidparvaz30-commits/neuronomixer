@@ -60,7 +60,7 @@ export default function FeatureScalingClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "feature-scaling", score: 4 }),
+        body: JSON.stringify({ guideSlug: "feature-scaling", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -69,7 +69,7 @@ export default function FeatureScalingClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="feature-scaling" score={4} />
+      <GuideCompletion isComplete={allComplete} guideSlug="feature-scaling" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -91,7 +91,7 @@ export default function FeatureScalingClient() {
             <span className="text-[var(--color-accent)]">Playground</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
-            Different features live on different scales — Age in years, Salary in thousands.
+            Different features live on different scales: Age in years, Salary in thousands.
             But algorithms like KNN and SVM don&apos;t know this. Watch what happens when you scale.
           </p>
         </section>
@@ -110,7 +110,7 @@ export default function FeatureScalingClient() {
               );
             })}
             <div className="flex items-center gap-1.5">
-              <div className={`w-2 h-2 rounded-full transition-colors ${hasSelectedPair ? "bg-[#d4af37]" : "bg-[#1e293b]"}`} />
+              <div className={`w-2 h-2 rounded-full transition-colors ${hasSelectedPair ? "bg-[var(--color-accent)]" : "bg-[#1e293b]"}`} />
               <span className={`text-[11px] ${hasSelectedPair ? "text-white" : "text-[#475569]"}`}>Distance comparison</span>
             </div>
           </div>
@@ -141,8 +141,8 @@ export default function FeatureScalingClient() {
         <AnimatePresence mode="wait">
           <motion.div key={method} initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
             className="mb-6 px-4 py-2 rounded-xl border text-[12px] font-medium"
-            style={{ borderColor: meta.color + "44", background: meta.color + "0d", color: meta.color }}>
-            <strong>{meta.label}</strong> — {meta.tagline}
+            style={{ borderColor: `color-mix(in srgb, ${meta.color} 27%, transparent)`, background: `color-mix(in srgb, ${meta.color} 5%, transparent)`, color: meta.color }}>
+            <strong>{meta.label}</strong>: {meta.tagline}
           </motion.div>
         </AnimatePresence>
 
@@ -150,8 +150,8 @@ export default function FeatureScalingClient() {
         <AnimatePresence>
           {pendingIdx !== null && (
             <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-              className="mb-4 px-4 py-2 rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5 text-[12px] text-[#d4af37]">
-              Point A selected — click a second point to compare distances.
+              className="mb-4 px-4 py-2 rounded-xl border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 text-[12px] text-[var(--color-accent)]">
+              Point A selected. Click a second point to compare distances.
             </motion.div>
           )}
         </AnimatePresence>
@@ -183,9 +183,9 @@ export default function FeatureScalingClient() {
               <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#94a3b8] mb-3">When to Use Which</p>
               <div className="flex flex-col gap-2 text-[11px]">
                 {([
-                  { m: "raw",          note: "Tree-based models — splits don't care about scale" },
+                  { m: "raw",          note: "Tree-based models: splits don't care about scale" },
                   { m: "normalized",   note: "Neural networks, bounded inputs, image pixel values" },
-                  { m: "meannorm",     note: "Gradient descent — centered and bounded without std" },
+                  { m: "meannorm",     note: "Gradient descent: centered and bounded without std" },
                   { m: "standardized", note: "SVM, PCA, KNN, linear regression, regularized models" },
                 ] as const).map(({ m, note }) => (
                   <div key={m} className="flex items-start gap-2">
@@ -204,7 +204,7 @@ export default function FeatureScalingClient() {
         {/* Footer nav */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link href="/visual-guides/missing-data"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
             ← Previous Guide
           </Link>
           <Link href="/visual-guides/outlier-detection"

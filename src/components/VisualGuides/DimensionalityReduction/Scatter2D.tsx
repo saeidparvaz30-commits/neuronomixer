@@ -120,7 +120,7 @@ export default function Scatter2D({
               x={Math.min(tooltip.cx + 58, W - 60)}
               y={Math.max(tooltip.cy + 4, 36)}
               textAnchor="middle"
-              fill="#64748b"
+              fill="#475569"
               fontSize="9"
             >
               ({tooltip.x.toFixed(2)}, {tooltip.y.toFixed(2)})

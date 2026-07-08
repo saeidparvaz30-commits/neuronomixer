@@ -37,7 +37,7 @@ export default function InteractiveHistogram({
   sampleSize,
   color,
   overlayBins,
-  overlayColor = "#d4af37",
+  overlayColor = "var(--color-accent)",
   distributionName,
   showEmpirical,
 }: Props) {

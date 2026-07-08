@@ -28,7 +28,7 @@ export default function ComparisonView({ intuition, posterior, sensitivity }: Co
         {/* Intuition */}
         <div className="rounded-xl border border-[#1e293b] bg-[#1e293b]/30 p-4 text-center space-y-1">
           <p className="text-[9px] uppercase tracking-[1.5px] text-[#475569]">Your Intuition</p>
-          <p className="text-[38px] font-black text-[#8b5cf6] leading-none">{intuition}%</p>
+          <p className="text-[38px] font-black text-[#a855f7] leading-none">{intuition}%</p>
           <p className="text-[9px] text-[#475569]">your initial guess</p>
         </div>
 
@@ -40,7 +40,7 @@ export default function ComparisonView({ intuition, posterior, sensitivity }: Co
           <p className="text-[9px] uppercase tracking-[1.5px] text-[#475569]">The Calculation</p>
           <motion.p
             key={posteriorPct}
-            className="text-[38px] font-black text-[#d4af37] leading-none"
+            className="text-[38px] font-black text-[var(--color-accent)] leading-none"
             initial={{ scale: 0.9, opacity: 0.5 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}
@@ -54,7 +54,7 @@ export default function ComparisonView({ intuition, posterior, sensitivity }: Co
       {/* Arrow + difference */}
       <div className="flex flex-col items-center gap-2">
         <div className="flex items-center gap-3 text-[13px]">
-          <span className="font-bold text-[#8b5cf6]">{intuition}%</span>
+          <span className="font-bold text-[#a855f7]">{intuition}%</span>
           <svg
             viewBox="0 0 40 16"
             width={40}
@@ -65,7 +65,7 @@ export default function ComparisonView({ intuition, posterior, sensitivity }: Co
             <line x1="2" y1="8" x2="34" y2="8" stroke="currentColor" strokeWidth="1.5" />
             <polyline points="28,3 38,8 28,13" stroke="currentColor" strokeWidth="1.5" fill="none" />
           </svg>
-          <span className="font-bold text-[#d4af37]">{posteriorPct}%</span>
+          <span className="font-bold text-[var(--color-accent)]">{posteriorPct}%</span>
         </div>
 
         {isClose ? (
@@ -75,14 +75,14 @@ export default function ComparisonView({ intuition, posterior, sensitivity }: Co
             </p>
           </div>
         ) : (
-          <div className="rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5 px-4 py-2 text-center space-y-1">
+          <div className="rounded-xl border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 px-4 py-2 text-center space-y-1">
             <p className="text-[12px] font-semibold text-white">
               You were off by{" "}
-              <span className="text-[#d4af37]">{diff.toFixed(1)} percentage points</span>
+              <span className="text-[var(--color-accent)]">{diff.toFixed(1)} percentage points</span>
             </p>
             <p className="text-[10px] text-[#94a3b8] leading-relaxed">
               {intuition > posteriorPct
-                ? "Most people overestimate — this is the base rate neglect effect."
+                ? "Most people overestimate; this is the base rate neglect effect."
                 : "The math reveals a higher risk than intuition suggests."}
             </p>
           </div>
@@ -92,7 +92,7 @@ export default function ComparisonView({ intuition, posterior, sensitivity }: Co
       {/* Insight */}
       <div className="rounded-xl border border-[#1e293b] p-3">
         <p className="text-[10px] text-[#94a3b8] leading-relaxed">
-          <span className="text-[#d4af37] font-semibold">Why the gap?</span> When a condition is
+          <span className="text-[var(--color-accent)] font-semibold">Why the gap?</span> When a condition is
           rare, even an accurate test produces far more false positives than true positives. The
           sensitivity ({(sensitivity * 100).toFixed(0)}%) describes how often the test catches
           people who truly have the condition. It is NOT the probability that a positive result

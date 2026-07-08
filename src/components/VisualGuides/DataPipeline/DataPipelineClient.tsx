@@ -23,7 +23,7 @@ export default function DataPipelineClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "data-pipeline", score: 6 }),
+        body: JSON.stringify({ guideSlug: "data-pipeline", score: 100 }),
       }).catch(() => {});
     }
   }, [allStagesSeen, session?.user]);
@@ -41,7 +41,7 @@ export default function DataPipelineClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allStagesSeen} guideSlug="data-pipeline" score={6} />
+      <GuideCompletion isComplete={allStagesSeen} guideSlug="data-pipeline" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -65,8 +65,8 @@ export default function DataPipelineClient() {
             <span className="text-[var(--color-accent)]">Raw to Ready</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[620px]">
-            12 messy employee records, 6 pipeline stages. Follow the data as it transforms from raw CSV
-            — with nulls, duplicates, and outliers — into a clean, aggregated dataset ready for analysis.
+            12 messy employee records, 6 pipeline stages. Follow the data as it transforms from raw CSV,
+            with nulls, duplicates, and outliers, into a clean, aggregated dataset ready for analysis.
           </p>
         </section>
 
@@ -122,8 +122,8 @@ export default function DataPipelineClient() {
             className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6"
           >
             {/* Data table */}
-            <div className="rounded-2xl border bg-[#0f172a] overflow-hidden" style={{ borderColor: stage.color + "30" }}>
-              <div className="px-5 py-4 border-b" style={{ borderColor: stage.color + "20" }}>
+            <div className="rounded-2xl border bg-[#0f172a] overflow-hidden" style={{ borderColor: `color-mix(in srgb, ${stage.color} 19%, transparent)` }}>
+              <div className="px-5 py-4 border-b" style={{ borderColor: `color-mix(in srgb, ${stage.color} 13%, transparent)` }}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-[18px]">{stage.icon}</span>
                   <h2 className="text-[14px] font-bold" style={{ color: stage.color }}>{stage.label} Stage</h2>
@@ -139,7 +139,7 @@ export default function DataPipelineClient() {
             <div className="space-y-4">
               <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
                 <p className="text-[12px] text-[#94a3b8] leading-relaxed mb-4">{stage.description}</p>
-                <div className="rounded-lg p-3" style={{ background: stage.color + "0d", border: `1px solid ${stage.color}25` }}>
+                <div className="rounded-lg p-3" style={{ background: `color-mix(in srgb, ${stage.color} 5%, transparent)`, border: `1px solid color-mix(in srgb, ${stage.color} 15%, transparent)` }}>
                   <p className="text-[10px] font-semibold uppercase tracking-[1px] mb-2" style={{ color: stage.color }}>
                     Output
                   </p>
@@ -202,7 +202,7 @@ export default function DataPipelineClient() {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/data-distributions"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
           >
             ← Previous Guide
           </Link>

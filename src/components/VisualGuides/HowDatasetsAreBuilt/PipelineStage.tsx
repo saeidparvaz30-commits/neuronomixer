@@ -44,7 +44,7 @@ function PipelineStageInner({ config, state, onToggle, onChallengePassed, onCont
         }`}
         style={
           !isLocked && state.isExpanded ? { borderLeft: `4px solid ${config.color}` }   :
-          isActive                      ? { borderLeft: `4px solid ${config.color}44` } :
+          isActive                      ? { borderLeft: `4px solid color-mix(in srgb, ${config.color} 27%, transparent)` } :
           undefined
         }
       >
@@ -53,7 +53,7 @@ function PipelineStageInner({ config, state, onToggle, onChallengePassed, onCont
           role="button"
           tabIndex={isLocked ? -1 : 0}
           aria-expanded={state.isExpanded}
-          aria-label={`${config.title} — ${state.status}`}
+          aria-label={`${config.title}: ${state.status}`}
           onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && !isLocked && handleClick()}
           onClick={isLocked ? undefined : handleClick}
           className={`flex items-center gap-4 px-5 py-4 ${isLocked ? "cursor-not-allowed" : "cursor-pointer"}`}
@@ -61,7 +61,7 @@ function PipelineStageInner({ config, state, onToggle, onChallengePassed, onCont
           {/* Stage number circle */}
           <div
             className="relative flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-[13px]"
-            style={{ background: isLocked ? "#1e293b" : config.color + "cc" }}
+            style={{ background: isLocked ? "#1e293b" : `color-mix(in srgb, ${config.color} 80%, transparent)` }}
           >
             {config.index + 1}
             {isActive && (

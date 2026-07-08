@@ -7,7 +7,7 @@ const DIST_ORDER: DistributionType[] = ["normal", "uniform", "exponential", "poi
 
 const DIST_COLORS: Record<DistributionType, string> = {
   normal:      "#3bb4a4",
-  uniform:     "#d4af37",
+  uniform:     "var(--color-accent)",
   exponential: "#f97316",
   poisson:     "#a855f7",
 };
@@ -24,19 +24,21 @@ export default function DistributionSelector({ current, onChange, label }: Props
       {label && (
         <span className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#475569]">{label}</span>
       )}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" role="radiogroup" aria-label={label ?? "Distribution"}>
         {DIST_ORDER.map(d => {
           const active = d === current;
           const color = DIST_COLORS[d];
           return (
             <button
               key={d}
+              role="radio"
+              aria-checked={active}
               onClick={() => onChange(d)}
               className="px-3.5 py-1.5 rounded-xl text-[11px] font-semibold border transition-all"
               style={{
                 borderColor: active ? color : "#1e293b",
                 color:       active ? color : "#475569",
-                background:  active ? color + "18" : "transparent",
+                background:  active ? `color-mix(in srgb, ${color} 9%, transparent)` : "transparent",
               }}
             >
               {DIST_LABELS[d]}

@@ -35,8 +35,8 @@ export default function RepeatedMeasuresToggle({
           role="switch"
           aria-checked={isRepeated}
           onClick={handleToggle}
-          className="relative w-11 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#d4af37] focus:ring-offset-2 focus:ring-offset-[#0f172a]"
-          style={{ background: isRepeated ? "#d4af37" : "#334155" }}
+          className="relative w-11 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:ring-offset-2 focus:ring-offset-[#0f172a]"
+          style={{ background: isRepeated ? "var(--color-accent)" : "#334155" }}
         >
           <motion.span
             animate={{ x: isRepeated ? 20 : 2 }}
@@ -57,7 +57,7 @@ export default function RepeatedMeasuresToggle({
             transition={{ duration: 0.25 }}
           >
             <p className="text-[12px] text-[#94a3b8] leading-relaxed mb-4">
-              Currently showing <strong className="text-white">between-subjects</strong> ANOVA —
+              Currently showing <strong className="text-white">between-subjects</strong> ANOVA:
               each participant is in exactly one group. Toggle to see how the
               design changes with repeated measures.
             </p>
@@ -99,12 +99,12 @@ export default function RepeatedMeasuresToggle({
               <div className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#3bb4a4] mt-1.5 flex-shrink-0" />
                 <p className="text-[11px] text-[#94a3b8]">
-                  <strong className="text-white">SS_Subject</strong> captures individual baseline differences —
+                  <strong className="text-white">SS_Subject</strong> captures individual baseline differences;
                   removing them from the error term boosts sensitivity.
                 </p>
               </div>
               <div className="flex items-start gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#d4af37] mt-1.5 flex-shrink-0" />
+                <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] mt-1.5 flex-shrink-0" />
                 <p className="text-[11px] text-[#94a3b8]">
                   <strong className="text-white">Sphericity assumption</strong> (Mauchly's test):
                   variances of pairwise differences should be equal. If violated,
@@ -120,8 +120,8 @@ export default function RepeatedMeasuresToggle({
               </div>
             </div>
 
-            <div className="mt-4 p-3 rounded-xl border border-[#d4af37]/30 bg-[#d4af37]/5">
-              <p className="text-[11px] text-[#d4af37]">
+            <div className="mt-4 p-3 rounded-xl border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5">
+              <p className="text-[11px] text-[var(--color-accent)]">
                 This is an informational toggle. The box plots and decomposition above
                 remain in between-subjects mode for clarity.
               </p>

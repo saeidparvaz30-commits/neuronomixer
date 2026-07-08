@@ -44,7 +44,7 @@ export default function PriorPanel({ baseRate, scenario, onBaseRateChange }: Pri
           <span className="text-[12px] text-white font-medium">
             {w.priorLabel}
           </span>
-          <span className="text-[13px] font-mono font-bold text-[#d4af37]">
+          <span className="text-[13px] font-mono font-bold text-[var(--color-accent)]">
             {w.priorSymbol} = {(baseRate * 100).toFixed(1)}%
           </span>
         </div>
@@ -54,9 +54,10 @@ export default function PriorPanel({ baseRate, scenario, onBaseRateChange }: Pri
           max={0.1}
           step={0.001}
           value={baseRate}
+          aria-label="Base rate (prior probability)"
           onChange={(e) => onBaseRateChange(Number(e.target.value))}
           className="w-full"
-          style={{ accentColor: "#d4af37" }}
+          style={{ accentColor: "var(--color-accent)" }}
         />
         <div className="flex justify-between text-[9px] text-[#334155]">
           <span>0.1%</span>

@@ -366,7 +366,7 @@ export default function DataPointDragZone({
                       cy={cy}
                       r={DOT_RADIUS + 4}
                       fill="none"
-                      stroke="#d4af37"
+                      stroke="var(--color-accent)"
                       strokeWidth={1.5}
                       opacity={0.4}
                     />
@@ -375,8 +375,8 @@ export default function DataPointDragZone({
                     cx={cx}
                     cy={cy}
                     r={isDragging ? DOT_RADIUS + 2 : DOT_RADIUS}
-                    fill={isDragging ? "#d4af37" : "#3bb4a4"}
-                    stroke={isDragging ? "#f59e0b" : "#1e293b"}
+                    fill={isDragging ? "var(--color-accent)" : "#3bb4a4"}
+                    stroke={isDragging ? "var(--color-warning)" : "#1e293b"}
                     strokeWidth={1.5}
                     style={{ transition: isDragging ? "none" : "r 0.15s" }}
                   />
@@ -403,7 +403,7 @@ export default function DataPointDragZone({
                   height={20}
                   rx={4}
                   fill="#0f172a"
-                  stroke="#d4af37"
+                  stroke="var(--color-accent)"
                   strokeWidth={1}
                   opacity={0.95}
                 />
@@ -412,7 +412,7 @@ export default function DataPointDragZone({
                   y={tooltip.y - DOT_RADIUS - 12}
                   textAnchor="middle"
                   fontSize={10}
-                  fill="#d4af37"
+                  fill="var(--color-accent)"
                   fontFamily="monospace"
                 >
                   ${tooltip.value}k
@@ -441,7 +441,7 @@ export default function DataPointDragZone({
         </div>
         <button
           onClick={onReset}
-          className="px-4 py-1.5 rounded-xl text-[12px] font-semibold border border-[#1e293b] text-[#94a3b8] hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+          className="px-4 py-1.5 rounded-xl text-[12px] font-semibold border border-[#1e293b] text-[#94a3b8] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
         >
           Reset to Original Data
         </button>

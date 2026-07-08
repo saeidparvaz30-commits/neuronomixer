@@ -26,7 +26,7 @@ export default function CorrelationCausationClient() {
       fetch("/api/visual-guides/complete", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "correlation-causation", score: 5 }),
+        body: JSON.stringify({ guideSlug: "correlation-causation", score: 100 }),
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
@@ -39,7 +39,7 @@ export default function CorrelationCausationClient() {
 
   return (
     <div className="min-h-screen pb-20">
-      <GuideCompletion isComplete={allComplete} guideSlug="correlation-causation" score={5} />
+      <GuideCompletion isComplete={allComplete} guideSlug="correlation-causation" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
@@ -61,7 +61,7 @@ export default function CorrelationCausationClient() {
             <span className="text-[var(--color-accent)]">The Visual Guide</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[600px]">
-            Ice cream sales and shark attacks are strongly correlated — but ice cream doesn&apos;t cause sharks.
+            Ice cream sales and shark attacks are strongly correlated, but ice cream doesn&apos;t cause sharks.
             Explore confounding variables, generate spurious correlations, and learn when correlation hints at causation.
           </p>
         </section>
@@ -117,7 +117,7 @@ export default function CorrelationCausationClient() {
         <section className="mb-12">
           <h2 className="text-[20px] font-bold text-white mb-2">Generate Spurious Correlations</h2>
           <p className="text-[13px] text-[#94a3b8] mb-4">
-            Real data, zero causal meaning — and a generator to find your own &quot;surprising&quot; correlations.
+            Real data, zero causal meaning, and a generator to find your own &quot;surprising&quot; correlations.
           </p>
           <SpuriousCorrelationSandbox onGenerate={setSpuriousCount} />
         </section>
@@ -132,7 +132,7 @@ export default function CorrelationCausationClient() {
         {/* Footer nav */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link href="/visual-guides/outlier-detection"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
             ← Previous Guide
           </Link>
           <Link href="/visual-guides/dimensionality-reduction"

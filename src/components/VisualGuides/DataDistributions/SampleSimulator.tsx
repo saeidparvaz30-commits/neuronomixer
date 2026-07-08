@@ -55,15 +55,17 @@ export default function SampleSimulator({
 
       <div className="flex flex-wrap items-center gap-3">
         <span className="text-[11px] text-[#475569]">Sample size:</span>
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Sample size">
           {SAMPLE_SIZES.map(n => (
             <button
               key={n}
+              role="radio"
+              aria-checked={currentSampleSize === n}
               onClick={() => onSampleSizeChange(n)}
               className="px-3 py-1 rounded-lg text-[11px] font-semibold border transition-colors"
               style={{
-                borderColor: currentSampleSize === n ? "#d4af37" : "#1e293b",
-                color:       currentSampleSize === n ? "#d4af37" : "#475569",
+                borderColor: currentSampleSize === n ? "var(--color-accent)" : "#1e293b",
+                color:       currentSampleSize === n ? "var(--color-accent)" : "#475569",
               }}
             >
               {n.toLocaleString()}
@@ -76,7 +78,7 @@ export default function SampleSimulator({
         <button
           onClick={handleDraw}
           disabled={isPending}
-          className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-[#d4af37] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-2 rounded-xl text-[12px] font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isPending ? "Drawing…" : "Draw Random Samples"}
         </button>
