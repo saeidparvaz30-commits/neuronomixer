@@ -13,13 +13,18 @@ import {
   computeOverdispersion,
 } from "./types";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+import { useGuideMotion, GUIDE_VIEWPORT } from "@/lib/guideMotion";
+
+const GUIDE_TITLE = "Count Models: Poisson & Negative Binomial";
+const NEXT_GUIDE_SLUG = "ab-testing-workflow";
+const PREV_GUIDE_SLUG = "logistic-regression";
 
 // ── Colour palette ────────────────────────────────────────────────────────────
-const COL_GOLD   = "#d4af37";
+const COL_GOLD   = "var(--color-accent)";
 const COL_BLUE   = "#1e5d8a";
 const COL_TEAL   = "#3bb4a4";
 const COL_RED    = "#ef4444";
-const COL_PURPLE = "#8b5cf6";
+const COL_PURPLE = "#a855f7";
 const COL_MUTED  = "#94a3b8";
 
 // ── SVG canvas helpers ────────────────────────────────────────────────────────
@@ -206,6 +211,7 @@ function MetricBadge({ label, value, best, fmt }: { label: string; value: number
 
 // ── Main component ────────────────────────────────────────────────────────────
 export default function CountModelsPoissonClient() {
+  const { fadeUp, card } = useGuideMotion();
   const [scenario, setScenario] = useState<ScenarioId>("complaints");
   const [showModel, setShowModel] = useState<"linear" | "poisson" | "negbinom" | "all">("all");
   const [lambda, setLambda] = useState(8);
@@ -237,31 +243,64 @@ export default function CountModelsPoissonClient() {
 
   const bestAIC = Math.min(fit.poisson.aic, fit.negativeBinomial.aic);
 
+  function handleReset() {
+    setScenario("complaints");
+    setShowModel("all");
+    setLambda(8);
+    setScenariosExplored(new Set<ScenarioId>(["complaints"]));
+    setModelViewChanged(false);
+    setLambdaAdjusted(false);
+  }
+
   return (
-    <div className="space-y-10 text-white">
+    <div className="min-h-screen pb-20">
       <GuideCompletion
         isComplete={isComplete}
         guideSlug="count-models-poisson"
         score={100}
       />
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8 space-y-10">
 
-      {/* ── Header ── */}
-      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <span className="text-xs font-semibold uppercase tracking-widest text-[var(--color-accent)] mb-2 block">
-          Generalized Linear Models
-        </span>
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-          Count Models: Poisson &amp; Negative Binomial
-        </h1>
-        <p className="text-[var(--color-text-muted)] text-base max-w-2xl">
+      {/* Breadcrumb */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] !mt-0 mb-6">
+        <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
+          Visual Guides
+        </Link>
+        <span>/</span>
+        <span className="text-[#94a3b8]">{GUIDE_TITLE}</span>
+      </nav>
+
+      {/* ── Hero ── */}
+      <section className="!mt-0 mb-8">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="w-6 h-px bg-[var(--color-accent)]" />
+          <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
+            Generalized Linear Models
+          </span>
+          <span className="w-6 h-px bg-[var(--color-accent)]" />
+        </div>
+        <motion.h1
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
+        >
+          Count Models: <span className="text-[var(--color-accent)]">Poisson &amp; Negative Binomial</span>
+        </motion.h1>
+        <motion.p
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]"
+        >
           Linear regression predicts real numbers, but counts can&apos;t be negative or fractional.
           GLMs with a <strong className="text-white">log link</strong> fix this and model count
           distributions correctly.
-        </p>
-      </motion.div>
+        </motion.p>
+      </section>
 
       {/* ── Section 1: The Problem with Linear Regression ── */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="space-y-4">
+      <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={GUIDE_VIEWPORT} className="space-y-4">
         <h2 className="text-xl font-bold text-white">Why Linear Regression Fails for Counts</h2>
         <p className="text-sm text-[var(--color-text-muted)] max-w-2xl">
           Linear regression can predict <em>negative</em> values and ignores the discrete,
@@ -271,10 +310,12 @@ export default function CountModelsPoissonClient() {
         </p>
 
         {/* Scenario selector */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="Data scenario">
           {scenarios.map(s => (
             <button
               key={s.id}
+              role="radio"
+              aria-checked={scenario === s.id}
               onClick={() => {
                 setScenario(s.id);
                 setScenariosExplored(prev => {
@@ -291,11 +332,13 @@ export default function CountModelsPoissonClient() {
         </div>
 
         {/* Model toggle */}
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap gap-2 items-center" role="radiogroup" aria-label="Models shown on the chart">
           <span className="text-xs text-gray-500 mr-1">Show:</span>
           {(["all", "linear", "poisson", "negbinom"] as const).map(m => (
             <button
               key={m}
+              role="radio"
+              aria-checked={showModel === m}
               onClick={() => {
                 if (m !== showModel) setModelViewChanged(true);
                 setShowModel(m);
@@ -324,8 +367,8 @@ export default function CountModelsPoissonClient() {
           <div className="flex flex-wrap gap-4 mt-3 justify-center">
             <div className="flex items-center gap-1.5"><div className="w-3 h-3 rounded-full bg-[#3bb4a4] opacity-75" /><span className="text-xs text-gray-400">Data points</span></div>
             {(showModel === "linear"   || showModel === "all") && <div className="flex items-center gap-1.5"><div className="w-6 border-t-2 border-dashed border-[#ef4444]" /><span className="text-xs text-gray-400">Linear OLS</span></div>}
-            {(showModel === "poisson"  || showModel === "all") && <div className="flex items-center gap-1.5"><div className="w-6 border-t-2 border-[#d4af37]" /><span className="text-xs text-gray-400">Poisson GLM</span></div>}
-            {(showModel === "negbinom" || showModel === "all") && <div className="flex items-center gap-1.5"><div className="w-6 border-t-2 border-[#8b5cf6]" /><span className="text-xs text-gray-400">Neg. Binomial</span></div>}
+            {(showModel === "poisson"  || showModel === "all") && <div className="flex items-center gap-1.5"><div className="w-6 border-t-2 border-[var(--color-accent)]" /><span className="text-xs text-gray-400">Poisson GLM</span></div>}
+            {(showModel === "negbinom" || showModel === "all") && <div className="flex items-center gap-1.5"><div className="w-6 border-t-2 border-[#a855f7]" /><span className="text-xs text-gray-400">Neg. Binomial</span></div>}
           </div>
         </div>
 
@@ -334,7 +377,7 @@ export default function CountModelsPoissonClient() {
       </motion.section>
 
       {/* ── Section 2: Overdispersion ── */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }} className="space-y-4">
+      <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={GUIDE_VIEWPORT} className="space-y-4">
         <h2 className="text-xl font-bold text-white">Overdispersion: When Poisson Isn&apos;t Enough</h2>
         <p className="text-sm text-[var(--color-text-muted)] max-w-2xl">
           Poisson assumes <strong className="text-white">Var(Y) = E[Y]</strong>{" "}
@@ -461,7 +504,7 @@ export default function CountModelsPoissonClient() {
       </motion.section>
 
       {/* ── Section 3: Model Comparison ── */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="space-y-4">
+      <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={GUIDE_VIEWPORT} className="space-y-4">
         <h2 className="text-xl font-bold text-white">Model Comparison</h2>
         <p className="text-sm text-[var(--color-text-muted)] max-w-2xl">
           Lower <strong className="text-white">AIC</strong> and{" "}
@@ -505,7 +548,7 @@ export default function CountModelsPoissonClient() {
                 <tr className={`border-b border-white/[0.03] ${fit.poisson.aic === bestAIC ? "bg-[var(--color-accent)]/5" : ""}`}>
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-0.5 bg-[#d4af37]" />
+                      <div className="w-3 h-0.5 bg-[var(--color-accent)]" />
                       <span className="text-gray-200 font-medium">Poisson GLM</span>
                       {fit.poisson.aic === bestAIC && <span className="text-[9px] bg-[var(--color-accent)]/20 text-[var(--color-accent)] px-1.5 py-0.5 rounded font-semibold">BEST</span>}
                     </div>
@@ -518,7 +561,7 @@ export default function CountModelsPoissonClient() {
                 <tr className={fit.negativeBinomial.aic === bestAIC ? "bg-[var(--color-accent)]/5" : ""}>
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-0.5 bg-[#8b5cf6]" />
+                      <div className="w-3 h-0.5 bg-[#a855f7]" />
                       <span className="text-gray-200 font-medium">Neg. Binomial</span>
                       {fit.negativeBinomial.aic === bestAIC && <span className="text-[9px] bg-[var(--color-accent)]/20 text-[var(--color-accent)] px-1.5 py-0.5 rounded font-semibold">BEST</span>}
                     </div>
@@ -552,7 +595,7 @@ export default function CountModelsPoissonClient() {
       </motion.section>
 
       {/* ── Section 4: Poisson PMF ── */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.25 }} className="space-y-4">
+      <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={GUIDE_VIEWPORT} className="space-y-4">
         <h2 className="text-xl font-bold text-white">The Poisson Distribution</h2>
         <p className="text-sm text-[var(--color-text-muted)] max-w-2xl">
           The Poisson PMF is{" "}
@@ -566,6 +609,7 @@ export default function CountModelsPoissonClient() {
             <label className="text-sm text-gray-400 whitespace-nowrap">λ = <span className="text-white font-bold font-mono">{lambda}</span></label>
             <input
               type="range"
+              aria-label="Poisson rate parameter lambda"
               min={1}
               max={30}
               step={1}
@@ -609,7 +653,7 @@ export default function CountModelsPoissonClient() {
       </motion.section>
 
       {/* ── Section 5: Decision Guide ── */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="space-y-4">
+      <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={GUIDE_VIEWPORT} className="space-y-4">
         <h2 className="text-xl font-bold text-white">Model Selection Guide</h2>
         <div className="grid sm:grid-cols-3 gap-4">
           {[
@@ -654,7 +698,7 @@ export default function CountModelsPoissonClient() {
       </motion.section>
 
       {/* ── Key Takeaways ── */}
-      <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }} className="bg-[#0a0e1a] rounded-2xl border border-[var(--color-accent)]/20 p-6 space-y-3">
+      <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={GUIDE_VIEWPORT} className="bg-[#0a0e1a] rounded-2xl border border-[var(--color-accent)]/20 p-6 space-y-3">
         <h2 className="text-lg font-bold text-[var(--color-accent)]">Key Takeaways</h2>
         <ul className="space-y-2 text-sm text-[var(--color-text-muted)]">
           <li className="flex gap-2"><span className="text-[var(--color-accent)] font-bold shrink-0">1.</span>Use <strong className="text-white">Poisson GLM</strong> (log link) instead of linear regression for count outcomes.</li>
@@ -664,20 +708,100 @@ export default function CountModelsPoissonClient() {
         </ul>
       </motion.section>
 
-      {/* ── Navigation ── */}
-      <div className="flex items-center justify-between pt-4 border-t border-white/5">
-        <Link
-          href="/visual-guides/logistic-regression"
-          className="text-sm text-[var(--color-text-muted)] hover:text-white transition-colors"
-        >
-          ← Logistic Regression
-        </Link>
-        <Link
-          href="/visual-guides/ab-testing-workflow"
-          className="text-sm px-4 py-2 rounded-lg bg-[var(--color-accent)]/10 text-[var(--color-accent)] border border-[var(--color-accent)]/30 hover:bg-[var(--color-accent)]/20 transition-colors"
-        >
-          Next: A/B Testing: The Complete Workflow →
-        </Link>
+      {/* Completion card */}
+      <AnimatePresence>
+        {isComplete && (
+          <motion.div
+            variants={card}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+          >
+            <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-5 h-px bg-[var(--color-accent)]" />
+                <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                  Guide Complete
+                </span>
+              </div>
+              <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                Count Models Mastered!
+              </h2>
+              <p className="text-sm text-[#94a3b8] mt-1">
+                You compared linear, Poisson, and negative binomial fits, diagnosed overdispersion, and explored the Poisson distribution itself.
+              </p>
+            </div>
+
+            <div className="px-6 py-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                {[
+                  { label: "Scenarios explored", value: `${scenariosExplored.size} / 3`, color: "#3bb4a4" },
+                  { label: "Models compared", value: "OLS vs GLM", color: "var(--color-accent)" },
+                  { label: "Dispersion check", value: "X²/df", color: "#a855f7" },
+                ].map(item => (
+                  <div key={item.label} className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">{item.label}</p>
+                    <p className="text-[14px] font-mono font-bold" style={{ color: item.color }}>
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                  Key Takeaway
+                </p>
+                <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                  &quot;Counts are not just numbers, they are events. Model them with a log link, check the dispersion, and reach for the negative binomial when the variance outruns the mean.&quot;
+                </p>
+              </div>
+            </div>
+
+            <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+              <Link
+                href="/visual-guides"
+                className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+              >
+                ← All Guides
+              </Link>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleReset}
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  Try Again
+                </button>
+                <Link
+                  href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                  className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                >
+                  Next Guide →
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Footer nav (pre-completion) */}
+      {!isComplete && (
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+          <Link
+            href={`/visual-guides/${PREV_GUIDE_SLUG}`}
+            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+          >
+            ← Previous Guide
+          </Link>
+          <Link
+            href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+          >
+            Next Guide →
+          </Link>
+        </div>
+      )}
       </div>
     </div>
   );

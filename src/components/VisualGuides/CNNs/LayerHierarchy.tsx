@@ -136,7 +136,7 @@ export default function LayerHierarchy({ onView }: LayerHierarchyProps) {
                 </text>
                 <text
                   x={x + 60} y="90"
-                  fill={isActive ? "#e2e8f0" : "#94a3b8"}
+                  fill={isActive ? "#f1f5f9" : "#94a3b8"}
                   fontSize="9.5" textAnchor="middle" fontWeight="500"
                   className="pointer-events-none"
                 >
@@ -216,7 +216,7 @@ export default function LayerHierarchy({ onView }: LayerHierarchyProps) {
                   style={{ background: active.color }}
                 />
                 <h4 className="text-sm font-semibold" style={{ color: active.color }}>
-                  {active.label} — {active.depth} Layer: {active.detects}
+                  {active.label}, {active.depth} Layer: {active.detects}
                 </h4>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -225,13 +225,13 @@ export default function LayerHierarchy({ onView }: LayerHierarchyProps) {
                     key={ex}
                     className="bg-[#0f172a]/60 border border-white/[0.08] rounded-lg px-3 py-2 text-center"
                   >
-                    <span className="text-[11px] text-[#e2e8f0]">{ex}</span>
+                    <span className="text-[11px] text-[#f1f5f9]">{ex}</span>
                   </div>
                 ))}
               </div>
               <p className="text-[11px] text-[#94a3b8] mt-3 leading-relaxed">
                 {active.depth === "Early" &&
-                  "First-layer filters respond to simple local patterns — exactly like the kernels you explored above."}
+                  "First-layer filters respond to simple local patterns, exactly like the kernels you explored above."}
                 {active.depth === "Mid" &&
                   "Mid-layer features combine early edges to detect more complex patterns. Think of curves built from straight edges."}
                 {active.depth === "Deep" &&

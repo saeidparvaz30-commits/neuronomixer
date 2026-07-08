@@ -5,6 +5,11 @@ import Link from "next/link";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useSession } from "next-auth/react";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+import { useGuideMotion } from "@/lib/guideMotion";
+
+const GUIDE_TITLE = "AI Agents: Autonomy in Action";
+const NEXT_GUIDE_SLUG = "model-evaluation";
+const PREV_GUIDE_SLUG = "prompt-engineering";
 
 const LOOP_PHASES = [
   { id: "perceive", label: "PERCEIVE", desc: "Read input (text, files, web)",       color: "#3bb4a4", angle: 270 },
@@ -38,7 +43,7 @@ const TOOLS = [
 
 const RISKS = [
   { title: "Infinite Loops",      desc: "Agent keeps searching without a stopping condition, burning tokens indefinitely.", color: "#ef4444" },
-  { title: "Tool Misuse",         desc: "Selecting the wrong tool — e.g. web search when precise arithmetic is needed.", color: "#f97316" },
+  { title: "Tool Misuse",         desc: "Selecting the wrong tool, e.g. web search when precise arithmetic is needed.", color: "#f97316" },
   { title: "Compounding Errors",  desc: "A small mistake in step 2 gets passed through all subsequent steps.", color: "#a855f7" },
 ];
 
@@ -49,6 +54,7 @@ function polarPos(angleDeg: number, r: number) {
 
 export default function AIAgentsClient() {
   const { data: session } = useSession();
+  const { fadeUp, card } = useGuideMotion();
 
   const [loopRunning, setLoopRunning]     = useState(false);
   const [activePhase, setActivePhase]     = useState(-1);
@@ -99,60 +105,79 @@ export default function AIAgentsClient() {
 
   const progress = [{ label: "Agent loop", done: loopViewed }, { label: "ReAct trace", done: traceAllDone }];
 
+  function handleReset() {
+    setLoopRunning(false);
+    setActivePhase(-1);
+    setLoopViewed(false);
+    setTraceStep(0);
+    setTraceAuto(false);
+    setActiveTool(null);
+    if (loopRef.current) clearInterval(loopRef.current);
+    completionFired.current = false;
+  }
+
   return (
     <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={allComplete} guideSlug="ai-agents" score={100} />
-      <div className="max-w-[1200px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
-          <span className="text-white/20">/</span>
-          <span className="text-[#ec4899]">Applied AI</span>
-          <span className="text-white/20">/</span>
-          <span className="text-white">AI Agents: Autonomy in Action</span>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">Visual Guides</Link>
+          <span>/</span>
+          <span className="text-[#94a3b8]">{GUIDE_TITLE}</span>
         </nav>
 
         {/* Hero */}
-        <section className="mb-10">
+        <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#ec4899]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#ec4899]">Applied AI</span>
-            <span className="w-6 h-px bg-[#ec4899]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">Applied AI</span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
-            AI Agents: <span className="text-[#ec4899]">Autonomy in Action</span>
-          </h1>
-          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[640px]">
-            An AI agent is an LLM equipped with tools — it perceives, reasons, acts, and observes in a continuous loop to autonomously complete multi-step tasks.
-          </p>
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
+          >
+            AI Agents: <span className="text-[var(--color-accent)]">Autonomy in Action</span>
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]"
+          >
+            An AI agent is an LLM equipped with tools: it perceives, reasons, acts, and observes in a continuous loop to autonomously complete multi-step tasks.
+          </motion.p>
         </section>
 
         {/* Progress */}
         <div className="flex items-center gap-3 mb-3 flex-wrap">
           {progress.map(({ label, done }) => (
             <div key={label} className="flex items-center gap-1.5">
-              <motion.div className="w-2 h-2 rounded-full" animate={{ backgroundColor: done ? "#ec4899" : "#1e293b" }} transition={{ duration: 0.4 }} />
+              <div className="w-2 h-2 rounded-full transition-colors" style={{ background: done ? "var(--color-accent)" : "#1e293b" }} />
               <span className={`text-[11px] transition-colors ${done ? "text-white" : "text-[#475569]"}`}>{label}</span>
             </div>
           ))}
           {!session?.user && <p className="text-[11px] text-[#475569] ml-auto">Sign in to save progress</p>}
           <AnimatePresence>
             {allComplete && (
-              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="ml-auto text-[11px] font-semibold text-[#ec4899] flex items-center gap-1">
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="ml-auto text-[11px] font-semibold text-[var(--color-success)] flex items-center gap-1">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                 Guide complete!
               </motion.span>
             )}
           </AnimatePresence>
         </div>
         <div className="h-1 rounded-full bg-[#1e293b] mb-10 overflow-hidden">
-          <motion.div className="h-full rounded-full bg-[#ec4899]" animate={{ width: `${(progress.filter(p => p.done).length / progress.length) * 100}%` }} transition={{ duration: 0.5 }} />
+          <motion.div className="h-full rounded-full bg-[var(--color-accent)]" animate={{ width: `${(progress.filter(p => p.done).length / progress.length) * 100}%` }} transition={{ duration: 0.5 }} />
         </div>
 
         {/* ── S1: Agent Loop ── */}
         <section className="mb-14">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 1 — The Agent Loop</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 1: The Agent Loop</h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">An agent repeats four steps until its goal is reached. Press Start to animate the cycle.</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
             <div className="relative mx-auto" style={{ width: "min(320px,100%)", aspectRatio: "1" }}>
@@ -198,7 +223,7 @@ export default function AIAgentsClient() {
 
         {/* ── S2: ReAct Trace ── */}
         <section className="mb-14">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 2 — ReAct Trace Simulation</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 2: ReAct Trace Simulation</h2>
           <p className="text-[12px] text-[#94a3b8] mb-1">Goal: <span className="text-white font-semibold">Find the cheapest hotel in Paris under $100</span></p>
           <p className="text-[12px] text-[#94a3b8] mb-5">ReAct = Reasoning + Acting interleaved. Step through each agent move.</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5 sm:p-6">
@@ -213,12 +238,12 @@ export default function AIAgentsClient() {
                       <span className="text-[10px] text-[#475569]">Step {i + 1}</span>
                     </div>
                     <p className={`text-[12px] leading-relaxed ${s.phase === "ACTION" ? "font-mono" : ""}`}
-                      style={{ color: s.phase === "ANSWER" ? "#d4af37" : "white" }}>{s.text}</p>
+                      style={{ color: s.phase === "ANSWER" ? "var(--color-accent)" : "white" }}>{s.text}</p>
                   </motion.div>
                 ))}
               </div>
             ) : (
-              <div className="rounded-xl border border-[#1e293b] bg-[#0a0f1e] p-5 mb-4 text-center">
+              <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-5 mb-4 text-center">
                 <p className="text-[12px] text-[#475569]">Press Next Step or Auto-Play to begin the trace.</p>
               </div>
             )}
@@ -247,11 +272,12 @@ export default function AIAgentsClient() {
 
         {/* ── S3: Tool Palette ── */}
         <section className="mb-14">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 3 — Tool Palette</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 3: Tool Palette</h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">Agents gain capabilities through tools. Click a card to see an example exchange.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {TOOLS.map((tool, i) => (
               <motion.button key={tool.name} onClick={() => setActiveTool(activeTool === i ? null : i)}
+                aria-pressed={activeTool === i}
                 className="rounded-2xl border text-left p-4 transition-all"
                 style={{ borderColor: activeTool === i ? "#ec4899" : "#1e293b", background: activeTool === i ? "#ec489910" : "#0f172a" }}
                 whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
@@ -264,13 +290,13 @@ export default function AIAgentsClient() {
             {activeTool !== null && (
               <motion.div key={activeTool} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 8 }}
                 className="mt-4 rounded-2xl border border-[#ec4899]/30 bg-[#ec489908] p-5">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#ec4899] mb-3">{TOOLS[activeTool].name} — Example</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[#ec4899] mb-3">{TOOLS[activeTool].name}: Example</p>
                 <div className="space-y-2">
-                  <div className="rounded-xl bg-[#0a0f1e] border border-[#1e293b] p-3">
+                  <div className="rounded-xl bg-[#0a0e1a] border border-[#1e293b] p-3">
                     <span className="text-[10px] font-bold text-[#475569] block mb-1">INPUT</span>
                     <code className="text-[11px] text-[#3bb4a4] font-mono">{TOOLS[activeTool].input}</code>
                   </div>
-                  <div className="rounded-xl bg-[#0a0f1e] border border-[#1e293b] p-3">
+                  <div className="rounded-xl bg-[#0a0e1a] border border-[#1e293b] p-3">
                     <span className="text-[10px] font-bold text-[#475569] block mb-1">OUTPUT</span>
                     <p className="text-[11px] text-white font-mono">{TOOLS[activeTool].output}</p>
                   </div>
@@ -282,7 +308,7 @@ export default function AIAgentsClient() {
 
         {/* ── S4: Multi-Agent ── */}
         <section className="mb-14">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 4 — Multi-Agent System</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 4: Multi-Agent System</h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">Complex tasks get broken into parallel subtasks, each handled by a specialist agent.</p>
           <div ref={multiRef} className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 sm:p-8">
             <div className="flex flex-col items-center gap-6">
@@ -317,7 +343,7 @@ export default function AIAgentsClient() {
 
         {/* ── S5: Risks ── */}
         <section className="mb-12">
-          <h2 className="text-[18px] font-bold text-white mb-1">Section 5 — Risks &amp; Limitations</h2>
+          <h2 className="text-[18px] font-bold text-white mb-1">Section 5: Risks &amp; Limitations</h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">Autonomy introduces failure modes that don&apos;t exist in single-shot LLM calls.</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {RISKS.map((r) => (
@@ -337,11 +363,11 @@ export default function AIAgentsClient() {
         {/* Gold insight */}
         <div className="rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 p-6 mb-12">
           <div className="flex items-start gap-3">
-            <span className="text-[#d4af37] text-xl mt-0.5">💡</span>
+            <span className="text-[var(--color-accent)] text-xl mt-0.5">💡</span>
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-[#d4af37] mb-2">Key Insight</p>
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">Key Insight</p>
               <p className="text-[13px] text-white leading-relaxed">
-                AutoGPT (2023) showed agents could autonomously complete complex tasks — but also highlighted key challenges: they get stuck in loops, make irreversible mistakes, and need human oversight checkpoints.
+                AutoGPT (2023) showed agents could autonomously complete complex tasks, but it also highlighted key challenges: they get stuck in loops, make irreversible mistakes, and need human oversight checkpoints.
               </p>
             </div>
           </div>
@@ -360,17 +386,96 @@ export default function AIAgentsClient() {
           </Link>
         </div>
 
-        {/* Nav */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link href="/visual-guides/prompt-engineering"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
-            ← Prompt Engineering
-          </Link>
-          <Link href="/visual-guides/model-evaluation"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            Model Evaluation →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mb-10 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  Agents Understood!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You ran the perceive-think-act-observe loop and stepped through a full ReAct trace.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  {[
+                    { label: "Agent loop", value: loopViewed ? "Animated" : "?", color: "#3bb4a4" },
+                    { label: "ReAct trace", value: `${Math.min(traceStep, TRACE.length)} / ${TRACE.length} steps`, color: "#ec4899" },
+                    { label: "Tool palette", value: `${TOOLS.length} tools`, color: "var(--color-accent)" },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl border border-[#1e293b] p-3">
+                      <p className="text-[10px] text-[#475569] mb-1">{item.label}</p>
+                      <p className="text-[14px] font-mono font-bold" style={{ color: item.color }}>
+                        {item.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;An agent is a language model with hands: tools give it reach, the loop gives it persistence, and your guardrails decide whether that autonomy helps or hurts.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!allComplete && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link href={`/visual-guides/${PREV_GUIDE_SLUG}`}
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+              ← Previous Guide
+            </Link>
+            <Link href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+              Next Guide →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

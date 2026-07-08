@@ -5,6 +5,10 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+import { useGuideMotion, GUIDE_VIEWPORT } from "@/lib/guideMotion";
+
+const GUIDE_TITLE = "Chunking Strategies for RAG";
+const NEXT_GUIDE_SLUG = "prompt-engineering";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -25,11 +29,11 @@ This breakthrough enabled models like BERT and GPT to achieve state-of-the-art r
 Transfer learning became standard practice. Pre-training on large corpora, then fine-tuning on specific tasks, dramatically reduced the data requirements.`;
 
 const CHUNK_COLORS = [
-  { bg: "#1e5d8a22", border: "#1e5d8a66", text: "#60a5fa" },
+  { bg: "#1e5d8a22", border: "#1e5d8a66", text: "#93c5fd" },
   { bg: "#3bb4a422", border: "#3bb4a466", text: "#3bb4a4" },
-  { bg: "#d4af3722", border: "#d4af3766", text: "#d4af37" },
-  { bg: "#a855f722", border: "#a855f766", text: "#c084fc" },
-  { bg: "#ec489922", border: "#ec489966", text: "#f472b6" },
+  { bg: "#d4af3722", border: "#d4af3766", text: "var(--color-accent)" },
+  { bg: "#a855f722", border: "#a855f766", text: "#a855f7" },
+  { bg: "#ec489922", border: "#ec489966", text: "#ec4899" },
 ];
 
 const STRATEGIES: { id: Strategy; label: string; description: string }[] = [
@@ -311,6 +315,7 @@ function TradeoffChart() {
 
 export default function ChunkingStrategiesClient() {
   const { data: session } = useSession();
+  const { fadeUp, card } = useGuideMotion();
 
   const [strategy, setStrategy] = useState<Strategy>("fixed");
   const [chunkSize, setChunkSize] = useState(120);
@@ -357,6 +362,17 @@ export default function ChunkingStrategiesClient() {
     maybeComplete();
   };
 
+  function handleReset() {
+    setStrategy("fixed");
+    setChunkSize(120);
+    setOverlapSize(20);
+    setOverlapPct(15);
+    setIsComplete(false);
+    triedStrategies.current = new Set(["fixed"]);
+    movedSlider.current = false;
+    completionFired.current = false;
+  }
+
   function maybeComplete() {
     if (completionFired.current) return;
     if (triedStrategies.current.size >= 3 && movedSlider.current) {
@@ -390,42 +406,45 @@ export default function ChunkingStrategiesClient() {
   return (
     <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="chunking-strategies" score={100} />
-      <div className="max-w-[860px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-[12px] text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
-          <span className="text-white/20">/</span>
-          <span
-            className="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider"
-            style={{ background: "#ec489922", color: "#ec4899" }}
-          >
-            Applied AI
-          </span>
-          <span className="text-white/20">/</span>
-          <span className="text-white">Chunking Strategies for RAG</span>
+          <span>/</span>
+          <span className="text-[#94a3b8]">{GUIDE_TITLE}</span>
         </nav>
 
         {/* Hero */}
         <section className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-6 h-px bg-[#ec4899]" />
-            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[#ec4899]">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Applied AI
             </span>
-            <span className="w-6 h-px bg-[#ec4899]" />
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3">
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
+          >
             Chunking Strategies{" "}
             <span className="text-[var(--color-accent)]">for RAG</span>
-          </h1>
-          <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]"
+          >
             Before retrieval can work, documents must be split into chunks. See how
             fixed-size, recursive, and document-structure chunking behave on the same
-            text — and how overlap affects retrieval quality.
-          </p>
+            text, and how overlap affects retrieval quality.
+          </motion.p>
         </section>
 
         {/* Progress bar */}
@@ -456,12 +475,14 @@ export default function ChunkingStrategiesClient() {
             Select a chunking method to see it applied live to the sample text below.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6" role="radiogroup" aria-label="Chunking strategy">
             {STRATEGIES.map((s) => {
               const active = strategy === s.id;
               return (
                 <motion.button
                   key={s.id}
+                  role="radio"
+                  aria-checked={active}
                   onClick={() => handleStrategyChange(s.id)}
                   whileTap={{ scale: 0.97 }}
                   className="relative rounded-2xl p-4 text-left transition-all border"
@@ -480,7 +501,7 @@ export default function ChunkingStrategiesClient() {
                   )}
                   <p
                     className="text-[13px] font-bold mb-1 relative"
-                    style={{ color: active ? "#ec4899" : "#e2e8f0" }}
+                    style={{ color: active ? "#ec4899" : "#f1f5f9" }}
                   >
                     {s.label}
                   </p>
@@ -504,14 +525,14 @@ export default function ChunkingStrategiesClient() {
                 <>
                   <div>
                     <p className="text-[#3bb4a4] font-semibold mb-1">Pros</p>
-                    <p className="text-[#94a3b8]">Simple, predictable chunk sizes — easy to implement at scale</p>
+                    <p className="text-[#94a3b8]">Simple, predictable chunk sizes, easy to implement at scale</p>
                   </div>
                   <div>
                     <p className="text-[#ef4444] font-semibold mb-1">Cons</p>
                     <p className="text-[#94a3b8]">May split mid-sentence, losing context across boundaries</p>
                   </div>
                   <div>
-                    <p className="text-[#d4af37] font-semibold mb-1">Best For</p>
+                    <p className="text-[var(--color-accent)] font-semibold mb-1">Best For</p>
                     <p className="text-[#94a3b8]">Uniform documents, large-scale ingestion pipelines</p>
                   </div>
                 </>
@@ -527,7 +548,7 @@ export default function ChunkingStrategiesClient() {
                     <p className="text-[#94a3b8]">Variable chunk sizes make batch processing less predictable</p>
                   </div>
                   <div>
-                    <p className="text-[#d4af37] font-semibold mb-1">Best For</p>
+                    <p className="text-[var(--color-accent)] font-semibold mb-1">Best For</p>
                     <p className="text-[#94a3b8]">Articles, documentation, books, and general prose</p>
                   </div>
                 </>
@@ -543,7 +564,7 @@ export default function ChunkingStrategiesClient() {
                     <p className="text-[#94a3b8]">Complex to implement consistently across varied document formats</p>
                   </div>
                   <div>
-                    <p className="text-[#d4af37] font-semibold mb-1">Best For</p>
+                    <p className="text-[var(--color-accent)] font-semibold mb-1">Best For</p>
                     <p className="text-[#94a3b8]">Markdown, HTML, technical docs, and structured reports</p>
                   </div>
                 </>
@@ -569,6 +590,7 @@ export default function ChunkingStrategiesClient() {
                 </div>
                 <input
                   type="range"
+                  aria-label="Chunk size in characters"
                   min={50}
                   max={200}
                   value={chunkSize}
@@ -586,6 +608,7 @@ export default function ChunkingStrategiesClient() {
                 </div>
                 <input
                   type="range"
+                  aria-label="Overlap in characters"
                   min={0}
                   max={50}
                   value={overlapSize}
@@ -634,7 +657,7 @@ export default function ChunkingStrategiesClient() {
                         </span>
                       )}
                     </div>
-                    <p className="text-[#cbd5e1] break-words">{chunk.text}</p>
+                    <p className="text-[#f1f5f9] break-words">{chunk.text}</p>
                   </motion.div>
                 );
               })}
@@ -693,13 +716,14 @@ export default function ChunkingStrategiesClient() {
               <label className="text-[12px] text-[#94a3b8] shrink-0">Overlap</label>
               <input
                 type="range"
+                aria-label="Overlap percentage"
                 min={0}
                 max={30}
                 value={overlapPct}
                 onChange={(e) => handleSlider(setOverlapPct, Number(e.target.value))}
-                className="flex-1 accent-[#d4af37]"
+                className="flex-1 accent-[var(--color-accent)]"
               />
-              <span className="text-[12px] font-semibold text-[#d4af37] w-8 text-right">
+              <span className="text-[12px] font-semibold text-[var(--color-accent)] w-8 text-right">
                 {overlapPct}%
               </span>
             </div>
@@ -733,12 +757,12 @@ export default function ChunkingStrategiesClient() {
 
             {overlap > 0 && (
               <p className="mt-3 text-[11px] text-[#94a3b8]">
-                <span className="text-[#d4af37] font-semibold">{overlap} tokens</span> shared
+                <span className="text-[var(--color-accent)] font-semibold">{overlap} tokens</span> shared
                 between adjacent chunks
               </p>
             )}
             {overlap === 0 && (
-              <p className="mt-3 text-[11px] text-[#475569]">No overlap — chunks are fully independent</p>
+              <p className="mt-3 text-[11px] text-[#475569]">No overlap: chunks are fully independent</p>
             )}
           </div>
         </section>
@@ -751,12 +775,13 @@ export default function ChunkingStrategiesClient() {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {USE_CASES.map((uc, i) => (
+            {USE_CASES.map((uc) => (
               <motion.div
                 key={uc.useCase}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="visible"
+                viewport={GUIDE_VIEWPORT}
                 className="rounded-2xl p-4 border"
                 style={{
                   background: `${uc.color}0d`,
@@ -780,7 +805,7 @@ export default function ChunkingStrategiesClient() {
 
         {/* Gold insight box */}
         <div className="mb-10 rounded-2xl border border-[#d4af37]/30 bg-[#d4af37]/5 px-6 py-5">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-[#d4af37] mb-2">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-accent)] mb-2">
             Insight
           </p>
           <p className="text-[14px] text-[#94a3b8] leading-relaxed">
@@ -794,9 +819,10 @@ export default function ChunkingStrategiesClient() {
 
         {/* Summary card */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={GUIDE_VIEWPORT}
           className="rounded-2xl border border-white/10 bg-[#1e293b] p-6"
         >
           <p className="text-[11px] font-bold uppercase tracking-widest text-[#3bb4a4] mb-1">
@@ -811,11 +837,106 @@ export default function ChunkingStrategiesClient() {
           </p>
           <Link
             href="/visual-guides/prompt-engineering"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-[#0f172a] bg-[#3bb4a4] hover:bg-[#4fcfbe] transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-[#0f172a] bg-[#3bb4a4] hover:opacity-90 transition-opacity"
           >
             Explore Prompt Engineering →
           </Link>
         </motion.div>
+
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  Chunking Mastered!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You tried all three chunking strategies and saw how chunk size and overlap shape retrieval.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  {[
+                    { label: "Strategies tried", value: `${triedStrategies.current.size} / 3`, color: "#3bb4a4" },
+                    { label: "Sliders adjusted", value: movedSlider.current ? "Yes" : "No", color: "var(--color-accent)" },
+                    { label: "Trade-off", value: "Precision vs context", color: "#ec4899" },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl border border-[#1e293b] p-3">
+                      <p className="text-[10px] text-[#475569] mb-1">{item.label}</p>
+                      <p className="text-[14px] font-mono font-bold" style={{ color: item.color }}>
+                        {item.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Retrieval quality is decided before the first query runs. How you split your documents sets the ceiling on everything RAG does afterward.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← All Guides
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next Guide →
+            </Link>
+          </div>
+        )}
 
       </div>
     </div>

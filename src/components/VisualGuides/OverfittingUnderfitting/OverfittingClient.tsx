@@ -2,9 +2,14 @@
 
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+import { useGuideMotion } from "@/lib/guideMotion";
+
+const GUIDE_TITLE = "Overfitting vs Underfitting Playground";
+const NEXT_GUIDE_SLUG = "cross-validation";
+const PREV_GUIDE_SLUG = "gradient-descent";
 
 // ── Polynomial regression ─────────────────────────────────────────────────────
 interface Pt { x: number; y: number }
@@ -98,15 +103,16 @@ function curvePoints(coeffs: number[], steps = 200): string {
 // ── Regime label ──────────────────────────────────────────────────────────────
 function getRegime(trainMSE: number, testMSE: number, degree: number): { label: string; color: string; desc: string } {
   const ratio = testMSE / (trainMSE + 0.0001);
-  if (degree <= 1 && trainMSE > 0.15) return { label: "Underfitting", color: "#d4af37", desc: "Model is too simple — high bias, misses the pattern" };
-  if (ratio > 3 && degree > 3) return { label: "Overfitting", color: "#ef4444", desc: "Model memorizes training data — high variance, fails on new data" };
-  if (ratio < 2 && trainMSE < 0.15) return { label: "Good Fit", color: "#3bb4a4", desc: "Balanced bias-variance — generalizes well" };
-  return { label: "Moderate", color: "#94a3b8", desc: "Reasonable fit — some room for improvement" };
+  if (degree <= 1 && trainMSE > 0.15) return { label: "Underfitting", color: "#d4af37", desc: "Model is too simple: high bias, misses the pattern" };
+  if (ratio > 3 && degree > 3) return { label: "Overfitting", color: "#ef4444", desc: "Model memorizes training data: high variance, fails on new data" };
+  if (ratio < 2 && trainMSE < 0.15) return { label: "Good Fit", color: "#3bb4a4", desc: "Balanced bias-variance, generalizes well" };
+  return { label: "Moderate", color: "#94a3b8", desc: "Reasonable fit, some room for improvement" };
 }
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 export default function OverfittingClient() {
   const { data: session } = useSession();
+  const { fadeUp, fadeIn, card } = useGuideMotion();
   const [datasetType, setDatasetType] = useState<DatasetType>("quadratic");
   const [noise, setNoise] = useState(0.2);
   const [nTrain, setNTrain] = useState(15);
@@ -141,7 +147,7 @@ export default function OverfittingClient() {
         fetch("/api/visual-guides/complete", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ guideSlug: "overfitting-underfitting", score: 8 }),
+          body: JSON.stringify({ guideSlug: "overfitting-underfitting", score: 100 }),
         }).catch(() => {});
       }
     }
@@ -149,36 +155,60 @@ export default function OverfittingClient() {
 
   const pts = curvePoints(coeffs);
 
+  function handleReset() {
+    setDatasetType("quadratic");
+    setNoise(0.2);
+    setNTrain(15);
+    setDegree(2);
+    setData(generateData("quadratic", 15, 0.2));
+    setShowTest(true);
+    setRegimesObserved(new Set());
+    setInteractionCount(0);
+    completionFired.current = false;
+  }
+
   // Bias-variance bar widths (normalized)
   const maxMSE = Math.max(trainMSE, testMSE, 0.01);
   const trainBarW = (trainMSE / maxMSE) * 100;
   const testBarW = (testMSE / maxMSE) * 100;
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
-      <GuideCompletion isComplete={isComplete} guideSlug="overfitting-underfitting" score={8} />
-      <div className="max-w-[1300px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
+    <div className="min-h-screen pb-20">
+      <GuideCompletion isComplete={isComplete} guideSlug="overfitting-underfitting" score={100} />
+      <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">Visual Guides</Link>
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">Visual Guides</Link>
           <span>/</span>
-          <span className="text-white">Overfitting vs Underfitting Playground</span>
+          <span className="text-[#94a3b8]">{GUIDE_TITLE}</span>
         </nav>
 
         {/* Hero */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-[#1e5d8a]/20 border border-[#1e5d8a]/40 rounded-full px-3 py-1 mb-4">
-            <span className="text-xs font-semibold text-[#3bb4a4] uppercase tracking-wider">Machine Learning</span>
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">Machine Learning</span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            Overfitting vs Underfitting Playground
-          </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl">
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
+          >
+            Overfitting vs Underfitting <span className="text-[var(--color-accent)]">Playground</span>
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]"
+          >
             Fit polynomials of increasing degree to data and watch the model go from too simple to memorizing noise.
             Observe how training error and test error diverge when complexity grows unchecked.
-          </p>
-        </div>
+          </motion.p>
+        </section>
 
         {/* Regime badge + progress */}
         <div className="mb-6 flex items-center gap-4 flex-wrap">
@@ -206,13 +236,13 @@ export default function OverfittingClient() {
             />
           </div>
           {isComplete && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-2 text-xs text-[#3bb4a4] font-semibold">
+            <motion.div variants={fadeIn} initial="hidden" animate="visible" className="mt-2 text-xs text-[#3bb4a4] font-semibold">
               Guide complete!
             </motion.div>
           )}
           {!session?.user && (
             <p className="mt-2 text-xs text-[#94a3b8]">
-              <Link href="/auth/sign-in" className="text-[#d4af37] hover:underline">Sign in</Link> to save your progress.
+              <Link href="/auth/sign-in" className="text-[var(--color-accent)] hover:underline">Sign in</Link> to save your progress.
             </p>
           )}
         </div>
@@ -223,8 +253,8 @@ export default function OverfittingClient() {
             <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-2xl overflow-hidden">
               <div className="p-3 border-b border-[#1e293b] flex items-center gap-4 flex-wrap text-xs">
                 <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-[#3bb4a4]" /> Train</div>
-                {showTest && <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-[#d4af37] opacity-60" /> Test (hidden from model)</div>}
-                <button onClick={() => setShowTest(v => !v)} className="ml-auto text-[#94a3b8] hover:text-white transition-colors">
+                {showTest && <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-[var(--color-accent)] opacity-60" /> Test (hidden from model)</div>}
+                <button onClick={() => setShowTest(v => !v)} aria-pressed={showTest} className="ml-auto text-[#94a3b8] hover:text-white transition-colors">
                   {showTest ? "Hide" : "Show"} test
                 </button>
               </div>
@@ -242,13 +272,13 @@ export default function OverfittingClient() {
 
                 {/* Fitted curve */}
                 {pts && (
-                  <polyline points={pts} fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <polyline points={pts} fill="none" stroke="#f1f5f9" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 )}
 
                 {/* Test points */}
                 {showTest && data.test.map((p, i) => (
                   <circle key={`t${i}`} cx={sx(p.x)} cy={sy(p.y)} r={3.5}
-                    fill="#d4af37" opacity={0.5} />
+                    fill="var(--color-accent)" opacity={0.5} />
                 ))}
 
                 {/* Train points */}
@@ -270,7 +300,7 @@ export default function OverfittingClient() {
               <div className="space-y-3">
                 {[
                   { label: "Train MSE", value: trainMSE, width: trainBarW, color: "#3bb4a4" },
-                  { label: "Test MSE", value: testMSE, width: testBarW, color: "#d4af37" },
+                  { label: "Test MSE", value: testMSE, width: testBarW, color: "var(--color-accent)" },
                 ].map(({ label, value, width, color }) => (
                   <div key={label}>
                     <div className="flex items-center justify-between text-xs mb-1">
@@ -300,9 +330,9 @@ export default function OverfittingClient() {
             {/* Dataset */}
             <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
               <h3 className="text-sm font-semibold text-white mb-3">Dataset</h3>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2" role="radiogroup" aria-label="Dataset">
                 {(Object.entries(DATASETS) as [DatasetType, { label: string }][]).map(([key, ds]) => (
-                  <button key={key} onClick={() => { setDatasetType(key); regenerate(key); }}
+                  <button key={key} role="radio" aria-checked={datasetType === key} onClick={() => { setDatasetType(key); regenerate(key); }}
                     className={`px-3 py-2 rounded-lg text-xs font-medium text-left border transition-all ${datasetType === key ? "bg-[#1e5d8a]/20 border-[#1e5d8a]/60 text-white" : "border-[#334155] text-[#94a3b8] hover:border-[#475569]"}`}
                   >
                     {ds.label}
@@ -319,19 +349,20 @@ export default function OverfittingClient() {
             <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
               <div className="flex items-center justify-between mb-1">
                 <h3 className="text-sm font-semibold text-white">Polynomial Degree</h3>
-                <span className="text-sm font-bold text-[#d4af37]">{degree}</span>
+                <span className="text-sm font-bold text-[var(--color-accent)]">{degree}</span>
               </div>
               <input type="range" min="1" max="12" step="1" value={degree}
+                aria-label="Polynomial degree"
                 onChange={e => setDegree(parseInt(e.target.value))}
-                className="w-full accent-[#d4af37]"
+                className="w-full accent-[var(--color-accent)]"
               />
               <div className="flex justify-between text-[10px] text-[#94a3b8] mt-1">
                 <span>1 (linear)</span><span>12 (overfit)</span>
               </div>
               <div className="flex gap-2 mt-3 flex-wrap">
                 {[1, 2, 5, 10].map(d => (
-                  <button key={d} onClick={() => setDegree(d)}
-                    className={`px-2.5 py-1 rounded text-xs border transition-all ${degree === d ? "bg-[#d4af37]/20 border-[#d4af37]/60 text-[#d4af37]" : "border-[#334155] text-[#94a3b8]"}`}
+                  <button key={d} aria-pressed={degree === d} onClick={() => setDegree(d)}
+                    className={`px-2.5 py-1 rounded text-xs border transition-all ${degree === d ? "bg-[#d4af37]/20 border-[#d4af37]/60 text-[var(--color-accent)]" : "border-[#334155] text-[#94a3b8]"}`}
                   >
                     d={d}
                   </button>
@@ -346,6 +377,7 @@ export default function OverfittingClient() {
                 <span className="text-sm font-bold text-[#3bb4a4]">{nTrain}</span>
               </div>
               <input type="range" min="5" max="50" step="1" value={nTrain}
+                aria-label="Number of training points"
                 onChange={e => { const n = parseInt(e.target.value); setNTrain(n); regenerate(datasetType, n); }}
                 className="w-full accent-[#3bb4a4] mb-4"
               />
@@ -354,6 +386,7 @@ export default function OverfittingClient() {
                 <span className="text-sm font-bold text-[#94a3b8]">{noise.toFixed(2)}</span>
               </div>
               <input type="range" min="0" max="0.8" step="0.01" value={noise}
+                aria-label="Noise level"
                 onChange={e => { const nz = parseFloat(e.target.value); setNoise(nz); regenerate(datasetType, nTrain, nz); }}
                 className="w-full accent-[#94a3b8]"
               />
@@ -361,7 +394,7 @@ export default function OverfittingClient() {
 
             {/* Key insight */}
             <div className="bg-[#1e293b]/60 border border-[#d4af37]/20 rounded-xl p-4">
-              <h3 className="text-xs font-semibold text-[#d4af37] uppercase tracking-wide mb-2">Key Insight</h3>
+              <h3 className="text-xs font-semibold text-[var(--color-accent)] uppercase tracking-wide mb-2">Key Insight</h3>
               <p className="text-xs text-[#94a3b8] leading-relaxed">
                 When test error rises while train error falls, the model is memorizing noise instead of
                 learning the pattern. The gap between the two errors measures <span className="text-white">generalization</span>.
@@ -370,16 +403,100 @@ export default function OverfittingClient() {
           </div>
         </div>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between mt-10 pt-6 border-t border-[#1e293b]">
-          <Link href="/visual-guides/gradient-descent" className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors">
-            <span>←</span><span>Gradient Descent</span>
-          </Link>
-          <Link href="/visual-guides" className="text-sm text-[#94a3b8] hover:text-white transition-colors">All Guides</Link>
-          <Link href="/visual-guides/cross-validation" className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors">
-            <span>Cross-Validation</span><span>→</span>
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  All Three Regimes Observed!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You pushed the model through underfitting, a good fit, and overfitting, and watched the errors diverge.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  {[
+                    { label: "Underfitting", value: "Observed", color: "var(--color-accent)" },
+                    { label: "Good fit", value: "Observed", color: "#3bb4a4" },
+                    { label: "Overfitting", value: "Observed", color: "#ef4444" },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl border border-[#1e293b] p-3">
+                      <p className="text-[10px] text-[#475569] mb-1">{item.label}</p>
+                      <p className="text-[14px] font-mono font-bold" style={{ color: item.color }}>
+                        {item.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Training error only tells you how well the model flatters its own data. The gap between train and test error is the number that decides whether it will survive the real world.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href={`/visual-guides/${PREV_GUIDE_SLUG}`}
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← Previous Guide
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next Guide →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

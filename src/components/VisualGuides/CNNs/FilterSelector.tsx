@@ -12,12 +12,14 @@ interface FilterSelectorProps {
 export default function FilterSelector({ selected, onSelect }: FilterSelectorProps) {
   return (
     <div className="flex flex-col gap-2.5">
-    <div className="flex gap-2 flex-wrap">
+    <div className="flex gap-2 flex-wrap" role="radiogroup" aria-label="Convolution filter">
       {FILTERS.map((f) => {
         const isSelected = selected === f.id;
         return (
           <button
             key={f.id}
+            role="radio"
+            aria-checked={isSelected}
             onClick={() => onSelect(f.id)}
             className="relative flex flex-col items-start gap-1 px-3 py-2.5 rounded-xl border transition-all text-left min-w-[130px]"
             style={{
@@ -35,7 +37,7 @@ export default function FilterSelector({ selected, onSelect }: FilterSelectorPro
             )}
             <span
               className="relative z-10 text-[13px] font-semibold leading-tight"
-              style={{ color: isSelected ? f.color : "#cbd5e1" }}
+              style={{ color: isSelected ? f.color : "#94a3b8" }}
             >
               {f.label}
             </span>
@@ -43,7 +45,7 @@ export default function FilterSelector({ selected, onSelect }: FilterSelectorPro
               className="relative z-10 text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded"
               style={{
                 background: f.layerDepth === "early" ? "#3bb4a420" : "#d4af3720",
-                color: f.layerDepth === "early" ? "#3bb4a4" : "#d4af37",
+                color: f.layerDepth === "early" ? "#3bb4a4" : "var(--color-accent)",
               }}
             >
               {f.layerDepth === "early" ? "Edge detector" : "Classic image kernel"}

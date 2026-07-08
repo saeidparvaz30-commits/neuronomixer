@@ -11,7 +11,7 @@ function cellStyle(val: number): React.CSSProperties {
     const intensity = Math.min(1, val / 8);
     return {
       background: `rgba(59,180,164,${0.15 + intensity * 0.55})`,
-      color: "#ffffff",
+      color: "#f1f5f9",
       borderColor: `rgba(59,180,164,${0.3 + intensity * 0.4})`,
     };
   }
@@ -19,7 +19,7 @@ function cellStyle(val: number): React.CSSProperties {
     const intensity = Math.min(1, Math.abs(val) / 8);
     return {
       background: `rgba(239,68,68,${0.15 + intensity * 0.55})`,
-      color: "#ffffff",
+      color: "#f1f5f9",
       borderColor: `rgba(239,68,68,${0.3 + intensity * 0.4})`,
     };
   }

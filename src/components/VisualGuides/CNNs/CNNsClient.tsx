@@ -15,9 +15,15 @@ import FeatureMapDisplay from "./FeatureMapDisplay";
 import LayerHierarchy from "./LayerHierarchy";
 import SampleImageSelector from "./SampleImageSelector";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+import { useGuideMotion } from "@/lib/guideMotion";
+
+const GUIDE_TITLE = "CNNs: See What Filters See";
+const NEXT_GUIDE_SLUG = "pooling-layers";
+const PREV_GUIDE_SLUG = "neural-network";
 
 export default function CNNsClient() {
   const { data: session } = useSession();
+  const { fadeUp, fadeIn, card } = useGuideMotion();
   const completionFired = useRef(false);
 
   const [selectedFilterId, setSelectedFilterId] = useState<FilterId>("edge-h");
@@ -40,6 +46,14 @@ export default function CNNsClient() {
     setRawOutputGrid(raw);
   }, []);
 
+  function handleReset() {
+    setSelectedFilterId("edge-h");
+    setSelectedImageId("checkerboard");
+    setExploredFilters(new Set(["edge-h"]));
+    setHasViewedHierarchy(false);
+    completionFired.current = false;
+  }
+
   const progressPct = Math.round(
     (Math.min(exploredFilters.size, 3) / 3) * 50 +
       (hasViewedHierarchy ? 50 : 0)
@@ -61,37 +75,47 @@ export default function CNNsClient() {
   }, [isComplete, session?.user]);
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
+    <div className="min-h-screen pb-20">
       <GuideCompletion isComplete={isComplete} guideSlug="cnns" score={100} />
       <div className="max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-10 py-8">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-[#94a3b8] mb-6 flex-wrap">
-          <Link href="/visual-guides" className="hover:text-white transition-colors">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-[#475569] mb-6">
+          <Link href="/visual-guides" className="hover:text-[var(--color-accent)] transition-colors">
             Visual Guides
           </Link>
           <span>/</span>
-          <span className="text-[#a855f7]">Deep Learning</span>
-          <span>/</span>
-          <span className="text-white">CNNs: See What Filters See</span>
+          <span className="text-[#94a3b8]">{GUIDE_TITLE}</span>
         </nav>
 
         {/* Hero */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-[#a855f7]/20 border border-[#a855f7]/40 rounded-full px-3 py-1 mb-4">
-            <span className="text-xs font-semibold text-[#a855f7] uppercase tracking-wider">
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
+            <span className="text-[11px] font-semibold uppercase tracking-[2.5px] text-[var(--color-accent)]">
               Deep Learning
             </span>
+            <span className="w-6 h-px bg-[var(--color-accent)]" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">
-            CNNs: See What Filters See
-          </h1>
-          <p className="text-[#94a3b8] text-base max-w-2xl leading-relaxed">
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
+          >
+            CNNs: <span className="text-[var(--color-accent)]">See What Filters See</span>
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]"
+          >
             Watch convolutional filters slide across images and produce feature maps. Explore
-            edge detection, sharpening, and blur kernels — the same operations that power
+            edge detection, sharpening, and blur kernels: the same operations that power
             image recognition models.
-          </p>
-        </div>
+          </motion.p>
+        </section>
 
         {/* Progress bar */}
         <div className="mb-8 bg-[#1e293b]/60 border border-[#1e293b] rounded-xl p-4">
@@ -113,8 +137,9 @@ export default function CNNsClient() {
           <AnimatePresence>
             {isComplete && (
               <motion.div
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
+                variants={fadeIn}
+                initial="hidden"
+                animate="visible"
                 className="mt-2 text-xs text-[#3bb4a4] font-semibold"
               >
                 Guide complete! You understand how CNN filters work.
@@ -196,68 +221,110 @@ export default function CNNsClient() {
 
         {/* Insight card */}
         <div className="bg-[#d4af37]/10 border border-[#d4af37]/30 rounded-xl p-5 mb-6">
-          <h3 className="text-sm font-semibold text-[#d4af37] mb-2">Key Insight</h3>
+          <h3 className="text-sm font-semibold text-[var(--color-accent)] mb-2">Key Insight</h3>
           <p className="text-sm text-[#94a3b8] leading-relaxed">
             Real CNNs stack{" "}
             <span className="text-white font-semibold">10–100+ of these layers</span>. Early
             layers detect edges, middle layers detect shapes, and deep layers detect complex
-            features like faces or cars. Each layer&apos;s output becomes the next layer&apos;s input —
-            building from simple to abstract.
+            features like faces or cars. Each layer&apos;s output becomes the next layer&apos;s
+            input, building from simple to abstract.
           </p>
         </div>
 
-        {/* Completion summary */}
+        {/* Completion card */}
         <AnimatePresence>
           {isComplete && (
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 rounded-xl p-5 mb-6"
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
             >
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#3bb4a4]/20 border border-[#3bb4a4]/40 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg className="w-4 h-4 text-[#3bb4a4]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-[#3bb4a4] mb-1">
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
                     Guide Complete
-                  </h3>
-                  <p className="text-[13px] text-[#94a3b8] leading-relaxed">
-                    You explored {exploredFilters.size} filters and saw how CNNs stack layers
-                    to build from simple edges to complex concepts. This is the foundation of
-                    modern computer vision.
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  Filters Decoded!
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You watched convolution kernels slide across images and turn raw pixels into feature maps.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  {[
+                    { label: "Filters explored", value: `${exploredFilters.size} / 6`, color: "#3bb4a4" },
+                    { label: "Layer hierarchy", value: "Viewed", color: "#a855f7" },
+                    { label: "Core operation", value: "Convolution", color: "var(--color-accent)" },
+                  ].map((item) => (
+                    <div key={item.label} className="rounded-xl border border-[#1e293b] p-3">
+                      <p className="text-[10px] text-[#475569] mb-1">{item.label}</p>
+                      <p className="text-[14px] font-mono font-bold" style={{ color: item.color }}>
+                        {item.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
                   </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;A CNN never sees a face or a car. It sees edges that become shapes that become concepts, one stacked filter at a time.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
                 </div>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between mt-10 pt-6 border-t border-[#1e293b]">
-          <Link
-            href="/visual-guides/neural-network"
-            className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            <span>←</span>
-            <span>What Is a Neural Network?</span>
-          </Link>
-          <Link
-            href="/visual-guides"
-            className="text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            All Guides
-          </Link>
-          <Link
-            href="/visual-guides/pooling-layers"
-            className="flex items-center gap-2 text-sm text-[#94a3b8] hover:text-white transition-colors"
-          >
-            <span>Next: Pooling Layers: Shrinking Without Losing</span>
-            <span>→</span>
-          </Link>
-        </div>
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href={`/visual-guides/${PREV_GUIDE_SLUG}`}
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← Previous Guide
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next Guide →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -143,10 +143,11 @@ export default function ConvolutionVisualizer({
           </button>
           <button
             onClick={() => setIsPlaying((p) => !p)}
+            aria-pressed={isPlaying}
             className="px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all"
             style={
               isPlaying
-                ? { background: "#d4af3720", borderColor: "#d4af3760", color: "#d4af37" }
+                ? { background: "#d4af3720", borderColor: "#d4af3760", color: "var(--color-accent)" }
                 : { background: "#3bb4a420", borderColor: "#3bb4a460", color: "#3bb4a4" }
             }
           >
@@ -181,7 +182,7 @@ export default function ConvolutionVisualizer({
         {/* Input grid */}
         <div>
           <p className="text-[11px] text-[#94a3b8] mb-2 font-medium">
-            Input (8×8) — <span className="text-white">{image.label}</span>
+            Input (8×8): <span className="text-white">{image.label}</span>
           </p>
           <div className="relative inline-block">
             <div
@@ -244,7 +245,7 @@ export default function ConvolutionVisualizer({
         {/* Output grid */}
         <div>
           <p className="text-[11px] text-[#94a3b8] mb-2 font-medium">
-            Output (6×6) — <span style={{ color: filter.color }}>{filter.label}</span>
+            Output (6×6): <span style={{ color: filter.color }}>{filter.label}</span>
           </p>
           <div
             className="grid gap-0.5"

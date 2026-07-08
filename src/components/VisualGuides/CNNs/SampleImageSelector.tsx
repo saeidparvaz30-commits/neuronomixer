@@ -28,23 +28,25 @@ function MiniGrid({ grid }: { grid: number[][] }) {
 
 export default function SampleImageSelector({ selected, onSelect }: SampleImageSelectorProps) {
   return (
-    <div className="flex gap-3 flex-wrap">
+    <div className="flex gap-3 flex-wrap" role="radiogroup" aria-label="Sample image">
       {SAMPLE_IMAGES.map((img) => {
         const isSelected = selected === img.id;
         return (
           <button
             key={img.id}
+            role="radio"
+            aria-checked={isSelected}
             onClick={() => onSelect(img.id)}
             className="flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all"
             style={{
-              borderColor: isSelected ? "#d4af37" : "rgba(255,255,255,0.08)",
+              borderColor: isSelected ? "var(--color-accent)" : "rgba(255,255,255,0.08)",
               background: isSelected ? "#d4af3715" : "transparent",
             }}
           >
             <div
               className="rounded-md overflow-hidden"
               style={{
-                outline: isSelected ? "2px solid #d4af37" : "none",
+                outline: isSelected ? "2px solid var(--color-accent)" : "none",
                 outlineOffset: "1px",
               }}
             >
@@ -52,7 +54,7 @@ export default function SampleImageSelector({ selected, onSelect }: SampleImageS
             </div>
             <span
               className="text-[10px] font-medium"
-              style={{ color: isSelected ? "#d4af37" : "#94a3b8" }}
+              style={{ color: isSelected ? "var(--color-accent)" : "#94a3b8" }}
             >
               {img.label}
             </span>

@@ -95,7 +95,7 @@ export default function FeatureMapDisplay({ outputGrid, rawGrid, filter }: Featu
                 >
                   <span
                     className="text-[9px] font-mono font-semibold"
-                    style={{ color: val > 180 ? "#0f172a" : val > 80 ? "#e2e8f0" : "#475569" }}
+                    style={{ color: val > 180 ? "#0f172a" : val > 80 ? "#f1f5f9" : "#475569" }}
                   >
                     {raw.toFixed(1)}
                   </span>
