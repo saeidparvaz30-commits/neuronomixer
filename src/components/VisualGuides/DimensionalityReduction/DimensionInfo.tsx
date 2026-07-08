@@ -2,7 +2,7 @@
 
 import React from "react";
 import { MethodType, METHOD_META, DIGIT_COLORS } from "./data";
-import { INPUT_DIM, N_POINTS } from "./digitsDataset";
+import { INPUT_DIM } from "./digitsDataset";
 import { PC_PAIRS } from "./ParameterSliders";
 
 // All values derived from the actual dataset constants, not hardcoded:
@@ -51,7 +51,7 @@ export default function DimensionInfo({ method, explainedRatio, pairIndex }: Pro
           <span className="font-semibold" style={{ color: meta.color }}>
             {((explainedRatio[pcA] + explainedRatio[pcB]) * 100).toFixed(1)}%
           </span>{" "}
-          of the total variance of these {N_POINTS} digits (computed live). The rest is lost
+          of the total variance of the selected digits (computed live). The rest is lost
           in the projection, which is why classes overlap.
         </p>
       )}

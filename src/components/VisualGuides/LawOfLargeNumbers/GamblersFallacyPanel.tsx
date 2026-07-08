@@ -200,8 +200,12 @@ export default function GamblersFallacyPanel({ open, onOpen }: Props) {
                   <>
                     In this run, after every streak of {STREAK_LEN} or more consecutive heads, the very
                     next flip came up heads {sim.streakNextHeads} out of {sim.streakOpportunities} times
-                    ({fmt((100 * sim.streakNextHeads) / sim.streakOpportunities, 1)}%). Close to 50%,
-                    not below it: a streak of heads does not make tails &quot;due&quot;.
+                    ({fmt((100 * sim.streakNextHeads) / sim.streakOpportunities, 1)}%). With only{" "}
+                    {sim.streakOpportunities} qualifying {sim.streakOpportunities === 1 ? "streak" : "streaks"},
+                    that percentage fluctuates around 50%
+                    from run to run; flip a few new sequences and it lands above and below. What never
+                    appears is a systematic pull below 50%: a streak of heads does not make tails
+                    &quot;due&quot;.
                   </>
                 ) : (
                   <>

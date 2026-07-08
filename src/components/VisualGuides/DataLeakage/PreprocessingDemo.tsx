@@ -190,10 +190,12 @@ export default function PreprocessingDemo({
 
         <div className="rounded-xl border border-[#1e293b] p-4">
           <p className="text-[11px] text-[#94a3b8] leading-relaxed">
-            The leaky scaler saw the validation rows, so it absorbed their batch offset into the
-            mean it subtracts. That silently aligned the two halves. The honest pipeline reveals
-            the truth: this 1-nearest-neighbor model breaks the moment a new batch arrives with a
-            different offset, exactly what production would do to it.
+            The leaky scaler saw the validation rows, so the batch offset between the halves got
+            baked into the standard deviation it divides by. That inflated std shrinks every
+            standardized distance along the shifted feature, muting the offset enough for nearest
+            neighbors to keep matching across the halves. The honest pipeline reveals the truth:
+            this 1-nearest-neighbor model breaks the moment a new batch arrives with a different
+            offset, exactly what production would do to it.
           </p>
         </div>
       </div>

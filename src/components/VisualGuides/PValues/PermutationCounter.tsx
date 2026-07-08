@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { runPermutation } from "./types";
+import { runPermutation, TestType } from "./types";
 
 interface Props {
   groupA: number[];
   groupB: number[];
   tStatistic: number | null;
+  testType: TestType;
   alpha: number;
   permutationResults: number[];
   significantPermutations: number;
@@ -17,7 +18,7 @@ const BINS = 20;
 const PW = 380, PH = 110;
 const PP = { l: 20, r: 12, t: 8, b: 20 };
 
-function PermHistogram({ permStats, observedT }: { permStats: number[]; observedT: number | null }) {
+function PermHistogram({ permStats, observedT, testType }: { permStats: number[]; observedT: number | null; testType: TestType }) {
   if (permStats.length === 0) return null;
   const IW = PW - PP.l - PP.r, IH = PH - PP.t - PP.b;
   const min = -4, max = 4;
@@ -60,7 +61,7 @@ function PermHistogram({ permStats, observedT }: { permStats: number[]; observed
           <text x={tx(observedT) + 3} y={PP.t + 10} fill="var(--color-accent)" fontSize="8" fontWeight="600">
             t={observedT.toFixed(2)}
           </text>
-          {Math.abs(observedT) > 0.1 && (
+          {testType === "two-tailed" && Math.abs(observedT) > 0.1 && (
             <line
               x1={tx(-Math.abs(observedT))} y1={PP.t}
               x2={tx(-Math.abs(observedT))} y2={PP.t + IH}
@@ -83,7 +84,7 @@ function PermHistogram({ permStats, observedT }: { permStats: number[]; observed
 }
 
 export default function PermutationCounter({
-  groupA, groupB, tStatistic, alpha,
+  groupA, groupB, tStatistic, testType, alpha,
   permutationResults, significantPermutations,
   onPermutationsComplete,
 }: Props) {
@@ -91,7 +92,7 @@ export default function PermutationCounter({
   const [progress, setProgress] = useState(0);
   const [totalTarget, setTotalTarget] = useState(0);
   const animRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const hasData = groupA.length > 0;
+  const hasData = groupA.length > 0 && tStatistic !== null;
   const total = permutationResults.length;
 
   function runBatch(count: number) {
@@ -115,8 +116,13 @@ export default function PermutationCounter({
         animRef.current = setTimeout(tick, 30);
       } else {
         const combined = [...permutationResults, ...allNew];
+        // "More extreme than observed" must match the selected test type:
+        // two-tailed counts both tails via |t|, one-tailed (H1: B > A) counts
+        // only shuffles at or above the observed t.
         const sigCount = tStatistic !== null
-          ? combined.filter(s => Math.abs(s) >= Math.abs(tStatistic)).length
+          ? (testType === "two-tailed"
+              ? combined.filter(s => Math.abs(s) >= Math.abs(tStatistic)).length
+              : combined.filter(s => s >= tStatistic).length)
           : 0;
         onPermutationsComplete(allNew, sigCount);
         setIsRunning(false);
@@ -192,7 +198,7 @@ export default function PermutationCounter({
           <p className="text-[10px] font-semibold uppercase tracking-[1px] text-[#475569] mt-3 mb-1">
             Distribution of shuffled t-statistics
           </p>
-          <PermHistogram permStats={permutationResults} observedT={tStatistic} />
+          <PermHistogram permStats={permutationResults} observedT={tStatistic} testType={testType} />
           <p className="text-[9px] text-[#334155]">
             Gold line = observed t. Bars = shuffled t-statistics. Under null hypothesis, gold should be in the tail.
           </p>

@@ -56,6 +56,20 @@ export default function PValuesClient() {
     setIsRunning(false);
   }, [state.effectSize, state.sampleSize, state.testType]);
 
+  // Switching the test type invalidates any p-value computed under the old
+  // test type, so clear the run results (the generated data can stay) and
+  // require a re-run before showing a verdict again.
+  const handleTestTypeChange = useCallback((v: TestType) => {
+    setState(prev => ({
+      ...prev,
+      testType: v,
+      tStatistic: null,
+      pValue: null,
+      permutationResults: [],
+      significantPermutations: 0,
+    }));
+  }, []);
+
   const handlePermutationsComplete = useCallback((newResults: number[], sigCount: number) => {
     setState(prev => ({
       ...prev,
@@ -159,7 +173,7 @@ export default function PValuesClient() {
                 onEffectSizeChange={v => setState(prev => ({ ...prev, effectSize: v }))}
                 onSampleSizeChange={v => setState(prev => ({ ...prev, sampleSize: v }))}
                 onAlphaChange={v => setState(prev => ({ ...prev, alpha: v }))}
-                onTestTypeChange={v => setState(prev => ({ ...prev, testType: v }))}
+                onTestTypeChange={handleTestTypeChange}
                 onRun={handleRun}
               />
             </motion.div>
@@ -188,7 +202,7 @@ export default function PValuesClient() {
             >
               <TestTypeToggle
                 testType={state.testType}
-                onChange={v => setState(prev => ({ ...prev, testType: v }))}
+                onChange={handleTestTypeChange}
               />
             </motion.div>
 
@@ -222,6 +236,7 @@ export default function PValuesClient() {
                 groupA={state.groupA}
                 groupB={state.groupB}
                 tStatistic={state.tStatistic}
+                testType={state.testType}
                 alpha={state.alpha}
                 permutationResults={state.permutationResults}
                 significantPermutations={state.significantPermutations}

@@ -620,7 +620,10 @@ export default function TimeSeriesForecastClient() {
                   label: "MAPE",
                   value: accuracy.mape.toFixed(1),
                   unit: "%",
-                  description: "Mean Absolute Percentage Error: scale-free relative accuracy.",
+                  description:
+                    activeDataset === "temperature"
+                      ? "Mean Absolute Percentage Error: relative accuracy. Caveat: MAPE is unreliable when values approach or cross zero, which this temperature series does in winter, so treat this number with skepticism."
+                      : "Mean Absolute Percentage Error: relative accuracy. Caveat: MAPE is unreliable when values approach or cross zero.",
                   color: "#a855f7",
                 },
               ].map((m) => (

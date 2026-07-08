@@ -157,15 +157,22 @@ export function applyHolm(results: TestResult[], numTests: number): TestResult[]
     sorted.slice(0, stopAt).map(r => r.testName)
   );
 
-  return results.map(r => {
-    const rank = sorted.findIndex(s => s.testName === r.testName) + 1;
-    const adjustedPValue = Math.min(r.pValue * (numTests - rank + 1), 1);
-    return {
-      ...r,
-      adjustedPValue,
-      adjustedSignificant: significantNames.has(r.testName),
-    };
-  });
+  // Holm adjusted p-values with step-down monotonicity enforcement:
+  // adj(k) = max( adj(k-1), p(k)*(m-k+1) ), computed from the smallest rank up,
+  // so an adjusted p can never be smaller than that of a better-ranked test.
+  const adjusted: number[] = new Array(sorted.length);
+  let runningMax = 0;
+  for (let k = 0; k < sorted.length; k++) {
+    runningMax = Math.max(runningMax, sorted[k].pValue * (numTests - k));
+    adjusted[k] = Math.min(runningMax, 1);
+  }
+  const adjustedByName = new Map(sorted.map((r, i) => [r.testName, adjusted[i]]));
+
+  return results.map(r => ({
+    ...r,
+    adjustedPValue: adjustedByName.get(r.testName) ?? 1,
+    adjustedSignificant: significantNames.has(r.testName),
+  }));
 }
 
 // ── Test name generator ────────────────────────────────────────────────────────

@@ -183,9 +183,12 @@ export default function Phase2Randomize({ state, onChange, onNext, onBack }: Pro
       {/* Balance checker */}
       <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6">
         <h3 className="text-sm font-semibold text-white mb-1">Pre-experiment Balance Check</h3>
-        <p className="text-[12px] text-[#94a3b8] mb-4">
+        <p className="text-[12px] text-[#94a3b8] mb-1">
           Verify that key covariates are balanced between groups (p &gt; 0.05 = balanced).
           A well-randomized assignment shows no statistically significant differences.
+        </p>
+        <p className="text-[10px] text-[#475569] mb-4">
+          The table below is an illustrative example, not live simulation output.
         </p>
 
         <div className="overflow-x-auto">

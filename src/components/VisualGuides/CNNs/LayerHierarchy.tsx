@@ -64,6 +64,7 @@ const LAYERS: LayerDetail[] = [
 
 export default function LayerHierarchy({ onView }: LayerHierarchyProps) {
   const [activeLayer, setActiveLayer] = useState<number | null>(null);
+  const [focusedLayer, setFocusedLayer] = useState<number | null>(null);
   const [hasViewed, setHasViewed] = useState(false);
 
   function handleLayerClick(id: number) {
@@ -106,15 +107,40 @@ export default function LayerHierarchy({ onView }: LayerHierarchyProps) {
           {LAYERS.map((layer, li) => {
             const x = 150 + li * 180;
             const isActive = activeLayer === layer.id;
+            const isFocused = focusedLayer === layer.id;
             return (
               <g key={layer.id}>
+                {/* Keyboard focus ring */}
+                {isFocused && (
+                  <rect
+                    x={x - 4} y="26" width="128" height="108" rx="14"
+                    fill="none"
+                    stroke={layer.color}
+                    strokeWidth="1.5"
+                    strokeDasharray="4 3"
+                    className="pointer-events-none"
+                  />
+                )}
                 <motion.rect
                   x={x} y="30" width="120" height="100" rx="12"
                   fill={isActive ? `${layer.color}20` : "#0f172a"}
                   stroke={isActive ? layer.color : "#334155"}
                   strokeWidth={isActive ? 2 : 1.5}
                   className="cursor-pointer"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${layer.label}, ${layer.depth} layer: ${layer.detects}. Activate to explore.`}
+                  aria-pressed={isActive}
                   onClick={() => handleLayerClick(layer.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleLayerClick(layer.id);
+                    }
+                  }}
+                  onFocus={() => setFocusedLayer(layer.id)}
+                  onBlur={() => setFocusedLayer(null)}
+                  style={{ outline: "none" }}
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.15 }}
                 />

@@ -108,7 +108,9 @@ export default function TargetLeakageDemo({ result, leak, onLeakChange, noise, o
           />
           <p className="text-[10px] text-[#475569] mt-2 leading-relaxed">
             days_until_churn_call is generated as the label plus this much noise. At zero it is a
-            perfect copy of the answer. Even heavily corrupted copies keep inflating the score.
+            perfect copy of the answer. Mild-to-moderate corruption still inflates the score;
+            push the slider to the max and the noise drowns the signal, so the inflation
+            disappears.
           </p>
         </div>
       </div>

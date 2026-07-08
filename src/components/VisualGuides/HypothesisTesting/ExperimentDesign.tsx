@@ -12,11 +12,13 @@ interface ExperimentDesignProps {
   onAlphaChange: (v: number) => void;
 }
 
+// Thresholds match the Cohen ruler shown in the UI (small 0.2, medium 0.5,
+// large 0.8); boundary values belong to the named tier, so d = 0.5 is Medium.
 function effectLabel(es: number): string {
   if (es === 0) return "No effect (null true)";
-  if (es <= 0.2) return "Very small effect";
-  if (es <= 0.5) return "Small effect";
-  if (es <= 0.8) return "Medium effect";
+  if (es < 0.2) return "Very small effect";
+  if (es < 0.5) return "Small effect";
+  if (es < 0.8) return "Medium effect";
   return "Large effect";
 }
 
@@ -24,13 +26,13 @@ function effectExplanation(es: number): string {
   if (es === 0) {
     return "Effect size is 0: the null hypothesis is true. Any rejection will be a Type I error (false positive).";
   }
-  if (es <= 0.2) {
+  if (es < 0.2) {
     return "Very small real effect. Detecting it reliably requires a large sample size.";
   }
-  if (es <= 0.5) {
+  if (es < 0.5) {
     return "Small real effect. You'll need a reasonably large sample to achieve good power.";
   }
-  if (es <= 0.8) {
+  if (es < 0.8) {
     return "Medium real effect. Standard sample sizes can detect this with decent power.";
   }
   return "Large real effect. Even smaller samples can reliably detect this difference.";

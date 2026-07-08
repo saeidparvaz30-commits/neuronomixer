@@ -71,7 +71,7 @@ function InstabilityVisual() {
         <text x={10} y={H - 2} fill="#3b82f6" fontSize={7}>D loss → 0 (D wins)</text>
         <text x={10} y={14} fill="#ef4444" fontSize={7}>G loss explodes ↑</text>
       </svg>
-      <p className="text-[8px] text-[#475569] mt-1">G can&apos;t learn: gradients vanish when D is perfect</p>
+      <p className="text-[8px] text-[#475569] mt-1">G can&apos;t learn: a near-perfect D gives no useful feedback</p>
     </div>
   );
 }
@@ -112,7 +112,7 @@ const PROBLEMS: Problem[] = [
     title: "Training Instability",
     subtitle: "D crushes G before G can learn",
     color: "#f97316",
-    body: "If the discriminator becomes too powerful too quickly, it outputs near-zero probabilities for all fake samples. The gradients flowing back to G vanish, and G cannot learn. The game breaks before convergence.",
+    body: "If the discriminator becomes too powerful too quickly, it confidently scores every fake sample near zero. G's loss blows up while D's feedback carries almost no signal about how to improve, so G cannot learn. The game breaks before convergence.",
     visual: <InstabilityVisual />,
   },
   {

@@ -249,6 +249,7 @@ export default function EmbeddingsClient() {
   const completionFired = useRef(false);
 
   const [hoveredWord, setHoveredWord] = useState<string | null>(null);
+  const [focusedWord, setFocusedWord] = useState<string | null>(null);
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const [activeExample, setActiveExample] = useState<number | null>(null);
   const [hasInteractedPlot, setHasInteractedPlot] = useState(false);
@@ -467,24 +468,49 @@ export default function EmbeddingsClient() {
                   const isNeighbor = neighborWords.includes(word);
                   const isArithmetic = arithmeticWords.includes(word);
                   const isResult = resultWord === word;
+                  const isFocused = focusedWord === word;
                   const color = CAT_COLORS[def.category];
                   const r = isSelected ? 7 : isResult ? 8 : isNeighbor ? 5.5 : isHovered ? 6 : 5;
+                  const toggleWord = () => {
+                    if (selectedWord === word) {
+                      setSelectedWord(null);
+                    } else {
+                      setSelectedWord(word);
+                      setHasInteractedPlot(true);
+                    }
+                  };
 
                   return (
                     <g
                       key={word}
-                      onClick={() => {
-                        if (selectedWord === word) {
-                          setSelectedWord(null);
-                        } else {
-                          setSelectedWord(word);
-                          setHasInteractedPlot(true);
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Select word ${word}`}
+                      aria-pressed={isSelected}
+                      onClick={toggleWord}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          toggleWord();
                         }
                       }}
+                      onFocus={() => setFocusedWord(word)}
+                      onBlur={() => setFocusedWord(null)}
                       onMouseEnter={() => setHoveredWord(word)}
                       onMouseLeave={() => setHoveredWord(null)}
-                      style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer", outline: "none" }}
                     >
+                      {/* Keyboard focus ring */}
+                      {isFocused && (
+                        <circle
+                          cx={cx} cy={cy}
+                          r={r + 8}
+                          fill="none"
+                          stroke="var(--color-accent)"
+                          strokeWidth={1.5}
+                          strokeDasharray="2 2"
+                        />
+                      )}
                       {/* Selection ring */}
                       {(isSelected || isResult) && (
                         <circle
