@@ -36,6 +36,8 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "prisma/mark-existing-users-verified.ts",
+    "prisma/set-email-notifications-true.ts"
   ]
 }

@@ -54,8 +54,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const postUrl = `${siteUrl}/blog/${post?.categorySlug}/${post?.slug}`;
+
     if (post?.authorUserId) {
-      const postUrl = `${siteUrl}/blog/${post.categorySlug}/${post.slug}`;
       await prisma.notification.create({
         data: {
           userId: post.authorUserId,

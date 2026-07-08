@@ -186,7 +186,7 @@ export default function VennDiagramVisualizer({
 
 interface VennSVGProps {
   highlighted: Set<Region["id"]>;
-  onRegionClick: (id: string) => void;
+  onRegionClick: (id: Region["id"]) => void;
 }
 
 function VennSVG({ highlighted, onRegionClick }: VennSVGProps) {

@@ -1,16 +1,16 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import Link from "next/link";
 
-const list = {
+const list: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
     transition: { staggerChildren: 0.085, delayChildren: 0.15 },
   },
 };
-const item = {
+const item: Variants = {
   hidden: { opacity: 0, y: 8 },
   show: {
     opacity: 1,
