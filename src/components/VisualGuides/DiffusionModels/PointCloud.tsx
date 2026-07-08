@@ -14,12 +14,22 @@ interface Props {
 const EXTENT = 3.1;
 const SIZE = 100;
 
+/**
+ * Quantize to 3 decimals: the point data is seeded, but Node's and the
+ * browser's V8 can disagree in the last ulp of transcendental math
+ * (sin/cos/log in Box-Muller), which made SSR and hydration serialize
+ * different attribute strings. Sub-0.001 precision is invisible at r=0.9.
+ */
+function quantize(v: number): number {
+  return Math.round(v * 1000) / 1000;
+}
+
 function toSvgX(v: number): number {
-  return ((v + EXTENT) / (2 * EXTENT)) * SIZE;
+  return quantize(((v + EXTENT) / (2 * EXTENT)) * SIZE);
 }
 
 function toSvgY(v: number): number {
-  return ((EXTENT - v) / (2 * EXTENT)) * SIZE;
+  return quantize(((EXTENT - v) / (2 * EXTENT)) * SIZE);
 }
 
 function PointCloudInner({ points, ariaLabel, height = 320 }: Props) {

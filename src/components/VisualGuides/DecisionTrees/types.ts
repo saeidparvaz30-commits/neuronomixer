@@ -63,6 +63,19 @@ export function predict(node: TreeNode, pt: { x: number; y: number }): 0 | 1 {
   return predict(node.children[1], pt);
 }
 
+// Seeded PRNG (mulberry32) so the initial dataset is identical between the
+// server render and client hydration.
+export function mulberry32(seed: number): () => number {
+  let state = seed >>> 0;
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 // Generate dataset
 export const DATASETS = {
   linearlySeparable: "Linearly separable",
@@ -71,10 +84,14 @@ export const DATASETS = {
   random: "Random",
 };
 
-export function generateDataset(type: keyof typeof DATASETS, n = 40): DataPoint[] {
+export function generateDataset(
+  type: keyof typeof DATASETS,
+  n = 40,
+  rng: () => number = Math.random,
+): DataPoint[] {
   return Array.from({ length: n }, (_, i) => {
-    const x = 5 + Math.random() * 90;
-    const y = 5 + Math.random() * 90;
+    const x = 5 + rng() * 90;
+    const y = 5 + rng() * 90;
     let label: 0 | 1 = 0;
     if (type === "linearlySeparable") {
       label = (x + y > 100) ? 1 : 0;
@@ -84,10 +101,10 @@ export function generateDataset(type: keyof typeof DATASETS, n = 40): DataPoint[
       const d = Math.sqrt((x - 50) ** 2 + (y - 50) ** 2);
       label = (d < 25 || d > 42) ? 0 : 1;
     } else {
-      label = Math.random() > 0.5 ? 1 : 0;
+      label = rng() > 0.5 ? 1 : 0;
     }
     // Add some noise
-    if (Math.random() < 0.08) label = label === 0 ? 1 : 0;
+    if (rng() < 0.08) label = label === 0 ? 1 : 0;
     return { id: i, x, y, label };
   });
 }

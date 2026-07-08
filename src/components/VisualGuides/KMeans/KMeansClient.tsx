@@ -13,7 +13,20 @@ interface Centroid { id: number; x: number; y: number; cluster: number }
 const CLUSTER_COLORS = ["#3b82f6", "#f97316", "#22c55e", "#a855f7", "#ef4444", "#06b6d4"];
 
 // ── Dataset generation ────────────────────────────────────────────────────────
-function generatePoints(): Point[] {
+// Seeded PRNG (mulberry32) so the initial dataset is identical between the
+// server render and client hydration.
+function mulberry32(seed: number): () => number {
+  let state = seed >>> 0;
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function generatePoints(rng: () => number = Math.random): Point[] {
   const clusters = [
     { cx: 25, cy: 25, n: 65 },
     { cx: 75, cy: 25, n: 70 },
@@ -24,8 +37,8 @@ function generatePoints(): Point[] {
     for (let i = 0; i < n; i++) {
       pts.push({
         id: pts.length,
-        x: Math.max(5, Math.min(95, cx + (Math.random() - 0.5) * 30)),
-        y: Math.max(5, Math.min(95, cy + (Math.random() - 0.5) * 30)),
+        x: Math.max(5, Math.min(95, cx + (rng() - 0.5) * 30)),
+        y: Math.max(5, Math.min(95, cy + (rng() - 0.5) * 30)),
         cluster: null,
       });
     }
@@ -179,7 +192,9 @@ function ElbowChart({ elbowData, currentK }: { elbowData: { k: number; inertia: 
 export default function KMeansClient() {
   const { data: session } = useSession();
   const [k, setK] = useState(3);
-  const [points, setPoints] = useState<Point[]>(() => generatePoints());
+  // Seeded so server render and client hydration produce the same points;
+  // resetAll (post-hydration) keeps true randomness.
+  const [points, setPoints] = useState<Point[]>(() => generatePoints(mulberry32(0x5eed0002)));
   const [centroids, setCentroids] = useState<Centroid[]>([]);
   const [phase, setPhase] = useState<"setup" | "running" | "converged">("setup");
   const [stepPhase, setStepPhase] = useState<"assign" | "update">("assign");

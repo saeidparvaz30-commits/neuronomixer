@@ -105,19 +105,24 @@ function ScatterPlot({
           fill="#ef4444" opacity="0.05" />
       )}
 
-      {/* Dots */}
+      {/* Dots. Position animates via a group transform: framer-motion's SVG
+          attribute animation writes cx/cy as "undefined" for a frame when the
+          animate target changes (first regenerate), spamming console errors. */}
       {students.map(s => (
-        <motion.circle
+        <motion.g
           key={s.id}
-          cx={tx(s.test1)} cy={ty(s.test2)}
-          r={hoveredId === s.id ? 7 : 5}
-          fill={getColor(s)}
-          opacity={getOpacity(s)}
-          animate={{ cx: tx(s.test1), cy: ty(s.test2) }}
+          initial={false}
+          animate={{ x: tx(s.test1), y: ty(s.test2) }}
           transition={{ duration: 0.5 }}
-          onMouseEnter={() => onHover(s.id)}
-          style={{ cursor: "pointer" }}
-        />
+        >
+          <circle
+            r={hoveredId === s.id ? 7 : 5}
+            fill={getColor(s)}
+            opacity={getOpacity(s)}
+            onMouseEnter={() => onHover(s.id)}
+            style={{ cursor: "pointer" }}
+          />
+        </motion.g>
       ))}
 
       {/* Hover label */}

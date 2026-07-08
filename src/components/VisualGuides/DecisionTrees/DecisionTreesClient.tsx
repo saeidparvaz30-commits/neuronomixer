@@ -8,7 +8,7 @@ import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   DataPoint, TreeNode, Split,
   computeGini, predictLabel, splitPoints, computeAccuracy, buildNode, predict,
-  generateDataset, DATASETS,
+  generateDataset, DATASETS, mulberry32,
 } from "./types";
 
 // ── Scatter with split lines ──────────────────────────────────────────────────
@@ -207,7 +207,10 @@ function TreeDiagram({ root }: { root: TreeNode | null }) {
 export default function DecisionTreesClient() {
   const { data: session } = useSession();
   const [datasetKey, setDatasetKey] = useState<keyof typeof DATASETS>("linearlySeparable");
-  const [points, setPoints] = useState<DataPoint[]>(() => generateDataset("linearlySeparable"));
+  // Seeded so server render and client hydration produce the same points;
+  // loadDataset (post-hydration) keeps true randomness.
+  const [points, setPoints] = useState<DataPoint[]>(() =>
+    generateDataset("linearlySeparable", 40, mulberry32(0x5eed0001)));
   const [tree, setTree] = useState<TreeNode | null>(() => null);
   const [splitAxis, setSplitAxis] = useState<"x" | "y">("x");
   const [splitValue, setSplitValue] = useState<number | null>(null);

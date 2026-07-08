@@ -40,13 +40,16 @@ function ProsePanelsInner({
   const [open, setOpen] = useState<Set<string>>(new Set());
 
   function toggle(id: string) {
+    // Notify the parent here in the event handler, never inside the setOpen
+    // updater: React re-runs updaters during render, so a parent setState
+    // there is a setState-during-render error.
+    if (id === "matters" && !open.has(id)) onWhenItMattersOpened();
     setOpen((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
       } else {
         next.add(id);
-        if (id === "matters") onWhenItMattersOpened();
       }
       return next;
     });
