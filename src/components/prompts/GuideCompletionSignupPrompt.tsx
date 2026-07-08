@@ -39,8 +39,8 @@ export function GuideCompletionSignupPrompt({ guideSlug, open, onClose }: Props)
   // Authenticated users never see this — their completion is saved server-side
   if (status === "authenticated") return null;
 
-  const signupHref = `/signup?redirect=${encodeURIComponent(pathname)}&guide=${encodeURIComponent(guideSlug)}`;
-  const loginHref = `/login?redirect=${encodeURIComponent(pathname)}&guide=${encodeURIComponent(guideSlug)}`;
+  const signupHref = `/auth/sign-up?redirect=${encodeURIComponent(pathname)}&guide=${encodeURIComponent(guideSlug)}`;
+  const loginHref = `/auth/sign-in?redirect=${encodeURIComponent(pathname)}&guide=${encodeURIComponent(guideSlug)}`;
 
   return (
     <SignupPromptModal

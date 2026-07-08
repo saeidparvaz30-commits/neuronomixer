@@ -64,11 +64,11 @@ export function GeneralSignupPrompt() {
       benefits={BENEFITS}
       primaryCta={{
         label: PRIMARY_CTA_LABEL,
-        href: `/signup?redirect=${encodeURIComponent(pathname)}`,
+        href: `/auth/sign-up?redirect=${encodeURIComponent(pathname)}`,
       }}
       secondaryCta={{
         label: SECONDARY_CTA_LABEL,
-        href: `/login?redirect=${encodeURIComponent(pathname)}`,
+        href: `/auth/sign-in?redirect=${encodeURIComponent(pathname)}`,
       }}
       variant="center"
       currentPath={pathname}

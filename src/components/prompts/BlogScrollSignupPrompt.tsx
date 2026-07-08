@@ -64,11 +64,11 @@ export function BlogScrollSignupPrompt({ targetRef, authorName = "the author" }:
       benefits={benefits}
       primaryCta={{
         label: "Sign up free",
-        href: `/signup?redirect=${encodeURIComponent(pathname)}`,
+        href: `/auth/sign-up?redirect=${encodeURIComponent(pathname)}`,
       }}
       secondaryCta={{
         label: "Log in",
-        href: `/login?redirect=${encodeURIComponent(pathname)}`,
+        href: `/auth/sign-in?redirect=${encodeURIComponent(pathname)}`,
       }}
       tertiaryAction={{
         label: "Keep reading",

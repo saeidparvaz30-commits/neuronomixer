@@ -2,8 +2,7 @@ const EXCLUDED_PREFIXES = [
   "/blog",
   "/visual-guides",
   "/studio",
-  "/login",
-  "/signup",
+  "/auth",
   "/api",
 ];
 
