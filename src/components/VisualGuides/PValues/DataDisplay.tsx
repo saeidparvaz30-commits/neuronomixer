@@ -28,7 +28,7 @@ export default function DataDisplay({ groupA, groupB, pValue, alpha, effectSize 
     if (isEmpty) {
       // Generate placeholder dots based on params
       const placeholderA = Array.from({ length: 10 }, (_, i) => 100 + Math.sin(i * 2.4) * 15);
-      const placeholderB = Array.from({ length: 10 }, (_, i) => 100 + effectSize * 10 + Math.sin(i * 3.1) * 15);
+      const placeholderB = Array.from({ length: 10 }, (_, i) => 100 + effectSize * 15 + Math.sin(i * 3.1) * 15);
       const all = [...placeholderA, ...placeholderB];
       const minV = Math.min(...all) - 5;
       const maxV = Math.max(...all) + 5;

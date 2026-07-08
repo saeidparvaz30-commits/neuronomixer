@@ -154,7 +154,8 @@ export const gaussRand = gaussianRandom;
 // ── Legacy helpers used by existing PValuesClient ────────────────────────────
 export function generateGroups(effectSize: number, n: number): [number[], number[]] {
   const a = Array.from({ length: n }, () => gaussianRandom(100, 15));
-  const b = Array.from({ length: n }, () => gaussianRandom(100 + effectSize * 10, 15));
+  // Shift = d * sigma so the slider's "Cohen's d" label is literally true
+  const b = Array.from({ length: n }, () => gaussianRandom(100 + effectSize * 15, 15));
   return [a, b];
 }
 
