@@ -387,8 +387,8 @@ export default function DPOLab({
                   <div
                     className="h-full rounded-full"
                     style={{
-                      width: `${(100 * refProbs[i]) / maxProb}%`,
-                      background: SERIES_COLORS.reference,
+                      width: `${((100 * refProbs[i]) / maxProb).toFixed(2)}%`,
+                      backgroundColor: SERIES_COLORS.reference,
                     }}
                   />
                 </div>
@@ -407,8 +407,8 @@ export default function DPOLab({
                   <div
                     className="h-full rounded-full transition-[width] duration-300"
                     style={{
-                      width: `${(100 * probs[i]) / maxProb}%`,
-                      background: SERIES_COLORS.policy,
+                      width: `${((100 * probs[i]) / maxProb).toFixed(2)}%`,
+                      backgroundColor: SERIES_COLORS.policy,
                     }}
                   />
                 </div>
