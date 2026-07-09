@@ -57,6 +57,20 @@ const DATA_UNITS = [
   { slug: "pipelines-and-systems",     name: "Pipelines & Systems",     order: 7 },
 ] as const;
 
+// ── Applied AI units ─────────────────────────────────────────────────────────
+// Unit 9 (AI Systems & Humans) is deferred until its P2/P3 guides exist.
+
+const APPLIED_UNITS = [
+  { slug: "choosing-a-model",         name: "Choosing a Model",          order: 1 },
+  { slug: "evaluating-ai-systems",    name: "Evaluating AI Systems",     order: 2 },
+  { slug: "adapting-models",          name: "Adapting Models",           order: 3 },
+  { slug: "agents-and-tools",         name: "Agents & Tools",            order: 4 },
+  { slug: "orchestration-and-memory", name: "Orchestration & Memory",    order: 5 },
+  { slug: "safety-and-alignment",     name: "Safety & Alignment",        order: 6 },
+  { slug: "security-and-red-teaming", name: "Security & Red-Teaming",    order: 7 },
+  { slug: "production-operations",    name: "Production Operations",     order: 8 },
+] as const;
+
 // ── Guide definitions ────────────────────────────────────────────────────────
 
 type GuideDef = {
@@ -1238,37 +1252,89 @@ const GUIDES: GuideDef[] = [
     categorySlug: "llms",
   },
 
-  // ── Applied AI (no units) ───────────────────────────────────────────────
+  // ── Applied AI ──────────────────────────────────────────────────────────
 
+  // Unit 1: Choosing a Model
   {
-    slug: "ai-agents",
-    title: "AI Agents: Autonomy in Action",
-    description: "Watch an agent loop through Think, Plan, Act, Observe cycles.",
-    interactiveType: "Workflow Diagram",
+    slug: "ai-model-decision-guide",
+    title: "Which AI Model Should I Use?",
+    description: "Set a quality floor, budget ceiling, latency and privacy constraints, and watch a live Pareto frontier of cost versus capability recompute which AI models are worth picking.",
+    interactiveType: "Pareto Frontier Explorer",
     audience: "Product Managers",
     order: 1,
     implemented: true,
     categorySlug: "applied-ai",
+    unitSlug: "choosing-a-model",
   },
+  {
+    slug: "benchmark-literacy",
+    title: "Reading Benchmarks Critically",
+    description: "Leak test items into a simulated model's training set and watch its leaderboard score inflate while a private held-out set stays put, then catch a rank flip, a saturated benchmark, and best-of-N selection.",
+    interactiveType: "Simulation Lab",
+    audience: "Everyone",
+    order: 2,
+    implemented: true,
+    categorySlug: "applied-ai",
+    unitSlug: "choosing-a-model",
+  },
+
+  // Unit 2: Evaluating AI Systems
   {
     slug: "model-evaluation",
     title: "Model Evaluation: Beyond Accuracy",
     description: "Edit model outputs and watch BLEU, ROUGE, and perplexity update live.",
     interactiveType: "Metric Explorer",
     audience: "ML Engineers",
-    order: 2,
+    order: 3,
     implemented: true,
     categorySlug: "applied-ai",
+    unitSlug: "evaluating-ai-systems",
   },
+  {
+    slug: "llm-as-judge",
+    title: "LLM-as-Judge: When Models Grade Models",
+    description: "Grade answers yourself, then run a rubric judge over the same corpus, measure agreement and Cohen's kappa against a human panel, and dial position, verbosity, and self-preference bias until the kappa collapses.",
+    interactiveType: "Judge Lab",
+    audience: "ML Engineers",
+    order: 4,
+    implemented: true,
+    categorySlug: "applied-ai",
+    unitSlug: "evaluating-ai-systems",
+  },
+  {
+    slug: "eval-dataset-design",
+    title: "Designing Eval Datasets",
+    description: "Build an eval set from simulated production failures, watch the exact 95% confidence interval narrow as tasks accumulate, catch a skewed sample with stratification, then inject label noise and see measured quality decouple from true quality.",
+    interactiveType: "Interactive Builder",
+    audience: "ML Engineers",
+    order: 5,
+    implemented: true,
+    categorySlug: "applied-ai",
+    unitSlug: "evaluating-ai-systems",
+  },
+
+  // Unit 3: Adapting Models
   {
     slug: "rlhf",
     title: "RLHF: How Human Feedback Shapes AI",
     description: "Play the human rater and watch the model's behavior shift.",
     interactiveType: "Interactive Pipeline",
     audience: "ML Practitioners",
-    order: 3,
+    order: 6,
     implemented: true,
     categorySlug: "applied-ai",
+    unitSlug: "adapting-models",
+  },
+  {
+    slug: "dpo-preference-tuning",
+    title: "DPO: Preference Tuning Without a Reward Model",
+    description: "Train a toy policy with the real DPO loss in your browser: slide beta, run gradient steps on authored preference pairs, and watch the distribution drift from the reference model with no reward model in sight.",
+    interactiveType: "Training Lab",
+    audience: "ML Practitioners",
+    order: 7,
+    implemented: true,
+    categorySlug: "applied-ai",
+    unitSlug: "adapting-models",
   },
   {
     slug: "lora-adapters",
@@ -1276,39 +1342,119 @@ const GUIDES: GuideDef[] = [
     description: "Visualize low-rank adapter matrices. Compare vs full fine-tuning.",
     interactiveType: "Weight Matrix Diagram",
     audience: "ML Engineers",
-    order: 4,
+    order: 8,
     implemented: true,
     categorySlug: "applied-ai",
+    unitSlug: "adapting-models",
   },
+
+  // Unit 4: Agents & Tools
+  {
+    slug: "ai-agents",
+    title: "AI Agents: Autonomy in Action",
+    description: "Watch an agent loop through Think, Plan, Act, Observe cycles.",
+    interactiveType: "Workflow Diagram",
+    audience: "Product Managers",
+    order: 9,
+    implemented: true,
+    categorySlug: "applied-ai",
+    unitSlug: "agents-and-tools",
+  },
+  {
+    slug: "structured-output-reliability",
+    title: "Structured Output Reliability",
+    description: "Sample a simulated token stream against a real JSON grammar, watch per-token errors compound into unparseable output, then mask illegal tokens and price the retries with the geometric distribution.",
+    interactiveType: "Simulation Lab",
+    audience: "Developers",
+    order: 10,
+    implemented: true,
+    categorySlug: "applied-ai",
+    unitSlug: "agents-and-tools",
+  },
+
+  // Unit 5: Orchestration & Memory
+  {
+    slug: "agent-evaluation",
+    title: "Evaluating Agents: Grading the Trajectory",
+    description: "Replay three agent transcripts step by step, grade them with code checks versus a rubric judge, then drag p and k to watch pass@k and pass^k diverge: one lucky pass is not reliability.",
+    interactiveType: "Transcript Replay",
+    audience: "AI Engineers",
+    order: 11,
+    implemented: true,
+    categorySlug: "applied-ai",
+    unitSlug: "orchestration-and-memory",
+  },
+
+  // Unit 6: Safety & Alignment
   {
     slug: "ai-safety",
     title: "AI Safety: Alignment in Practice",
     description: "Explore story-driven alignment scenarios. Toggle safety techniques on/off.",
     interactiveType: "Scenario Explorer",
     audience: "Everyone",
-    order: 5,
+    order: 12,
     implemented: true,
     categorySlug: "applied-ai",
+    unitSlug: "safety-and-alignment",
   },
   {
-    slug: "ai-model-decision-guide",
-    title: "Which AI Model Should I Use?",
-    description: "Answer branching questions and get a model recommendation with side-by-side comparisons.",
-    interactiveType: "Decision Tree",
-    audience: "Product Managers",
-    order: 6,
-    implemented: false,
+    slug: "guardrails-architecture",
+    title: "Guardrails Architecture",
+    description: "Toggle four defense layers over a fixed corpus of attack and benign strings, run them through transparent rule-based classifiers, and watch the block rate trade off against the false-positive rate. See why single layers fail and stacks hold.",
+    interactiveType: "Scenario Explorer",
+    audience: "Developers",
+    order: 13,
+    implemented: true,
     categorySlug: "applied-ai",
+    unitSlug: "safety-and-alignment",
   },
+
+  // Unit 7: Security & Red-Teaming
   {
     slug: "prompt-injection",
     title: "Prompt Injection: The Agent Threat Model",
     description: "Step through a simulated agent attack and toggle defenses to see why untrusted content can hijack an LLM and how to contain it.",
     interactiveType: "Scenario Explorer",
     audience: "Developers",
-    order: 7,
+    order: 14,
     implemented: true,
     categorySlug: "applied-ai",
+    unitSlug: "security-and-red-teaming",
+  },
+
+  // Unit 8: Production Operations
+  {
+    slug: "cost-latency-engineering",
+    title: "Cost and Latency Engineering",
+    description: "Price a real LLM workload with live token math, split response time into TTFT and per-token generation, race streaming against blocking output, and compute exactly when prompt caching pays for itself.",
+    interactiveType: "Live Calculator",
+    audience: "Developers",
+    order: 15,
+    implemented: true,
+    categorySlug: "applied-ai",
+    unitSlug: "production-operations",
+  },
+  {
+    slug: "model-routing-cascades",
+    title: "Model Routing and Cascades",
+    description: "Route a simulated query stream through a three-tier model cascade, drag the escalation-confidence threshold to trace the cost-quality frontier, then break the router with miscalibrated confidence and watch quality fall while the dashboard stays green.",
+    interactiveType: "Simulation Lab",
+    audience: "AI Engineers",
+    order: 16,
+    implemented: true,
+    categorySlug: "applied-ai",
+    unitSlug: "production-operations",
+  },
+  {
+    slug: "llm-monitoring-drift",
+    title: "Monitoring and Drift for LLM Apps",
+    description: "Inject a regression into simulated LLM production traffic, tune a CUSUM changepoint detector to catch it, and measure the honest tradeoff between detection delay and false alarms.",
+    interactiveType: "Monitoring Lab",
+    audience: "AI Engineers",
+    order: 17,
+    implemented: true,
+    categorySlug: "applied-ai",
+    unitSlug: "production-operations",
   },
 ];
 
@@ -1356,6 +1502,19 @@ async function main() {
       where: { slug: unit.slug },
       update: { name: unit.name, order: unit.order, categoryId: dataId },
       create: { slug: unit.slug, name: unit.name, order: unit.order, categoryId: dataId },
+    });
+  }
+
+  // Step 3c: Upsert Applied AI units
+  const appliedId = catIdMap["applied-ai"];
+  if (!appliedId) throw new Error("Applied AI category not found after upsert");
+
+  console.log("  Upserting Applied AI units…");
+  for (const unit of APPLIED_UNITS) {
+    await prisma.guideUnit.upsert({
+      where: { slug: unit.slug },
+      update: { name: unit.name, order: unit.order, categoryId: appliedId },
+      create: { slug: unit.slug, name: unit.name, order: unit.order, categoryId: appliedId },
     });
   }
 
