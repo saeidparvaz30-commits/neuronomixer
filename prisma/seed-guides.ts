@@ -71,6 +71,23 @@ const APPLIED_UNITS = [
   { slug: "production-operations",    name: "Production Operations",     order: 8 },
 ] as const;
 
+// ── LLMs units ───────────────────────────────────────────────────────────────
+
+const LLMS_UNITS = [
+  { slug: "what-a-language-model-is",              name: "What a Language Model Is",             order: 1 },
+  { slug: "the-token-pipeline",                    name: "The Token Pipeline",                   order: 2 },
+  { slug: "inside-the-transformer",                name: "Inside the Transformer",               order: 3 },
+  { slug: "generation-and-sampling",               name: "Generation & Sampling",                order: 4 },
+  { slug: "context-as-working-memory",             name: "Context as Working Memory",            order: 5 },
+  { slug: "where-models-come-from",                name: "Where Models Come From",               order: 6 },
+  { slug: "shaping-behavior",                      name: "Shaping Behavior",                     order: 7 },
+  { slug: "retrieval-and-grounding",               name: "Retrieval & Grounding",                order: 8 },
+  { slug: "tools-and-structured-interaction",      name: "Tools & Structured Interaction",       order: 9 },
+  { slug: "efficiency-and-serving",                name: "Efficiency & Serving",                 order: 10 },
+  { slug: "limits-and-failure-modes",              name: "Limits & Failure Modes",               order: 11 },
+  { slug: "frontiers-reasoning-and-multimodality", name: "Frontiers: Reasoning & Multimodality", order: 12 },
+] as const;
+
 // ── Guide definitions ────────────────────────────────────────────────────────
 
 type GuideDef = {
@@ -1101,6 +1118,7 @@ const GUIDES: GuideDef[] = [
 
   // ── LLMs (no units) ────────────────────────────────────────────────────
 
+  // Unit 1: What a Language Model Is
   {
     slug: "what-is-llm",
     title: "What Is a Large Language Model?",
@@ -1110,16 +1128,30 @@ const GUIDES: GuideDef[] = [
     order: 1,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "what-a-language-model-is",
   },
+  {
+    slug: "next-token-prediction",
+    title: "The Next-Token Machine",
+    description: "Train a character model on a visible corpus, type a prefix, and watch a real probability distribution over next characters update, then sample it into a generation loop.",
+    interactiveType: "Live Probability Playground",
+    audience: "Everyone",
+    order: 2,
+    implemented: true,
+    categorySlug: "llms",
+    unitSlug: "what-a-language-model-is",
+  },
+  // Unit 2: The Token Pipeline
   {
     slug: "tokenization",
     title: "Tokenization: How AI Reads Text",
     description: "Type anything and watch it split into colored token blocks in real time.",
     interactiveType: "Interactive Tokenizer",
     audience: "Developers",
-    order: 2,
+    order: 3,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "the-token-pipeline",
   },
   {
     slug: "embeddings",
@@ -1127,19 +1159,33 @@ const GUIDES: GuideDef[] = [
     description: "Explore a 3D word space. Try word arithmetic like king - man + woman.",
     interactiveType: "3D Space Explorer",
     audience: "Developers",
-    order: 3,
+    order: 4,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "the-token-pipeline",
   },
+  {
+    slug: "positional-encoding",
+    title: "How Models Know Word Order",
+    description: "Compute the sinusoidal encoding heatmap live from the formula, then rotate query and key vectors with RoPE and watch the attention score depend only on the gap between positions.",
+    interactiveType: "Rotation Lab",
+    audience: "ML Practitioners",
+    order: 5,
+    implemented: true,
+    categorySlug: "llms",
+    unitSlug: "the-token-pipeline",
+  },
+  // Unit 3: Inside the Transformer
   {
     slug: "self-attention",
     title: "Self-Attention: How Transformers Focus",
     description: "Type a sentence and see attention heatmaps. Step through layers.",
     interactiveType: "Attention Heatmap",
     audience: "ML Practitioners",
-    order: 4,
+    order: 6,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "inside-the-transformer",
   },
   {
     slug: "transformer-architecture",
@@ -1147,39 +1193,102 @@ const GUIDES: GuideDef[] = [
     description: "Click through every block with animated explainers for each component.",
     interactiveType: "Architecture Explorer",
     audience: "Developers",
-    order: 5,
+    order: 7,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "inside-the-transformer",
   },
+  {
+    slug: "mixture-of-experts",
+    title: "Mixture of Experts",
+    description: "Train a real 8-expert MoE layer in your browser, watch the router light up the top-2 experts, toggle experts off, and track total versus active parameters and FLOPs.",
+    interactiveType: "Trainable MoE Lab",
+    audience: "ML Practitioners",
+    order: 8,
+    implemented: true,
+    categorySlug: "llms",
+    unitSlug: "inside-the-transformer",
+  },
+  // Unit 4: Generation & Sampling
   {
     slug: "temperature-topk",
     title: "Temperature & Top-K: Controlling Creativity",
     description: "Adjust generation parameters and watch probability distributions reshape.",
     interactiveType: "Parameter Playground",
     audience: "Developers",
-    order: 6,
+    order: 9,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "generation-and-sampling",
   },
+  {
+    slug: "decoding-strategies",
+    title: "Greedy, Beam, and Sampling",
+    description: "Compare greedy decoding, a real log-prob beam tree, and top-k, top-p, and min-p sampling on the same distribution, then run 100 continuations to plot diversity against likelihood.",
+    interactiveType: "Decoding Comparator",
+    audience: "Developers",
+    order: 10,
+    implemented: true,
+    categorySlug: "llms",
+    unitSlug: "generation-and-sampling",
+  },
+  {
+    slug: "kv-cache",
+    title: "The KV Cache",
+    description: "Watch attention keys and values fill a memory grid during decoding, size the cache in real bytes with sliders, and see grouped-query attention shrink it.",
+    interactiveType: "Memory Grid Calculator",
+    audience: "ML Engineers",
+    order: 11,
+    implemented: true,
+    categorySlug: "llms",
+    unitSlug: "generation-and-sampling",
+  },
+  // Unit 5: Context as Working Memory
   {
     slug: "context-windows",
     title: "Context Windows: What the Model Can See",
     description: "Slide context length and test information retrieval at different positions.",
     interactiveType: "Sliding Window Demo",
     audience: "Developers",
-    order: 7,
+    order: 12,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "context-as-working-memory",
+  },
+  // Unit 6: Where Models Come From
+  {
+    slug: "scaling-laws",
+    title: "Scaling Laws",
+    description: "Trace the Chinchilla loss surface with sliders, allocate a FLOPs budget between parameters and data, and see the compute-optimal frontier emerge over cited historical models.",
+    interactiveType: "Frontier Explorer",
+    audience: "ML Practitioners",
+    order: 13,
+    implemented: true,
+    categorySlug: "llms",
+    unitSlug: "where-models-come-from",
   },
   {
-    slug: "hallucination",
-    title: "Hallucination: When AI Makes Things Up",
-    description: "Explore examples of confident-sounding but wrong outputs.",
-    interactiveType: "Example Explorer",
-    audience: "Everyone",
-    order: 8,
+    slug: "post-training",
+    title: "From Base Model to Assistant",
+    description: "Shape a real base distribution with SFT reweighting and a KL-penalty preference term, and watch helpfulness rise while diversity collapses as the penalty loosens.",
+    interactiveType: "Distribution Shaper",
+    audience: "ML Practitioners",
+    order: 14,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "where-models-come-from",
+  },
+  // Unit 7: Shaping Behavior
+  {
+    slug: "prompt-engineering",
+    title: "Prompt Engineering Patterns",
+    description: "Browse a gallery of patterns with live demos and editable prompts.",
+    interactiveType: "Pattern Gallery",
+    audience: "Everyone",
+    order: 15,
+    implemented: true,
+    categorySlug: "llms",
+    unitSlug: "shaping-behavior",
   },
   {
     slug: "fine-tuning-vs-prompting",
@@ -1187,19 +1296,22 @@ const GUIDES: GuideDef[] = [
     description: "Try both approaches on the same task and compare. Interactive decision tree included.",
     interactiveType: "Decision Flowchart",
     audience: "Product Managers",
-    order: 9,
+    order: 16,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "shaping-behavior",
   },
+  // Unit 8: Retrieval & Grounding
   {
     slug: "rag-explained",
     title: "RAG: Retrieval Augmented Generation",
     description: "Type a query and watch each RAG step execute with timing breakdowns.",
     interactiveType: "Pipeline Walkthrough",
     audience: "Developers",
-    order: 10,
+    order: 17,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "retrieval-and-grounding",
   },
   {
     slug: "vector-databases",
@@ -1207,9 +1319,10 @@ const GUIDES: GuideDef[] = [
     description: "Watch documents become vectors in 3D space. Query and see nearest neighbors.",
     interactiveType: "Vector Space Demo",
     audience: "Developers",
-    order: 11,
+    order: 18,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "retrieval-and-grounding",
   },
   {
     slug: "chunking-strategies",
@@ -1217,39 +1330,69 @@ const GUIDES: GuideDef[] = [
     description: "See fixed-size, recursive, and semantic chunking applied side by side.",
     interactiveType: "Side-by-Side Comparator",
     audience: "ML Engineers",
-    order: 12,
+    order: 19,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "retrieval-and-grounding",
   },
-  {
-    slug: "prompt-engineering",
-    title: "Prompt Engineering Patterns",
-    description: "Browse a gallery of patterns with live demos and editable prompts.",
-    interactiveType: "Pattern Gallery",
-    audience: "Everyone",
-    order: 13,
-    implemented: true,
-    categorySlug: "llms",
-  },
-  {
-    slug: "quantization",
-    title: "Quantization: Shrinking Models",
-    description: "Reduce weight precision from 32-bit down to 4-bit and watch model size shrink while tracking the tradeoff against output quality.",
-    interactiveType: "Precision Slider",
-    audience: "ML Engineers",
-    order: 14,
-    implemented: true,
-    categorySlug: "llms",
-  },
+  // Unit 9: Tools & Structured Interaction
   {
     slug: "tool-use-function-calling",
     title: "Tool Use & Function Calling",
     description: "Watch a model decide when to call a function, emit structured arguments, and fold the tool result back into its response.",
     interactiveType: "Tool Call Walkthrough",
     audience: "Developers",
-    order: 15,
+    order: 20,
     implemented: true,
     categorySlug: "llms",
+    unitSlug: "tools-and-structured-interaction",
+  },
+  // Unit 10: Efficiency & Serving
+  {
+    slug: "quantization",
+    title: "Quantization: Shrinking Models",
+    description: "Reduce weight precision from 32-bit down to 4-bit and watch model size shrink while tracking the tradeoff against output quality.",
+    interactiveType: "Precision Slider",
+    audience: "ML Engineers",
+    order: 21,
+    implemented: true,
+    categorySlug: "llms",
+    unitSlug: "efficiency-and-serving",
+  },
+  // Unit 11: Limits & Failure Modes
+  {
+    slug: "hallucination",
+    title: "Hallucination: When AI Makes Things Up",
+    description: "Explore examples of confident-sounding but wrong outputs.",
+    interactiveType: "Example Explorer",
+    audience: "Everyone",
+    order: 22,
+    implemented: true,
+    categorySlug: "llms",
+    unitSlug: "limits-and-failure-modes",
+  },
+  // Unit 12: Frontiers: Reasoning & Multimodality
+  {
+    slug: "chain-of-thought",
+    title: "Why Thinking Out Loud Works",
+    description: "Train two real models in your browser, one answering in a single shot and one writing a scratchpad, and watch measured accuracy diverge as problems get longer.",
+    interactiveType: "In-Browser Experiment",
+    audience: "Everyone",
+    order: 23,
+    implemented: true,
+    categorySlug: "llms",
+    unitSlug: "frontiers-reasoning-and-multimodality",
+  },
+  {
+    slug: "multimodal-llms",
+    title: "How LLMs See",
+    description: "Draw an image, watch it split into patches that are matrix-multiplied into embedding vectors, and see them join text tokens in one sequence with live token counts.",
+    interactiveType: "Patchify Lab",
+    audience: "Everyone",
+    order: 24,
+    implemented: true,
+    categorySlug: "llms",
+    unitSlug: "frontiers-reasoning-and-multimodality",
   },
 
   // ── Applied AI ──────────────────────────────────────────────────────────
@@ -1515,6 +1658,19 @@ async function main() {
       where: { slug: unit.slug },
       update: { name: unit.name, order: unit.order, categoryId: appliedId },
       create: { slug: unit.slug, name: unit.name, order: unit.order, categoryId: appliedId },
+    });
+  }
+
+  // Step 3d: Upsert LLMs units
+  const llmsId = catIdMap["llms"];
+  if (!llmsId) throw new Error("LLMs category not found after upsert");
+
+  console.log("  Upserting LLMs units…");
+  for (const unit of LLMS_UNITS) {
+    await prisma.guideUnit.upsert({
+      where: { slug: unit.slug },
+      update: { name: unit.name, order: unit.order, categoryId: llmsId },
+      create: { slug: unit.slug, name: unit.name, order: unit.order, categoryId: llmsId },
     });
   }
 
