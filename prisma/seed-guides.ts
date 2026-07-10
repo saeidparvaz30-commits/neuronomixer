@@ -1524,32 +1524,46 @@ async function main() {
   });
   const unitIdMap = Object.fromEntries(unitRecords.map((u) => [u.slug, u.id]));
 
-  // Step 5: Upsert all guides
+  // Step 5: Upsert all guides.
+  // Reslotting existing guides into new orders collides with the (categoryId, order)
+  // unique index when upserted row-by-row, so first shift every existing order out of
+  // the target range; each upsert then writes the final order. The shift and the
+  // upserts share one transaction so a mid-run failure leaves no shifted leftovers.
   console.log(`  Upserting ${GUIDES.length} guides…`);
-  for (const guide of GUIDES) {
-    const categoryId = catIdMap[guide.categorySlug];
-    if (!categoryId) throw new Error(`Category not found: ${guide.categorySlug}`);
+  await prisma.$transaction(
+    async (tx) => {
+      await tx.visualGuide.updateMany({
+        where: { order: { lt: 10000 } },
+        data: { order: { increment: 10000 } },
+      });
 
-    const unitId = guide.unitSlug ? unitIdMap[guide.unitSlug] : null;
-    if (guide.unitSlug && !unitId) throw new Error(`Unit not found: ${guide.unitSlug}`);
+      for (const guide of GUIDES) {
+        const categoryId = catIdMap[guide.categorySlug];
+        if (!categoryId) throw new Error(`Category not found: ${guide.categorySlug}`);
 
-    const data = {
-      title: guide.title,
-      description: guide.description,
-      interactiveType: guide.interactiveType,
-      audience: guide.audience,
-      order: guide.order,
-      implemented: guide.implemented,
-      categoryId,
-      unitId: unitId ?? null,
-    };
+        const unitId = guide.unitSlug ? unitIdMap[guide.unitSlug] : null;
+        if (guide.unitSlug && !unitId) throw new Error(`Unit not found: ${guide.unitSlug}`);
 
-    await prisma.visualGuide.upsert({
-      where: { slug: guide.slug },
-      update: data,
-      create: { slug: guide.slug, ...data },
-    });
-  }
+        const data = {
+          title: guide.title,
+          description: guide.description,
+          interactiveType: guide.interactiveType,
+          audience: guide.audience,
+          order: guide.order,
+          implemented: guide.implemented,
+          categoryId,
+          unitId: unitId ?? null,
+        };
+
+        await tx.visualGuide.upsert({
+          where: { slug: guide.slug },
+          update: data,
+          create: { slug: guide.slug, ...data },
+        });
+      }
+    },
+    { timeout: 300_000 },
+  );
 
   const total = await prisma.visualGuide.count();
   console.log(`Done. ${total} guides in database (all DRAFT).`);
