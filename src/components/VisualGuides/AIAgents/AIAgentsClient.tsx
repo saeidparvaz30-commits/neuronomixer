@@ -8,14 +8,14 @@ import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import { useGuideMotion } from "@/lib/guideMotion";
 
 const GUIDE_TITLE = "AI Agents: Autonomy in Action";
-const NEXT_GUIDE_SLUG = "model-evaluation";
+const NEXT_GUIDE_SLUG = "structured-output-reliability";
 const PREV_GUIDE_SLUG = "prompt-engineering";
 
 const LOOP_PHASES = [
-  { id: "perceive", label: "PERCEIVE", desc: "Read input (text, files, web)",       color: "#3bb4a4", angle: 270 },
-  { id: "think",   label: "THINK",    desc: "Plan next action via LLM reasoning",   color: "#ec4899", angle: 0   },
-  { id: "act",     label: "ACT",      desc: "Use tools (search, code, APIs)",       color: "#f97316", angle: 90  },
-  { id: "observe", label: "OBSERVE",  desc: "See results, update state",            color: "#a855f7", angle: 180 },
+  { id: "perceive", label: "PERCEIVE", desc: "Read context (text, files, results)",      color: "#3bb4a4", angle: 270 },
+  { id: "think",   label: "THINK",    desc: "Model decides: answer, or emit a tool call", color: "#ec4899", angle: 0   },
+  { id: "act",     label: "ACT",      desc: "Runtime executes the tool call",             color: "#f97316", angle: 90  },
+  { id: "observe", label: "OBSERVE",  desc: "Result feeds back into the context",         color: "#a855f7", angle: 180 },
 ];
 
 type TPhase = "THOUGHT" | "ACTION" | "OBSERVATION" | "ANSWER";
@@ -36,15 +36,16 @@ const TOOLS = [
   { name: "Web Search",       desc: "Searches the live internet",              input: 'web_search("Paris weather")',             output: "18°C, partly cloudy in Paris." },
   { name: "Code Interpreter", desc: "Runs Python in a sandbox",                input: "execute_python('print(2**10)')",           output: "1024" },
   { name: "File System",      desc: "Reads and writes files",                  input: "read_file('report.txt')",                  output: "Q3 revenue increased 14%..." },
-  { name: "Calculator",       desc: "Precise arithmetic",                      input: "calculate('1234.56 * 7.89 / 100')",        output: "97.41..." },
+  { name: "Calculator",       desc: "Precise arithmetic",                      input: "calculate('1234.56 * 7.89 / 100')",        output: "97.406784" },
   { name: "RAG Retrieval",    desc: "Searches private knowledge base",         input: 'rag_search("refund policy")',              output: "Digital goods non-refundable if downloaded." },
   { name: "API Caller",       desc: "Integrates with external services",       input: 'api_call("GET /weather?city=Paris")',      output: '{"temp":18,"condition":"cloudy"}' },
 ];
 
-const RISKS = [
+const RISKS: { title: string; desc: string; color: string; href?: string; linkLabel?: string }[] = [
   { title: "Infinite Loops",      desc: "Agent keeps searching without a stopping condition, burning tokens indefinitely.", color: "#ef4444" },
   { title: "Tool Misuse",         desc: "Selecting the wrong tool, e.g. web search when precise arithmetic is needed.", color: "#f97316" },
   { title: "Compounding Errors",  desc: "A small mistake in step 2 gets passed through all subsequent steps.", color: "#a855f7" },
+  { title: "Prompt Injection",    desc: "An agent that reads untrusted content (web pages, emails, files) can have its instructions hijacked by text planted in that content.", color: "#3b82f6", href: "/visual-guides/prompt-injection", linkLabel: "See the Prompt Injection guide" },
 ];
 
 function polarPos(angleDeg: number, r: number) {
@@ -70,19 +71,7 @@ export default function AIAgentsClient() {
   const multiRef    = useRef<HTMLDivElement>(null);
   const multiInView = useInView(multiRef, { once: true, margin: "-60px" });
 
-  const completionFired = useRef(false);
   const allComplete = loopViewed && traceAllDone;
-
-  useEffect(() => {
-    if (allComplete && !completionFired.current && session?.user) {
-      completionFired.current = true;
-      fetch("/api/visual-guides/complete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ guideSlug: "ai-agents", score: 100 }),
-      }).catch(() => {});
-    }
-  }, [allComplete, session?.user]);
 
   const startLoop = useCallback(() => {
     if (loopRunning) return;
@@ -113,7 +102,6 @@ export default function AIAgentsClient() {
     setTraceAuto(false);
     setActiveTool(null);
     if (loopRef.current) clearInterval(loopRef.current);
-    completionFired.current = false;
   }
 
   return (
@@ -149,7 +137,7 @@ export default function AIAgentsClient() {
             animate="visible"
             className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]"
           >
-            An AI agent is an LLM equipped with tools: it perceives, reasons, acts, and observes in a continuous loop to autonomously complete multi-step tasks.
+            An AI agent is an LLM in a loop with tools: the model emits structured tool calls against typed tool definitions, a runtime executes them, and the results feed back into the context until the task is done.
           </motion.p>
         </section>
 
@@ -225,7 +213,7 @@ export default function AIAgentsClient() {
         <section className="mb-14">
           <h2 className="text-[18px] font-bold text-white mb-1">Section 2: ReAct Trace Simulation</h2>
           <p className="text-[12px] text-[#94a3b8] mb-1">Goal: <span className="text-white font-semibold">Find the cheapest hotel in Paris under $100</span></p>
-          <p className="text-[12px] text-[#94a3b8] mb-5">ReAct = Reasoning + Acting interleaved. Step through each agent move.</p>
+          <p className="text-[12px] text-[#94a3b8] mb-5">ReAct = Reasoning + Acting interleaved. In modern APIs each ACTION line is a structured function call the runtime executes. Step through each agent move.</p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5 sm:p-6">
             {traceStep > 0 ? (
               <div className="space-y-2 mb-4 max-h-[260px] overflow-y-auto pr-1">
@@ -273,7 +261,7 @@ export default function AIAgentsClient() {
         {/* ── S3: Tool Palette ── */}
         <section className="mb-14">
           <h2 className="text-[18px] font-bold text-white mb-1">Section 3: Tool Palette</h2>
-          <p className="text-[12px] text-[#94a3b8] mb-6">Agents gain capabilities through tools. Click a card to see an example exchange.</p>
+          <p className="text-[12px] text-[#94a3b8] mb-6">Each tool is a typed function definition the model can call. Click a card to see an example call and result.</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {TOOLS.map((tool, i) => (
               <motion.button key={tool.name} onClick={() => setActiveTool(activeTool === i ? null : i)}
@@ -345,7 +333,7 @@ export default function AIAgentsClient() {
         <section className="mb-12">
           <h2 className="text-[18px] font-bold text-white mb-1">Section 5: Risks &amp; Limitations</h2>
           <p className="text-[12px] text-[#94a3b8] mb-6">Autonomy introduces failure modes that don&apos;t exist in single-shot LLM calls.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {RISKS.map((r) => (
               <div key={r.title} className="rounded-2xl border bg-[#0f172a] p-5" style={{ borderColor: `${r.color}30` }}>
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-3" style={{ background: `${r.color}15` }}>
@@ -355,6 +343,11 @@ export default function AIAgentsClient() {
                 </div>
                 <p className="text-[13px] font-bold text-white mb-1.5">{r.title}</p>
                 <p className="text-[11px] text-[#94a3b8] leading-relaxed">{r.desc}</p>
+                {r.href && (
+                  <Link href={r.href} className="inline-block mt-2 text-[11px] font-semibold hover:underline" style={{ color: r.color }}>
+                    {r.linkLabel} →
+                  </Link>
+                )}
               </div>
             ))}
           </div>
@@ -367,7 +360,7 @@ export default function AIAgentsClient() {
             <div>
               <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-2">Key Insight</p>
               <p className="text-[13px] text-white leading-relaxed">
-                AutoGPT (2023) showed agents could autonomously complete complex tasks, but it also highlighted key challenges: they get stuck in loops, make irreversible mistakes, and need human oversight checkpoints.
+                Modern agents are function calling in a loop: the model emits a structured call against a typed tool definition, and your runtime executes it and returns the result. Because that loop is ordinary code you own, stop conditions, permission checks, and human approval gates belong in the code, not in the model.
               </p>
             </div>
           </div>
@@ -377,10 +370,10 @@ export default function AIAgentsClient() {
         <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 mb-10 flex items-center justify-between gap-4 flex-wrap">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-wider text-[#94a3b8] mb-1">Up Next</p>
-            <p className="text-[15px] font-bold text-white">Model Evaluation</p>
-            <p className="text-[12px] text-[#94a3b8] mt-1">Learn how to measure whether your model actually works.</p>
+            <p className="text-[15px] font-bold text-white">Structured Output Reliability</p>
+            <p className="text-[12px] text-[#94a3b8] mt-1">Learn how to make model outputs match a schema you can trust.</p>
           </div>
-          <Link href="/visual-guides/model-evaluation"
+          <Link href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
             className="px-5 py-2.5 rounded-xl text-[13px] font-semibold bg-[#ec4899] text-white hover:opacity-90 transition-opacity whitespace-nowrap">
             Next Guide →
           </Link>
