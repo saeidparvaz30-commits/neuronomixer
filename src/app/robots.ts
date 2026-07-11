@@ -13,7 +13,10 @@ export default function robots(): MetadataRoute.Robots {
       ? [
           {
             userAgent: "*",
-            allow: "/",
+            // Crawlers must be able to fetch /api/share/* so the X-Robots-Tag
+            // noindex on those responses is readable; longest-match Allow
+            // beats the /api/ Disallow.
+            allow: ["/", "/api/share/"],
             disallow: [
               "/api/",
               "/studio/",
