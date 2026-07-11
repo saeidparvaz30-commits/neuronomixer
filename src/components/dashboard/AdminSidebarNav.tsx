@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, FileText, BookOpen, PenSquare, Lightbulb, Tag, UserCircle, Bell, FileUser, KeyRound, Rss, Clock, Bookmark, Settings, GraduationCap, BarChart2, type LucideIcon } from "lucide-react";
+import { LayoutDashboard, Users, FileText, BookOpen, PenSquare, Lightbulb, Tag, UserCircle, Bell, FileUser, KeyRound, Rss, Clock, Bookmark, Settings, GraduationCap, BarChart2, FileUp, type LucideIcon } from "lucide-react";
 
 const adminItems: { href: string; label: string; icon: LucideIcon; exact?: boolean }[] = [
   { href: "/dashboard/admin", label: "Overview", icon: LayoutDashboard, exact: true },
@@ -13,6 +13,7 @@ const adminItems: { href: string; label: string; icon: LucideIcon; exact?: boole
   { href: "/dashboard/admin/users", label: "All Users", icon: BookOpen },
   { href: "/dashboard/admin/notifications", label: "Notifications", icon: Bell },
   { href: "/dashboard/admin/token-usage", label: "Token Usage", icon: BarChart2 },
+  { href: "/dashboard/admin/shared-pdfs", label: "Shared PDFs", icon: FileUp },
 ];
 
 const writingItems: { href: string; label: string; icon: LucideIcon }[] = [
