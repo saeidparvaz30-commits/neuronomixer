@@ -74,13 +74,14 @@ export async function GET() {
   const [shares, counts] = await Promise.all([
     prisma.sharedPdf.findMany({ orderBy: { createdAt: "desc" } }),
     prisma.sharedPdfEvent.groupBy({
-      by: ["sharedPdfId", "type"],
+      by: ["sharedPdfId"],
+      where: { type: "VIEW" },
       _count: { _all: true },
     }),
   ]);
 
-  const countFor = (id: string, type: "VIEW" | "DOWNLOAD") =>
-    counts.find((c) => c.sharedPdfId === id && c.type === type)?._count._all ?? 0;
+  const viewsFor = (id: string) =>
+    counts.find((c) => c.sharedPdfId === id)?._count._all ?? 0;
 
   return NextResponse.json({
     shares: shares.map((s) => ({
@@ -90,8 +91,7 @@ export async function GET() {
       sizeBytes: s.sizeBytes,
       active: s.active,
       createdAt: s.createdAt,
-      views: countFor(s.id, "VIEW"),
-      downloads: countFor(s.id, "DOWNLOAD"),
+      views: viewsFor(s.id),
     })),
   });
 }

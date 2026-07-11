@@ -40,10 +40,6 @@ export default async function SharePage({
   });
 
   return (
-    <SharedPdfViewer
-      title={share.title}
-      fileUrl={`/api/share/${token}/file`}
-      downloadUrl={`/api/share/${token}/download`}
-    />
+    <SharedPdfViewer title={share.title} fileUrl={`/api/share/${token}/file`} />
   );
 }

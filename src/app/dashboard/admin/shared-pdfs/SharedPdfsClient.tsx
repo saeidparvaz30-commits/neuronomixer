@@ -11,7 +11,6 @@ type ShareRow = {
   active: boolean;
   createdAt: string;
   views: number;
-  downloads: number;
 };
 
 const fmtSize = (b: number) =>
@@ -148,7 +147,6 @@ export default function SharedPdfsClient() {
                 <th className="py-2 pr-4">Size</th>
                 <th className="py-2 pr-4">Created</th>
                 <th className="py-2 pr-4">Views</th>
-                <th className="py-2 pr-4">Downloads</th>
                 <th className="py-2 pr-4">Status</th>
                 <th className="py-2">Actions</th>
               </tr>
@@ -160,7 +158,6 @@ export default function SharedPdfsClient() {
                   <td className="py-2.5 pr-4">{fmtSize(row.sizeBytes)}</td>
                   <td className="py-2.5 pr-4">{new Date(row.createdAt).toLocaleDateString()}</td>
                   <td className="py-2.5 pr-4">{row.views}</td>
-                  <td className="py-2.5 pr-4">{row.downloads}</td>
                   <td className="py-2.5 pr-4">
                     <span className={row.active ? "text-emerald-400" : "text-gray-500"}>
                       {row.active ? "Active" : "Disabled"}
