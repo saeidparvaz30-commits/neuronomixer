@@ -136,7 +136,12 @@ export default function VariationalAutoencodersClient() {
 
     let betaIdx = 0;
     const tick = () => {
-      const tr = trainers[betaIdx];
+      // Snapshot the mutable index: the setState updaters below run at render
+      // time, after the `betaIdx += 1` on this beta's completion tick, so
+      // comparing against `betaIdx` inside them would shift every finished
+      // model (and the final history chunk) one slot too high.
+      const idx = betaIdx;
+      const tr = trainers[idx];
       const remaining = EPOCHS_PER_BETA - tr.epoch;
       runEpochs(tr, DATASET, Math.min(CHUNK_EPOCHS, remaining));
 
@@ -148,13 +153,13 @@ export default function VariationalAutoencodersClient() {
         kl: last.kl,
       });
       setProgress(
-        (betaIdx * EPOCHS_PER_BETA + tr.epoch) / TOTAL_EPOCHS
+        (idx * EPOCHS_PER_BETA + tr.epoch) / TOTAL_EPOCHS
       );
       setReconHistories((prev) =>
-        prev.map((h, i) => (i === betaIdx ? tr.history.map((e) => e.recon) : h))
+        prev.map((h, i) => (i === idx ? tr.history.map((e) => e.recon) : h))
       );
       setKlHistories((prev) =>
-        prev.map((h, i) => (i === betaIdx ? tr.history.map((e) => e.kl) : h))
+        prev.map((h, i) => (i === idx ? tr.history.map((e) => e.kl) : h))
       );
 
       if (tr.epoch >= EPOCHS_PER_BETA) {
@@ -165,7 +170,7 @@ export default function VariationalAutoencodersClient() {
           embed,
           range: latentRange(embed),
         };
-        setModels((prev) => prev.map((m, i) => (i === betaIdx ? finished : m)));
+        setModels((prev) => prev.map((m, i) => (i === idx ? finished : m)));
         betaIdx += 1;
         if (betaIdx >= BETAS.length) {
           setDurationMs(performance.now() - startRef.current);
