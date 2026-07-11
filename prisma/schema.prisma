@@ -307,3 +307,31 @@ model VisualGuide {
   @@index([unitId])
   @@index([visibility])
 }
+
+model SharedPdf {
+  id           String           @id @default(cuid())
+  token        String           @unique
+  title        String
+  blobUrl      String
+  blobPathname String
+  sizeBytes    Int
+  active       Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  events       SharedPdfEvent[]
+}
+
+model SharedPdfEvent {
+  id          String             @id @default(cuid())
+  sharedPdfId String
+  type        SharedPdfEventType
+  at          DateTime           @default(now())
+  sharedPdf   SharedPdf          @relation(fields: [sharedPdfId], references: [id], onDelete: Cascade)
+
+  @@index([sharedPdfId])
+  @@index([at])
+}
+
+enum SharedPdfEventType {
+  VIEW
+  DOWNLOAD
+}
