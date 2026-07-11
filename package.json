@@ -28,6 +28,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/nodemailer": "^7.0.2",
     "@types/pg": "^8.18.0",
+    "@vercel/blob": "^2.6.1",
     "@vercel/speed-insights": "^1.2.0",
     "bcryptjs": "^3.0.3",
     "framer-motion": "^12.23.22",
