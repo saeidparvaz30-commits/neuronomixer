@@ -103,6 +103,21 @@ const ML_UNITS = [
   { slug: "unsupervised-learning",             name: "Unsupervised Learning",              order: 9 },
 ] as const;
 
+// ── Deep Learning units ──────────────────────────────────────────────────────
+// Unit 6 (What Networks See) is deferred until its P2/P3 guides exist; its
+// order slot is left open so inserting it later needs no renumbering.
+
+const DL_UNITS = [
+  { slug: "what-a-neural-network-is",      name: "What a Neural Network Is",     order: 1 },
+  { slug: "how-networks-learn",            name: "How Networks Learn",           order: 2 },
+  { slug: "optimization-in-practice",      name: "Optimization in Practice",     order: 3 },
+  { slug: "stabilizing-and-regularizing",  name: "Stabilizing & Regularizing",   order: 4 },
+  { slug: "seeing-with-convolutions",      name: "Seeing with Convolutions",     order: 5 },
+  { slug: "sequences-attention-and-sound", name: "Sequences, Attention & Sound", order: 7 },
+  { slug: "generative-models",             name: "Generative Models",            order: 8 },
+  { slug: "practice-and-scale",            name: "Practice & Scale",             order: 9 },
+] as const;
+
 // ── Guide definitions ────────────────────────────────────────────────────────
 
 type GuideDef = {
@@ -1080,8 +1095,9 @@ const GUIDES: GuideDef[] = [
     unitSlug: "unsupervised-learning",
   },
 
-  // ── Deep Learning (no units) ────────────────────────────────────────────
+  // ── Deep Learning ────────────────────────────────────────────────────────
 
+  // Unit 1: What a Neural Network Is
   {
     slug: "neural-network",
     title: "What Is a Neural Network?",
@@ -1091,6 +1107,7 @@ const GUIDES: GuideDef[] = [
     order: 1,
     implemented: true,
     categorySlug: "deep-learning",
+    unitSlug: "what-a-neural-network-is",
   },
   {
     slug: "activation-functions",
@@ -1101,6 +1118,20 @@ const GUIDES: GuideDef[] = [
     order: 2,
     implemented: true,
     categorySlug: "deep-learning",
+    unitSlug: "what-a-neural-network-is",
+  },
+
+  // Unit 2: How Networks Learn
+  {
+    slug: "loss-functions",
+    title: "Loss Functions: The Training Signal",
+    description: "Compare MSE, cross-entropy, and hinge loss on the same predictions to see how each shapes the gradient that drives learning.",
+    interactiveType: "Loss Explorer",
+    audience: "ML Practitioners",
+    order: 3,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "how-networks-learn",
   },
   {
     slug: "backpropagation",
@@ -1108,69 +1139,34 @@ const GUIDES: GuideDef[] = [
     description: "Step through forward and backward passes neuron by neuron.",
     interactiveType: "Step-by-Step Walkthrough",
     audience: "Students",
-    order: 3,
-    implemented: true,
-    categorySlug: "deep-learning",
-  },
-  {
-    slug: "cnns",
-    title: "CNNs: See What Filters See",
-    description: "Watch convolutional filters slide across images and activate feature maps. Explore edge detection, sharpening, and blur kernels.",
-    interactiveType: "Filter Visualizer",
-    audience: "ML Practitioners",
     order: 4,
     implemented: true,
     categorySlug: "deep-learning",
+    unitSlug: "how-networks-learn",
   },
+
+  // Unit 3: Optimization in Practice
   {
-    slug: "pooling-layers",
-    title: "Pooling Layers: Shrinking Without Losing",
-    description: "Watch max and average pooling slide across a pixel grid.",
-    interactiveType: "Grid Operation Demo",
-    audience: "Students",
+    slug: "weight-initialization",
+    title: "Weight Initialization",
+    description: "Initialize a real 6-layer network with zeros, tiny, large, Xavier, or He weights: watch per-layer activation and gradient histograms collapse or explode, then race all five schemes in a live in-browser training run.",
+    interactiveType: "Init Scheme Race",
+    audience: "ML Practitioners",
     order: 5,
     implemented: true,
     categorySlug: "deep-learning",
+    unitSlug: "optimization-in-practice",
   },
   {
-    slug: "rnns-lstms",
-    title: "RNNs & LSTMs: Memory in Networks",
-    description: "Watch information flow through recurrent cells and see gradients vanish over long sequences.",
-    interactiveType: "Animated Cell Diagram",
-    audience: "NLP Practitioners",
+    slug: "learning-rate-schedules",
+    title: "Learning-Rate Schedules",
+    description: "Train a real neural net in your browser under constant, step-decay, cosine, and warmup schedules. Watch a too-high constant rate diverge, then rescue the exact same peak with warmup.",
+    interactiveType: "Schedule Race",
+    audience: "ML Practitioners",
     order: 6,
     implemented: true,
     categorySlug: "deep-learning",
-  },
-  {
-    slug: "dropout",
-    title: "Dropout: Training with Missing Neurons",
-    description: "Slide dropout probability and watch neurons randomly deactivate.",
-    interactiveType: "Network Toggle",
-    audience: "ML Practitioners",
-    order: 7,
-    implemented: true,
-    categorySlug: "deep-learning",
-  },
-  {
-    slug: "batch-normalization",
-    title: "Batch Normalization Explained",
-    description: "See activation distributions stabilize. Watch two networks race.",
-    interactiveType: "Distribution Comparison",
-    audience: "ML Practitioners",
-    order: 8,
-    implemented: true,
-    categorySlug: "deep-learning",
-  },
-  {
-    slug: "transfer-learning",
-    title: "Transfer Learning: Stand on Giants' Shoulders",
-    description: "Click layers to freeze or unfreeze a pretrained model.",
-    interactiveType: "Layer Freezing Diagram",
-    audience: "Students",
-    order: 9,
-    implemented: true,
-    categorySlug: "deep-learning",
+    unitSlug: "optimization-in-practice",
   },
   {
     slug: "optimizers-race",
@@ -1178,9 +1174,130 @@ const GUIDES: GuideDef[] = [
     description: "Three optimizers descend the same loss landscape simultaneously.",
     interactiveType: "Side-by-Side Race",
     audience: "ML Practitioners",
+    order: 7,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "optimization-in-practice",
+  },
+
+  // Unit 4: Stabilizing & Regularizing
+  {
+    slug: "vanishing-exploding-gradients",
+    title: "Vanishing & Exploding Gradients",
+    description: "Stack layers and watch gradients shrink toward zero or blow up, then apply normalization and clipping to keep training stable.",
+    interactiveType: "Gradient Flow Visualizer",
+    audience: "ML Practitioners",
+    order: 8,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "stabilizing-and-regularizing",
+  },
+  {
+    slug: "batch-normalization",
+    title: "Batch Normalization Explained",
+    description: "See activation distributions stabilize. Watch two networks race.",
+    interactiveType: "Distribution Comparison",
+    audience: "ML Practitioners",
+    order: 9,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "stabilizing-and-regularizing",
+  },
+  {
+    slug: "dropout",
+    title: "Dropout: Training with Missing Neurons",
+    description: "Slide dropout probability and watch neurons randomly deactivate.",
+    interactiveType: "Network Toggle",
+    audience: "ML Practitioners",
     order: 10,
     implemented: true,
     categorySlug: "deep-learning",
+    unitSlug: "stabilizing-and-regularizing",
+  },
+
+  // Unit 5: Seeing with Convolutions
+  {
+    slug: "cnns",
+    title: "CNNs: See What Filters See",
+    description: "Watch convolutional filters slide across images and activate feature maps. Explore edge detection, sharpening, and blur kernels.",
+    interactiveType: "Filter Visualizer",
+    audience: "ML Practitioners",
+    order: 11,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "seeing-with-convolutions",
+  },
+  {
+    slug: "pooling-layers",
+    title: "Pooling Layers: Shrinking Without Losing",
+    description: "Watch max and average pooling slide across a pixel grid.",
+    interactiveType: "Grid Operation Demo",
+    audience: "Students",
+    order: 12,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "seeing-with-convolutions",
+  },
+  {
+    slug: "residual-connections",
+    title: "Residual Connections",
+    description: "Why skip connections make very deep networks trainable: measure real per-layer gradient norms at any depth, toggle the skips, then train two identically initialized networks and watch the gap open up.",
+    interactiveType: "Gradient Flow Lab",
+    audience: "ML Practitioners",
+    order: 13,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "seeing-with-convolutions",
+  },
+
+  // Unit 6 (What Networks See) deferred until its P2/P3 guides exist.
+
+  // Unit 7: Sequences, Attention & Sound
+  {
+    slug: "rnns-lstms",
+    title: "RNNs & LSTMs: Memory in Networks",
+    description: "Watch information flow through recurrent cells and see gradients vanish over long sequences.",
+    interactiveType: "Animated Cell Diagram",
+    audience: "NLP Practitioners",
+    order: 14,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "sequences-attention-and-sound",
+  },
+  {
+    slug: "attention-mechanism",
+    title: "Attention as Soft Lookup",
+    description: "Drag a query and keys to see dot-product scores become softmax weights that blend stored values, then train a real attention layer in your browser and watch its heatmap sharpen onto the matching slot.",
+    interactiveType: "Drag-and-Train Lab",
+    audience: "ML Practitioners",
+    order: 15,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "sequences-attention-and-sound",
+  },
+
+  // Unit 8: Generative Models
+  {
+    slug: "autoencoders",
+    title: "Autoencoders",
+    description: "Force data through a bottleneck and the network must learn what matters. Train a real autoencoder live in your browser and watch reconstructions sharpen as the bottleneck widens from 1 to 16 latent numbers.",
+    interactiveType: "Bottleneck Lab",
+    audience: "Students",
+    order: 16,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "generative-models",
+  },
+  {
+    slug: "variational-autoencoders",
+    title: "VAEs and Latent Space",
+    description: "Train a real variational autoencoder in your browser, click any point of its 2D latent space to decode it, morph one image into another, and measure how beta trades reconstruction fidelity against latent smoothness.",
+    interactiveType: "Latent Space Explorer",
+    audience: "ML Practitioners",
+    order: 17,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "generative-models",
   },
   {
     slug: "gans",
@@ -1188,29 +1305,10 @@ const GUIDES: GuideDef[] = [
     description: "Watch a generator evolve from noise to images while the discriminator scores.",
     interactiveType: "Adversarial Training Loop",
     audience: "Everyone",
-    order: 11,
+    order: 18,
     implemented: true,
     categorySlug: "deep-learning",
-  },
-  {
-    slug: "loss-functions",
-    title: "Loss Functions: The Training Signal",
-    description: "Compare MSE, cross-entropy, and hinge loss on the same predictions to see how each shapes the gradient that drives learning.",
-    interactiveType: "Loss Explorer",
-    audience: "ML Practitioners",
-    order: 12,
-    implemented: true,
-    categorySlug: "deep-learning",
-  },
-  {
-    slug: "vanishing-exploding-gradients",
-    title: "Vanishing & Exploding Gradients",
-    description: "Stack layers and watch gradients shrink toward zero or blow up, then apply normalization and clipping to keep training stable.",
-    interactiveType: "Gradient Flow Visualizer",
-    audience: "ML Practitioners",
-    order: 13,
-    implemented: true,
-    categorySlug: "deep-learning",
+    unitSlug: "generative-models",
   },
   {
     slug: "diffusion-models",
@@ -1218,9 +1316,34 @@ const GUIDES: GuideDef[] = [
     description: "Step through the forward noising and reverse denoising process to see how diffusion models generate images from pure noise.",
     interactiveType: "Denoising Walkthrough",
     audience: "ML Practitioners",
-    order: 14,
+    order: 19,
     implemented: true,
     categorySlug: "deep-learning",
+    unitSlug: "generative-models",
+  },
+
+  // Unit 9: Practice & Scale
+  {
+    slug: "transfer-learning",
+    title: "Transfer Learning: Stand on Giants' Shoulders",
+    description: "Click layers to freeze or unfreeze a pretrained model.",
+    interactiveType: "Layer Freezing Diagram",
+    audience: "Students",
+    order: 20,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "practice-and-scale",
+  },
+  {
+    slug: "scaling-intuition",
+    title: "Model Size vs Data",
+    description: "Train 16 real neural networks in your browser, four model sizes on four data budgets of the same task, and watch the best model size shift as the data grows.",
+    interactiveType: "Width x Data Grid Experiment",
+    audience: "Everyone",
+    order: 21,
+    implemented: true,
+    categorySlug: "deep-learning",
+    unitSlug: "practice-and-scale",
   },
 
   // ── LLMs (no units) ────────────────────────────────────────────────────
@@ -1791,6 +1914,19 @@ async function main() {
       where: { slug: unit.slug },
       update: { name: unit.name, order: unit.order, categoryId: mlId },
       create: { slug: unit.slug, name: unit.name, order: unit.order, categoryId: mlId },
+    });
+  }
+
+  // Step 3f: Upsert Deep Learning units
+  const dlId = catIdMap["deep-learning"];
+  if (!dlId) throw new Error("Deep Learning category not found after upsert");
+
+  console.log("  Upserting Deep Learning units…");
+  for (const unit of DL_UNITS) {
+    await prisma.guideUnit.upsert({
+      where: { slug: unit.slug },
+      update: { name: unit.name, order: unit.order, categoryId: dlId },
+      create: { slug: unit.slug, name: unit.name, order: unit.order, categoryId: dlId },
     });
   }
 
