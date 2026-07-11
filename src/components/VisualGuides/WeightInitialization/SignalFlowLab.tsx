@@ -90,7 +90,7 @@ export default function SignalFlowLab({
   const firstStd = schemeStd(scheme, INPUT_DIM, WIDTH);
   const inertLabel = activation === "tanh" ? "saturated" : "zero";
   const ratio = analysis.gradRatio;
-  const ratioText = Number.isFinite(ratio) ? fmtStat(ratio) : "undefined (no gradient)";
+  const ratioText = Number.isFinite(ratio) ? fmtStat(ratio) : "0/0 (no gradient flows at all)";
   const lastGrad = analysis.layers[DEPTH - 1].gradStd;
   const firstGrad = analysis.layers[0].gradStd;
   const firstAct = analysis.layers[0].actStd;
