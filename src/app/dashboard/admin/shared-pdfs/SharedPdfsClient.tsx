@@ -85,13 +85,23 @@ export default function SharedPdfsClient() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ active: !row.active }),
     });
-    if (res.ok) await load();
+    if (!res.ok) {
+      setError((await res.json().catch(() => null))?.error ?? "Action failed");
+      return;
+    }
+    setError(null);
+    await load();
   };
 
   const remove = async (row: ShareRow) => {
     if (!window.confirm(`Delete "${row.title}"? The file and its stats are removed permanently.`)) return;
     const res = await fetch(`/api/dashboard/admin/shared-pdfs/${row.id}`, { method: "DELETE" });
-    if (res.ok) await load();
+    if (!res.ok) {
+      setError((await res.json().catch(() => null))?.error ?? "Action failed");
+      return;
+    }
+    setError(null);
+    await load();
   };
 
   return (

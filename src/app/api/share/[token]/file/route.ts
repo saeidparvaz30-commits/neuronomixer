@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getActiveShare, slugifyFilename, NOINDEX_HEADERS } from "@/lib/sharedPdfs";
 
+export const maxDuration = 60;
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ token: string }> }

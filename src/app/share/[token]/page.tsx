@@ -36,7 +36,7 @@ export default async function SharePage({
   after(() => {
     void prisma.sharedPdfEvent
       .create({ data: { sharedPdfId: share.id, type: "VIEW" } })
-      .catch(() => {});
+      .catch((e) => console.error("sharedPdf event", e));
   });
 
   return (

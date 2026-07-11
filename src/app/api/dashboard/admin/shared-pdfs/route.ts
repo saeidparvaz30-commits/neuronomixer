@@ -30,6 +30,24 @@ export async function POST(req: Request) {
   if (!pathname.startsWith("shared-pdfs/")) {
     return NextResponse.json({ error: "Unexpected blob pathname" }, { status: 400 });
   }
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    return NextResponse.json({ error: "Unexpected blob URL" }, { status: 400 });
+  }
+  if (
+    parsedUrl.protocol !== "https:" ||
+    !parsedUrl.hostname.endsWith(".public.blob.vercel-storage.com")
+  ) {
+    return NextResponse.json({ error: "Unexpected blob URL" }, { status: 400 });
+  }
+  if (title.trim().length > 300) {
+    return NextResponse.json(
+      { error: "Title must be 300 characters or fewer" },
+      { status: 400 }
+    );
+  }
 
   const share = await prisma.sharedPdf.create({
     data: {

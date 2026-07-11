@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rateLimit";
 import { getActiveShare, slugifyFilename, NOINDEX_HEADERS } from "@/lib/sharedPdfs";
 
+export const maxDuration = 60;
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ token: string }> }
@@ -25,7 +27,7 @@ export async function GET(
   // Tracking must never block or break the download.
   void prisma.sharedPdfEvent
     .create({ data: { sharedPdfId: share.id, type: "DOWNLOAD" } })
-    .catch(() => {});
+    .catch((e) => console.error("sharedPdf event", e));
 
   return new NextResponse(upstream.body, {
     headers: {

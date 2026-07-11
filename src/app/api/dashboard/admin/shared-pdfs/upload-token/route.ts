@@ -8,9 +8,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Forbidden" }, { status: 401 });
   }
 
-  const body = (await req.json()) as HandleUploadBody;
-
   try {
+    const body = (await req.json()) as HandleUploadBody;
     const jsonResponse = await handleUpload({
       body,
       request: req,

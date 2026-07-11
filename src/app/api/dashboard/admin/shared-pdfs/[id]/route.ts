@@ -51,7 +51,14 @@ export async function DELETE(
   if (!share) return NextResponse.json({ error: "Share not found" }, { status: 404 });
 
   // Blob first: if it fails we keep the row so the file stays managed.
-  await del(share.blobPathname);
+  try {
+    await del(share.blobPathname);
+  } catch {
+    return NextResponse.json(
+      { error: "Blob deletion failed; share kept" },
+      { status: 502 }
+    );
+  }
   await prisma.sharedPdf.delete({ where: { id } }); // events cascade
 
   return NextResponse.json({ deleted: true });
