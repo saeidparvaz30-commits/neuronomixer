@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Menu, X, LogOut, LayoutDashboard, Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
+import NnxLogo from "./NnxLogo";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -152,16 +153,9 @@ export default function Navbar() {
 
           {/* Logo + Brand */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <Image
-              src="/pictures/Logo.png"
-              alt="NeuroNomixer logo"
-              width={50}
-              height={50}
-              sizes="50px"
-              quality={85}
-              className="rounded-full transition-transform duration-300 group-hover:scale-105"
-              priority
-            />
+            <span className="transition-transform duration-300 group-hover:scale-105">
+              <NnxLogo size={50} />
+            </span>
             <span className="text-lg font-semibold text-white tracking-wide
                              transition-colors duration-200
                              group-hover:text-[var(--color-accent)]">

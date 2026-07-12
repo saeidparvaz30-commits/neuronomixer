@@ -33,11 +33,7 @@ export const metadata = {
   other: {
     "google-site-verification": "8t9gazi3NGDeyZ028wx9oXj5K-O6fuTIWaPVQ9E0q2I",
   },
-  icons: {
-    icon: "/pictures/Logo.png",
-    shortcut: "/pictures/Logo.png",
-    apple: "/pictures/Logo.png",
-  },
+  // Favicon is served from the simplified src/app/icon.svg (Next file convention).
 };
 
 export default function RootLayout({

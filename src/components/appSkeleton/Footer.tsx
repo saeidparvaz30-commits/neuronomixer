@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import NnxLogo from "./NnxLogo";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -220,14 +220,7 @@ export default function Footer() {
                 opacity: 0.5,
               }}
             />
-            <Image
-              src="/pictures/Logo.png"
-              alt="NeuroNomixer logo"
-              width={106}
-              height={106}
-              className="rounded-full object-contain"
-              sizes="106px"
-            />
+            <NnxLogo size={96} />
           </div>
         </div>
 
