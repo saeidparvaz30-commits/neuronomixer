@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import JoinsKeysClient from "@/components/VisualGuides/JoinsKeys/JoinsKeysClient";
 
 export const metadata: Metadata = {
-  title: "Joins: How Tables Find Each Other | NeuroNomixer",
+  title: "Joins: How Tables Find Each Other",
   description:
     "Run inner, left, right, and full outer joins on two live tables, watch NULL fill in for unmatched rows, then break a primary key and see the row count multiply.",
   alternates: {

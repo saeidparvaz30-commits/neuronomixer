@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import MultimodalLLMsClient from "@/components/VisualGuides/MultimodalLLMs/MultimodalLLMsClient";
 
 export const metadata: Metadata = {
-  title: "How LLMs See | NeuroNomixer",
+  title: "How LLMs See",
   description:
     "Draw an image and watch it become tokens: patches are extracted live, matrix-multiplied through a real projection into the same embedding space as text, and joined into one sequence, with token counts recomputed at every patch size.",
   alternates: {

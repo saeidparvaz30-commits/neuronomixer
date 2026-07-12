@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import HyperparameterTuningClient from "@/components/VisualGuides/HyperparameterTuning/HyperparameterTuningClient";
 
 export const metadata: Metadata = {
-  title: "Hyperparameter Tuning | NeuroNomixer",
+  title: "Hyperparameter Tuning",
   description:
     "Search the settings space under a real budget: 100 decision trees trained in your browser form a validation-accuracy landscape, and you spend 12 trials with grid, random, and adaptive search to find the best configuration.",
   alternates: {

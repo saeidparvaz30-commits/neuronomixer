@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import MultivariateThinkingClient from "@/components/VisualGuides/MultivariateThinking/MultivariateThinkingClient";
 
 export const metadata: Metadata = {
-  title: "Multivariate Thinking & the Curse of Dimensionality | NeuroNomixer",
+  title: "Multivariate Thinking & the Curse of Dimensionality",
   description:
     "Understand how high-dimensional data differs fundamentally. Explore curse of dimensionality, PCA, clustering, distance measures, and feature scaling.",
   alternates: {

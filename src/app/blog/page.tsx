@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import BlogClient from "@/components/Blog/BlogClient";
 
 export const metadata: Metadata = {
-  title: "Blog — NeuroNomixer",
+  title: "Blog",
   description:
     "Explore in-depth articles on AI, machine learning, data science, and risk analytics from the NeuroNomixer team.",
   alternates: { canonical: "https://www.neuronomixer.com/blog" },

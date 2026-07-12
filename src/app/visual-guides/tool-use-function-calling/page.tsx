@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ToolUseFunctionCallingClient from "@/components/VisualGuides/ToolUseFunctionCalling/ToolUseFunctionCallingClient";
 
 export const metadata: Metadata = {
-  title: "Tool Use & Function Calling | NeuroNomixer",
+  title: "Tool Use & Function Calling",
   description:
     "Step through simulated function-calling traces to see how LLMs request tools, how your runtime executes them, and how grounded answers come back.",
   alternates: {

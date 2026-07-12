@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import StructuredOutputReliabilityClient from "@/components/VisualGuides/StructuredOutputReliability/StructuredOutputReliabilityClient";
 
 export const metadata: Metadata = {
-  title: "Structured Output Reliability | NeuroNomixer",
+  title: "Structured Output Reliability",
   description:
     "Sample a simulated token stream against a real JSON grammar, watch per-token errors compound into unparseable output, then mask illegal tokens and price the retries with the geometric distribution.",
   alternates: {

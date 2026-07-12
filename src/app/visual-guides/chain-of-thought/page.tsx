@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ChainOfThoughtClient from "@/components/VisualGuides/ChainOfThought/ChainOfThoughtClient";
 
 export const metadata: Metadata = {
-  title: "Why Thinking Out Loud Works | NeuroNomixer",
+  title: "Why Thinking Out Loud Works",
   description:
     "Compute why chain-of-thought reasoning works: steer a live compounding error model, then train two tiny networks in your browser and watch scratchpad reasoning beat one-shot answers on multi-digit addition.",
   alternates: {

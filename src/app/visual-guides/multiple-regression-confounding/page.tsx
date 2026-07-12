@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import MultipleRegressionClient from "@/components/VisualGuides/MultipleRegression/MultipleRegressionClient";
 
 export const metadata: Metadata = {
-  title: "Multiple Regression & Confounding | NeuroNomixer",
+  title: "Multiple Regression & Confounding",
   description:
     "Explore how multiple regression reveals confounding and interaction effects. Interactive coefficient explorer and regression comparison.",
   alternates: {

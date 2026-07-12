@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Privacy Policy | NeuroNomixer",
+  title: "Privacy Policy",
   description:
     "Learn how NeuroNomixer collects, stores, and protects your personal information in compliance with GDPR.",
   alternates: { canonical: "https://www.neuronomixer.com/privacy" },

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import HypothesisTestingClient from "@/components/VisualGuides/HypothesisTesting/HypothesisTestingClient";
 
 export const metadata: Metadata = {
-  title: "Hypothesis Testing: A Visual Experiment — NeuroNomixer",
+  title: "Hypothesis Testing: A Visual Experiment",
   description:
     "Design A/B tests, run 1000 experiments, and watch the confusion matrix tally true/false positives. Learn statistical power, Type I and Type II errors through interactive simulation.",
   alternates: {

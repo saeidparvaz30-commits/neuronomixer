@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import BenchmarkLiteracyClient from "@/components/VisualGuides/BenchmarkLiteracy/BenchmarkLiteracyClient";
 
 export const metadata: Metadata = {
-  title: "Reading Benchmarks Critically | NeuroNomixer",
+  title: "Reading Benchmarks Critically",
   description:
     "Leak test items into a simulated model's training set and watch its leaderboard score inflate while a private held-out set stays put, then catch a rank flip, a saturated benchmark, and best-of-N selection.",
   alternates: {

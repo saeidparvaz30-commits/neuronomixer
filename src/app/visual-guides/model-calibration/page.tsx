@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ModelCalibrationClient from "@/components/VisualGuides/ModelCalibration/ModelCalibrationClient";
 
 export const metadata: Metadata = {
-  title: "Model Calibration | NeuroNomixer",
+  title: "Model Calibration",
   description:
     "Break a model's confidence with a miscalibration knob, read the damage off a live reliability diagram and ECE, then repair it with temperature scaling.",
   alternates: {

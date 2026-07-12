@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ChiSquareGuideClient from "@/components/VisualGuides/ChiSquareGuide/ChiSquareGuideClient";
 
 export const metadata: Metadata = {
-  title: "Chi-Square Test of Independence | NeuroNomixer",
+  title: "Chi-Square Test of Independence",
   description:
     "Interactive guide to chi-square test of independence, contingency tables, expected frequencies, and association measures.",
   alternates: {

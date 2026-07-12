@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import KVCacheClient from "@/components/VisualGuides/KVCache/KVCacheClient";
 
 export const metadata: Metadata = {
-  title: "The KV Cache | NeuroNomixer",
+  title: "The KV Cache",
   description:
     "Watch a KV cache fill cell by cell during decoding, size it with a real bytes calculator across layers, heads, and dtypes, and see the attention FLOPs it saves.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/kv-cache" },

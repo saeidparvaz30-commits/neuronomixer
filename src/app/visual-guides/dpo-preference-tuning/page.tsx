@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import DPOPreferenceTuningClient from "@/components/VisualGuides/DPOPreferenceTuning/DPOPreferenceTuningClient";
 
 export const metadata: Metadata = {
-  title: "DPO: Preference Tuning Without a Reward Model | NeuroNomixer",
+  title: "DPO: Preference Tuning Without a Reward Model",
   description:
     "Train a toy policy with the real DPO loss in your browser: slide beta, run gradient steps on authored preference pairs, and watch the distribution drift from the reference model with no reward model in sight.",
   alternates: {

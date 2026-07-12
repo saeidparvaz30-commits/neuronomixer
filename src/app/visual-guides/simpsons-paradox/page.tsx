@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import SimpsonsParadoxClient from "@/components/VisualGuides/SimpsonsParadox/SimpsonsParadoxClient";
 
 export const metadata: Metadata = {
-  title: "Simpson's Paradox & Lurking Variables | NeuroNomixer",
+  title: "Simpson's Paradox & Lurking Variables",
   description:
     "Interactive exploration of Simpson's Paradox: how aggregate trends reverse when disaggregated by lurking variables.",
   alternates: {

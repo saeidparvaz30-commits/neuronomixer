@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import DataCollectionBiasClient from "@/components/VisualGuides/DataCollectionBias/DataCollectionBiasClient";
 
 export const metadata: Metadata = {
-  title: "The Data That Never Arrived | NeuroNomixer",
+  title: "The Data That Never Arrived",
   description:
     "Bias enters at collection time: pick survey channels and watch estimates drift from a known truth, re-live Wald's WWII bomber armor call, and build the habit of asking who could never appear in the data.",
   alternates: {
