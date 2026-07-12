@@ -99,6 +99,7 @@ model ReadingHistory {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postSlug])
+  @@index([postSlug])
 }
 
 model Like {
@@ -109,6 +110,7 @@ model Like {
   createdAt DateTime @default(now())
 
   @@unique([userId, postSlug])
+  @@index([postSlug])
 }
 
 model Bookmark {
@@ -121,6 +123,7 @@ model Bookmark {
   createdAt    DateTime @default(now())
 
   @@unique([userId, postSlug])
+  @@index([postSlug])
 }
 
 model Comment {
@@ -130,6 +133,8 @@ model Comment {
   body      String   @db.Text
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([postSlug])
 }
 
 model PasswordResetToken {
@@ -149,6 +154,8 @@ model Notification {
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model AuthorCV {
