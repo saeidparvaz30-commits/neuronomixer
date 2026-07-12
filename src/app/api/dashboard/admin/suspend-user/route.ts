@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     try {
       const transporter = createMailTransport();
 
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://neuronomixer.com";
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com";
 
       await transporter.sendMail({
         from: `"NeuroNomixer" <${process.env.SMTP_USER}>`,

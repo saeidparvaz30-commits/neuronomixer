@@ -44,10 +44,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   );
 
   // Published, implemented visual guides (DRAFT/HIDDEN must not leak)
-  const guides = await prisma.visualGuide.findMany({
-    where: { visibility: "PUBLISHED", implemented: true },
-    select: { slug: true, updatedAt: true },
-  });
+  let guides: { slug: string; updatedAt: Date }[] = [];
+  try {
+    guides = await prisma.visualGuide.findMany({
+      where: { visibility: "PUBLISHED", implemented: true },
+      select: { slug: true, updatedAt: true },
+    });
+  } catch {
+    // DB unavailable: ship the sitemap without guide URLs rather than failing it
+  }
 
   const guideRoutes: MetadataRoute.Sitemap = guides.map((g) => ({
     url: `${baseUrl}/visual-guides/${g.slug}`,
