@@ -108,7 +108,7 @@ function NeuralBackground() {
       });
     }
 
-    function animate() {
+    function drawFrame() {
       if (!ctx) return;
       ctx.clearRect(0, 0, W, H);
       for (const p of particles) {
@@ -140,14 +140,41 @@ function NeuralBackground() {
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
       }
-      rafId = requestAnimationFrame(animate);
     }
 
-    animate();
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    function loop() {
+      drawFrame();
+      rafId = requestAnimationFrame(loop);
+    }
+
+    function start() {
+      cancelAnimationFrame(rafId);
+      if (reducedMotion.matches) {
+        drawFrame(); // single static frame, no animation
+      } else if (!document.hidden) {
+        loop();
+      }
+    }
+
+    function onVisibilityChange() {
+      if (document.hidden) {
+        cancelAnimationFrame(rafId);
+      } else {
+        start();
+      }
+    }
+
+    start();
     window.addEventListener("resize", resize);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    reducedMotion.addEventListener("change", start);
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      reducedMotion.removeEventListener("change", start);
     };
   }, []);
 
