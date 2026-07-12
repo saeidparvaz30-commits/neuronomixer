@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { isValidFollowType, isValidSanityId } from "@/lib/validateSlug";
 
 // GET — check follow status
 export async function GET(req: NextRequest) {
@@ -10,7 +11,9 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const sanityId = searchParams.get("sanityId");
   const type = searchParams.get("type") ?? "author";
-  if (!sanityId) return NextResponse.json({ error: "sanityId required" }, { status: 400 });
+  if (!isValidFollowType(type) || !isValidSanityId(sanityId)) {
+    return NextResponse.json({ error: "Invalid type or sanityId" }, { status: 400 });
+  }
 
   const follow = await prisma.follow.findUnique({
     where: { userId_type_sanityId: { userId: session.user.id, type, sanityId } },
@@ -28,8 +31,8 @@ export async function POST(req: NextRequest) {
 
   const { type, sanityId } = await req.json();
 
-  if (!type || !sanityId) {
-    return NextResponse.json({ error: "type and sanityId required" }, { status: 400 });
+  if (!isValidFollowType(type) || !isValidSanityId(sanityId)) {
+    return NextResponse.json({ error: "Invalid type or sanityId" }, { status: 400 });
   }
 
   await prisma.follow.upsert({
@@ -50,8 +53,8 @@ export async function DELETE(req: NextRequest) {
 
   const { type, sanityId } = await req.json();
 
-  if (!type || !sanityId) {
-    return NextResponse.json({ error: "type and sanityId required" }, { status: 400 });
+  if (!isValidFollowType(type) || !isValidSanityId(sanityId)) {
+    return NextResponse.json({ error: "Invalid type or sanityId" }, { status: 400 });
   }
 
   await prisma.follow.deleteMany({

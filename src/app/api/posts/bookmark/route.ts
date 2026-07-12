@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { isValidSlug } from "@/lib/validateSlug";
 
 const db = prisma as any;
 
@@ -16,8 +17,12 @@ export async function POST(req: NextRequest) {
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { postSlug, postTitle, categorySlug } = await req.json();
-  if (!postSlug || !postTitle || !categorySlug)
-    return NextResponse.json({ error: "postSlug, postTitle, categorySlug required" }, { status: 400 });
+  if (!isValidSlug(postSlug) || !isValidSlug(categorySlug)) {
+    return NextResponse.json({ error: "Invalid postSlug or categorySlug" }, { status: 400 });
+  }
+  if (typeof postTitle !== "string" || postTitle.trim().length === 0 || postTitle.length > 300) {
+    return NextResponse.json({ error: "Invalid postTitle" }, { status: 400 });
+  }
 
   await db.bookmark.upsert({
     where: { userId_postSlug: { userId: session.user.id, postSlug } },
@@ -35,7 +40,9 @@ export async function DELETE(req: NextRequest) {
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { postSlug } = await req.json();
-  if (!postSlug) return NextResponse.json({ error: "postSlug required" }, { status: 400 });
+  if (!isValidSlug(postSlug)) {
+    return NextResponse.json({ error: "Invalid postSlug" }, { status: 400 });
+  }
 
   await db.bookmark.deleteMany({ where: { userId: session.user.id, postSlug } });
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { isValidSlug } from "@/lib/validateSlug";
 
 const db = prisma as any;
 
@@ -16,7 +17,9 @@ export async function POST(req: NextRequest) {
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { postSlug } = await req.json();
-  if (!postSlug) return NextResponse.json({ error: "postSlug required" }, { status: 400 });
+  if (!isValidSlug(postSlug)) {
+    return NextResponse.json({ error: "Invalid postSlug" }, { status: 400 });
+  }
 
   await db.like.upsert({
     where: { userId_postSlug: { userId: session.user.id, postSlug } },
@@ -35,7 +38,9 @@ export async function DELETE(req: NextRequest) {
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { postSlug } = await req.json();
-  if (!postSlug) return NextResponse.json({ error: "postSlug required" }, { status: 400 });
+  if (!isValidSlug(postSlug)) {
+    return NextResponse.json({ error: "Invalid postSlug" }, { status: 400 });
+  }
 
   await db.like.deleteMany({ where: { userId: session.user.id, postSlug } });
 
