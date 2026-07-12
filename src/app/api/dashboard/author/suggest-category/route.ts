@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     from: `"NeuroNomixer" <${process.env.SMTP_USER}>`,
     to: process.env.CONTACT_RECIPIENT,
     subject: `Category Suggestion: "${name}"`,
-    text: `Author: ${authorEmail}\nCategory: ${name}\nDescription: ${description ?? "—"}`,
+    text: `Author: ${authorEmail}\nCategory: ${name}\nDescription: ${description ?? "(none)"}`,
     html: `
       <p><strong>Author:</strong> ${escapeHtml(authorEmail)}</p>
       <p><strong>Suggested Category:</strong> ${escapeHtml(name)}</p>
