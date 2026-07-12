@@ -1,6 +1,6 @@
 import crypto from "crypto";
-import nodemailer from "nodemailer";
 import { prisma } from "./prisma";
+import { createMailTransport } from "./mailer";
 
 export async function sendVerificationEmail(email: string): Promise<void> {
   const identifier = `verify:${email}`;
@@ -13,16 +13,7 @@ export async function sendVerificationEmail(email: string): Promise<void> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
   const verifyUrl = `${siteUrl}/api/auth/verify-email?token=${token}`;
 
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: process.env.SMTP_SECURE === "true",
-    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-    // Namecheap private email presents an incomplete certificate chain that
-    // Node.js rejects by default. Disabling strict TLS here is safe because
-    // we are the initiating client sending outbound mail, not receiving data.
-    tls: { rejectUnauthorized: false },
-  });
+  const transporter = createMailTransport();
 
   await transporter.sendMail({
     from: `"NeuroNomixer" <${process.env.SMTP_USER}>`,

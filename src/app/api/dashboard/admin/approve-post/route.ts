@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { client } from "@/sanity/lib/client";
 import { prisma } from "@/lib/prisma";
-import nodemailer from "nodemailer";
 import { revalidatePath } from "next/cache";
+import { createMailTransport } from "@/lib/mailer";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -92,16 +92,6 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ success: true, scheduled: false });
 }
 
-function makeTransporter() {
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: process.env.SMTP_SECURE === "true",
-    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-    tls: { rejectUnauthorized: false },
-  });
-}
-
 async function notifyAuthorPostApproved(userId: string, postTitle: string, postUrl: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -109,7 +99,7 @@ async function notifyAuthorPostApproved(userId: string, postTitle: string, postU
   });
   if (!user?.email) return;
 
-  await makeTransporter().sendMail({
+  await createMailTransport().sendMail({
     from: `"NeuroNomixer" <${process.env.SMTP_USER}>`,
     to: user.email,
     subject: `Your post "${postTitle}" is now live!`,
@@ -155,7 +145,7 @@ async function notifyAllUsers(
   });
 
   // Email notifications
-  const transporter = makeTransporter();
+  const transporter = createMailTransport();
   for (const user of users) {
     if (!user.email) continue;
     const name = user.name ?? "Reader";

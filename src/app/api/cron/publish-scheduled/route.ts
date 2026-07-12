@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/sanity/lib/client";
 import { prisma } from "@/lib/prisma";
-import nodemailer from "nodemailer";
+import { createMailTransport } from "@/lib/mailer";
 
 // Vercel calls this route on a schedule defined in vercel.json.
 // It finds all posts with status="scheduled" whose publishedAt has passed
@@ -81,16 +81,6 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ published });
 }
 
-function makeTransporter() {
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: process.env.SMTP_SECURE === "true",
-    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-    tls: { rejectUnauthorized: false },
-  });
-}
-
 async function notifyAuthor(userId: string, postTitle: string, postUrl: string) {
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -98,7 +88,7 @@ async function notifyAuthor(userId: string, postTitle: string, postUrl: string) 
   });
   if (!user?.email) return;
 
-  await makeTransporter().sendMail({
+  await createMailTransport().sendMail({
     from: `"NeuroNomixer" <${process.env.SMTP_USER}>`,
     to: user.email,
     subject: `Your post "${postTitle}" is now live!`,
@@ -142,7 +132,7 @@ async function notifyAllUsers(
     skipDuplicates: true,
   });
 
-  const transporter = makeTransporter();
+  const transporter = createMailTransport();
   for (const user of users) {
     if (!user.email) continue;
     const name = user.name ?? "Reader";
