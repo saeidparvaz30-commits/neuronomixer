@@ -4,6 +4,7 @@ import { client } from "@/sanity/lib/client";
 import bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "@/lib/email";
 import { checkRateLimit } from "@/lib/rateLimit";
+import { validatePassword } from "@/lib/validatePassword";
 
 async function verifyCaptcha(token?: string): Promise<boolean> {
   const secret = process.env.RECAPTCHA_SECRET_KEY;
@@ -37,11 +38,9 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
-  if (password.length < 8) {
-    return NextResponse.json(
-      { error: "Password must be at least 8 characters." },
-      { status: 400 }
-    );
+  const pwError = validatePassword(password);
+  if (pwError) {
+    return NextResponse.json({ error: pwError }, { status: 400 });
   }
 
   const captchaOk = await verifyCaptcha(captchaToken);
