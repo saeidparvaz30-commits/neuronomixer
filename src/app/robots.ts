@@ -4,9 +4,9 @@ export default function robots(): MetadataRoute.Robots {
   const baseUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "https://www.neuronomixer.com";
 
-  const isProd =
-    process.env.VERCEL_ENV === "production" ||
-    process.env.NODE_ENV === "production";
+  // NODE_ENV is "production" on every Vercel build (previews included), so it
+  // cannot distinguish environments; only VERCEL_ENV can.
+  const isProd = process.env.VERCEL_ENV === "production";
 
   return {
     rules: isProd
