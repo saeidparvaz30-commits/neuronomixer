@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Eye, EyeOff, Copy, RefreshCw, Check, KeyRound } from "lucide-react";
+import { Copy, RefreshCw, Check, KeyRound } from "lucide-react";
 
 interface Props {
-  existing: { key: string; createdAt: Date; lastUsedAt: Date | null } | null;
+  existing: { keyHint: string; createdAt: Date; lastUsedAt: Date | null } | null;
   siteUrl: string;
 }
 
@@ -32,10 +32,10 @@ function CodeBlock({ code }: { code: string }) {
 }
 
 export default function ApiKeyClient({ existing, siteUrl }: Props) {
-  const [apiKey, setApiKey] = useState(existing?.key ?? null);
+  const [keyHint, setKeyHint] = useState(existing?.keyHint ?? null);
+  const [freshKey, setFreshKey] = useState<string | null>(null);
   const [lastUsed, setLastUsed] = useState(existing?.lastUsedAt ?? null);
   const [createdAt, setCreatedAt] = useState(existing?.createdAt ?? null);
-  const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [confirmRegen, setConfirmRegen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -46,10 +46,10 @@ export default function ApiKeyClient({ existing, siteUrl }: Props) {
       const res = await fetch("/api/dashboard/author/generate-api-key", { method: "POST" });
       const data = await res.json();
       if (data.key) {
-        setApiKey(data.key);
+        setFreshKey(data.key);
+        setKeyHint(data.key.slice(0, 9));
         setCreatedAt(new Date());
         setLastUsed(null);
-        setVisible(true);
       }
     } finally {
       setLoading(false);
@@ -58,14 +58,10 @@ export default function ApiKeyClient({ existing, siteUrl }: Props) {
   }
 
   function copyKey() {
-    if (!apiKey) return;
-    navigator.clipboard.writeText(apiKey);
+    if (!freshKey) return;
+    navigator.clipboard.writeText(freshKey);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  }
-
-  function maskedKey(k: string) {
-    return k.slice(0, 8) + "••••••••••••••••••••••••••••••••••••••••••••";
   }
 
   const fmt = (d: Date | null) =>
@@ -87,7 +83,7 @@ export default function ApiKeyClient({ existing, siteUrl }: Props) {
       <div className="bg-[#060d18]/80 border border-white/10 rounded-2xl p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-white uppercase tracking-wider">Your API Key</h2>
-          {apiKey && (
+          {keyHint && (
             <div className="flex items-center gap-2 text-xs text-gray-500">
               {createdAt && <span>Created {fmt(createdAt)}</span>}
               {lastUsed && <span>· Last used {fmt(lastUsed)}</span>}
@@ -95,15 +91,17 @@ export default function ApiKeyClient({ existing, siteUrl }: Props) {
           )}
         </div>
 
-        {apiKey ? (
+        {keyHint ? (
           <div className="flex items-center gap-2">
             <code className="flex-1 font-mono text-sm bg-[#0a0e1a] border border-white/10 rounded-xl px-4 py-3 text-[var(--color-accent)] truncate">
-              {visible ? apiKey : maskedKey(apiKey)}
+              {freshKey ?? `${keyHint}` + "•".repeat(40)}
             </code>
-            <button onClick={() => setVisible(!visible)} className="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors" title={visible ? "Hide" : "Reveal"}>
-              {visible ? <EyeOff size={15} /> : <Eye size={15} />}
-            </button>
-            <button onClick={copyKey} className="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors" title="Copy">
+            <button
+              onClick={copyKey}
+              disabled={!freshKey}
+              className="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors disabled:opacity-40 disabled:hover:bg-white/5 disabled:hover:text-gray-400"
+              title={freshKey ? "Copy" : "Regenerate to get a new key; the stored key cannot be shown again"}
+            >
               {copied ? <Check size={15} className="text-green-400" /> : <Copy size={15} />}
             </button>
             {confirmRegen ? (
@@ -136,7 +134,13 @@ export default function ApiKeyClient({ existing, siteUrl }: Props) {
           </div>
         )}
 
-        {apiKey && (
+        {freshKey && (
+          <p className="text-xs text-amber-400">
+            Copy this key now. For security it is shown only once and cannot be displayed again.
+          </p>
+        )}
+
+        {keyHint && (
           <p className="text-xs text-gray-600">
             Keep this key secret. Anyone with it can submit posts on your behalf. Regenerating will immediately invalidate the old key.
           </p>
@@ -144,7 +148,7 @@ export default function ApiKeyClient({ existing, siteUrl }: Props) {
       </div>
 
       {/* Docs */}
-      {apiKey && (
+      {keyHint && (
         <div className="space-y-6">
           <h2 className="text-lg font-semibold text-white">API Reference</h2>
           <p className="text-sm text-gray-400">Base URL: <code className="text-[var(--color-accent)] font-mono">{siteUrl}/api/v1</code></p>
@@ -158,7 +162,7 @@ export default function ApiKeyClient({ existing, siteUrl }: Props) {
               <span className="text-xs text-gray-500 ml-1">— List all your posts</span>
             </div>
             <CodeBlock code={`curl ${siteUrl}/api/v1/posts \\
-  -H "Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}"`} />
+  -H "Authorization: Bearer ${freshKey ?? "YOUR_API_KEY"}"`} />
             <p className="text-xs text-gray-500">
               Returns each post with a <code className="text-gray-400">bodyMarkdown</code> field (full article as markdown — images appear as <code className="text-gray-400">![alt](url)</code>, videos as <code className="text-gray-400">[VIDEO: caption](url)</code>) and a <code className="text-gray-400">media[]</code> array — a flat list of every image and video in the body, each with <code className="text-gray-400">type</code>, <code className="text-gray-400">url</code>, and <code className="text-gray-400">alt</code>&nbsp;/&nbsp;<code className="text-gray-400">caption</code>.
             </p>
@@ -177,7 +181,7 @@ Your task is to review all published articles by a NeuroNomixer author and produ
 ## Step 1 — Load all posts
 Use your browser tool to navigate to this URL (your API key is embedded):
 
-${siteUrl}/review?key=${visible ? apiKey : "YOUR_API_KEY"}
+${siteUrl}/review?key=${freshKey ?? "YOUR_API_KEY"}
 
 This page renders every post as plain readable text — title, URL, status, description, body content, and media list. Use get_page_text (or equivalent) to read the full page. All posts are on a single page so one read is sufficient.
 
@@ -217,7 +221,7 @@ Be direct and specific. Reference the actual content, not generic observations.`
               <span className="text-xs text-gray-500 ml-1">— List available categories</span>
             </div>
             <CodeBlock code={`curl ${siteUrl}/api/v1/categories \\
-  -H "Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}"`} />
+  -H "Authorization: Bearer ${freshKey ?? "YOUR_API_KEY"}"`} />
           </div>
 
           {/* Upload image */}
@@ -228,7 +232,7 @@ Be direct and specific. Reference the actual content, not generic observations.`
               <span className="text-xs text-gray-500 ml-1">— Upload an image, get a URL back</span>
             </div>
             <CodeBlock code={`curl -X POST ${siteUrl}/api/v1/upload \\
-  -H "Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}" \\
+  -H "Authorization: Bearer ${freshKey ?? "YOUR_API_KEY"}" \\
   -F "file=@/path/to/image.jpg"`} />
             <p className="text-xs text-gray-500">
               Returns <code className="text-gray-400">{"{ url, assetId }"}</code>. Use the <code className="text-gray-400">url</code> in markdown body as <code className="text-gray-400">![alt](url)</code> to embed the image in a post.
@@ -243,7 +247,7 @@ Be direct and specific. Reference the actual content, not generic observations.`
               <span className="text-xs text-gray-500 ml-1">— Submit a post for review</span>
             </div>
             <CodeBlock code={`curl -X POST ${siteUrl}/api/v1/posts \\
-  -H "Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}" \\
+  -H "Authorization: Bearer ${freshKey ?? "YOUR_API_KEY"}" \\
   -F "title=My Article Title" \\
   -F "description=A brief 1-2 sentence summary shown in post listings." \\
   -F "metaDescription=SEO-optimised description for search engines (max 160 chars)." \\
@@ -289,7 +293,7 @@ Learn more at [OpenAI](https://openai.com).'`} />
 
 ## API Access
 Base URL: ${siteUrl}/api/v1
-Authorization: Bearer ${visible ? apiKey : "YOUR_API_KEY"}
+Authorization: Bearer ${freshKey ?? "YOUR_API_KEY"}
 
 ## Available Endpoints
 - GET  /api/v1/categories  → list available categories and their slugs

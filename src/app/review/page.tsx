@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { client } from "@/sanity/lib/client";
 import { portableTextToMarkdown } from "@/lib/portableTextToMarkdown";
+import { hashApiKey } from "@/lib/apiKeyHash";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 async function validateKey(key: string | null) {
   if (!key?.startsWith("nnx_")) return null;
   const record = await prisma.authorApiKey.findUnique({
-    where: { key },
+    where: { keyHash: hashApiKey(key) },
     select: { userId: true, user: { select: { sanityAuthorId: true } } },
   });
   return record ?? null;

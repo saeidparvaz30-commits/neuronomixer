@@ -216,7 +216,8 @@ enum AuthorStatus {
 model AuthorApiKey {
   id         String    @id @default(cuid())
   userId     String    @unique
-  key        String    @unique
+  keyHash    String    @unique
+  keyHint    String
   createdAt  DateTime  @default(now())
   lastUsedAt DateTime?
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)

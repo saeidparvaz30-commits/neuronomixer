@@ -12,7 +12,7 @@ export default async function ApiKeyPage() {
 
   const existing = await prisma.authorApiKey.findUnique({
     where: { userId: session.user.id },
-    select: { key: true, createdAt: true, lastUsedAt: true },
+    select: { keyHint: true, createdAt: true, lastUsedAt: true },
   });
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com";
