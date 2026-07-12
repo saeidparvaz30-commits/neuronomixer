@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { client } from "@/sanity/lib/client";
+import { prisma } from "@/lib/prisma";
 
 type PostItem = {
   slug: string;
@@ -15,7 +16,7 @@ type AuthorItem = {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = (
-    process.env.NEXT_PUBLIC_SITE_URL || "https://neuronomixer.com"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.neuronomixer.com"
   ).replace(/\/$/, "");
 
   // Fetch dynamic slugs for categories and posts from Sanity
@@ -41,6 +42,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     }`
   );
+
+  // Published, implemented visual guides (DRAFT/HIDDEN must not leak)
+  const guides = await prisma.visualGuide.findMany({
+    where: { visibility: "PUBLISHED", implemented: true },
+    select: { slug: true, updatedAt: true },
+  });
+
+  const guideRoutes: MetadataRoute.Sitemap = guides.map((g) => ({
+    url: `${baseUrl}/visual-guides/${g.slug}`,
+    lastModified: g.updatedAt,
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
+  const guideIndexRoutes: MetadataRoute.Sitemap =
+    guides.length > 0
+      ? [
+          {
+            url: `${baseUrl}/visual-guides`,
+            changeFrequency: "weekly",
+            priority: 0.7,
+            lastModified: new Date(),
+          },
+        ]
+      : [];
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
@@ -93,5 +119,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  return [...staticRoutes, ...postRoutes, ...authorRoutes];
+  return [...staticRoutes, ...guideIndexRoutes, ...postRoutes, ...authorRoutes, ...guideRoutes];
 }

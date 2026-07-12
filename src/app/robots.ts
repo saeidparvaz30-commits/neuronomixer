@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
   const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "https://neuronomixer.com";
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.neuronomixer.com";
 
   const isProd =
     process.env.VERCEL_ENV === "production" ||
