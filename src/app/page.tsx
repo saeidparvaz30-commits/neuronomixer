@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: { absolute: "NeuroNomixer — AI, Data & Risk Analytics" },
   description:
     "NeuroNomixer explores the intersection of AI, data science, and risk analytics through in-depth articles and insights.",
+  alternates: { canonical: "https://www.neuronomixer.com" },
   openGraph: {
     title: "NeuroNomixer — AI, Data & Risk Analytics",
     description: "Exploring the intersection of AI, data science, and risk analytics.",

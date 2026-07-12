@@ -83,12 +83,23 @@ export default function Navbar() {
       }
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      const y = e.touches[0]?.clientY ?? 999;
+      if (y < 40 && lastScrollY.current > 60) {
+        clearHideTimer();
+        hoverReveal.current = true;
+        setVisible(true);
+      }
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchstart", handleTouchStart);
       document.removeEventListener("mousedown", handleClickOutside);
       clearHideTimer();
     };
@@ -206,7 +217,7 @@ export default function Navbar() {
               <div ref={avatarRef} className="relative">
                 <button
                   onClick={() => setAvatarOpen(!avatarOpen)}
-                  className="flex items-center gap-2 rounded-full focus:outline-none"
+                  className="flex items-center gap-2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0e1a]"
                   aria-label="User menu"
                 >
                   {session.user.image ? (

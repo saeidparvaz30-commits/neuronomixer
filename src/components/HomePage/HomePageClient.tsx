@@ -181,6 +181,7 @@ function NeuralBackground() {
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       className="fixed inset-0 pointer-events-none"
       style={{ zIndex: 0 }}
     />
