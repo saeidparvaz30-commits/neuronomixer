@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import BootstrapPermutationCVClient from "@/components/VisualGuides/BootstrapPermutationCV/BootstrapPermutationCVClient";
 
 export const metadata: Metadata = {
-  title: "Bootstrap, Permutation Tests & Cross-Validation | NeuroNomixer",
+  title: "Bootstrap, Permutation Tests & Cross-Validation",
   description:
     "Master modern resampling methods: bootstrap confidence intervals, permutation tests, and K-fold cross-validation with validation curves.",
   alternates: {

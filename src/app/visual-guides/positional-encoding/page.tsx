@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PositionalEncodingClient from "@/components/VisualGuides/PositionalEncoding/PositionalEncodingClient";
 
 export const metadata: Metadata = {
-  title: "How Models Know Word Order | NeuroNomixer",
+  title: "How Models Know Word Order",
   description:
     "Compute the sinusoidal positional-encoding heatmap live from its formula, then rotate real query and key vectors with RoPE and watch the attention score depend only on the gap between positions.",
   alternates: {

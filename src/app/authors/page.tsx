@@ -6,7 +6,7 @@ import AuthorCard, { Author } from "@/components/author/AuthorCard";
 import AuthorSignupForm from "@/components/author/AuthorSignupForm";
 
 export const metadata: Metadata = {
-  title: "Authors & Contributors — NeuroNomixer",
+  title: "Authors & Contributors",
   description:
     "Meet the experts behind NeuroNomixer — AI researchers, data scientists, and risk analysts sharing their knowledge.",
   alternates: { canonical: "https://www.neuronomixer.com/authors" },

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import CategoricalEncodingClient from "@/components/VisualGuides/CategoricalEncoding/CategoricalEncodingClient";
 
 export const metadata: Metadata = {
-  title: "Turning Categories into Numbers | NeuroNomixer",
+  title: "Turning Categories into Numbers",
   description:
     "Encode the same 12-row housing table four ways (one-hot, ordinal, frequency, target), explode a one-hot matrix with a cardinality slider, and measure with exact least squares what a fake alphabetical order costs a model.",
   alternates: {

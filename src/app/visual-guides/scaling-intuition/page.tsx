@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ScalingIntuitionClient from "@/components/VisualGuides/ScalingIntuition/ScalingIntuitionClient";
 
 export const metadata: Metadata = {
-  title: "Model Size vs Data | NeuroNomixer",
+  title: "Model Size vs Data",
   description:
     "Train 16 real neural networks in your browser, four model sizes on four data budgets of the same task, and watch the best model size shift as the data grows.",
   alternates: {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import LawOfLargeNumbersClient from "@/components/VisualGuides/LawOfLargeNumbers/LawOfLargeNumbersClient";
 
 export const metadata: Metadata = {
-  title: "The Law of Large Numbers | NeuroNomixer",
+  title: "The Law of Large Numbers",
   description:
     "Draw real seeded samples and watch the running mean converge to the population mean, then meet the Cauchy distribution where it never does. Interactive simulation.",
   alternates: {

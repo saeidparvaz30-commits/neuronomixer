@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import NonparametricGuideClient from "@/components/VisualGuides/NonparametricGuide/NonparametricGuideClient";
 
 export const metadata: Metadata = {
-  title: "Nonparametric Tests: When Assumptions Fail — NeuroNomixer",
+  title: "Nonparametric Tests: When Assumptions Fail",
   description:
     "Learn when and how to use nonparametric statistical tests. Explore Mann-Whitney U, Wilcoxon signed-rank, Kruskal-Wallis, and Sign tests interactively when normality assumptions are violated.",
   alternates: {

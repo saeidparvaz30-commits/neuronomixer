@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import DataLeakageClient from "@/components/VisualGuides/DataLeakage/DataLeakageClient";
 
 export const metadata: Metadata = {
-  title: "Data Leakage | NeuroNomixer",
+  title: "Data Leakage",
   description:
     "See data leakage happen live: preprocessing leakage, target leakage, and temporal leakage, each with real model fits you can toggle between leaky and honest.",
   alternates: {

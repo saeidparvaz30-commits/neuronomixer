@@ -21,8 +21,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
 
+  const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"]);
+  const VIDEO_TYPES = new Set(["video/mp4", "video/webm", "video/quicktime"]);
+  const IMAGE_MAX_BYTES = 10 * 1024 * 1024; // 10 MB
+  const VIDEO_MAX_BYTES = 100 * 1024 * 1024; // 100 MB
+
+  const isVideo = VIDEO_TYPES.has(file.type);
+  if (!isVideo && !IMAGE_TYPES.has(file.type)) {
+    return NextResponse.json(
+      { error: "Unsupported file type. Allowed: JPEG, PNG, WebP, GIF, AVIF images or MP4, WebM, MOV video." },
+      { status: 400 }
+    );
+  }
+  const maxBytes = isVideo ? VIDEO_MAX_BYTES : IMAGE_MAX_BYTES;
+  if (file.size > maxBytes) {
+    return NextResponse.json(
+      { error: `File too large. Maximum ${isVideo ? "100" : "10"} MB.` },
+      { status: 413 }
+    );
+  }
+
   const buffer = Buffer.from(await file.arrayBuffer());
-  const assetType = file.type.startsWith("video/") ? "file" : "image";
+  const assetType = isVideo ? "file" : "image";
   const asset = await client.assets.upload(assetType, buffer, {
     filename: file.name,
     contentType: file.type,

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import CountModelsPoissonClient from "@/components/VisualGuides/CountModelsPoisson/CountModelsPoissonClient";
 
 export const metadata: Metadata = {
-  title: "Count Models: Poisson & Negative Binomial | NeuroNomixer",
+  title: "Count Models: Poisson & Negative Binomial",
   description:
     "Master generalized linear models for count data. Explore Poisson regression, overdispersion, negative binomial models, and the GLM framework.",
   alternates: {

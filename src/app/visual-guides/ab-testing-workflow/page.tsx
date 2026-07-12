@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ABTestingWorkflowClient from "@/components/VisualGuides/ABTestingWorkflow/ABTestingWorkflowClient";
 
 export const metadata: Metadata = {
-  title: "A/B Testing: The Complete Workflow | NeuroNomixer",
+  title: "A/B Testing: The Complete Workflow",
   description:
     "Master A/B testing from design to analysis. Interactive guide covering hypothesis formulation, sample size calculation, randomization, live data collection simulation, and two-proportion z-tests.",
   alternates: {

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { hashApiKey } from "@/lib/apiKeyHash";
 
 export type ApiKeyUser = {
   userId: string;
@@ -12,9 +13,10 @@ export async function authenticateApiKey(
   if (!authHeader?.startsWith("Bearer ")) return null;
   const key = authHeader.slice(7).trim();
   if (!key.startsWith("nnx_")) return null;
+  const keyHash = hashApiKey(key);
 
   const record = await prisma.authorApiKey.findUnique({
-    where: { key },
+    where: { keyHash },
     select: {
       userId: true,
       user: { select: { sanityAuthorId: true, role: true, suspended: true } },
@@ -31,7 +33,7 @@ export async function authenticateApiKey(
 
   // Touch lastUsedAt (fire-and-forget)
   prisma.authorApiKey
-    .update({ where: { key }, data: { lastUsedAt: new Date() } })
+    .update({ where: { keyHash }, data: { lastUsedAt: new Date() } })
     .catch(() => {});
 
   return {

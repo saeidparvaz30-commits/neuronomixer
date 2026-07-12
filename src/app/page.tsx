@@ -3,7 +3,7 @@ import { client } from "@/sanity/lib/client";
 import HomePageClient from "@/components/HomePage/HomePageClient";
 
 export const metadata: Metadata = {
-  title: "NeuroNomixer — AI, Data & Risk Analytics",
+  title: { absolute: "NeuroNomixer — AI, Data & Risk Analytics" },
   description:
     "NeuroNomixer explores the intersection of AI, data science, and risk analytics through in-depth articles and insights.",
   openGraph: {

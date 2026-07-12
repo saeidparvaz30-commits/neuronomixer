@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 const MODEL_COST: Record<string, { input: number; output: number }> = {
   "claude-sonnet-4-6": { input: 3.0, output: 15.0 },
-  "claude-haiku-4-5-20251001": { input: 0.8, output: 4.0 },
+  "claude-haiku-4-5-20251001": { input: 1.0, output: 5.0 },
 };
 
 function calcCost(model: string, inputTokens: number, outputTokens: number) {

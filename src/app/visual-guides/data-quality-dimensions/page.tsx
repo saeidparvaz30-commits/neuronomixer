@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import DataQualityDimensionsClient from "@/components/VisualGuides/DataQualityDimensions/DataQualityDimensionsClient";
 
 export const metadata: Metadata = {
-  title: "The Six Faces of Bad Data | NeuroNomixer",
+  title: "The Six Faces of Bad Data",
   description:
     "Six live data-quality meters diagnose a customer table: inject and repair missing fields, duplicates, format violations, contradictions, stale rows, and wrong values, then build the validation rules that catch them.",
   alternates: {

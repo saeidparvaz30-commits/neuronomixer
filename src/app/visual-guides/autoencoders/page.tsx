@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import AutoencodersClient from "@/components/VisualGuides/Autoencoders/AutoencodersClient";
 
 export const metadata: Metadata = {
-  title: "Autoencoders | NeuroNomixer",
+  title: "Autoencoders",
   description:
     "Force data through a bottleneck and the network must learn what matters. Draw 8x8 images, train a real autoencoder live in your browser, and watch reconstructions sharpen as the bottleneck widens from 1 to 16 latent numbers.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/autoencoders" },

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ModelDecisionClient from "@/components/VisualGuides/ModelDecision/ModelDecisionClient";
 
 export const metadata: Metadata = {
-  title: "Which AI Model Should I Use? | NeuroNomixer",
+  title: "Which AI Model Should I Use?",
   description:
     "Set a quality floor, budget ceiling, latency and privacy constraints, and watch a live Pareto frontier of cost versus capability recompute which AI models are worth picking.",
   alternates: {

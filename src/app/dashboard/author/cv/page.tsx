@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import CVBuilderClient from "./CVBuilderClient";
 
-export const metadata = { title: "CV Builder — NeuroNomixer" };
+export const metadata = { title: "CV Builder" };
 
 export default async function CVBuilderPage() {
   const session = await auth();

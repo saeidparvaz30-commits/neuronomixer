@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
 import { client } from "@/sanity/lib/client";
 import { checkRateLimit } from "@/lib/rateLimit";
+import { createMailTransport } from "@/lib/mailer";
 
 function escapeHtml(str: string): string {
   return str
@@ -57,15 +57,7 @@ export async function POST(request: Request) {
     }
 
     // 2️⃣ Send notification email to your Namecheap inbox via SMTP (same as contact form)
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: process.env.SMTP_SECURE === "true",
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-    });
+    const transporter = createMailTransport();
 
     await transporter.sendMail({
       from: `"NeuroNomixer Authors" <${process.env.SMTP_USER}>`,

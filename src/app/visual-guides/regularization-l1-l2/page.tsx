@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import RegularizationL1L2Client from "@/components/VisualGuides/RegularizationL1L2/RegularizationL1L2Client";
 
 export const metadata: Metadata = {
-  title: "Regularization: L1 & L2 | NeuroNomixer",
+  title: "Regularization: L1 & L2",
   description:
     "See regularization work for real: tune lambda on a degree-8 polynomial, watch ridge shrink weights and lasso zero them out, and find the U-shaped holdout error curve.",
   alternates: {

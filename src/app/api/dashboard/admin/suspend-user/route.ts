@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import nodemailer from "nodemailer";
+import { createMailTransport } from "@/lib/mailer";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -31,14 +31,9 @@ export async function POST(req: NextRequest) {
   // Send email notification
   if (user.email) {
     try {
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT),
-        secure: process.env.SMTP_SECURE === "true",
-        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-      });
+      const transporter = createMailTransport();
 
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://neuronomixer.com";
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com";
 
       await transporter.sendMail({
         from: `"NeuroNomixer" <${process.env.SMTP_USER}>`,

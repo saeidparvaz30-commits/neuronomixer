@@ -1,6 +1,5 @@
 import "../styles/globals.css";
 import { Inter } from "next/font/google";
-import { ThemeProvider } from "next-themes";
 import ConditionalChrome from "@/components/appSkeleton/ConditionalChrome";
 import { GeneralSignupPrompt } from "@/components/prompts";
 import { FlushPendingCompletions } from "@/components/FlushPendingCompletions";
@@ -47,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body
         className={`${inter.variable} bg-[var(--background)] text-[var(--color-text)] transition-colors duration-300`}
       >
@@ -72,13 +71,11 @@ export default function RootLayout({
         />
 
         <NextAuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <ConditionalChrome>{children}</ConditionalChrome>
-            <GeneralSignupPrompt />
-            <FlushPendingCompletions />
-            <GoogleAnalyticsTracker />
-            <SpeedInsights />
-          </ThemeProvider>
+          <ConditionalChrome>{children}</ConditionalChrome>
+          <GeneralSignupPrompt />
+          <FlushPendingCompletions />
+          <GoogleAnalyticsTracker />
+          <SpeedInsights />
         </NextAuthProvider>
       </body>
     </html>

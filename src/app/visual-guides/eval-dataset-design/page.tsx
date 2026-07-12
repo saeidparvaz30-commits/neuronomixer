@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import EvalDatasetDesignClient from "@/components/VisualGuides/EvalDatasetDesign/EvalDatasetDesignClient";
 
 export const metadata: Metadata = {
-  title: "Designing Eval Datasets | NeuroNomixer",
+  title: "Designing Eval Datasets",
   description:
     "Build an eval set from simulated production failures, watch the exact 95% confidence interval narrow as tasks accumulate, catch a skewed sample with stratification, then inject label noise and see measured quality decouple from true quality.",
   alternates: {

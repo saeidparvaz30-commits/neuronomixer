@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PromptInjectionClient from "@/components/VisualGuides/PromptInjection/PromptInjectionClient";
 
 export const metadata: Metadata = {
-  title: "Prompt Injection | NeuroNomixer",
+  title: "Prompt Injection",
   description:
     "Understand the prompt injection threat model for AI agents: direct vs indirect attacks, a simulated email-assistant scenario, and the defense-in-depth playbook for builders.",
   alternates: {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ResidualConnectionsClient from "@/components/VisualGuides/ResidualConnections/ResidualConnectionsClient";
 
 export const metadata: Metadata = {
-  title: "Residual Connections | NeuroNomixer",
+  title: "Residual Connections",
   description:
     "Why skip connections make very deep networks trainable: measure real per-layer gradient norms at any depth, toggle the skips, then train two identically initialized networks in your browser and watch the gap open up.",
   alternates: {

@@ -94,7 +94,7 @@ function FooterCanvas() {
       });
     }
 
-    function animate() {
+    function drawFrame() {
       if (!ctx) return;
       time += 0.01;
       ctx.clearRect(0, 0, W, H);
@@ -140,12 +140,42 @@ function FooterCanvas() {
         ctx.fill();
       }
 
-      rafId = requestAnimationFrame(animate);
     }
 
-    animate();
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    function loop() {
+      drawFrame();
+      rafId = requestAnimationFrame(loop);
+    }
+
+    function start() {
+      cancelAnimationFrame(rafId);
+      if (reducedMotion.matches) {
+        drawFrame(); // single static frame, no animation
+      } else if (!document.hidden) {
+        loop();
+      }
+    }
+
+    function onVisibilityChange() {
+      if (document.hidden) {
+        cancelAnimationFrame(rafId);
+      } else {
+        start();
+      }
+    }
+
+    start();
     window.addEventListener("resize", resize);
-    return () => { cancelAnimationFrame(rafId); window.removeEventListener("resize", resize); };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    reducedMotion.addEventListener("change", start);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      reducedMotion.removeEventListener("change", start);
+    };
   }, []);
 
   return (

@@ -31,8 +31,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No file provided. Include an image file in the 'file' field." }, { status: 400, headers: CORS });
   }
 
-  if (!file.type.startsWith("image/")) {
-    return NextResponse.json({ error: "Only image files are supported." }, { status: 400, headers: CORS });
+  const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"]);
+  const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
+
+  if (!IMAGE_TYPES.has(file.type)) {
+    return NextResponse.json(
+      { error: "Only JPEG, PNG, WebP, GIF, or AVIF images are supported." },
+      { status: 400, headers: CORS }
+    );
+  }
+  if (file.size > MAX_BYTES) {
+    return NextResponse.json(
+      { error: "File too large. Maximum 10 MB." },
+      { status: 413, headers: CORS }
+    );
   }
 
   try {

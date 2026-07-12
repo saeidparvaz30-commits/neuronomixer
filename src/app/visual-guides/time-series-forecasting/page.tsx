@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import TimeSeriesForecastClient from "@/components/VisualGuides/TimeSeriesForecast/TimeSeriesForecastClient";
 
 export const metadata: Metadata = {
-  title: "Time Series Fundamentals & Forecasting | NeuroNomixer",
+  title: "Time Series Fundamentals & Forecasting",
   description:
     "Master time series analysis: decomposition, trend, seasonality, smoothing, forecasting with prediction intervals, and temporal leakage awareness.",
   alternates: {

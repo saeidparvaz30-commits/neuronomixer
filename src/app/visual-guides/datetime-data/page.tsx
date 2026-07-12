@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import DatetimeDataClient from "@/components/VisualGuides/DatetimeData/DatetimeDataClient";
 
 export const metadata: Metadata = {
-  title: "Time Is a Dirty Data Type | NeuroNomixer",
+  title: "Time Is a Dirty Data Type",
   description:
     "Interactive guide to why timestamps go wrong: convert instants across timezones, step through DST's missing and double hours, and watch resampling and gap-filling change the story your data tells.",
   alternates: {

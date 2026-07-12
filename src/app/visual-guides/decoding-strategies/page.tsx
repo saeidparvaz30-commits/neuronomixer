@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import DecodingStrategiesClient from "@/components/VisualGuides/DecodingStrategies/DecodingStrategiesClient";
 
 export const metadata: Metadata = {
-  title: "Greedy, Beam, and Sampling | NeuroNomixer",
+  title: "Greedy, Beam, and Sampling",
   description:
     "Train a character n-gram model on a visible corpus in your browser, then decode it three ways: watch greedy loop, expand a real beam-search tree with cumulative log-probs, and run 100 sampled continuations to plot diversity against likelihood.",
   alternates: {

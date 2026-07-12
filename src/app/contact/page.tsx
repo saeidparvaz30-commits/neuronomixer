@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ContactClient from "./ContactClient";
 
 export const metadata: Metadata = {
-  title: "Contact — NeuroNomixer",
+  title: "Contact",
   description:
     "Get in touch with the NeuroNomixer team. Whether you have a question, project idea, or collaboration request — we'd love to hear from you.",
   alternates: { canonical: "https://www.neuronomixer.com/contact" },

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import TidyDataClient from "@/components/VisualGuides/TidyData/TidyDataClient";
 
 export const metadata: Metadata = {
-  title: "Tidy Data: One Row, One Observation | NeuroNomixer",
+  title: "Tidy Data: One Row, One Observation",
   description:
     "Pivot a messy wide table longer and back, watch a chart break and heal with the table's shape, then choose the variables yourself with a live tidiness check.",
   alternates: {

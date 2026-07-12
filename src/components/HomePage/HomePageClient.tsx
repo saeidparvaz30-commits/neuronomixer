@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -107,7 +108,7 @@ function NeuralBackground() {
       });
     }
 
-    function animate() {
+    function drawFrame() {
       if (!ctx) return;
       ctx.clearRect(0, 0, W, H);
       for (const p of particles) {
@@ -139,14 +140,41 @@ function NeuralBackground() {
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
       }
-      rafId = requestAnimationFrame(animate);
     }
 
-    animate();
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    function loop() {
+      drawFrame();
+      rafId = requestAnimationFrame(loop);
+    }
+
+    function start() {
+      cancelAnimationFrame(rafId);
+      if (reducedMotion.matches) {
+        drawFrame(); // single static frame, no animation
+      } else if (!document.hidden) {
+        loop();
+      }
+    }
+
+    function onVisibilityChange() {
+      if (document.hidden) {
+        cancelAnimationFrame(rafId);
+      } else {
+        start();
+      }
+    }
+
+    start();
     window.addEventListener("resize", resize);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    reducedMotion.addEventListener("change", start);
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      reducedMotion.removeEventListener("change", start);
     };
   }, []);
 
@@ -172,9 +200,11 @@ function Avatar({
 }) {
   if (src) {
     return (
-      <img
+      <Image
         src={src}
         alt={name}
+        width={size}
+        height={size}
         className="rounded-full object-cover shrink-0"
         style={{ width: size, height: size }}
       />
@@ -260,14 +290,14 @@ function HeroSlideshow({ posts }: { posts: Post[] }) {
               className="absolute inset-0 block"
             >
               {post.mainImage ? (
-                <img
+                <Image
                   src={post.mainImage}
                   alt={post.title}
-                  className="w-full h-full object-cover"
-                  style={{
-                    transition: "transform 0.6s",
-                    ...(isActive ? {} : {}),
-                  }}
+                  fill
+                  sizes="100vw"
+                  priority
+                  className="object-cover"
+                  style={{ transition: "transform 0.6s" }}
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-[#1e5d8a]/40 to-[#0f172a]" />
@@ -345,12 +375,14 @@ function PostCard({ post }: { post: Post }) {
       href={href}
       className="group flex flex-col border border-[#1e293b] rounded-2xl overflow-hidden bg-[#0f172a] hover:border-[#334155] hover:-translate-y-[3px] transition-all duration-200 h-full"
     >
-      <div className="h-[150px] overflow-hidden bg-gradient-to-br from-[#1e293b] to-[#0f172a]">
+      <div className="relative h-[150px] overflow-hidden bg-gradient-to-br from-[#1e293b] to-[#0f172a]">
         {post.mainImage ? (
-          <img
+          <Image
             src={post.mainImage}
             alt={post.title}
-            className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-300"
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover group-hover:scale-[1.05] transition-transform duration-300"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[#1e5d8a]/20 to-[#1e293b]" />
@@ -586,10 +618,12 @@ export default function HomePageClient({
                     style={{ height: 200 }}
                   >
                     {cat.image ? (
-                      <img
+                      <Image
                         src={cat.image}
                         alt={cat.title}
-                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-500"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                        className="object-cover group-hover:scale-[1.05] transition-transform duration-500"
                       />
                     ) : (
                       <div className="absolute inset-0 bg-gradient-to-br from-[#1e5d8a]/40 to-[#0f172a]" />

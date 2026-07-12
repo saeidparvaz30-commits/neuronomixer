@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import CausalThinkingDAGsClient from "@/components/VisualGuides/CausalThinkingDAGs/CausalThinkingDAGsClient";
 
 export const metadata: Metadata = {
-  title: "Causal Thinking: Confounders, Mediators & DAGs | NeuroNomixer",
+  title: "Causal Thinking: Confounders, Mediators & DAGs",
   description:
     "Learn causal inference with directed acyclic graphs. Explore confounders, mediators, colliders, and the back-door criterion through interactive visualizations.",
   alternates: {

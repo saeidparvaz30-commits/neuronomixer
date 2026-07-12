@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -168,9 +169,11 @@ function NeuralBackground() {
 function Avatar({ src, name, size = 28 }: { src?: string; name: string; size?: number }) {
   if (src) {
     return (
-      <img
+      <Image
         src={src}
         alt={name}
+        width={size}
+        height={size}
         className="rounded-full object-cover shrink-0"
         style={{ width: size, height: size }}
       />
@@ -199,10 +202,13 @@ function FeaturedCard({ post }: { post: BlogPost }) {
     >
       <div className="relative h-56 md:h-auto overflow-hidden bg-gradient-to-br from-[#0f172a] to-[#1e293b]">
         {post.mainImage ? (
-          <img
+          <Image
             src={post.mainImage}
             alt={post.title}
-            className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+            fill
+            sizes="(max-width: 768px) 100vw, 55vw"
+            priority
+            className="object-cover group-hover:scale-[1.03] transition-transform duration-500"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[#1e5d8a]/30 to-[#1e293b]" />
@@ -255,10 +261,12 @@ function PostCard({ post }: { post: BlogPost }) {
     >
       <div className="relative h-40 overflow-hidden bg-gradient-to-br from-[#1e293b] to-[#0f172a]">
         {post.mainImage ? (
-          <img
+          <Image
             src={post.mainImage}
             alt={post.title}
-            className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-300"
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover group-hover:scale-[1.05] transition-transform duration-300"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[#1e5d8a]/20 to-[#1e293b]" />
@@ -304,12 +312,14 @@ function SearchResultCard({ post }: { post: BlogPost }) {
       href={href}
       className="group flex gap-4 rounded-xl border border-[#1e293b] bg-[#0f172a] hover:border-[#334155] hover:bg-[#111827] transition-all duration-200 p-4"
     >
-      <div className="shrink-0 w-[80px] h-[80px] rounded-lg overflow-hidden bg-gradient-to-br from-[#1e293b] to-[#0f172a]">
+      <div className="relative shrink-0 w-[80px] h-[80px] rounded-lg overflow-hidden bg-gradient-to-br from-[#1e293b] to-[#0f172a]">
         {post.mainImage ? (
-          <img
+          <Image
             src={post.mainImage}
             alt={post.title}
-            className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-300"
+            fill
+            sizes="80px"
+            className="object-cover group-hover:scale-[1.05] transition-transform duration-300"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-[#1e5d8a]/20 to-[#1e293b]" />

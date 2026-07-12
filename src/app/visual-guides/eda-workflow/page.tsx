@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import EDAWorkflowClient from "@/components/VisualGuides/EDAWorkflow/EDAWorkflowClient";
 
 export const metadata: Metadata = {
-  title: "Interrogating a Dataset | NeuroNomixer",
+  title: "Interrogating a Dataset",
   description:
     "Work the EDA loop on a 120-row mystery dataset: check shape and types, unmask -999 sentinels, read distributions on a log scale, catch a duplicated batch, and log every finding.",
   alternates: {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import GroupByAggregationClient from "@/components/VisualGuides/GroupByAggregation/GroupByAggregationClient";
 
 export const metadata: Metadata = {
-  title: "Split, Apply, Combine | NeuroNomixer",
+  title: "Split, Apply, Combine",
   description:
     "Run group-by aggregation live: split a real transactions table into groups, apply count, sum, mean, min, or max, and combine the results into a new table, then build a two-level pivot.",
   alternates: {
