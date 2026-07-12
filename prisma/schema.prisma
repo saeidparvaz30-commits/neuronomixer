@@ -343,3 +343,21 @@ enum SharedPdfEventType {
   VIEW
   DOWNLOAD
 }
+
+/// Derived semantic-search index over published posts + research files.
+/// Rebuildable by nnx-search-mcp; written only via raw SQL, never Prisma client.
+model ContentEmbedding {
+  id          String   @id
+  sourceType  String
+  sourceId    String
+  chunkIndex  Int
+  title       String
+  url         String?
+  content     String   @db.Text
+  contentHash String
+  embedding   Unsupported("extensions.vector(768)")
+  updatedAt   DateTime @default(now())
+
+  @@unique([sourceType, sourceId, chunkIndex])
+  @@index([sourceType])
+}
