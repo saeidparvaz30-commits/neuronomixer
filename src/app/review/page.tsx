@@ -6,14 +6,24 @@ import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-// Validate key directly (same logic as apiKeyAuth but from a URL param)
+// Validate key directly (mirrors apiKeyAuth incl. the S7 suspended/role gate)
 async function validateKey(key: string | null) {
   if (!key?.startsWith("nnx_")) return null;
   const record = await prisma.authorApiKey.findUnique({
     where: { keyHash: hashApiKey(key) },
-    select: { userId: true, user: { select: { sanityAuthorId: true } } },
+    select: {
+      userId: true,
+      user: { select: { sanityAuthorId: true, role: true, suspended: true } },
+    },
   });
-  return record ?? null;
+  if (!record) return null;
+  if (
+    record.user.suspended ||
+    (record.user.role !== "AUTHOR" && record.user.role !== "ADMIN")
+  ) {
+    return null;
+  }
+  return record;
 }
 
 export default async function ReviewPage({

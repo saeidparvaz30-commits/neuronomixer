@@ -9,6 +9,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
+  // Cheap first-line guard: reject obviously oversized bodies before buffering
+  // the whole request. Uses a 105 MB ceiling (100 MB video cap + multipart
+  // overhead); the per-file MIME/size caps below are still authoritative.
+  const HARD_MAX_BYTES = 105 * 1024 * 1024;
+  const contentLength = Number(req.headers.get("content-length") ?? 0);
+  if (contentLength > HARD_MAX_BYTES) {
+    return NextResponse.json({ error: "File too large. Maximum 100 MB." }, { status: 413 });
+  }
+
   let formData: FormData;
   try {
     formData = await req.formData();
