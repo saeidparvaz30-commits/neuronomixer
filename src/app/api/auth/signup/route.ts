@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { client } from "@/sanity/lib/client";
 import bcrypt from "bcryptjs";
@@ -103,20 +103,26 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Send verification email (fire-and-forget — don't block signup on SMTP failure)
-  sendVerificationEmail(email).catch((err) =>
-    console.error("[signup] verification email error:", err)
+  // Send verification email after the response. A bare fire-and-forget promise
+  // gets frozen with the serverless function and often never completes; after()
+  // keeps the function alive until the send settles without delaying signup.
+  after(() =>
+    sendVerificationEmail(email).catch((err) =>
+      console.error("[signup] verification email error:", err)
+    )
   );
 
-  // Add to Brevo newsletter list (fire-and-forget)
+  // Add to Brevo newsletter list (same freeze problem as above)
   const brevoKey = process.env.BREVO_API_KEY;
   const brevoList = process.env.BREVO_LIST_ID;
   if (brevoKey && brevoList) {
-    fetch("https://api.brevo.com/v3/contacts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "api-key": brevoKey },
-      body: JSON.stringify({ email, listIds: [Number(brevoList)], updateEnabled: true }),
-    }).catch((err) => console.error("[signup] Brevo add error:", err));
+    after(() =>
+      fetch("https://api.brevo.com/v3/contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "api-key": brevoKey },
+        body: JSON.stringify({ email, listIds: [Number(brevoList)], updateEnabled: true }),
+      }).catch((err) => console.error("[signup] Brevo add error:", err))
+    );
   }
 
   return NextResponse.json({ success: true });

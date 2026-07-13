@@ -178,7 +178,7 @@ function SignUpCard({
         />
         <input
           type="password"
-          placeholder="Password (min 8 characters)"
+          placeholder="Password (min 10 characters)"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
