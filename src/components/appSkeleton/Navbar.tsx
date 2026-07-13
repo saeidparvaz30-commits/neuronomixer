@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Menu, X, LogOut, LayoutDashboard, Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signOut } from "next-auth/react";
+import NnxLogo from "./NnxLogo";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -83,12 +84,23 @@ export default function Navbar() {
       }
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      const y = e.touches[0]?.clientY ?? 999;
+      if (y < 40 && lastScrollY.current > 60) {
+        clearHideTimer();
+        hoverReveal.current = true;
+        setVisible(true);
+      }
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchstart", handleTouchStart);
       document.removeEventListener("mousedown", handleClickOutside);
       clearHideTimer();
     };
@@ -141,16 +153,9 @@ export default function Navbar() {
 
           {/* Logo + Brand */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <Image
-              src="/pictures/Logo.png"
-              alt="NeuroNomixer logo"
-              width={50}
-              height={50}
-              sizes="50px"
-              quality={85}
-              className="rounded-full transition-transform duration-300 group-hover:scale-105"
-              priority
-            />
+            <span className="transition-transform duration-300 group-hover:scale-105">
+              <NnxLogo size={50} />
+            </span>
             <span className="text-lg font-semibold text-white tracking-wide
                              transition-colors duration-200
                              group-hover:text-[var(--color-accent)]">
@@ -206,7 +211,7 @@ export default function Navbar() {
               <div ref={avatarRef} className="relative">
                 <button
                   onClick={() => setAvatarOpen(!avatarOpen)}
-                  className="flex items-center gap-2 rounded-full focus:outline-none"
+                  className="flex items-center gap-2 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0e1a]"
                   aria-label="User menu"
                 >
                   {session.user.image ? (

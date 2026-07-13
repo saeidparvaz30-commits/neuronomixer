@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { validatePassword } from "@/lib/validatePassword";
 
 export async function POST(req: NextRequest) {
   const { token, password } = await req.json();
@@ -8,8 +9,8 @@ export async function POST(req: NextRequest) {
   if (!token || !password)
     return NextResponse.json({ error: "Token and password required" }, { status: 400 });
 
-  if (password.length < 8)
-    return NextResponse.json({ error: "Password must be at least 8 characters" }, { status: 400 });
+  const pwError = validatePassword(password);
+  if (pwError) return NextResponse.json({ error: pwError }, { status: 400 });
 
   const record = await prisma.passwordResetToken.findUnique({ where: { token } });
 

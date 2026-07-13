@@ -158,6 +158,7 @@ function NeuralBackground() {
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       className="fixed inset-0 pointer-events-none"
       style={{ zIndex: 0 }}
     />
@@ -564,14 +565,15 @@ export default function BlogClient({
             <input
               ref={inputRef}
               type="text"
+              aria-label="Search articles, topics, authors"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") triggerSearch(); }}
-              placeholder="Search articles, topics, authors…"
+              placeholder="Search articles, topics, authors..."
               className="w-full py-3.5 pl-12 pr-24 rounded-xl border border-[#1e293b] bg-[#0f172a] text-white placeholder-[#475569] text-sm outline-none transition"
               style={{
                 boxShadow: isSearching ? "0 0 0 3px rgba(212,175,55,0.1)" : "none",
-                borderColor: isSearching ? "#d4af37" : "#1e293b",
+                borderColor: isSearching ? "var(--color-accent)" : "#1e293b",
               }}
             />
             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -586,7 +588,7 @@ export default function BlogClient({
               )}
               <button
                 onClick={triggerSearch}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#d4af37] text-[#0a0e1a] text-[12px] font-semibold hover:opacity-90 transition"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--color-accent)] text-[#0a0e1a] text-[12px] font-semibold hover:opacity-90 transition"
                 aria-label="Search"
               >
                 <Search size={12} />

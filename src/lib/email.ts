@@ -11,7 +11,7 @@ export async function sendVerificationEmail(email: string): Promise<void> {
   await prisma.verificationToken.create({ data: { identifier, token, expires } });
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
-  const verifyUrl = `${siteUrl}/api/auth/verify-email?token=${token}`;
+  const verifyUrl = `${siteUrl}/auth/verify-email?token=${token}`;
 
   const transporter = createMailTransport();
 

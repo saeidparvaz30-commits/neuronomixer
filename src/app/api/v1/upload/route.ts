@@ -19,6 +19,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid or missing API key" }, { status: 401, headers: CORS });
   }
 
+  const HARD_MAX_BYTES = 11 * 1024 * 1024; // 10 MB image cap + multipart overhead
+  const contentLength = Number(req.headers.get("content-length") ?? 0);
+  if (contentLength > HARD_MAX_BYTES) {
+    return NextResponse.json({ error: "File too large. Maximum 10 MB." }, { status: 413, headers: CORS });
+  }
+
   let formData: FormData;
   try {
     formData = await req.formData();

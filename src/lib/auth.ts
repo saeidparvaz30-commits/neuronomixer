@@ -7,6 +7,15 @@ import { prisma } from "./prisma";
 import { authConfig } from "./auth.config";
 import { checkRateLimit } from "./rateLimit";
 
+// Cached bcrypt hash used to equalise login timing when an account or its
+// password is absent (prevents a login enumeration oracle, S10). Computed once
+// on first use; carries a real salt/cost so bcrypt.compare does real work.
+let dummyHash: string | null = null;
+function getDummyHash(): string {
+  if (!dummyHash) dummyHash = bcrypt.hashSync("nnx-timing-equaliser-not-a-real-password", 12);
+  return dummyHash;
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma),
@@ -50,13 +59,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const user = await prisma.user.findUnique({
           where: { email: credentials.email as string },
         });
-        if (!user || !user.password) return null;
 
+        // Always compare against a hash (real one if present, else the dummy)
+        // so response time does not reveal whether the account exists (S10).
         const valid = await bcrypt.compare(
           credentials.password as string,
-          user.password
+          user?.password ?? getDummyHash()
         );
-        if (!valid) return null;
+        if (!user || !user.password || !valid) return null;
         if (!user.emailVerified) return null;
         if (user.suspended) return null;
 

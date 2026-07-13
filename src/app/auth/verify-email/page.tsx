@@ -50,11 +50,76 @@ function ResendButton({ email }: { email: string }) {
   );
 }
 
+function TokenConfirm({ token }: { token: string }) {
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  async function confirm() {
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/auth/verify-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setStatus("done");
+      } else {
+        setStatus("error");
+        setMessage(data.error ?? "Verification failed. The link may have expired.");
+      }
+    } catch {
+      setStatus("error");
+      setMessage("Something went wrong. Please try again.");
+    }
+  }
+
+  if (status === "done") {
+    return (
+      <>
+        <CheckCircle className="mx-auto mb-4 text-green-400" size={48} />
+        <h1 className="text-2xl font-bold text-white mb-2">Email verified!</h1>
+        <p className="text-gray-400 mb-6">Your email address has been confirmed. You can now sign in.</p>
+        <Link
+          href="/auth/sign-in"
+          className="px-6 py-2.5 bg-[var(--color-accent)] text-[#0f172a] font-semibold rounded-xl hover:bg-[var(--color-accent)]/80 transition"
+        >
+          Sign In
+        </Link>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Mail className="mx-auto mb-4 text-[var(--color-accent)]" size={48} />
+      <h1 className="text-2xl font-bold text-white mb-2">Verify your email</h1>
+      <p className="text-gray-400 mb-6 leading-relaxed">
+        Click the button below to confirm your email address and activate your account.
+      </p>
+      <button
+        onClick={confirm}
+        disabled={status === "loading"}
+        className="px-6 py-2.5 bg-[var(--color-accent)] text-[#0f172a] font-semibold rounded-xl hover:bg-[var(--color-accent)]/80 transition disabled:opacity-50"
+      >
+        {status === "loading" ? "Verifying…" : "Verify my email"}
+      </button>
+      {status === "error" && <p className="text-red-400 text-sm mt-4">{message}</p>}
+    </>
+  );
+}
+
 function VerifyContent() {
   const searchParams = useSearchParams();
+  const token = searchParams.get("token");
   const verified = searchParams.get("verified") === "1";
   const pending = searchParams.get("pending") === "1";
   const email = searchParams.get("email") ?? "";
+
+  if (token) {
+    return <TokenConfirm token={token} />;
+  }
 
   if (pending) {
     return (

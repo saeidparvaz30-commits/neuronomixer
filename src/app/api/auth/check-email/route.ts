@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rateLimit";
 
 // Returns whether a credentials-based account exists and is verified.
@@ -13,18 +12,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ verified: true });
   }
 
-  const email = new URL(req.url).searchParams.get("email");
-  if (!email) return NextResponse.json({ verified: true });
-
-  const user = await prisma.user.findUnique({
-    where: { email },
-    select: { emailVerified: true, password: true },
-  });
-
-  // Only reveal unverified status for password-based accounts (not OAuth-only users)
-  if (user?.password && !user.emailVerified) {
-    return NextResponse.json({ verified: false });
-  }
-
+  // Always return the same answer regardless of account state so this endpoint
+  // cannot be used to enumerate registered / unverified accounts (S10).
   return NextResponse.json({ verified: true });
 }
