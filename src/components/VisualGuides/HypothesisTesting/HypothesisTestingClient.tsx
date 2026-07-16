@@ -163,6 +163,7 @@ export default function HypothesisTestingClient() {
     }));
     setGroupA(null);
     setGroupB(null);
+    setPowerAnalysisViewed(false);
     setBulkProgress(0);
     setIsBulkRunning(false);
   }, [state.isRunning, isBulkRunning]);
