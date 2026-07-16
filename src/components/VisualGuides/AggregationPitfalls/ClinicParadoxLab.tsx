@@ -17,6 +17,7 @@ import {
   fmtPct,
   fmtGapPts,
   tieSevereSharePct,
+  tieSevereSharePctRaw,
 } from "./types";
 
 interface Props {
@@ -84,6 +85,8 @@ export default function ClinicParadoxLab({
   const mildGap = Math.abs(rateOf(north.mild) - rateOf(river.mild));
   const severeGap = Math.abs(rateOf(north.severe) - rateOf(river.severe));
 
+  const tieRaw = tieSevereSharePctRaw("north", rateOf(riverPooled));
+  const tieReachable = tieRaw <= SHARE_MAX;
   const tiePct = Math.round(tieSevereSharePct("north", rateOf(riverPooled)));
 
   const rows: { clinic: ClinicId; severity: "mild" | "severe"; o: GroupOutcome }[] = [
@@ -321,13 +324,22 @@ export default function ClinicParadoxLab({
               table, purely because it takes the harder mix. Keep dragging to
               feel how wide the reversal region is.
             </p>
-          ) : (
+          ) : tieReachable ? (
             <p className="text-[11px] text-[#94a3b8] leading-relaxed">
               With Riverside as it is now, the two pooled rates tie near{" "}
               <span className="font-mono text-[#f1f5f9]">{tiePct}%</span> severe
               at Northside, computed from the fixed skills and Riverside&apos;s
               current pooled rate. Drag Northside past that point: the pooled
               winner flips while both group winners stay put.
+            </p>
+          ) : (
+            <p className="text-[11px] text-[#94a3b8] leading-relaxed">
+              With Riverside&apos;s current mix, no reachable Northside severe
+              share ties the pooled rates: the tie point is past{" "}
+              <span className="font-mono text-[#f1f5f9]">{SHARE_MAX}%</span>,
+              computed from the fixed skills and Riverside&apos;s current
+              pooled rate. The flip is out of reach until you pull
+              Riverside&apos;s mix back down.
             </p>
           )}
         </div>

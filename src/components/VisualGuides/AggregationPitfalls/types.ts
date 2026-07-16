@@ -122,13 +122,20 @@ export function evalParadox(north: ClinicOutcomes, river: ClinicOutcomes): Parad
 
 /**
  * Severe share (in %) at which the given clinic's pooled rate would equal
- * targetRate, before rounding to whole patients. Solves
- * mildRate * (1 - a) + severeRate * a = targetRate for a.
+ * targetRate, before rounding to whole patients and before clamping to the
+ * reachable slider range. Solves
+ * mildRate * (1 - a) + severeRate * a = targetRate for a. Can fall outside
+ * [SHARE_MIN, SHARE_MAX] when the target rate is not reachable by any mix.
  */
-export function tieSevereSharePct(id: ClinicId, targetRate: number): number {
+export function tieSevereSharePctRaw(id: ClinicId, targetRate: number): number {
   const meta = CLINIC_META[id];
   const a = (meta.mildRate - targetRate) / (meta.mildRate - meta.severeRate);
-  return clamp(a * 100, 0, 100);
+  return a * 100;
+}
+
+/** Same as tieSevereSharePctRaw, clamped to [0, 100] for display. */
+export function tieSevereSharePct(id: ClinicId, targetRate: number): number {
+  return clamp(tieSevereSharePctRaw(id, targetRate), 0, 100);
 }
 
 export function fmtPct(rate: number, digits = 1): string {
