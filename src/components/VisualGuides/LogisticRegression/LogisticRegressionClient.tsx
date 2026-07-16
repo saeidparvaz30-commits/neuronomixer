@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   PASS_FAIL_DATA,
@@ -501,6 +502,7 @@ function MetricCard({ label, value, desc, color }: { label: string; value: strin
 // ─── Main Component ────────────────────────────────────────────────────────────
 export default function LogisticRegressionClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
 
   // Section 2 sliders
   const [b0, setB0] = useState(LOGISTIC_INTERCEPT);
@@ -570,6 +572,18 @@ export default function LogisticRegressionClient() {
       }).catch(() => {});
     }
   }, [allComplete, session?.user]);
+
+  function handleReset() {
+    setB0(LOGISTIC_INTERCEPT);
+    setB1(LOGISTIC_SLOPE);
+    setThreshold(0.5);
+    setComparisonViewed(false);
+    setThresholdAdjusted(false);
+    setSensitivitySpecificityObserved(false);
+    setOddsRatioInterpreted(false);
+    setCalibrationViewed(false);
+    baselineMetrics.current = null;
+  }
 
   // Derived values
   const inflection = b1 === 0 ? Infinity : -b0 / b1;
@@ -1119,21 +1133,120 @@ export default function LogisticRegressionClient() {
           </div>
         </motion.section>
 
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Bent the Line Into an S
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You saw where a straight line fails at yes-or-no outcomes,
+                  tuned the S-curve, and traded sensitivity against specificity
+                  with the threshold slider.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Final threshold</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {threshold.toFixed(2)}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      your cutoff for calling a pass
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Sensitivity / specificity</p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">
+                      {(metrics.sensitivity * 100).toFixed(0)}% / {(metrics.specificity * 100).toFixed(0)}%
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      at that threshold
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Odds ratio (e^β₁)</p>
+                    <p className="text-[14px] font-mono font-bold text-[#a855f7]">
+                      {oddsRatioDisplay}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      {oddsRatio >= 1 ? `+${oddsRatioIncrease}%` : `${oddsRatioIncrease}%`} odds per study hour
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Logistic regression predicts probabilities, not labels;
+                    the S-curve keeps them between 0 and 1, and the threshold
+                    that turns them into decisions is a judgment call, not a law
+                    of nature.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href="/visual-guides/count-models-poisson"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* ── Footer Nav ────────────────────────────────────────────────────── */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link
-            href="/visual-guides/regression-diagnostics"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
-          >
-            ← Regression Diagnostics
-          </Link>
-          <Link
-            href="/visual-guides/count-models-poisson"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
-          >
-            Count Models: Poisson →
-          </Link>
-        </div>
+        {!allComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides/regression-diagnostics"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
+            >
+              ← Regression Diagnostics
+            </Link>
+            <Link
+              href="/visual-guides/count-models-poisson"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Count Models: Poisson →
+            </Link>
+          </div>
+        )}
 
         <GuideCompletion isComplete={allComplete} guideSlug="logistic-regression" score={100} />
 
