@@ -21,7 +21,7 @@ import ShapeMatchQuiz from "./ShapeMatchQuiz";
 
 const GUIDE_TITLE = "Data Distributions in Context";
 const GUIDE_SLUG = "data-distributions-applied";
-const NEXT_GUIDE_SLUG = "correlation-causation";
+const NEXT_GUIDE_SLUG = "aggregation-pitfalls";
 
 const DEFAULT_BINS = 24;
 
