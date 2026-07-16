@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import CVPublicView from "./CVPublicView";
+import CVPublicView, { type CV } from "./CVPublicView";
 import type { Metadata } from "next";
 
 export async function generateStaticParams() {
@@ -36,5 +36,5 @@ export default async function CVPublicPage({ params }: Props) {
 
   if (!cv || !cv.isPublic) notFound();
 
-  return <CVPublicView cv={cv as any} />;
+  return <CVPublicView cv={cv as unknown as CV} />;
 }

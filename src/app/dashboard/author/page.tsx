@@ -32,7 +32,7 @@ export default async function AuthorOverviewPage() {
       }`,
       { userId }
     ),
-    (prisma as any).user.findUnique({
+    prisma.user.findUnique({
       where: { id: userId },
       select: { sanityAuthorId: true },
     }),
@@ -53,13 +53,13 @@ export default async function AuthorOverviewPage() {
   // Engagement stats from Prisma
   const [totalLikes, followerCount, viewRecords] = await Promise.all([
     approvedSlugs.length > 0
-      ? (prisma as any).like.count({ where: { postSlug: { in: approvedSlugs } } })
+      ? prisma.like.count({ where: { postSlug: { in: approvedSlugs } } })
       : 0,
     dbUser?.sanityAuthorId
-      ? (prisma as any).follow.count({ where: { type: "author", sanityId: dbUser.sanityAuthorId } })
+      ? prisma.follow.count({ where: { type: "author", sanityId: dbUser.sanityAuthorId } })
       : 0,
     approvedSlugs.length > 0
-      ? (prisma as any).readingHistory.findMany({
+      ? prisma.readingHistory.findMany({
           where: { postSlug: { in: approvedSlugs } },
           select: { postSlug: true },
         })

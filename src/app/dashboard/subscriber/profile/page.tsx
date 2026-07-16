@@ -7,7 +7,7 @@ export default async function SubscriberProfilePage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/auth/sign-in");
 
-  const user = await (prisma as any).user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: { name: true, email: true, bio: true, image: true },
   });

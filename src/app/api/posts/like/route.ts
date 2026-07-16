@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { isValidSlug } from "@/lib/validateSlug";
 
-const db = prisma as any;
+const db = prisma;
 
 const MIGRATION_PENDING = () => NextResponse.json(
   { error: "Feature not available yet — run `prisma migrate dev`" },

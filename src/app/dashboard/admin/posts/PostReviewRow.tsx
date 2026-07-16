@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ChevronDown, ChevronUp, Calendar, X } from "lucide-react";
 import Image from "next/image";
 import RichText from "@/components/Blog/RichText";
+import type { PortableTextBlock } from "@portabletext/types";
 
 interface PendingPost {
   _id: string;
@@ -172,7 +173,7 @@ export default function PostReviewRow({ post }: { post: PendingPost }) {
 
           {post.body && post.body.length > 0 ? (
             <article className="prose prose-sm sm:prose lg:prose-lg max-w-none text-left">
-              <RichText value={post.body as any} />
+              <RichText value={post.body as PortableTextBlock[]} />
             </article>
           ) : (
             <p className="text-gray-400 italic text-sm">No body content submitted.</p>

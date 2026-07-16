@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
   const session = await auth();
-  if ((session?.user as any)?.role !== "ADMIN") {
+  if (session?.user?.role !== "ADMIN") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   const { userId } = body;
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
 
-  await (prisma as any).user.update({
+  await prisma.user.update({
     where: { id: userId },
     data: { suspended: false, tokenVersion: { increment: 1 } },
   });

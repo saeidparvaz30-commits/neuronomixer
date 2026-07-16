@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   const adminId = session?.user?.id;
 
-  if ((session?.user as any)?.role !== "ADMIN") {
+  if (session?.user?.role !== "ADMIN") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -27,13 +27,13 @@ export async function POST(req: NextRequest) {
   }
 
   // Fetch sanityAuthorId before deleting the Prisma user
-  const dbUser = await (prisma as any).user.findUnique({
+  const dbUser = await prisma.user.findUnique({
     where: { id: userId },
     select: { sanityAuthorId: true },
   });
 
   // Delete Prisma user (cascades to Account, Session, Follow)
-  await (prisma as any).user.delete({ where: { id: userId } });
+  await prisma.user.delete({ where: { id: userId } });
 
   // Delete linked Sanity author document (posts are intentionally left intact)
   if (dbUser?.sanityAuthorId) {

@@ -5,8 +5,8 @@ import { Heart, Eye, Users, TrendingUp } from "lucide-react";
 
 async function getPlatformStats() {
   const [totalUsers, subscribers, pendingAuthors, pendingPosts] = await Promise.all([
-    (prisma as any).user.count(),
-    (prisma as any).user.count({ where: { role: "SUBSCRIBER" } }),
+    prisma.user.count(),
+    prisma.user.count({ where: { role: "SUBSCRIBER" } }),
     // Use Sanity as source of truth — matches the Authors review page
     client.fetch<number>(`count(*[_type == "author" && applicationStatus == "pending"])`),
     client.fetch<number>(`count(*[_type == "post" && status == "pending"])`),
@@ -17,7 +17,7 @@ async function getPlatformStats() {
 
 async function getAuthorEngagement(userId: string) {
   // Get admin's sanityAuthorId
-  const dbUser = await (prisma as any).user.findUnique({
+  const dbUser = await prisma.user.findUnique({
     where: { id: userId },
     select: { sanityAuthorId: true },
   });
@@ -38,11 +38,11 @@ async function getAuthorEngagement(userId: string) {
 
   const [totalLikes, followerCount, viewRecords] = await Promise.all([
     slugs.length > 0
-      ? (prisma as any).like.count({ where: { postSlug: { in: slugs } } })
+      ? prisma.like.count({ where: { postSlug: { in: slugs } } })
       : 0,
-    (prisma as any).follow.count({ where: { type: "author", sanityId: dbUser.sanityAuthorId } }),
+    prisma.follow.count({ where: { type: "author", sanityId: dbUser.sanityAuthorId } }),
     slugs.length > 0
-      ? (prisma as any).readingHistory.findMany({
+      ? prisma.readingHistory.findMany({
           where: { postSlug: { in: slugs } },
           select: { postSlug: true },
         })
