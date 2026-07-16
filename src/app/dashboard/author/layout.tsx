@@ -8,7 +8,7 @@ export default async function AuthorLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
-  const role = (session?.user as any)?.role;
+  const role = session?.user?.role;
 
   if (role === "ADMIN") {
     redirect("/dashboard/admin");

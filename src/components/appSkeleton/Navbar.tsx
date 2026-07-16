@@ -122,7 +122,7 @@ export default function Navbar() {
     { href: "/contact", label: "Contact" },
   ];
 
-  const role = (session?.user as any)?.role;
+  const role = session?.user?.role;
   const dashboardHref =
     role === "ADMIN"
       ? "/dashboard/admin"

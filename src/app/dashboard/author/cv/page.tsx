@@ -7,7 +7,7 @@ export const metadata = { title: "CV Builder" };
 
 export default async function CVBuilderPage() {
   const session = await auth();
-  const role = (session?.user as any)?.role;
+  const role = session?.user?.role;
 
   if (!session?.user?.id || (role !== "AUTHOR" && role !== "ADMIN")) {
     redirect("/auth/sign-in");

@@ -44,7 +44,7 @@ export default async function SubscriberFeedPage() {
   if (!session?.user) redirect("/auth/sign-in");
 
   const userId = session.user.id;
-  const role = (session.user as any)?.role as string | undefined;
+  const role = session.user?.role as string | undefined;
   const [posts, follows, dbUser] = await Promise.all([
     getFollowedPosts(userId),
     prisma.follow.findMany({ where: { userId } }),

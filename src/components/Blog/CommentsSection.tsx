@@ -28,7 +28,7 @@ export default function CommentsSection({ postSlug }: Props) {
   const { data: session } = useSession();
   const isLoggedIn = !!session?.user;
   const currentUserId = session?.user?.id;
-  const isAdmin = (session?.user as any)?.role === "ADMIN";
+  const isAdmin = session?.user?.role === "ADMIN";
   const [comments, setComments] = useState<Comment[]>([]);
   const [body, setBody] = useState("");
   const [loading, setLoading] = useState(false);

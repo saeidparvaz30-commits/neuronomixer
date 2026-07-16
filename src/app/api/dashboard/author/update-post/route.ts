@@ -5,7 +5,7 @@ import { tiptapToPortableText } from "@/lib/tiptapToPortableText";
 
 export async function PATCH(req: NextRequest) {
   const session = await auth();
-  const role = (session?.user as any)?.role;
+  const role = session?.user?.role;
 
   if (role !== "AUTHOR" && role !== "ADMIN") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
