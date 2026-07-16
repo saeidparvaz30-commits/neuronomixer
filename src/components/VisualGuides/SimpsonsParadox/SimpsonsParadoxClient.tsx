@@ -867,6 +867,9 @@ export default function SimpsonsParadoxClient() {
 
   // Tab state
   const [activeTab, setActiveTab] = useState<0 | 1 | 2>(0);
+  // Bumped on reset so the active tab's content remounts even when the tab
+  // index doesn't change (e.g. Try Again pressed while tab 0 is active).
+  const [resetKey, setResetKey] = useState(0);
 
   const allComplete =
     berkeleyExplored &&
@@ -901,6 +904,7 @@ export default function SimpsonsParadoxClient() {
     setToggleCount(0);
     setParadoxBuilderAttempted(false);
     setActiveTab(0);
+    setResetKey(k => k + 1);
   }
 
   const TABS = ["Case Studies", "Build Your Own", "Lurking Variables"] as const;
@@ -1001,7 +1005,7 @@ export default function SimpsonsParadoxClient() {
         {/* Tab content */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeTab}
+            key={`${activeTab}-${resetKey}`}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
