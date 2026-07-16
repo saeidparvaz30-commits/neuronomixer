@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import {
   type CompoundEvent,
   type SimState,
@@ -20,6 +21,8 @@ import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 
+const NEXT_GUIDE_SLUG = "conditional-probability";
+
 function eventKey(e: CompoundEvent): string {
   return JSON.stringify({
     firstType: e.firstType,
@@ -34,6 +37,7 @@ function eventKey(e: CompoundEvent): string {
 
 export default function ProbabilityFundamentalsClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
   const totalTrialsRef = useRef<number>(1000);
 
@@ -102,6 +106,11 @@ export default function ProbabilityFundamentalsClient() {
   function handleSimComplete() {
     totalTrialsRef.current = state.sim.trialCount || totalTrialsRef.current;
     setState((prev) => ({ ...prev, simulationRun: true }));
+  }
+
+  function handleReset() {
+    totalTrialsRef.current = 1000;
+    setState(initialProbabilityState);
   }
 
   function handleVennModeChange(mode: VennMode) {
@@ -289,21 +298,126 @@ export default function ProbabilityFundamentalsClient() {
           </div>
         </section>
 
-        {/* Footer nav */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link
-            href="/visual-guides/visualizing-data-charts"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
-          >
-            ← Visualizing Data
-          </Link>
-          <Link
-            href="/visual-guides/conditional-probability"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
-          >
-            Next: Conditional Probability →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Mastered the Rules of Chance
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You built compound events with AND, OR, and NOT, ran a
+                  simulation against theory, and mapped the same logic onto a
+                  Venn diagram.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Distinct events built
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {state.eventsBuilt.length}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      using {operatorVariety} different operators
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Trials in your last simulation
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      {(state.sim.trialCount || totalTrialsRef.current).toLocaleString()}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      experiment vs theory
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Venn regions explored
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-warning)]">
+                      {state.vennRegionsClicked.length}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      clicked and inspected
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Probability is a small set of rules, not guesswork:
+                    multiply for AND, add and subtract the overlap for OR, take
+                    the complement for NOT, and enough trials will pull
+                    experiment toward theory every time.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides/visualizing-data-charts"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← Visualizing Data
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next: Conditional Probability →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
