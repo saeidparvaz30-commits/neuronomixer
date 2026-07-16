@@ -51,7 +51,7 @@ const jsonLd = [
     "@type": "Organization",
     name: "NeuroNomixer",
     url: siteUrl,
-    logo: { "@type": "ImageObject", url: `${siteUrl}/pictures/Logo.png` },
+    logo: { "@type": "ImageObject", url: `${siteUrl}/og/logo-512.png` },
     sameAs: [
       "https://www.linkedin.com/company/neuronomixer",
       "https://x.com/neuronomixer",

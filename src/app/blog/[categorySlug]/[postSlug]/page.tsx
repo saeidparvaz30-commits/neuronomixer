@@ -75,7 +75,7 @@ export async function generateMetadata({
   const canonicalUrl = `${siteUrl}/blog/${categorySlug}/${postSlug}`;
   const ogImage = post?.mainImageUrl
     ? [{ url: post.mainImageUrl, width: 1200, height: 630, alt: title }]
-    : [{ url: `${siteUrl}/pictures/Logo.png`, alt: "NeuroNomixer" }];
+    : [{ url: `${siteUrl}/og/og-default.png`, width: 1200, height: 630, alt: "NeuroNomixer" }];
 
   return {
     title,
@@ -137,7 +137,7 @@ export default async function PostPage({
     publisher: {
       "@type": "Organization",
       name: "NeuroNomixer",
-      logo: { "@type": "ImageObject", url: `${siteUrl}/pictures/Logo.png` },
+      logo: { "@type": "ImageObject", url: `${siteUrl}/og/logo-512.png` },
     },
   };
 
