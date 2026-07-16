@@ -6,13 +6,15 @@ import { HEALTH_RECORDS, TARGET_K, TriedSetting } from "./types";
 interface Props {
   tried: readonly TriedSetting[];
   currentKey: string;
+  /** Settings the learner has actively tried, excluding the seeded full-detail point. */
+  exploredCount: number;
 }
 
 const W = 560;
 const H = 260;
 const PAD = { left: 44, right: 16, top: 14, bottom: 34 };
 
-export default function TradeoffChart({ tried, currentKey }: Props) {
+export default function TradeoffChart({ tried, currentKey, exploredCount }: Props) {
   const maxK = HEALTH_RECORDS.length;
   const x = (k: number) =>
     PAD.left + ((k - 1) / (maxK - 1)) * (W - PAD.left - PAD.right);
@@ -184,7 +186,7 @@ export default function TradeoffChart({ tried, currentKey }: Props) {
           current setting
         </span>
         <span className="ml-auto font-mono">
-          {tried.length} setting{tried.length === 1 ? "" : "s"} tried
+          {exploredCount} setting{exploredCount === 1 ? "" : "s"} tried
         </span>
       </div>
     </div>

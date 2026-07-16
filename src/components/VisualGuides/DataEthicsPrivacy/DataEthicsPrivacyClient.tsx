@@ -382,7 +382,11 @@ export default function DataEthicsPrivacyClient() {
             technical one: it decides whose privacy is protected and which
             questions can still be answered.
           </p>
-          <TradeoffChart tried={triedList} currentKey={settingsKey(settings)} />
+          <TradeoffChart
+            tried={triedList}
+            currentKey={settingsKey(settings)}
+            exploredCount={exploredCount}
+          />
         </motion.section>
 
         {/* Completion card */}
@@ -439,10 +443,10 @@ export default function DataEthicsPrivacyClient() {
                   </div>
                   <div className="rounded-xl border border-[#1e293b] p-3">
                     <p className="text-[10px] text-[#475569] mb-1">
-                      Points on your tradeoff curve
+                      Release settings you tried
                     </p>
                     <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
-                      {triedList.length}
+                      {exploredCount}
                     </p>
                     <p className="text-[10px] text-[#475569] mt-0.5">
                       distinct release settings explored
