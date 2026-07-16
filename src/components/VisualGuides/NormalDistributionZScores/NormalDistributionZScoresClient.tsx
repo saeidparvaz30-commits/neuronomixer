@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import { INITIAL_STATE, NormalDistributionState } from "./types";
 import InteractiveCurve from "./InteractiveCurve";
 import ZScoreCalculator from "./ZScoreCalculator";
@@ -16,8 +17,11 @@ import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 const DEFAULT_X1 = INITIAL_STATE.markerX1;
 const DEFAULT_X2 = INITIAL_STATE.markerX2;
 
+const NEXT_GUIDE_SLUG = "hypothesis-testing";
+
 export default function NormalDistributionZScoresClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
 
   const [state, setState] = useState<NormalDistributionState>({ ...INITIAL_STATE });
@@ -75,6 +79,29 @@ export default function NormalDistributionZScoresClient() {
       testB_stdDev: INITIAL_STATE.testB_stdDev,
     }));
   }
+
+  function handleReset() {
+    setState({ ...INITIAL_STATE });
+    setMarkersMovedX1(false);
+    setMarkersMovedX2(false);
+    setCalculatorUseCount(0);
+    setComparisonUsed(false);
+    setEmpiricalRuleViewed(false);
+  }
+
+  // ── Derived values for the completion recap ───────────────────────────────
+  const calculatorZ =
+    state.calculatorStdDev !== 0
+      ? (state.rawValue - state.calculatorMean) / state.calculatorStdDev
+      : 0;
+  const testA_z =
+    state.testA_stdDev !== 0
+      ? (state.testA_value - state.testA_mean) / state.testA_stdDev
+      : 0;
+  const testB_z =
+    state.testB_stdDev !== 0
+      ? (state.testB_value - state.testB_mean) / state.testB_stdDev
+      : 0;
 
   // ── Progress ──────────────────────────────────────────────────────────────
   const progress = [
@@ -338,7 +365,112 @@ export default function NormalDistributionZScoresClient() {
           </div>
         </div>
 
-        {/* Footer nav */}
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Speak Fluent Z-Score
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You dragged probabilities out of the bell curve, standardized
+                  raw scores, and used z-scores to compare results from two
+                  different scales.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Your curve
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      N({state.mean}, {state.stdDev}²)
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      markers at {state.markerX1.toFixed(0)} and {state.markerX2.toFixed(0)}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Last z-score you computed
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      z = {calculatorZ.toFixed(2)}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      from x = {state.rawValue}, μ = {state.calculatorMean}, σ = {state.calculatorStdDev}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Cross-scale comparison
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-white">
+                      {testA_z.toFixed(2)} vs {testB_z.toFixed(2)}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      test A vs test B in standard units
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;A z-score turns any measurement into the same
+                    currency, distance from the mean in standard deviations,
+                    which is what lets you compare scores across different
+                    scales and read probabilities straight off the normal
+                    curve.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!allComplete && (
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/data-distributions"
@@ -347,12 +479,13 @@ export default function NormalDistributionZScoresClient() {
             ← Data Distributions
           </Link>
           <Link
-            href="/visual-guides/hypothesis-testing"
+            href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Hypothesis Testing →
           </Link>
         </div>
+        )}
       </div>
     </div>
   );
