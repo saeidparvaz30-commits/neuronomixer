@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   ICE_CREAM_DATA,
@@ -446,8 +447,11 @@ function CoefficientTable({ simple, multiple, interaction, mode }: CompTableProp
 }
 
 // ── Main Component ────────────────────────────────────────────────────────────
+const NEXT_GUIDE_SLUG = "regression-diagnostics";
+
 export default function MultipleRegressionClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
 
   const [mode, setMode] = useState<ModelMode>("simple");
   const [simpleViewed, setSimpleViewed] = useState(false);
@@ -511,6 +515,15 @@ export default function MultipleRegressionClient() {
 
   // Weekend slope in interaction model
   const weekendTempSlope = interaction.tempCoeff + interaction.interactionCoeff;
+
+  function handleReset() {
+    setMode("simple");
+    setSimpleViewed(false);
+    setMultipleViewed(false);
+    setInteractionViewed(false);
+    setInterpretedCoeff(false);
+    setConfoundingIdentified(false);
+  }
 
   return (
     <div className="min-h-screen pb-20">
@@ -1122,7 +1135,113 @@ export default function MultipleRegressionClient() {
           />
         </motion.div>
 
-        {/* Footer nav */}
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Unmasked the Confounder
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You fit all three models on the same sales data, interpreted
+                  the coefficients, and watched the weekend effect stop hiding
+                  inside the temperature slope.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Omitted-variable bias in the temp-only slope
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-warning)]">
+                      {biasDelta >= 0 ? "+" : ""}
+                      {fmt(biasDelta)} $k/°C
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      {fmt(simple.slope)} shrank to {fmt(multiple.tempCoeff)} after
+                      controlling for weekends
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      R² gained by the interaction term
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      +{fmt(interactionR2Improvement, 3)}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      {fmt(multiple.rSquared, 3)} to {fmt(interaction.rSquared, 3)}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Weekend temperature slope
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {fmt(weekendTempSlope)} $k/°C
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      vs {fmt(interaction.tempCoeff)} on weekdays
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;A coefficient is only as honest as the model around
+                    it: leave a confounder out and the variables you did include
+                    quietly absorb its effect, so control for what matters
+                    before you trust any single slope.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!allComplete && (
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/simple-linear-regression"
@@ -1131,12 +1250,13 @@ export default function MultipleRegressionClient() {
             ← Simple Linear Regression
           </Link>
           <Link
-            href="/visual-guides/regression-diagnostics"
+            href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Regression Diagnostics →
           </Link>
         </div>
+        )}
 
         <GuideCompletion isComplete={allComplete} guideSlug="multiple-regression-confounding" score={100} />
       </div>
