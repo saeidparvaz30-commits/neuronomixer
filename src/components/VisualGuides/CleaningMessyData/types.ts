@@ -16,34 +16,34 @@ export interface RawRow {
 /**
  * The survey export, verbatim. 24 rows, three messy columns:
  * - country: 9 distinct raw strings that are really only 3 countries
- * - signupDate: mixed ISO, US slash, month-name, and dotted formats plus junk
+ * - signupDate: mixed ISO, month-first slash, month-name, and dotted formats plus junk
  * - hours: numbers stored as text, with whitespace, decimal commas, units, and sentinels
  */
 export const RAW_ROWS: readonly RawRow[] = [
-  { id: 1, country: "USA", signupDate: "2026-01-15", hours: "12" },
-  { id: 2, country: "usa", signupDate: "03/15/2026", hours: "8" },
-  { id: 3, country: " USA ", signupDate: "2026-02-28", hours: " 8 " },
-  { id: 4, country: "United States", signupDate: "Mar 5, 2026", hours: "30" },
-  { id: 5, country: "UK", signupDate: "2025-11-02", hours: "5" },
-  { id: 6, country: "Germany", signupDate: "1/8/2026", hours: "7,5" },
-  { id: 7, country: "USA", signupDate: "2025-12-09", hours: "14" },
-  { id: 8, country: "U.S.A.", signupDate: "January 12, 2026", hours: "21" },
-  { id: 9, country: "UK", signupDate: "2026-03-01", hours: "10" },
-  { id: 10, country: "United Kingdom", signupDate: "11/30/2025", hours: "2" },
-  { id: 11, country: "UK", signupDate: "2026.03.22", hours: "16" },
-  { id: 12, country: "Germany", signupDate: "2025-10-21", hours: "12h" },
-  { id: 13, country: "USA", signupDate: "4 Feb 2026", hours: "7" },
-  { id: 14, country: " USA ", signupDate: "2026-04-11", hours: "25" },
-  { id: 15, country: "United States", signupDate: " 2026-02-14 ", hours: "9" },
-  { id: 16, country: "UK", signupDate: "07/04/2025", hours: "15 " },
-  { id: 17, country: "Germany", signupDate: "2026-01-30", hours: "11" },
-  { id: 18, country: "germany ", signupDate: "2025.08.07", hours: "ten" },
-  { id: 19, country: "USA", signupDate: "19 Dec 2025", hours: "N/A" },
-  { id: 20, country: "usa", signupDate: "2025-09-18", hours: "20 hrs" },
-  { id: 21, country: "U.S.A.", signupDate: "12/05/2025", hours: "N/A" },
-  { id: 22, country: "UK", signupDate: "last spring", hours: "18" },
-  { id: 23, country: "United Kingdom", signupDate: "n/a", hours: "12,5" },
-  { id: 24, country: "germany ", signupDate: "2026-13-40", hours: "-" },
+  { id: 1, country: "UK", signupDate: "2026-01-15", hours: "12" },
+  { id: 2, country: "uk", signupDate: "03/15/2026", hours: "8" },
+  { id: 3, country: " UK ", signupDate: "2026-02-28", hours: " 8 " },
+  { id: 4, country: "United Kingdom", signupDate: "Mar 5, 2026", hours: "30" },
+  { id: 5, country: "Germany", signupDate: "2025-11-02", hours: "5" },
+  { id: 6, country: "Norway", signupDate: "1/8/2026", hours: "7,5" },
+  { id: 7, country: "UK", signupDate: "2025-12-09", hours: "14" },
+  { id: 8, country: "U.K.", signupDate: "January 12, 2026", hours: "21" },
+  { id: 9, country: "Germany", signupDate: "2026-03-01", hours: "10" },
+  { id: 10, country: "Deutschland", signupDate: "11/30/2025", hours: "2" },
+  { id: 11, country: "Germany", signupDate: "2026.03.22", hours: "16" },
+  { id: 12, country: "Norway", signupDate: "2025-10-21", hours: "12h" },
+  { id: 13, country: "UK", signupDate: "4 Feb 2026", hours: "7" },
+  { id: 14, country: " UK ", signupDate: "2026-04-11", hours: "25" },
+  { id: 15, country: "United Kingdom", signupDate: " 2026-02-14 ", hours: "9" },
+  { id: 16, country: "Germany", signupDate: "07/04/2025", hours: "15 " },
+  { id: 17, country: "Norway", signupDate: "2026-01-30", hours: "11" },
+  { id: 18, country: "norway ", signupDate: "2025.08.07", hours: "ten" },
+  { id: 19, country: "UK", signupDate: "19 Dec 2025", hours: "N/A" },
+  { id: 20, country: "uk", signupDate: "2025-09-18", hours: "20 hrs" },
+  { id: 21, country: "U.K.", signupDate: "12/05/2025", hours: "N/A" },
+  { id: 22, country: "Germany", signupDate: "last spring", hours: "18" },
+  { id: 23, country: "Deutschland", signupDate: "n/a", hours: "12,5" },
+  { id: 24, country: "norway ", signupDate: "2026-13-40", hours: "-" },
 ] as const;
 
 export const TOTAL_ROWS = RAW_ROWS.length;
@@ -116,7 +116,7 @@ export const STEPS: readonly StepMeta[] = [
     short: "Dates",
     appliesTo: "signup_date",
     description:
-      "Swap the strict ISO-only loader for a multi-format parser that also reads US slash dates, month names, and dotted dates, then normalizes everything to ISO.",
+      "Swap the strict ISO-only loader for a multi-format parser that also reads month-first slash dates, month names, and dotted dates, then normalizes everything to ISO.",
   },
   {
     id: "numbers",
@@ -131,7 +131,7 @@ export const STEPS: readonly StepMeta[] = [
 // ── Country column: trim, casefold, synonym mapping ────────────────────────
 
 /** Canonical labels the messy column should converge to. */
-export const CANONICAL_COUNTRIES = ["USA", "UK", "Germany"] as const;
+export const CANONICAL_COUNTRIES = ["UK", "Germany", "Norway"] as const;
 
 const CANONICAL_SET = new Set<string>(CANONICAL_COUNTRIES);
 
@@ -140,21 +140,21 @@ const CANONICAL_SET = new Set<string>(CANONICAL_COUNTRIES);
  * that exactness is the point: mapping applied to raw values misses most rows.
  */
 export const CATEGORY_MAP: Record<string, string> = {
-  usa: "USA",
-  "u.s.a.": "USA",
-  "united states": "USA",
   uk: "UK",
+  "u.k.": "UK",
   "united kingdom": "UK",
   germany: "Germany",
+  deutschland: "Germany",
+  norway: "Norway",
 };
 
 export const CATEGORY_MAP_ENTRIES: readonly { from: string; to: string }[] =
   Object.entries(CATEGORY_MAP).map(([from, to]) => ({ from, to }));
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  USA: "#3bb4a4",
-  UK: "#60a5fa",
-  Germany: "#a855f7",
+  UK: "#3bb4a4",
+  Germany: "#60a5fa",
+  Norway: "#a855f7",
 };
 
 /** Applies the enabled country-column steps in pipeline order. */
@@ -252,8 +252,8 @@ export function parseDateStrict(v: string): IsoDate | null {
 }
 
 /**
- * The cleaning-step parser: trims its input, then tries ISO, US slash
- * (month first, a documented assumption), month-name, and dotted formats.
+ * The cleaning-step parser: trims its input, then tries ISO, month-first slash
+ * (a documented assumption), month-name, and dotted formats.
  */
 export function parseDateFlexible(v: string): IsoDate | null {
   const s = v.trim();

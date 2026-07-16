@@ -26,7 +26,7 @@ import SurveyTable from "./SurveyTable";
 import CleaningPipeline from "./CleaningPipeline";
 import CategoryChart from "./CategoryChart";
 
-const GUIDE_TITLE = "USA, U.S.A., usa: Cleaning Real Values";
+const GUIDE_TITLE = "UK, U.K., uk: Cleaning Real Values";
 const GUIDE_SLUG = "cleaning-messy-data";
 const NEXT_GUIDE_SLUG = "eda-workflow";
 
@@ -120,7 +120,7 @@ export default function CleaningMessyDataClient() {
             animate="visible"
             className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-3"
           >
-            USA, U.S.A., usa:{" "}
+            UK, U.K., uk:{" "}
             <span className="text-[var(--color-accent)]">Cleaning Real Values</span>
           </motion.h1>
           <motion.p
@@ -188,7 +188,7 @@ export default function CleaningMessyDataClient() {
             Practitioners routinely spend more time preparing data than modeling it, and
             entire courses exist just for this craft. The reason is simple: every join,
             filter, groupby, and chart trusts the values underneath it. A country column
-            where USA, U.S.A., and usa are three different strings will quietly produce
+            where UK, U.K., and uk are three different strings will quietly produce
             three different countries in every result downstream. What counts as good
             data has its own vocabulary, covered in{" "}
             <Link
@@ -343,8 +343,8 @@ export default function CleaningMessyDataClient() {
               </p>
               <p className="text-[11px] text-[#94a3b8] leading-relaxed">
                 Row 6 says 1/8/2026. The parser here reads it as January 8 because it
-                assumes US month-first dates; most of Europe would read August 1. No
-                code can tell you which is true. Flexible parsing embeds assumptions,
+                assumes month-first slash dates; a day-first reader would see August 1.
+                No code can tell you which is true. Flexible parsing embeds assumptions,
                 so document them where the next analyst will look.
               </p>
             </div>

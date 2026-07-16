@@ -270,9 +270,10 @@ export default function DataEthicsPrivacyClient() {
             organizations still do: it deleted the name column and called the
             data anonymous. But ZIP code, age, and gender survived, and those
             three fields are quasi-identifiers: harmless alone, a fingerprint
-            together. In 2000, Latanya Sweeney estimated that 87 percent of
-            Americans are uniquely identified by ZIP code, birth date, and sex
-            alone (Sweeney, 2000). That is a cited historical result, not
+            together. In 2000, Latanya Sweeney estimated that 87 percent of one
+            country&apos;s population could be uniquely identified by ZIP code,
+            birth date, and sex alone (Sweeney, 2000). That is a cited
+            historical result, not
             something this page recomputes. What this page does recompute, on
             every click, is the same attack in miniature.
           </p>
