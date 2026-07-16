@@ -47,7 +47,7 @@ function topPMask(probs: number[], p: number) {
 }
 
 function lcgSample(probs: number[], seed: number) {
-  let s = (seed * 1664525 + 1013904223) & 0xffffffff;
+  const s = (seed * 1664525 + 1013904223) & 0xffffffff;
   const r = (s >>> 0) / 0x100000000;
   let cum = 0;
   for (let i = 0; i < probs.length; i++) { cum += probs[i]; if (r < cum) return i; }
@@ -192,7 +192,7 @@ export default function TemperatureTopKClient() {
         <section className="mb-10">
           <h2 className="text-[15px] font-bold text-white mb-1">1. The Base Probabilities</h2>
           <p className="text-[12px] text-[#94a3b8] mb-4">
-            Prompt: <span className="font-mono text-white bg-[#1e293b] px-2 py-0.5 rounded">"The sky is ___"</span>, raw softmax at T=1.0
+            Prompt: <span className="font-mono text-white bg-[#1e293b] px-2 py-0.5 rounded">&quot;The sky is ___&quot;</span>, raw softmax at T=1.0
           </p>
           <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5 space-y-2.5">
             {BASE_LOGITS.map(({ token }, i) => (

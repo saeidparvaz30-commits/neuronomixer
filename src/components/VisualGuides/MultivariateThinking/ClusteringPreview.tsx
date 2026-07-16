@@ -30,8 +30,8 @@ function dist(a: { x: number; y: number }, b: { x: number; y: number }) {
 }
 
 function runKMeans(k: number): { assignments: number[]; centroids: { x: number; y: number }[] } {
-  let centroids = INIT_CENTROIDS[k].map((c) => ({ ...c }));
-  let assignments = new Array(FIXED_POINTS.length).fill(0);
+  const centroids = INIT_CENTROIDS[k].map((c) => ({ ...c }));
+  const assignments = new Array(FIXED_POINTS.length).fill(0);
 
   for (let iter = 0; iter < 20; iter++) {
     // Assign

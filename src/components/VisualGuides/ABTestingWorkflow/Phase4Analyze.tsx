@@ -488,7 +488,7 @@ export default function Phase4Analyze({
             </p>
           </div>
           <div>
-            <p className="text-[11px] text-[#94a3b8]">Cohen's h</p>
+            <p className="text-[11px] text-[#94a3b8]">Cohen&apos;s h</p>
             <p className="text-lg font-bold text-[var(--color-accent)]">
               {cohenH.toFixed(3)} ({hLabel})
             </p>

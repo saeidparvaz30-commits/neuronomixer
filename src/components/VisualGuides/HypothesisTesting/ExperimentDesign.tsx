@@ -97,7 +97,7 @@ export default function ExperimentDesign({
       {/* Effect Size */}
       <div className="mb-5">
         <div className="flex items-center justify-between mb-1">
-          <span className="text-[12px] text-white font-medium">Effect Size (Cohen's d)</span>
+          <span className="text-[12px] text-white font-medium">Effect Size (Cohen&apos;s d)</span>
           <span className="text-[12px] font-mono text-[var(--color-accent)]">{effectSize.toFixed(1)}</span>
         </div>
         <div className="flex items-center justify-between mb-2">

@@ -20,7 +20,7 @@ export default function RNNCellDiagram({ step }: Props) {
   return (
     <div className="w-full bg-[#0f172a] rounded-xl overflow-hidden border border-[#1e293b]">
       <div className="px-4 py-2 border-b border-[#1e293b] flex items-center gap-2">
-        <span className="text-xs font-semibold text-white">RNN Cell · step {step + 1}: "{seq.inputToken}"</span>
+        <span className="text-xs font-semibold text-white">RNN Cell · step {step + 1}: &quot;{seq.inputToken}&quot;</span>
         <span className="ml-auto text-[10px] text-[#475569]">h state: [{h.map((v) => v.toFixed(2)).join(", ")}]</span>
       </div>
       <svg viewBox="0 0 400 220" className="w-full" style={{ height: 200 }}>

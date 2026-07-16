@@ -488,7 +488,7 @@ export default function KMeansClient() {
 
             {/* Algorithm explanation */}
             <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
-              <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">What's Happening</p>
+              <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">What&apos;s Happening</p>
               <AnimatePresence mode="wait">
                 <motion.p key={phase + stepPhase + iteration} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
                   className="text-[11px] text-[#94a3b8] leading-relaxed">
@@ -513,7 +513,7 @@ export default function KMeansClient() {
               <p className="text-[11px] font-semibold uppercase tracking-[1.5px] text-[#475569] mb-3">Elbow Curve</p>
               <ElbowChart elbowData={elbowData} currentK={k} />
               <p className="text-[10px] text-[#475569] mt-2 leading-relaxed">
-                Run with K=2..6 to build the curve. The "elbow" suggests the optimal number of clusters.
+                Run with K=2..6 to build the curve. The &quot;elbow&quot; suggests the optimal number of clusters.
               </p>
             </div>
           </div>

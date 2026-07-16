@@ -174,7 +174,7 @@ export function runIndependentTTest(
   const s1 = stdDev(group1), s2 = stdDev(group2);
   const diff = m1 - m2;
 
-  let tStat: number, df: number, se: number;
+  let df: number, se: number;
 
   if (equalVariance) {
     // Pooled variance
@@ -188,7 +188,7 @@ export function runIndependentTTest(
     df = (v1 + v2) ** 2 / (v1 ** 2 / (n1 - 1) + v2 ** 2 / (n2 - 1));
   }
 
-  tStat = se === 0 ? 0 : diff / se;
+  const tStat = se === 0 ? 0 : diff / se;
   const abst = Math.abs(tStat);
   const pValue = Math.max(0, Math.min(1, 2 * (1 - tCDF(abst, df))));
 

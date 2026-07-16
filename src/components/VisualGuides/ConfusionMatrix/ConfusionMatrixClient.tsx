@@ -190,7 +190,7 @@ export default function ConfusionMatrixClient() {
             <span className="text-[var(--color-accent)]">Decoded</span>
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
-            Accuracy alone doesn't tell the whole story. Explore how the confusion matrix reveals
+            Accuracy alone doesn&apos;t tell the whole story. Explore how the confusion matrix reveals
             what kinds of mistakes your classifier makes, and why that matters differently in each domain.
           </p>
         </section>
@@ -407,7 +407,7 @@ export default function ConfusionMatrixClient() {
               <p className="text-xs text-[#94a3b8] leading-relaxed">
                 In <span className="text-white">medical screening</span>, a missed cancer (FN) can be fatal,
                 so you lower the threshold to maximize recall, accepting more false alarms.
-                In <span className="text-white">spam filtering</span>, you'd rather let spam through than block a job offer.
+                In <span className="text-white">spam filtering</span>, you&apos;d rather let spam through than block a job offer.
               </p>
             </div>
           </div>

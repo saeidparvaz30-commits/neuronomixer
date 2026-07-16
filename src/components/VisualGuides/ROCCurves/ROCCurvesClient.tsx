@@ -432,7 +432,7 @@ export default function ROCCurvesClient() {
               <h3 className="text-xs font-semibold text-[var(--color-accent)] uppercase tracking-wide mb-2">Key Insight</h3>
               <p className="text-xs text-[#94a3b8] leading-relaxed">
                 AUC is the probability that the model ranks a random positive sample higher than a random negative.
-                It's threshold-independent: a single number for the entire curve.
+                It&apos;s threshold-independent: a single number for the entire curve.
               </p>
               <p className="text-xs text-[#94a3b8] leading-relaxed mt-2">
                 Caveat: with heavily imbalanced classes, ROC curves can look deceptively good because FPR is

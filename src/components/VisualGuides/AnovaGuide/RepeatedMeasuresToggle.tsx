@@ -106,7 +106,7 @@ export default function RepeatedMeasuresToggle({
               <div className="flex items-start gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] mt-1.5 flex-shrink-0" />
                 <p className="text-[11px] text-[#94a3b8]">
-                  <strong className="text-white">Sphericity assumption</strong> (Mauchly's test):
+                  <strong className="text-white">Sphericity assumption</strong> (Mauchly&apos;s test):
                   variances of pairwise differences should be equal. If violated,
                   use Greenhouse-Geisser correction.
                 </p>
