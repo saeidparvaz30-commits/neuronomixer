@@ -40,9 +40,15 @@ export default function DatetimeExpander({
     () => Math.max(...rows.map((r) => r.pickups), ...curFit.predictions) * 1.06,
     [rows, curFit]
   );
+  const minPred = useMemo(() => Math.min(...curFit.predictions), [curFit]);
+  // Some feature sets fit a plane that dips below zero; the chart shows the
+  // model's raw predictions, so the y domain extends below zero when needed.
+  const hasNegative = minPred < 0;
+  const yMin = Math.min(0, minPred) * 1.06;
 
   const sx = (t: number) => PAD_L + (t / (rows.length - 1)) * (W - PAD_L - PAD_R);
-  const sy = (v: number) => H - PAD_B - (v / yMax) * (H - PAD_T - PAD_B);
+  const sy = (v: number) =>
+    H - PAD_B - ((v - yMin) / (yMax - yMin)) * (H - PAD_T - PAD_B);
 
   const actualPath = rows
     .map((r, i) => `${i === 0 ? "M" : "L"}${sx(r.t).toFixed(1)},${sy(r.pickups).toFixed(1)}`)
@@ -135,6 +141,17 @@ export default function DatetimeExpander({
               {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"][d % 7]}
             </text>
           ))}
+          {hasNegative && (
+            <line
+              x1={PAD_L}
+              x2={W - PAD_R}
+              y1={sy(0)}
+              y2={sy(0)}
+              stroke="#475569"
+              strokeWidth={1}
+              strokeDasharray="4 3"
+            />
+          )}
           <path d={actualPath} fill="none" stroke="#94a3b8" strokeWidth={1} opacity={0.65} />
           <path
             d={predPath}
@@ -144,6 +161,16 @@ export default function DatetimeExpander({
             strokeLinejoin="round"
           />
         </svg>
+        {hasNegative && (
+          <p className="text-[11px] mt-2 leading-relaxed" style={{ color: "var(--color-warning)" }}>
+            Look closely at the dashed zero line: with this feature set the
+            prediction curve dips to {minPred.toFixed(2)} pickups per hour.
+            Negative pickups are physically impossible, but a linear model has
+            no idea about that constraint, so it happily predicts below zero.
+            This is exactly why feature and transform choices matter: they
+            decide what the model is even capable of saying.
+          </p>
+        )}
         <p className="text-[11px] text-[#475569] mt-2 leading-relaxed">
           The baseline model sees only hours-since-start, so its best move is a
           nearly flat line through the average. Every feature you extract below
