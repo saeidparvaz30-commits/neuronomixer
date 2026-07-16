@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import type { Scenario, FramingType, ScenarioInfo, WhatIsStatisticsState } from "./types";
 import { initialState } from "./types";
 import ScenarioCard from "./ScenarioCard";
@@ -118,10 +119,13 @@ const SCENARIOS: ScenarioInfo[] = [
   },
 ];
 
+const NEXT_GUIDE_SLUG = "types-of-data-measurement-scales";
+
 // ── Main component ─────────────────────────────────────────────────────────────
 
 export default function WhatIsStatisticsClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
   const [state, setState] = useState<WhatIsStatisticsState>(initialState);
   const [framingToggled, setFramingToggled] = useState<Set<FramingType>>(new Set());
@@ -158,6 +162,11 @@ export default function WhatIsStatisticsClient() {
     setFramingToggled((prev) => new Set([...prev, f]));
     // Suppress unused scenario param — framing is global
     void scenario;
+  }
+
+  function handleReset() {
+    setState(initialState);
+    setFramingToggled(new Set());
   }
 
   const progress = [
@@ -241,21 +250,116 @@ export default function WhatIsStatisticsClient() {
           ))}
         </div>
 
-        {/* Footer nav */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link
-            href="/visual-guides"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
-          >
-            ← All Guides
-          </Link>
-          <Link
-            href="/visual-guides/types-of-data-measurement-scales"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
-          >
-            Next: Types of Data →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Out-Reasoned the Headline Numbers
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You asked what 45% is compared to, unmasked the confounder
+                  behind a risky-looking group, and refused a drug effect the
+                  noise could explain.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Scenarios you reasoned through
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      {correctAnswersCount} of 3
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      adoption, loan bias, clinical trial
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Framings explored
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {framingToggled.size} of 3
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      descriptive, inferential, predictive
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Statistical thinking starts before any formula: ask
+                    compared to what, ask what the aggregate is hiding, and ask
+                    whether noise alone could produce the effect, because the
+                    same table answers differently when you describe, infer, or
+                    predict.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!allComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← All Guides
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next: Types of Data →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
