@@ -45,7 +45,7 @@ const TOGGLE_META: {
   {
     key: "stem",
     label: "Crude stemming",
-    blurb: "Strip s, ing, and ed suffixes with rough rules.",
+    blurb: "Strip s, es, ies, ing, and ed suffixes with rough rules.",
   },
 ];
 

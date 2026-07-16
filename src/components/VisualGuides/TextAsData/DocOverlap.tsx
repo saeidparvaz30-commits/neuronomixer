@@ -138,18 +138,27 @@ export default function DocOverlap({
         </div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-[10px] text-[#94a3b8]">
           <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full inline-block" style={{ background: COLOR_A }} />
+            <span
+              className="w-2 h-2 rounded-full inline-block"
+              style={{ background: COLOR_A }}
+              aria-hidden="true"
+            />
             only in A: <span className="font-mono">{overlap.onlyA.length}</span>
           </span>
           <span className="flex items-center gap-1">
             <span
               className="w-2 h-2 rounded-full inline-block"
               style={{ background: "var(--color-accent)" }}
+              aria-hidden="true"
             />
             shared: <span className="font-mono">{overlap.shared.length}</span>
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full inline-block" style={{ background: COLOR_B }} />
+            <span
+              className="w-2 h-2 rounded-full inline-block"
+              style={{ background: COLOR_B }}
+              aria-hidden="true"
+            />
             only in B: <span className="font-mono">{overlap.onlyB.length}</span>
           </span>
         </div>
@@ -163,7 +172,7 @@ export default function DocOverlap({
             J = |A ∩ B| / |A ∪ B| = {overlap.shared.length} / {overlap.union}{" "}
             ={" "}
             <span className="text-[var(--color-accent)] font-bold">
-              {overlap.union === 0 ? "0.00" : overlap.jaccard.toFixed(2)}
+              {overlap.jaccard.toFixed(2)}
             </span>
           </p>
           <p className="text-[10px] text-[#475569] mt-2 leading-relaxed">

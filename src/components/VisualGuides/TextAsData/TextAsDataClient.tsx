@@ -184,6 +184,7 @@ export default function TextAsDataClient() {
               <div
                 className="w-2 h-2 rounded-full transition-colors"
                 style={{ background: item.done ? "var(--color-accent)" : "#1e293b" }}
+                aria-hidden="true"
               />
               <span className={`text-[11px] ${item.done ? "text-white" : "text-[#475569]"}`}>
                 {item.label}
@@ -418,7 +419,7 @@ export default function TextAsDataClient() {
                       Document overlap you built
                     </p>
                     <p className="text-[14px] font-mono font-bold text-[var(--color-warning)]">
-                      J = {overlap.union === 0 ? "0.00" : overlap.jaccard.toFixed(2)}
+                      J = {overlap.jaccard.toFixed(2)}
                     </p>
                     <p className="text-[10px] text-[#475569] mt-0.5">
                       {overlap.shared.length} shared of {overlap.union} distinct words
