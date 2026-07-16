@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 
 import {
   GroupData,
@@ -37,8 +38,11 @@ const INITIAL_COMPLETION: CompletionState = {
   correctInterpretation: false,
 };
 
+const NEXT_GUIDE_SLUG = "nonparametric-tests";
+
 export default function AnovaGuideClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
   const summaryRef = useRef<HTMLDivElement>(null);
 
@@ -48,6 +52,7 @@ export default function AnovaGuideClient() {
   const [decompositionStep, setDecompositionStep] = useState(0);
   const [isRepeated, setIsRepeated] = useState(false);
   const [completion, setCompletion] = useState<CompletionState>(INITIAL_COMPLETION);
+  const [resetKey, setResetKey] = useState(0);
 
   // ── Run ANOVA ──────────────────────────────────────────────────────────────
 
@@ -98,6 +103,19 @@ export default function AnovaGuideClient() {
     observer.observe(summaryRef.current);
     return () => observer.disconnect();
   }, [completion.correctInterpretation, statistics]);
+
+  // ── Reset ──────────────────────────────────────────────────────────────────
+  // Subcomponents (DataBuilder, PostHocComparison, RepeatedMeasuresToggle) latch
+  // local state; bumping resetKey remounts them so their internals reset too.
+  const handleReset = useCallback(() => {
+    setGroups(getDefaultGroups());
+    setStatistics(null);
+    setPairwiseComparisons(null);
+    setDecompositionStep(0);
+    setIsRepeated(false);
+    setCompletion(INITIAL_COMPLETION);
+    setResetKey(k => k + 1);
+  }, []);
 
   // ── Progress dots ─────────────────────────────────────────────────────────
 
@@ -201,6 +219,7 @@ export default function AnovaGuideClient() {
         {/* Row 1: DataBuilder + BoxPlot */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
           <DataBuilder
+            key={resetKey}
             groups={groups}
             onGroupsChange={newGroups => {
               setGroups(newGroups);
@@ -252,6 +271,7 @@ export default function AnovaGuideClient() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
           {pairwiseComparisons && statistics?.pValue != null && statistics.pValue < 0.05 ? (
             <PostHocComparison
+              key={resetKey}
               comparisons={pairwiseComparisons}
               onViewed={() =>
                 setCompletion(prev => ({ ...prev, postHocViewed: true }))
@@ -271,6 +291,7 @@ export default function AnovaGuideClient() {
           )}
 
           <RepeatedMeasuresToggle
+            key={resetKey}
             isRepeated={isRepeated}
             onToggle={setIsRepeated}
             onToggled={() =>
@@ -284,21 +305,135 @@ export default function AnovaGuideClient() {
           <ResultsSummary statistics={statistics} isComplete={isComplete} />
         </div>
 
-        {/* Footer nav */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link
-            href="/visual-guides/t-tests-proportion-tests"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
-          >
-            ← t-Tests &amp; Proportion Tests
-          </Link>
-          <Link
-            href="/visual-guides/nonparametric-tests"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
-          >
-            Nonparametric Tests →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && statistics && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Decomposed the Variance
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You ran the omnibus F test, split total variance into between-group
+                  and within-group parts, and followed a significant result into
+                  Bonferroni-corrected pairwise comparisons.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Your final F statistic</p>
+                    <p
+                      className="text-[14px] font-mono font-bold"
+                      style={{
+                        color:
+                          statistics.pValue < 0.05 ? "var(--color-success)" : "#ef4444",
+                      }}
+                    >
+                      F({statistics.dfBetween}, {statistics.dfWithin}) ={" "}
+                      {statistics.fStatistic.toFixed(2)}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      p{" "}
+                      {statistics.pValue < 0.001
+                        ? "< 0.001"
+                        : `= ${statistics.pValue.toFixed(3)}`}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Variance explained by groups
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {(statistics.etaSquared * 100).toFixed(1)}%
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      eta squared, between / total
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Significant pairs after Bonferroni
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-warning)]">
+                      {(pairwiseComparisons ?? []).filter(c => c.significant).length} of{" "}
+                      {(pairwiseComparisons ?? []).length}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      across {groups.length} groups
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;ANOVA asks one question of many groups at once: is the spread
+                    between group means large compared to the noise within them? Run the
+                    single F test first and corrected pairwise comparisons after, so a
+                    pile of separate tests never manufactures false positives.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides/t-tests-proportion-tests"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
+            >
+              ← t-Tests &amp; Proportion Tests
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Nonparametric Tests →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
