@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import {
   AdPoint,
   TransformId,
@@ -39,6 +39,24 @@ export default function TransformBench({
 }: Props) {
   const activeFit = fits[active];
   const rawRmse = fits.raw.rmse;
+  const radioRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  const moveActive = (delta: 1 | -1) => {
+    const i = TRANSFORM_ORDER.indexOf(active);
+    const next = TRANSFORM_ORDER[(i + delta + TRANSFORM_ORDER.length) % TRANSFORM_ORDER.length];
+    onSelect(next);
+    radioRefs.current[next]?.focus();
+  };
+
+  const onRadioKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+      e.preventDefault();
+      moveActive(1);
+    } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      moveActive(-1);
+    }
+  };
 
   const domain = useMemo(() => {
     const ys = data.map((p) => p.signups);
@@ -164,9 +182,14 @@ export default function TransformBench({
               return (
                 <button
                   key={t}
+                  ref={(el) => {
+                    radioRefs.current[t] = el;
+                  }}
                   role="radio"
                   aria-checked={isActive}
+                  tabIndex={isActive ? 0 : -1}
                   onClick={() => onSelect(t)}
+                  onKeyDown={onRadioKeyDown}
                   className={`flex items-center justify-between gap-2 px-3 py-2 rounded-xl border text-left text-[12px] font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${
                     isActive
                       ? "border-[var(--color-accent)] text-white bg-[#1e293b]"
@@ -210,9 +233,13 @@ export default function TransformBench({
                 style={{ accentColor: "var(--color-accent)" }}
               />
               <p className="text-[10px] text-[#475569] mt-1.5 leading-relaxed">
-                More bins always shrink the error on the data they were fit to.
-                That is parameter count doing the work, not insight: each extra
-                bin is another number the model gets to memorize.
+                More bins tend to shrink the error on the data they were fit
+                to, since each extra bin is another number the model gets to
+                memorize. That is a tendency, not a rule: quantile bins are
+                recomputed from scratch at every count rather than nested
+                inside one another, so one more bin can occasionally raise
+                the in-sample error before the trend resumes. Slide from 8 to
+                9 bins to see it happen on this data.
               </p>
             </div>
           )}

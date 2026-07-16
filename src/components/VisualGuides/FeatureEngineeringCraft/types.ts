@@ -157,7 +157,7 @@ export const TRANSFORM_META: Record<TransformId, TransformMeta> = {
     id: "log",
     label: "Log",
     formula: "ln(1 + x)",
-    color: "#22c55e",
+    color: "var(--color-success)",
     tagline: "Compresses the big values. The go-to move for diminishing returns.",
   },
   sqrt: {

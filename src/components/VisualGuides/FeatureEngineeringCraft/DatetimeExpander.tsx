@@ -50,7 +50,7 @@ export default function DatetimeExpander({
   const predPath = rows
     .map(
       (r, i) =>
-        `${i === 0 ? "M" : "L"}${sx(r.t).toFixed(1)},${sy(Math.max(0, curFit.predictions[i])).toFixed(1)}`
+        `${i === 0 ? "M" : "L"}${sx(r.t).toFixed(1)},${sy(curFit.predictions[i]).toFixed(1)}`
     )
     .join(" ");
 
