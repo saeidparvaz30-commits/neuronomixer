@@ -736,7 +736,7 @@ const GUIDES: GuideDef[] = [
   },
   {
     slug: "cleaning-messy-data",
-    title: "USA, U.S.A., usa: Cleaning Real Values",
+    title: "UK, U.K., uk: Cleaning Real Values",
     description: "Clean a messy survey export yourself: trim whitespace, casefold labels, map synonyms, parse mixed date formats, and coerce text to numbers while unique-value counts and parse rates update live.",
     interactiveType: "Interactive Pipeline",
     audience: "Students",

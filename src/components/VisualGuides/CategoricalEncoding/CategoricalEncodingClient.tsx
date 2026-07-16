@@ -30,7 +30,7 @@ const LEAK_CURVE = computeLeakCurve(LEAK_PRICES);
 
 const GUIDE_TITLE = "Turning Categories into Numbers";
 const GUIDE_SLUG = "categorical-encoding";
-const NEXT_GUIDE_SLUG = "dimensionality-reduction";
+const NEXT_GUIDE_SLUG = "feature-engineering-craft";
 
 export default function CategoricalEncodingClient() {
   const { data: session } = useSession();
