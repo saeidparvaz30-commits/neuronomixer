@@ -53,7 +53,8 @@ export default function SurveyTable({ rows, anyStepOn }: Props) {
     <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-4 sm:p-5">
       <div className="flex items-center justify-between gap-2 flex-wrap mb-3">
         <p className="text-[13px] font-semibold text-white">
-          survey_export.csv: {rows.length} rows, exactly as they arrived
+          survey_export.csv: {rows.length} rows
+          {anyStepOn ? ", with your current steps applied" : ", exactly as they arrived"}
         </p>
         <div className="flex items-center gap-3 text-[10px] text-[#94a3b8] flex-wrap">
           <span className="flex items-center gap-1">

@@ -71,15 +71,20 @@ export default function CleaningPipeline({ steps, onToggle, readouts }: Props) {
                 </span>
                 {s.id === "map" && (
                   <span className="block mt-2 rounded-lg bg-[#162032] border border-[#1e293b] p-2">
-                    <span className="block text-[9px] font-semibold uppercase tracking-wide text-[#475569] mb-1">
-                      The dictionary (exact-match keys)
+                    <span className="sr-only">
+                      Dictionary has {CATEGORY_MAP_ENTRIES.length} exact-match entries.
                     </span>
-                    <span className="grid grid-cols-2 gap-x-3 gap-y-0.5">
-                      {CATEGORY_MAP_ENTRIES.map((e) => (
-                        <span key={e.from} className="font-mono text-[10px] text-[#94a3b8]">
-                          &quot;{e.from}&quot; &rarr; {e.to}
-                        </span>
-                      ))}
+                    <span aria-hidden="true">
+                      <span className="block text-[9px] font-semibold uppercase tracking-wide text-[#475569] mb-1">
+                        The dictionary (exact-match keys)
+                      </span>
+                      <span className="grid grid-cols-2 gap-x-3 gap-y-0.5">
+                        {CATEGORY_MAP_ENTRIES.map((e) => (
+                          <span key={e.from} className="font-mono text-[10px] text-[#94a3b8]">
+                            &quot;{e.from}&quot; &rarr; {e.to}
+                          </span>
+                        ))}
+                      </span>
                     </span>
                   </span>
                 )}
