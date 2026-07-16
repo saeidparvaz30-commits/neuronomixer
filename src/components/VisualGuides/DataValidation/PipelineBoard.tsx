@@ -51,6 +51,9 @@ export default function PipelineBoard({
         .flatMap((b) => b.verdicts.filter((v) => v.caught))
     : [];
 
+  const caughtSoFar = quarantined.filter((v) => v.row.defect !== null).length;
+  const falseAlarmsSoFar = quarantined.length - caughtSoFar;
+
   const loaded: RowVerdict[] = run
     ? run.batches
         .filter((_, i) => phases[i] >= 3)
@@ -89,7 +92,10 @@ export default function PipelineBoard({
         </button>
         <div className="flex items-center gap-2 flex-wrap" aria-live="off">
           <span className="px-2.5 py-1 rounded-lg border border-[#334155] text-[11px] font-mono text-[#94a3b8]">
-            Caught: <span className="text-[var(--color-success)] font-bold">{quarantined.length}</span>
+            Caught: <span className="text-[var(--color-success)] font-bold">{caughtSoFar}</span>
+          </span>
+          <span className="px-2.5 py-1 rounded-lg border border-[#334155] text-[11px] font-mono text-[#94a3b8]">
+            False alarms: <span className={`font-bold ${falseAlarmsSoFar > 0 ? "text-[var(--color-warning)]" : "text-[#94a3b8]"}`}>{falseAlarmsSoFar}</span>
           </span>
           <span className="px-2.5 py-1 rounded-lg border border-[#334155] text-[11px] font-mono text-[#94a3b8]">
             Escaped: <span className={`font-bold ${escapedSoFar > 0 ? "text-[#ef4444]" : "text-[var(--color-success)]"}`}>{escapedSoFar}</span>
@@ -102,7 +108,8 @@ export default function PipelineBoard({
       <p className="text-[10px] text-[#475569] mb-4 leading-relaxed">
         Each run rebuilds the warehouse from scratch with your current rule
         set, like a scheduled pipeline job. Caught means a defective row was
-        quarantined; escaped means a defective row passed every enabled rule.
+        quarantined; false alarms means a contract-valid row was quarantined
+        by mistake; escaped means a defective row passed every enabled rule.
       </p>
 
       {/* Three stages */}

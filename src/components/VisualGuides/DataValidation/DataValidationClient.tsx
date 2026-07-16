@@ -64,7 +64,19 @@ export default function DataValidationClient() {
         );
       }
       if (cleanRun && run.hadDisabledRule && r.escapedDefective > 0) {
-        setToggleBreak(true);
+        // Causal check, not just correlation: re-enable every rule still
+        // present in this run (the ones the learner toggled off) and
+        // confirm the escape genuinely goes away. This closes the gap
+        // where a load-bearing rule was deleted outright while an
+        // unrelated rule sat toggled off, which used to satisfy this gate
+        // without the toggle having caused anything.
+        const counterfactual = evaluateRun(
+          BATCHES,
+          run.rulesUsed.map((x) => ({ ...x, enabled: true }))
+        );
+        if (counterfactual.escapedDefective === 0) {
+          setToggleBreak(true);
+        }
       }
       return;
     }
@@ -117,7 +129,7 @@ export default function DataValidationClient() {
   const progressItems = [
     { id: "break", label: "Watch bad rows break the chart", done: brokeChart },
     { id: "clean", label: `Catch all ${TOTAL_DEFECTS} defects in one run`, done: cleanRun },
-    { id: "toggle", label: "Toggle a rule off and re-run", done: toggleBreak },
+    { id: "toggle", label: "Toggle a rule off, re-run, and watch a defect escape", done: toggleBreak },
   ];
 
   const nextHint = !brokeChart

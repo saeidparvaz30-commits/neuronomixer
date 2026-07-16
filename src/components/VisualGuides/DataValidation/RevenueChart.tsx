@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   CLEAN_REVENUE,
   formatMoney,
@@ -33,6 +34,12 @@ const PLOT_H = H - PAD_T - PAD_B;
  * the axis genuinely explodes.
  */
 export default function RevenueChart({ loaded, loadedDays }: Props) {
+  const reducedMotion = useReducedMotion();
+  const barTransition = {
+    duration: reducedMotion ? 0 : 0.4,
+    ease: "easeOut" as const,
+  };
+
   const sums = DAYS.map((d) => ({
     day: d,
     isLoaded: loadedDays.includes(d),
@@ -163,14 +170,14 @@ export default function RevenueChart({ loaded, loadedDays }: Props) {
                 </>
               ) : (
                 <>
-                  <rect
+                  <motion.rect
                     x={x}
-                    y={yFor(s.sum)}
                     width={barW}
-                    height={barH}
                     fill={off ? "var(--color-warning)" : "#1e5d8a"}
                     rx={3}
-                    style={{ transition: "height 0.4s, y 0.4s" }}
+                    initial={false}
+                    animate={{ y: yFor(s.sum), height: barH }}
+                    transition={barTransition}
                   />
                   <text
                     x={cx}
