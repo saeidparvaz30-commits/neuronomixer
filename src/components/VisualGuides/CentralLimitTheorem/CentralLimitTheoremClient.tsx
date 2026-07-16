@@ -117,6 +117,18 @@ export default function CentralLimitTheoremClient() {
     setSampleMeans([]);
   }
 
+  // Full reset for the completion card's Try Again: restores every piece of
+  // state (not just sampleMeans) and cancels any in-flight "Run 1000×" run.
+  function handleFullReset() {
+    runRef.current = false;
+    setIsRunning(false);
+    const next = makeInitialState();
+    setSelectedDistribution(next.selectedDistribution);
+    setPopulationData(next.populationData);
+    setSampleSize(30);
+    setSampleMeans([]);
+  }
+
   // ── Progress ──────────────────────────────────────────────────────────────
 
   const isComplete = sampleMeans.length >= 1000;
@@ -391,7 +403,7 @@ export default function CentralLimitTheoremClient() {
                 </Link>
                 <div className="flex items-center gap-3">
                   <button
-                    onClick={handleReset}
+                    onClick={handleFullReset}
                     className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
                   >
                     Try Again
