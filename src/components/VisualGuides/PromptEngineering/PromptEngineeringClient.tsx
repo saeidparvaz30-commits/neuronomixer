@@ -4,7 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+
+const NEXT_GUIDE_SLUG = "ai-agents";
 
 type PatternId = "zero-shot" | "few-shot" | "cot" | "role" | "output-format" | "self-consistency";
 
@@ -81,6 +84,7 @@ const MISTAKES = [
 
 export default function PromptEngineeringClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const [selectedPattern, setSelectedPattern] = useState<PatternId>("zero-shot");
   const [anatomyViewed, setAnatomyViewed] = useState(false);
   const [patternsViewed, setPatternsViewed] = useState<Set<PatternId>>(new Set(["zero-shot"]));
@@ -118,6 +122,20 @@ export default function PromptEngineeringClient() {
     setSelectedPattern(id);
     setPatternsViewed((prev) => new Set([...prev, id]));
   }
+
+  function handleReset() {
+    setSelectedPattern("zero-shot");
+    setAnatomyViewed(false);
+    setPatternsViewed(new Set(["zero-shot"]));
+    setOpenMistake(null);
+    setEditablePrompt(
+      Object.fromEntries(PATTERNS.map((p) => [p.id, p.prompt])) as Record<PatternId, string>
+    );
+  }
+
+  const promptsCustomized = PATTERNS.filter(
+    (p) => editablePrompt[p.id] !== p.prompt
+  ).length;
 
   const active = PATTERNS.find((p) => p.id === selectedPattern)!;
   const progressPct = ((patternsViewed.size >= 4 ? 1 : 0) + (anatomyViewed ? 1 : 0)) * 50;
@@ -332,30 +350,138 @@ export default function PromptEngineeringClient() {
           </p>
         </div>
 
-        {/* Summary card */}
-        <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-1">Up next</p>
-            <p className="text-[15px] font-bold text-white">AI Agents</p>
-            <p className="text-[12px] text-[#94a3b8] mt-0.5">How autonomous agents plan, use tools, and loop until a goal is reached.</p>
-          </div>
-          <Link href="/visual-guides/ai-agents"
-            className="flex-shrink-0 px-5 py-2.5 rounded-xl text-[13px] font-bold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            Next Guide &rarr;
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Speak Fluent Prompt
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You worked through the core patterns, dissected a prompt into
+                  its six layers, and saw how small wording changes redirect a
+                  model.
+                </p>
+              </div>
 
-        {/* Bottom nav */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link href="/visual-guides/fine-tuning-vs-prompting"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
-            &larr; Previous Guide
-          </Link>
-          <Link href="/visual-guides/ai-agents"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            Next Guide &rarr;
-          </Link>
-        </div>
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Patterns explored
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {patternsViewed.size} of {PATTERNS.length}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      zero-shot to self-consistency
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Anatomy layers reviewed
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      {ANATOMY.length}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      system instruction to output format
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Prompts you customized
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-warning)]">
+                      {promptsCustomized}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      edited in the live editor
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;A reliable prompt is engineered, not wished for: state
+                    the task precisely, show examples when the task is
+                    ambiguous, and pin down the output format before the model
+                    gets a say.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Pre-completion nav: up-next summary + bottom nav */}
+        {!allComplete && (
+          <>
+            {/* Summary card */}
+            <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-1">Up next</p>
+                <p className="text-[15px] font-bold text-white">AI Agents</p>
+                <p className="text-[12px] text-[#94a3b8] mt-0.5">How autonomous agents plan, use tools, and loop until a goal is reached.</p>
+              </div>
+              <Link href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                className="flex-shrink-0 px-5 py-2.5 rounded-xl text-[13px] font-bold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+                Next Guide &rarr;
+              </Link>
+            </div>
+
+            {/* Bottom nav */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+              <Link href="/visual-guides/fine-tuning-vs-prompting"
+                className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+                &larr; Previous Guide
+              </Link>
+              <Link href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+                Next Guide &rarr;
+              </Link>
+            </div>
+          </>
+        )}
 
       </div>
     </div>
