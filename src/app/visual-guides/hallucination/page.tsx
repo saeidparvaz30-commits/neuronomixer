@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Explore real examples of AI hallucination: confident-sounding but wrong outputs. Understand why LLMs hallucinate and how mitigation strategies work.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/hallucination" },
   openGraph: {
-    title: "Hallucination: When AI Makes Things Up — NeuroNomixer",
+    title: "Hallucination: When AI Makes Things Up | NeuroNomixer",
     description:
       "Explore real examples of AI hallucination: confident-sounding but wrong outputs. Understand why LLMs hallucinate and how mitigation strategies work.",
     url: "https://www.neuronomixer.com/visual-guides/hallucination",

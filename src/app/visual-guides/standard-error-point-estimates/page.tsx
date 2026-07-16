@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      "Standard Error & Point Estimates — NeuroNomixer Visual Guides",
+      "Standard Error & Point Estimates | NeuroNomixer Visual Guides",
     description:
       "Interactive visualization of standard error and point estimator properties.",
     url: "https://www.neuronomixer.com/visual-guides/standard-error-point-estimates",

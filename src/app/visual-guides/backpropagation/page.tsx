@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Step through a full forward pass, loss computation, and backward pass neuron by neuron. Watch gradients flow back through the network via the chain rule and see weights update in real time.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/backpropagation" },
   openGraph: {
-    title: "Backpropagation: How Networks Learn — NeuroNomixer",
+    title: "Backpropagation: How Networks Learn | NeuroNomixer",
     description:
       "Interactive 8-step walkthrough of backpropagation: forward pass, cross-entropy loss, gradient flow, and weight updates visualized neuron by neuron.",
     url: "https://www.neuronomixer.com/visual-guides/backpropagation",

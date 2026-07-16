@@ -18,7 +18,7 @@ export const metadata = {
   metadataBase: new URL("https://www.neuronomixer.com"),
   title: {
     default: "NeuroNomixer",
-    template: "%s — NeuroNomixer",
+    template: "%s | NeuroNomixer",
   },
   description: "Exploring the intersection of AI, data & risk analytics.",
   openGraph: {

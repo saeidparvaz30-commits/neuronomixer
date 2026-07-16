@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Click to drop a ball on a loss landscape and watch gradient descent roll it toward the minimum. Change the learning rate to see convergence, oscillation, and divergence.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/gradient-descent" },
   openGraph: {
-    title: "Gradient Descent: Rolling Down the Hill — NeuroNomixer",
+    title: "Gradient Descent: Rolling Down the Hill | NeuroNomixer",
     description: "Interactive gradient descent: choose landscapes, tune learning rate, watch the path to the minimum.",
     url: "https://www.neuronomixer.com/visual-guides/gradient-descent",
     type: "article",

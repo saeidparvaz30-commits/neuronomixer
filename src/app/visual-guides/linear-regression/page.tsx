@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Drag data points and watch the regression line, residuals, R², and loss function update live. Click to add new points.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/linear-regression" },
   openGraph: {
-    title: "Linear Regression: Draw the Best Fit — NeuroNomixer",
+    title: "Linear Regression: Draw the Best Fit | NeuroNomixer",
     description:
       "Interactive linear regression playground. Drag points, see OLS fit, residuals, confidence band, and the loss landscape in real time.",
     url: "https://www.neuronomixer.com/visual-guides/linear-regression",

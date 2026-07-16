@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Slide dropout probability and watch neurons randomly deactivate. Understand how dropout prevents overfitting by training an ensemble of networks.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/dropout" },
   openGraph: {
-    title: "Dropout: Training with Missing Neurons — NeuroNomixer",
+    title: "Dropout: Training with Missing Neurons | NeuroNomixer",
     description:
       "Slide dropout probability and watch neurons randomly deactivate. Understand how dropout prevents overfitting by training an ensemble of networks.",
     url: "https://www.neuronomixer.com/visual-guides/dropout",

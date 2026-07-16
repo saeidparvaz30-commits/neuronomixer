@@ -7,14 +7,14 @@ export const metadata: Metadata = {
     "Explore three real-world scenarios with raw data and discover why intuition alone fails. Learn descriptive, inferential, and predictive statistics through interactive decision-making.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/what-is-statistics" },
   openGraph: {
-    title: "What Is Statistics? — NeuroNomixer Visual Guides",
+    title: "What Is Statistics? | NeuroNomixer Visual Guides",
     description: "Interactive visual essay on why organizations use statistics. Three mini-scenarios with real data.",
     url: "https://www.neuronomixer.com/visual-guides/what-is-statistics",
     type: "article",
   },
   twitter: {
     card: "summary_large_image",
-    title: "What Is Statistics? — NeuroNomixer Visual Guides",
+    title: "What Is Statistics? | NeuroNomixer Visual Guides",
     description: "Discover how statistics reveals hidden patterns in real data.",
   },
 };

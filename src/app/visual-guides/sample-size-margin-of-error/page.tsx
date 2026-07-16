@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/sample-size-margin-of-error",
   },
   openGraph: {
-    title: "Sample Size, Margin of Error & Survey Design — NeuroNomixer",
+    title: "Sample Size, Margin of Error & Survey Design | NeuroNomixer",
     description:
       "Interactive sample size calculator with real-world survey design principles.",
     url: "https://www.neuronomixer.com/visual-guides/sample-size-margin-of-error",

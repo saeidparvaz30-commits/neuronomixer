@@ -20,10 +20,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cv = await prisma.authorCV.findUnique({ where: { slug } });
   if (!cv || !cv.isPublic) return { title: "CV Not Found" };
   return {
-    title: `${cv.name ?? "CV"} — NeuroNomixer`,
+    title: `${cv.name ?? "CV"} | NeuroNomixer`,
     description: cv.tagline ?? `Professional CV of ${cv.name}`,
     openGraph: {
-      title: `${cv.name ?? "CV"} — NeuroNomixer`,
+      title: `${cv.name ?? "CV"} | NeuroNomixer`,
       description: cv.tagline ?? undefined,
       type: "profile",
     },

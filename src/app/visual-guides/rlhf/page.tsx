@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/rlhf",
   },
   openGraph: {
-    title: "RLHF: How Human Feedback Shapes AI — NeuroNomixer",
+    title: "RLHF: How Human Feedback Shapes AI | NeuroNomixer",
     description:
       "Play the role of a human rater and watch the reward model learn your preferences. See how RLHF turns human judgments into AI behavior.",
     url: "https://www.neuronomixer.com/visual-guides/rlhf",

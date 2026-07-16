@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/sampling-methods-bias",
   },
   openGraph: {
-    title: "Sampling Methods & Bias — NeuroNomixer Visual Guides",
+    title: "Sampling Methods & Bias | NeuroNomixer Visual Guides",
     description:
       "Interactive sampling simulator with historical bias case studies.",
     url: "https://www.neuronomixer.com/visual-guides/sampling-methods-bias",

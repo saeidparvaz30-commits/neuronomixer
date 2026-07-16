@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/pooling-layers",
   },
   openGraph: {
-    title: "Pooling Layers: Shrinking Without Losing — NeuroNomixer Visual Guides",
+    title: "Pooling Layers: Shrinking Without Losing | NeuroNomixer Visual Guides",
     description:
       "Interactive pooling layer visualization. See how max, average, min, and L2-norm pooling reduce feature map dimensions in CNNs.",
     url: "https://www.neuronomixer.com/visual-guides/pooling-layers",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pooling Layers: Shrinking Without Losing — NeuroNomixer",
+    title: "Pooling Layers: Shrinking Without Losing | NeuroNomixer",
     description:
       "Interactive pooling layer visualization. See how max, average, min, and L2-norm pooling reduce feature map dimensions in CNNs.",
   },

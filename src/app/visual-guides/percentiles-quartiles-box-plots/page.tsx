@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "https://www.neuronomixer.com/visual-guides/percentiles-quartiles-box-plots",
   },
   openGraph: {
-    title: "Percentiles, Quartiles & Box Plots — NeuroNomixer Visual Guides",
+    title: "Percentiles, Quartiles & Box Plots | NeuroNomixer Visual Guides",
     description:
       "Interactive box plot builder: build from raw data through median, quartiles, whiskers and z-scores step by step.",
     url: "https://www.neuronomixer.com/visual-guides/percentiles-quartiles-box-plots",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Percentiles, Quartiles & Box Plots — NeuroNomixer Visual Guides",
+    title: "Percentiles, Quartiles & Box Plots | NeuroNomixer Visual Guides",
     description:
       "Build box plots step by step from raw data. Explore percentile ranks, IQR, outliers, and z-score standardization.",
   },

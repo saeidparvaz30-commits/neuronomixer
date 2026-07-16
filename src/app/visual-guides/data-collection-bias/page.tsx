@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/data-collection-bias",
   },
   openGraph: {
-    title: "The Data That Never Arrived — NeuroNomixer",
+    title: "The Data That Never Arrived | NeuroNomixer",
     description:
       "Selection at the channel, survivorship, and non-response: an interactive guide to the bias that no downstream analysis can fix.",
     url: "https://www.neuronomixer.com/visual-guides/data-collection-bias",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Data That Never Arrived — NeuroNomixer",
+    title: "The Data That Never Arrived | NeuroNomixer",
     description:
       "Selection at the channel, survivorship, and non-response: an interactive guide to the bias that no downstream analysis can fix.",
   },

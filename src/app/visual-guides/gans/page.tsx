@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Watch a generator evolve from noise to convincing images as the discriminator fights back. Interactive GAN training simulation with evolving outputs.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/gans" },
   openGraph: {
-    title: "GANs: The Art of Faking It — NeuroNomixer",
+    title: "GANs: The Art of Faking It | NeuroNomixer",
     description:
       "Watch a generator evolve from noise to convincing images as the discriminator fights back. Interactive GAN training simulation with evolving outputs.",
     url: "https://www.neuronomixer.com/visual-guides/gans",

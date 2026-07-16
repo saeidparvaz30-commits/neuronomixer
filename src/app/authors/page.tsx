@@ -8,12 +8,12 @@ import AuthorSignupForm from "@/components/author/AuthorSignupForm";
 export const metadata: Metadata = {
   title: "Authors & Contributors",
   description:
-    "Meet the experts behind NeuroNomixer — AI researchers, data scientists, and risk analysts sharing their knowledge.",
+    "Meet the experts behind NeuroNomixer: AI researchers, data scientists, and risk analysts sharing their knowledge.",
   alternates: { canonical: "https://www.neuronomixer.com/authors" },
   openGraph: {
-    title: "Authors & Contributors — NeuroNomixer",
+    title: "Authors & Contributors | NeuroNomixer",
     description:
-      "Meet the experts behind NeuroNomixer — AI researchers, data scientists, and risk analysts.",
+      "Meet the experts behind NeuroNomixer: AI researchers, data scientists, and risk analysts.",
     url: "https://www.neuronomixer.com/authors",
     siteName: "NeuroNomixer",
     type: "website",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Authors & Contributors — NeuroNomixer",
+    title: "Authors & Contributors | NeuroNomixer",
     description: "Meet the experts behind NeuroNomixer.",
   },
 };

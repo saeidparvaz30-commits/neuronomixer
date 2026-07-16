@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Type any text and watch it split into colored token blocks. Understand BPE tokenization, why rare words split into many tokens, and how token costs work.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/tokenization" },
   openGraph: {
-    title: "Tokenization: How AI Reads Text — NeuroNomixer",
+    title: "Tokenization: How AI Reads Text | NeuroNomixer",
     description:
       "Type any text and watch it split into colored token blocks. Understand BPE tokenization, why rare words split into many tokens, and how token costs work.",
     url: "https://www.neuronomixer.com/visual-guides/tokenization",

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/ai-safety",
   },
   openGraph: {
-    title: "AI Safety: Alignment in Practice — NeuroNomixer",
+    title: "AI Safety: Alignment in Practice | NeuroNomixer",
     description:
       "Explore AI alignment with interactive guardrail toggles and a corrigibility spectrum explorer. Understand near-term safety challenges and the technical approaches addressing them.",
     url: "https://www.neuronomixer.com/visual-guides/ai-safety",

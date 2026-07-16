@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "https://www.neuronomixer.com/visual-guides/probability-fundamentals",
   },
   openGraph: {
-    title: "Probability Fundamentals: Rules of Chance — NeuroNomixer Visual Guides",
+    title: "Probability Fundamentals: Rules of Chance | NeuroNomixer Visual Guides",
     description:
       "Interactive probability simulator. Build compound events with AND, OR, and NOT rules. Watch the Law of Large Numbers in action.",
     url: "https://www.neuronomixer.com/visual-guides/probability-fundamentals",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Probability Fundamentals: Rules of Chance — NeuroNomixer",
+    title: "Probability Fundamentals: Rules of Chance | NeuroNomixer",
     description:
       "Build compound events, simulate thousands of trials, and explore Venn diagrams interactively.",
   },

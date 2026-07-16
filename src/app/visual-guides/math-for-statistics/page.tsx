@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/math-for-statistics",
   },
   openGraph: {
-    title: "Math for Statistics: The Visual Toolkit — NeuroNomixer Visual Guides",
+    title: "Math for Statistics: The Visual Toolkit | NeuroNomixer Visual Guides",
     description:
       "Six interactive tools to build mathematical intuition for statistics. Compound growth, log scales, sigma notation, weighted averages, slope, and set operations.",
     url: "https://www.neuronomixer.com/visual-guides/math-for-statistics",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Math for Statistics: The Visual Toolkit — NeuroNomixer Visual Guides",
+    title: "Math for Statistics: The Visual Toolkit | NeuroNomixer Visual Guides",
     description:
       "Interactive visual tools for compound growth, log scales, summation, weighted averages, slope, and set operations.",
   },

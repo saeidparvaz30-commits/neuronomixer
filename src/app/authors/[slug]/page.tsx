@@ -55,7 +55,7 @@ export async function generateMetadata({
 
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com").replace(/\/$/, "");
   const canonicalUrl = `${siteUrl}/authors/${slug}`;
-  const title = `${author.name} — NeuroNomixer`;
+  const title = `${author.name} | NeuroNomixer`;
   const description = author.shortBio ?? `Articles and insights by ${author.name} on NeuroNomixer.`;
   const ogImage = author.image?.asset?.url
     ? [{ url: author.image.asset.url, width: 400, height: 400, alt: author.name }]

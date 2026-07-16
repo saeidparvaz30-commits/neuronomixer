@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Interactive drag-and-drop explorer teaching structured, unstructured, and semi-structured data types. Learn by sorting real data examples.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/what-is-data" },
   openGraph: {
-    title: "What Is Data? Types & Structures — NeuroNomixer Visual Guides",
+    title: "What Is Data? Types & Structures | NeuroNomixer Visual Guides",
     description:
       "Learn data types by dragging real examples into category buckets. Interactive, visual, no jargon.",
     url: "https://www.neuronomixer.com/visual-guides/what-is-data",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "What Is Data? Types & Structures — NeuroNomixer",
+    title: "What Is Data? Types & Structures | NeuroNomixer",
     description:
       "Learn data types by dragging real examples into category buckets. Interactive, visual, no jargon.",
   },

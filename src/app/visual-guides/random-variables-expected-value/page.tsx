@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "https://www.neuronomixer.com/visual-guides/random-variables-expected-value",
   },
   openGraph: {
-    title: "Random Variables & Expected Value — NeuroNomixer",
+    title: "Random Variables & Expected Value | NeuroNomixer",
     description:
       "Interactive simulation playground for expected value: custom distributions, fair coin, and real-world lottery EV breakdown.",
     url: "https://www.neuronomixer.com/visual-guides/random-variables-expected-value",

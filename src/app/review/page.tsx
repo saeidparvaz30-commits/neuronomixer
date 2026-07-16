@@ -91,7 +91,7 @@ export default async function ReviewPage({
     <html>
       <head>
         <meta charSet="utf-8" />
-        <title>NeuroNomixer — Author Content Review</title>
+        <title>NeuroNomixer | Author Content Review</title>
       </head>
       <body style={{ fontFamily: "monospace", whiteSpace: "pre-wrap", padding: "2rem", maxWidth: "900px", margin: "0 auto", lineHeight: "1.6" }}>
         {`NEURONOMIXER — AUTHOR CONTENT REVIEW

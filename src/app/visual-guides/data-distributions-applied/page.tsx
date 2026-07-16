@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Data Distributions in Context — NeuroNomixer",
+    title: "Data Distributions in Context | NeuroNomixer",
     description: DESCRIPTION,
   },
 };

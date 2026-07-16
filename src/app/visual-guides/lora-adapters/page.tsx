@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/lora-adapters",
   },
   openGraph: {
-    title: "LoRA & Adapters: Efficient Fine-Tuning — NeuroNomixer",
+    title: "LoRA & Adapters: Efficient Fine-Tuning | NeuroNomixer",
     description:
       "Visualize how LoRA decomposes weight matrices into low-rank factors. Compare parameter counts between full fine-tuning and LoRA across different ranks.",
     url: "https://www.neuronomixer.com/visual-guides/lora-adapters",

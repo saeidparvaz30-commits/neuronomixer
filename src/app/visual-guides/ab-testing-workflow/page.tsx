@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/ab-testing-workflow",
   },
   openGraph: {
-    title: "A/B Testing: The Complete Workflow — NeuroNomixer Visual Guides",
+    title: "A/B Testing: The Complete Workflow | NeuroNomixer Visual Guides",
     description:
       "Step through every phase of a rigorous A/B experiment: design, randomize, collect, and analyze, all interactive, all in your browser.",
     url: "https://www.neuronomixer.com/visual-guides/ab-testing-workflow",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "A/B Testing: The Complete Workflow — NeuroNomixer Visual Guides",
+    title: "A/B Testing: The Complete Workflow | NeuroNomixer Visual Guides",
     description:
       "Interactive guide to A/B testing: sample sizing, randomization, simulated data collection, and hypothesis testing with real math.",
   },

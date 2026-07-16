@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/fine-tuning-vs-prompting",
   },
   openGraph: {
-    title: "Fine-Tuning vs Prompting — NeuroNomixer",
+    title: "Fine-Tuning vs Prompting | NeuroNomixer",
     description:
       "Try both approaches on the same task and compare outputs. Use the interactive decision tree to choose the right strategy for your use case.",
     url: "https://www.neuronomixer.com/visual-guides/fine-tuning-vs-prompting",

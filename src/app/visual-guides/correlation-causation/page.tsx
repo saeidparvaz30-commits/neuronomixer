@@ -4,10 +4,10 @@ import CorrelationCausationClient from "@/components/VisualGuides/CorrelationCau
 export const metadata: Metadata = {
   title: "Correlation vs Causation: The Visual Guide",
   description:
-    "Ice cream sales and shark attacks are correlated — but ice cream doesn't cause sharks! Explore confounding variables, generate spurious correlations, and learn the difference between correlation and causation.",
+    "Ice cream sales and shark attacks are correlated, but ice cream doesn't cause sharks! Explore confounding variables, generate spurious correlations, and learn the difference between correlation and causation.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/correlation-causation" },
   openGraph: {
-    title: "Correlation vs Causation — NeuroNomixer Visual Guides",
+    title: "Correlation vs Causation | NeuroNomixer Visual Guides",
     description:
       "Why correlation isn't causation. Discover hidden confounds, generate spurious correlations, understand real causal mechanisms.",
     url: "https://www.neuronomixer.com/visual-guides/correlation-causation",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Correlation vs Causation — NeuroNomixer Visual Guides",
+    title: "Correlation vs Causation | NeuroNomixer Visual Guides",
     description:
       "Interactive examples showing correlation without causation. Confounds, spurious correlations, and more.",
   },

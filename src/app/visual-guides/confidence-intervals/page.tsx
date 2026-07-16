@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/confidence-intervals",
   },
   openGraph: {
-    title: "Confidence Intervals: What They Actually Mean — NeuroNomixer",
+    title: "Confidence Intervals: What They Actually Mean | NeuroNomixer",
     description:
       "Interactive visualization of repeated sampling confidence intervals.",
     url: "https://www.neuronomixer.com/visual-guides/confidence-intervals",

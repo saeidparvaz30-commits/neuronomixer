@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/model-evaluation",
   },
   openGraph: {
-    title: "Model Evaluation: Beyond Accuracy — NeuroNomixer",
+    title: "Model Evaluation: Beyond Accuracy | NeuroNomixer",
     description:
       "Edit model outputs and watch BLEU, ROUGE, and perplexity update live. Understand why traditional metrics often fail for generative AI.",
     url: "https://www.neuronomixer.com/visual-guides/model-evaluation",

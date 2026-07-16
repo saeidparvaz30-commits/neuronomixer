@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Watch SGD, Momentum, RMSProp, and Adam descend the same loss landscape simultaneously. See why adaptive optimizers converge faster on non-uniform loss surfaces.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/optimizers-race" },
   openGraph: {
-    title: "Optimizers Race: SGD, Momentum, RMSProp & Adam — NeuroNomixer",
+    title: "Optimizers Race: SGD, Momentum, RMSProp & Adam | NeuroNomixer",
     description:
       "Watch SGD, Momentum, RMSProp, and Adam descend the same loss landscape simultaneously. See why adaptive optimizers converge faster on non-uniform loss surfaces.",
     url: "https://www.neuronomixer.com/visual-guides/optimizers-race",

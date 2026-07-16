@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Click to place split lines on a 2D dataset and build a decision tree manually. Watch the tree diagram grow and decision regions color in after every split.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/decision-trees" },
   openGraph: {
-    title: "Decision Trees: Build One Yourself — NeuroNomixer",
+    title: "Decision Trees: Build One Yourself | NeuroNomixer",
     description:
       "Interactive decision tree builder. Place axis-aligned splits, watch Gini impurity decrease, and see decision boundaries form in real time.",
     url: "https://www.neuronomixer.com/visual-guides/decision-trees",

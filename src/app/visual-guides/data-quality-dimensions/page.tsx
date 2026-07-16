@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/data-quality-dimensions",
   },
   openGraph: {
-    title: "The Six Faces of Bad Data — NeuroNomixer",
+    title: "The Six Faces of Bad Data | NeuroNomixer",
     description:
       "Break a customer table six different ways and watch live meters for completeness, uniqueness, validity, consistency, timeliness, and accuracy pinpoint each defect.",
     url: "https://www.neuronomixer.com/visual-guides/data-quality-dimensions",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Six Faces of Bad Data — NeuroNomixer",
+    title: "The Six Faces of Bad Data | NeuroNomixer",
     description:
       "Break a customer table six different ways and watch live meters for completeness, uniqueness, validity, consistency, timeliness, and accuracy pinpoint each defect.",
   },

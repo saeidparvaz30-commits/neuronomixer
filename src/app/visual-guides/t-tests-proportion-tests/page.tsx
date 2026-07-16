@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/t-tests-proportion-tests",
   },
   openGraph: {
-    title: "t-Tests & Proportion Tests: Comparing Two Groups — NeuroNomixer",
+    title: "t-Tests & Proportion Tests: Comparing Two Groups | NeuroNomixer",
     description:
       "Interactive guide to t-tests and proportion tests. Compare factory output to targets, A/B campaign data, before/after training scores, and conversion rates.",
     url: "https://www.neuronomixer.com/visual-guides/t-tests-proportion-tests",

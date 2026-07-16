@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Watch information flow through recurrent cells step by step. See how LSTMs solve the vanishing gradient problem with gates and cell state.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/rnns-lstms" },
   openGraph: {
-    title: "RNNs & LSTMs: Memory in Networks — NeuroNomixer",
+    title: "RNNs & LSTMs: Memory in Networks | NeuroNomixer",
     description:
       "Watch information flow through recurrent cells step by step. See how LSTMs solve the vanishing gradient problem with gates and cell state.",
     url: "https://www.neuronomixer.com/visual-guides/rnns-lstms",

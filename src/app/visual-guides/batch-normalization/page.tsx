@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/batch-normalization",
   },
   openGraph: {
-    title: "Batch Normalization Explained — NeuroNomixer",
+    title: "Batch Normalization Explained | NeuroNomixer",
     description:
       "See how batch normalization stabilizes activation distributions and speeds up training. Watch two neural networks race, with and without BatchNorm.",
     url: "https://www.neuronomixer.com/visual-guides/batch-normalization",

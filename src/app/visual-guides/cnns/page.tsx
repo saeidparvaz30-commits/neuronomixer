@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Watch convolutional filters slide across images and activate feature maps. Interactive CNN visualization with edge detection, sharpening, and blur filters.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/cnns" },
   openGraph: {
-    title: "CNNs: See What Filters See — NeuroNomixer Visual Guides",
+    title: "CNNs: See What Filters See | NeuroNomixer Visual Guides",
     description:
       "Interactive CNN filter visualization. See how convolutional filters detect edges, textures, and patterns layer by layer.",
     url: "https://www.neuronomixer.com/visual-guides/cnns",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "CNNs: See What Filters See — NeuroNomixer",
+    title: "CNNs: See What Filters See | NeuroNomixer",
     description:
       "Interactive CNN filter visualization. See how convolutional filters detect edges, textures, and patterns layer by layer.",
   },

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     "Explore in-depth articles on AI, machine learning, data science, and risk analytics from the NeuroNomixer team.",
   alternates: { canonical: "https://www.neuronomixer.com/blog" },
   openGraph: {
-    title: "Blog — NeuroNomixer",
+    title: "Blog | NeuroNomixer",
     description:
       "Explore in-depth articles on AI, machine learning, data science, and risk analytics.",
     url: "https://www.neuronomixer.com/blog",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Blog — NeuroNomixer",
+    title: "Blog | NeuroNomixer",
     description:
       "Explore in-depth articles on AI, machine learning, data science, and risk analytics.",
   },
