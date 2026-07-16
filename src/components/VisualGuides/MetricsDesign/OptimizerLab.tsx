@@ -299,7 +299,7 @@ export default function OptimizerLab({
               </button>
             </div>
             <label className="block text-[10px] text-[#94a3b8] mb-1">
-              Never let retention fall below{" "}
+              Reject moves projected to drop retention below{" "}
               <span className="font-mono font-bold text-white">
                 {guardFloorPct}%
               </span>
