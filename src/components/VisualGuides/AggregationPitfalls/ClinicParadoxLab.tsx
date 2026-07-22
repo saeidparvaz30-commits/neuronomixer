@@ -206,6 +206,7 @@ export default function ClinicParadoxLab({
         )}
 
         {/* Raw counts */}
+        <div className="overflow-x-auto">
         <table className="w-full border-collapse text-[11px] mt-4">
           <thead>
             <tr className="bg-[#1e293b] text-[#94a3b8]">
@@ -242,6 +243,7 @@ export default function ClinicParadoxLab({
             ))}
           </tbody>
         </table>
+        </div>
         <p className="text-[10px] text-[#475569] mt-2 leading-relaxed">
           Every rate above is recovered divided by treated from this table, and
           the table is rebuilt from the sliders on every move.

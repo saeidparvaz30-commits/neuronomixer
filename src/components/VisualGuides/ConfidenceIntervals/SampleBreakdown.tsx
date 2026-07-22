@@ -71,6 +71,7 @@ export default function SampleBreakdown({ interval, confidenceLevel }: Props) {
             className="rounded-xl border overflow-hidden"
             style={{ borderColor: borderColor + "40" }}
           >
+            <div className="overflow-x-auto">
             <table className="w-full text-[11px]">
               <thead>
                 <tr
@@ -129,6 +130,7 @@ export default function SampleBreakdown({ interval, confidenceLevel }: Props) {
                 ))}
               </tbody>
             </table>
+            </div>
             <p className="text-[9px] text-[#334155] px-2 py-1 border-t" style={{ borderColor: borderColor + "20" }}>
               + {SAMPLE_N - 10} more values not shown
             </p>

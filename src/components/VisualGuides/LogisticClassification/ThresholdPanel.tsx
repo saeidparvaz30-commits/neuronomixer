@@ -75,6 +75,7 @@ export default function ThresholdPanel({
         Confusion counts on the {total} points, recomputed live
       </p>
       <div className="rounded-xl border border-[#1e293b] overflow-hidden mb-3">
+        <div className="overflow-x-auto">
         <table className="w-full border-collapse text-[12px]">
           <thead>
             <tr className="bg-[#1e293b] text-left">
@@ -106,6 +107,7 @@ export default function ThresholdPanel({
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

@@ -201,6 +201,7 @@ export default function DenominatorLab({
           <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#94a3b8] mb-3">
             The whole dataset
           </p>
+          <div className="overflow-x-auto">
           <table className="w-full border-collapse text-[11px]">
             <thead>
               <tr className="bg-[#1e293b] text-[#94a3b8]">
@@ -225,6 +226,7 @@ export default function DenominatorLab({
               </tr>
             </tbody>
           </table>
+          </div>
           <p className="text-[10px] text-[#475569] mt-2 leading-relaxed">
             Every buyer purchases in exactly one session, so purchase sessions
             equal buyers in both stores. Both rates on the left are computed

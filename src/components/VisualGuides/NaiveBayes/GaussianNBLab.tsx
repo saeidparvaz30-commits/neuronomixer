@@ -359,6 +359,7 @@ export default function GaussianNBLab({ hamPts, spamPts, fit, onMovePoint }: Pro
             <p className="text-[11px] font-semibold text-white mb-2">
               Fit from the current points
             </p>
+            <div className="overflow-x-auto">
             <table className="w-full border-collapse text-[10px] font-mono">
               <thead>
                 <tr className="text-[#475569] text-left">
@@ -383,6 +384,7 @@ export default function GaussianNBLab({ hamPts, spamPts, fit, onMovePoint }: Pro
                 ))}
               </tbody>
             </table>
+            </div>
             <p className="text-[10px] text-[#475569] mt-2">
               Priors: ham {fit.ham.n}/{fit.ham.n + fit.spam.n} ={" "}
               {fit.ham.prior.toFixed(2)}, spam {fit.spam.n}/{fit.ham.n + fit.spam.n} ={" "}

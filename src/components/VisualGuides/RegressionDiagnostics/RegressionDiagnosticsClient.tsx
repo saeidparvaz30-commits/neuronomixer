@@ -400,6 +400,7 @@ function VIFTable({ data }: { data: VIFResult[] }) {
     problematic: { label: "PROBLEMATIC", color: "#ef4444", bg: "rgba(239,68,68,0.12)"  },
   };
   return (
+    <div className="overflow-x-auto">
     <table className="w-full text-[12px]">
       <thead>
         <tr className="border-b border-[#1e293b]">
@@ -426,6 +427,7 @@ function VIFTable({ data }: { data: VIFResult[] }) {
         })}
       </tbody>
     </table>
+    </div>
   );
 }
 
@@ -783,6 +785,7 @@ export default function RegressionDiagnosticsClient() {
                 <motion.div
                   initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
                   className="rounded-2xl border border-[#1e293b] bg-[#0f172a] overflow-hidden">
+                  <div className="overflow-x-auto">
                   <table className="w-full text-[12px]">
                     <thead>
                       <tr className="border-b border-[#1e293b]">
@@ -809,6 +812,7 @@ export default function RegressionDiagnosticsClient() {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 </motion.div>
               )}
             </motion.section>

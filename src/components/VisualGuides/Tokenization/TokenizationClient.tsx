@@ -328,6 +328,7 @@ export default function TokenizationClient() {
           </p>
 
           <div className="rounded-2xl border border-white/10 overflow-hidden">
+            <div className="overflow-x-auto">
             <table className="w-full text-[13px]">
               <thead>
                 <tr className="bg-[#1e293b] text-[#94a3b8] text-left">
@@ -366,6 +367,7 @@ export default function TokenizationClient() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </section>
 
