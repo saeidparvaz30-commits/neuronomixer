@@ -252,7 +252,7 @@ export default function PostHocComparison({ comparisons, onViewed }: PostHocComp
                   return (
                     <g key={label}>
                       <circle cx={pos.x} cy={pos.y} r={22} fill={GROUP_COLORS[i]} fillOpacity={0.2} stroke={GROUP_COLORS[i]} strokeWidth={2} />
-                      <text x={pos.x} y={pos.y - 4} textAnchor="middle" fill={GROUP_COLORS[i]} fontSize={9} fontWeight="700">
+                      <text x={pos.x} y={pos.y - 4} textAnchor="middle" fill={GROUP_COLORS[i]} fontSize={10} fontWeight="700">
                         {label}
                       </text>
                       <text x={pos.x} y={pos.y + 8} textAnchor="middle" fill="#94a3b8" fontSize={8} fontFamily="monospace">

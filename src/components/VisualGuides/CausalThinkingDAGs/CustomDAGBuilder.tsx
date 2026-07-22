@@ -7,7 +7,7 @@ import { DAGNode, DAGEdge } from "./types";
 
 type BuildMode = "add" | "connect" | "delete";
 
-const NODE_R = 28;
+const NODE_R = 40;
 const CANVAS_W = 600;
 const CANVAS_H = 340;
 
@@ -252,10 +252,10 @@ export default function CustomDAGBuilder() {
           <text
             key={i}
             x={node.x}
-            y={node.y + (i - (arr.length - 1) / 2) * 12}
+            y={node.y + (i - (arr.length - 1) / 2) * 20}
             textAnchor="middle"
             dominantBaseline="middle"
-            fontSize={arr.length > 1 ? "8" : "9"}
+            fontSize="19"
             fontWeight="600"
             fill="#f1f5f9"
             style={{ pointerEvents: "none" }}
@@ -381,7 +381,7 @@ export default function CustomDAGBuilder() {
               y={CANVAS_H / 2}
               textAnchor="middle"
               dominantBaseline="middle"
-              fontSize="14"
+              fontSize="19"
               fill="#334155"
               fontStyle="italic"
             >

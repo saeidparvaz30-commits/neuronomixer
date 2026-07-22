@@ -15,8 +15,8 @@ interface Props {
 }
 
 const W = 720;
-const H = 320;
-const M = { top: 34, right: 16, bottom: 52, left: 64 };
+const H = 348;
+const M = { top: 48, right: 16, bottom: 80, left: 100 };
 const PLOT_W = W - M.left - M.right;
 const PLOT_H = H - M.top - M.bottom;
 
@@ -91,9 +91,9 @@ function GradientBarChartInner({ gradientMags, status }: Props) {
           />
           <text
             x={M.left - 8}
-            y={y(t) + 3}
+            y={y(t) + 7}
             textAnchor="end"
-            fontSize={10}
+            fontSize={22}
             fill="#475569"
             fontFamily="monospace"
           >
@@ -114,9 +114,9 @@ function GradientBarChartInner({ gradientMags, status }: Props) {
       />
       <text
         x={M.left + PLOT_W - 4}
-        y={y(vanishLog) + 12}
+        y={y(vanishLog) + 24}
         textAnchor="end"
-        fontSize={9.5}
+        fontSize={22}
         fill="var(--color-warning)"
       >
         1e-6 vanishing floor
@@ -132,9 +132,9 @@ function GradientBarChartInner({ gradientMags, status }: Props) {
       />
       <text
         x={M.left + PLOT_W - 4}
-        y={y(explodeLog) - 5}
+        y={y(explodeLog) - 7}
         textAnchor="end"
-        fontSize={9.5}
+        fontSize={22}
         fill="var(--color-warning)"
       >
         1e3 exploding ceiling
@@ -156,9 +156,9 @@ function GradientBarChartInner({ gradientMags, status }: Props) {
         />
         <text
           x={M.left + PLOT_W / 2}
-          y={M.top - 21}
+          y={M.top - 24}
           textAnchor="middle"
-          fontSize={10}
+          fontSize={22}
           fill="#94a3b8"
         >
           backprop multiplies from the loss toward layer 1
@@ -190,9 +190,9 @@ function GradientBarChartInner({ gradientMags, status }: Props) {
         <text
           key={li}
           x={x(li - 1) + barW / 2}
-          y={M.top + PLOT_H + 14}
+          y={M.top + PLOT_H + 24}
           textAnchor="middle"
-          fontSize={10}
+          fontSize={22}
           fill="#475569"
           fontFamily="monospace"
         >
@@ -203,18 +203,18 @@ function GradientBarChartInner({ gradientMags, status }: Props) {
       {/* Axis captions: layer direction is explicit */}
       <text
         x={M.left}
-        y={H - 8}
+        y={H - 34}
         textAnchor="start"
-        fontSize={10.5}
+        fontSize={22}
         fill="#94a3b8"
       >
         Layer 1 = input side
       </text>
       <text
         x={M.left + PLOT_W}
-        y={H - 8}
+        y={H - 6}
         textAnchor="end"
-        fontSize={10.5}
+        fontSize={22}
         fill="#94a3b8"
       >
         Layer {n} = output side (next to the loss)
@@ -222,12 +222,12 @@ function GradientBarChartInner({ gradientMags, status }: Props) {
 
       {/* Y axis title */}
       <text
-        x={14}
+        x={16}
         y={M.top + PLOT_H / 2}
         textAnchor="middle"
-        fontSize={10.5}
+        fontSize={22}
         fill="#94a3b8"
-        transform={`rotate(-90 14 ${M.top + PLOT_H / 2})`}
+        transform={`rotate(-90 16 ${M.top + PLOT_H / 2})`}
       >
         |dL/dw| (log scale)
       </text>

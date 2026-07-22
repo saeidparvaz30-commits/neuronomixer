@@ -99,9 +99,10 @@ export default function RepeatDrawsVisualization({ repeatedMeans, populationMean
             opacity={0.9}
           />
           <text
-            x={trueMeanX + 3}
-            y={DOT_AREA_TOP + 10}
-            fontSize={9}
+            x={trueMeanX > SVG_W - 90 ? trueMeanX - 4 : trueMeanX + 4}
+            textAnchor={trueMeanX > SVG_W - 90 ? "end" : "start"}
+            y={DOT_AREA_TOP + 12}
+            fontSize={17}
             fill="#ef4444"
             opacity={0.9}
           >
@@ -122,9 +123,10 @@ export default function RepeatDrawsVisualization({ repeatedMeans, populationMean
                 opacity={0.7}
               />
               <text
-                x={meanOfMeansX + 3}
-                y={DOT_AREA_TOP + 20}
-                fontSize={8}
+                x={meanOfMeansX > SVG_W - 90 ? meanOfMeansX - 4 : meanOfMeansX + 4}
+                textAnchor={meanOfMeansX > SVG_W - 90 ? "end" : "start"}
+                y={DOT_AREA_TOP + 32}
+                fontSize={17}
                 fill="var(--color-accent)"
                 opacity={0.7}
               >
@@ -158,7 +160,7 @@ export default function RepeatDrawsVisualization({ repeatedMeans, populationMean
                   x={x}
                   y={SVG_H - 4}
                   textAnchor="middle"
-                  fontSize={9}
+                  fontSize={17}
                   fill="#334155"
                 >
                   {v}

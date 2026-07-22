@@ -17,7 +17,7 @@ interface Props {
 // SVG chart dimensions
 const W = 480;
 const H = 240;
-const PAD = { l: 52, r: 20, t: 16, b: 36 };
+const PAD = { l: 68, r: 20, t: 16, b: 36 };
 
 function toX(day: number, totalDays: number) {
   return PAD.l + (day / totalDays) * (W - PAD.l - PAD.r);
@@ -271,7 +271,7 @@ export default function Phase3Collect({
                     x={PAD.l - 6}
                     y={y + 4}
                     textAnchor="end"
-                    fontSize={9}
+                    fontSize={15}
                     fill="#475569"
                   >
                     {(v * 100).toFixed(1)}%
@@ -289,7 +289,7 @@ export default function Phase3Collect({
                     x={x}
                     y={H - PAD.b + 14}
                     textAnchor="middle"
-                    fontSize={9}
+                    fontSize={15}
                     fill="#475569"
                   >
                     {d === 0 ? "" : `d${d}`}
@@ -370,7 +370,7 @@ export default function Phase3Collect({
               x={W / 2}
               y={H - 2}
               textAnchor="middle"
-              fontSize={9}
+              fontSize={15}
               fill="#475569"
             >
               Days elapsed
@@ -381,7 +381,7 @@ export default function Phase3Collect({
               x={10}
               y={H / 2}
               textAnchor="middle"
-              fontSize={9}
+              fontSize={15}
               fill="#475569"
               transform={`rotate(-90, 10, ${H / 2})`}
             >

@@ -16,7 +16,7 @@ interface Props {
 
 const W = 560;
 const H = 300;
-const M = { l: 46, r: 16, t: 16, b: 38 };
+const M = { l: 46, r: 16, t: 16, b: 48 };
 
 const pct = (a: number) => `${Math.round(a * 100)}%`;
 
@@ -74,26 +74,26 @@ export default function PreprocessingDemo({
           {/* axes */}
           <line x1={M.l} y1={H - M.b} x2={W - M.r} y2={H - M.b} stroke="#334155" strokeWidth={1} />
           <line x1={M.l} y1={M.t} x2={M.l} y2={H - M.b} stroke="#334155" strokeWidth={1} />
-          <text x={M.l} y={H - M.b + 16} fill="#475569" fontSize={10} textAnchor="middle">
+          <text x={M.l} y={H - M.b + 19} fill="#475569" fontSize={17} textAnchor="middle">
             {xMin.toFixed(1)}
           </text>
-          <text x={W - M.r} y={H - M.b + 16} fill="#475569" fontSize={10} textAnchor="end">
+          <text x={W - M.r} y={H - M.b + 19} fill="#475569" fontSize={17} textAnchor="end">
             {xMax.toFixed(1)}
           </text>
-          <text x={M.l - 6} y={H - M.b} fill="#475569" fontSize={10} textAnchor="end">
+          <text x={M.l - 6} y={H - M.b} fill="#475569" fontSize={17} textAnchor="end">
             {yMin.toFixed(1)}
           </text>
-          <text x={M.l - 6} y={M.t + 8} fill="#475569" fontSize={10} textAnchor="end">
+          <text x={M.l - 6} y={M.t + 12} fill="#475569" fontSize={17} textAnchor="end">
             {yMax.toFixed(1)}
           </text>
-          <text x={(M.l + W - M.r) / 2} y={H - 6} fill="#94a3b8" fontSize={10} textAnchor="middle">
+          <text x={(M.l + W - M.r) / 2} y={H - 4} fill="#94a3b8" fontSize={18} textAnchor="middle">
             signal feature (z-scaled)
           </text>
           <text
             x={12}
             y={(M.t + H - M.b) / 2}
             fill="#94a3b8"
-            fontSize={10}
+            fontSize={18}
             textAnchor="middle"
             transform={`rotate(-90 12 ${(M.t + H - M.b) / 2})`}
           >

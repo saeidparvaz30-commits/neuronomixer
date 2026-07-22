@@ -18,10 +18,10 @@ interface Props {
 
 const W = 640;
 const H = 300;
-const ML = 46;
+const ML = 64;
 const MR = 14;
 const MT = 14;
-const MB = 30;
+const MB = 46;
 
 /**
  * Degree-vs-RMSE curves with the peek-at-test toggle and the fresh-data
@@ -161,7 +161,7 @@ export default function ModelSelector({
               y={sy(t)}
               textAnchor="end"
               dominantBaseline="middle"
-              fontSize="10"
+              fontSize="20"
               fill="#475569"
             >
               {t.toFixed(2)}
@@ -172,9 +172,9 @@ export default function ModelSelector({
           <text
             key={`x${d}`}
             x={sx(d)}
-            y={H - 10}
+            y={H - 28}
             textAnchor="middle"
-            fontSize="10"
+            fontSize="20"
             fill={d === degree ? "#f1f5f9" : "#475569"}
             fontWeight={d === degree ? 700 : 400}
           >
@@ -183,9 +183,9 @@ export default function ModelSelector({
         ))}
         <text
           x={(ML + (W - MR)) / 2}
-          y={H - 1}
+          y={H - 2}
           textAnchor="middle"
-          fontSize="9"
+          fontSize="20"
           fill="#475569"
         >
           polynomial degree
@@ -271,9 +271,9 @@ export default function ModelSelector({
         />
         <text
           x={sx(byVal.degree)}
-          y={(Number(sy(byVal.valRmse)) - 12).toFixed(2)}
+          y={(Number(sy(byVal.valRmse)) - 14).toFixed(2)}
           textAnchor="middle"
-          fontSize="9"
+          fontSize="20"
           fontWeight={700}
           fill="var(--color-accent)"
         >
@@ -292,9 +292,9 @@ export default function ModelSelector({
             />
             <text
               x={sx(byTest.degree)}
-              y={(Number(sy(byTest.testRmse)) + 20).toFixed(2)}
+              y={(Number(sy(byTest.testRmse)) + 28).toFixed(2)}
               textAnchor="middle"
-              fontSize="9"
+              fontSize="20"
               fontWeight={700}
               fill="var(--color-warning)"
             >

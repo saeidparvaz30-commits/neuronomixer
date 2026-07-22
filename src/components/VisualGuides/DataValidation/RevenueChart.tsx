@@ -89,9 +89,9 @@ export default function RevenueChart({ loaded, loadedDays }: Props) {
             />
             <text
               x={PAD_L - 6}
-              y={yFor(t) + 3}
+              y={yFor(t) + 4}
               textAnchor="end"
-              fontSize={8}
+              fontSize={11}
               fill="#475569"
               fontFamily="monospace"
             >
@@ -160,7 +160,7 @@ export default function RevenueChart({ loaded, loadedDays }: Props) {
                     x={cx}
                     y={PAD_T + PLOT_H / 2}
                     textAnchor="middle"
-                    fontSize={11}
+                    fontSize={13}
                     fontWeight={700}
                     fill="#ef4444"
                     fontFamily="monospace"
@@ -183,7 +183,7 @@ export default function RevenueChart({ loaded, loadedDays }: Props) {
                     x={cx}
                     y={yFor(s.sum) - 4}
                     textAnchor="middle"
-                    fontSize={8}
+                    fontSize={11}
                     fontWeight={700}
                     fill={off ? "var(--color-warning)" : "#94a3b8"}
                     fontFamily="monospace"
@@ -197,7 +197,7 @@ export default function RevenueChart({ loaded, loadedDays }: Props) {
                 x={cx}
                 y={H - 8}
                 textAnchor="middle"
-                fontSize={9}
+                fontSize={11}
                 fill="#94a3b8"
                 fontFamily="monospace"
               >

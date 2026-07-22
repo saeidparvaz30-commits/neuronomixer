@@ -6,8 +6,8 @@ import { normalPDF, normalCDF, computeZ } from "./types";
 
 // ── SVG dimensions ─────────────────────────────────────────────────────────────
 const VW = 600;
-const VH = 200;
-const PAD = { l: 48, r: 16, t: 24, b: 44 };
+const VH = 216;
+const PAD = { l: 48, r: 16, t: 24, b: 60 };
 const IW = VW - PAD.l - PAD.r;
 const IH = VH - PAD.t - PAD.b;
 const CURVE_POINTS = 300;
@@ -207,10 +207,10 @@ export default function InteractiveCurve({
           return (
             <g key={i}>
               <line x1={sx} y1={baselineY} x2={sx} y2={baselineY + 4} stroke="#475569" strokeWidth="1" />
-              <text x={sx} y={baselineY + 14} textAnchor="middle" fill="#475569" fontSize="8.5">
+              <text x={sx} y={baselineY + 20} textAnchor="middle" fill="#475569" fontSize="20">
                 {label}
               </text>
-              <text x={sx} y={baselineY + 25} textAnchor="middle" fill="#334155" fontSize="7.5">
+              <text x={sx} y={baselineY + 40} textAnchor="middle" fill="#334155" fontSize="19">
                 {sdOffset === 0 ? "μ" : `${sdOffset > 0 ? "+" : ""}${sdOffset}σ`}
               </text>
             </g>
@@ -244,7 +244,7 @@ export default function InteractiveCurve({
             style={{ cursor: "ew-resize" }}
             onPointerDown={handlePointerDown("m1")}
           />
-          <text x={m1SvgX} y={PAD.t - 2} textAnchor="middle" fill="var(--color-accent)" fontSize="8" fontWeight="bold">
+          <text x={m1SvgX} y={PAD.t - 4} textAnchor="middle" fill="var(--color-accent)" fontSize="19" fontWeight="bold">
             {markerX1 % 1 === 0 ? markerX1.toFixed(0) : markerX1.toFixed(1)}
           </text>
         </g>
@@ -265,7 +265,7 @@ export default function InteractiveCurve({
             style={{ cursor: "ew-resize" }}
             onPointerDown={handlePointerDown("m2")}
           />
-          <text x={m2SvgX} y={PAD.t - 2} textAnchor="middle" fill="var(--color-warning)" fontSize="8" fontWeight="bold">
+          <text x={m2SvgX} y={PAD.t - 4} textAnchor="middle" fill="var(--color-warning)" fontSize="19" fontWeight="bold">
             {markerX2 % 1 === 0 ? markerX2.toFixed(0) : markerX2.toFixed(1)}
           </text>
         </g>

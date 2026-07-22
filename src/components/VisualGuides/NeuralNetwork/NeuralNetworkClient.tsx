@@ -63,7 +63,7 @@ function initWeights(inputSize: number, layers: LayerConfig[]): { weights: numbe
 }
 
 // ── SVG layout ─────────────────────────────────────────────────────────────────
-const SVW = 700; const SVH = 500;
+const SVW = 700; const SVH = 560;
 const INPUT_SIZE = 3; // 3 inputs: x1, x2, x3
 
 function getLayerPositions(inputSize: number, layers: LayerConfig[]) {
@@ -73,7 +73,7 @@ function getLayerPositions(inputSize: number, layers: LayerConfig[]) {
   return allLayers.map((layer, li) => {
     const x = 30 + li * xStep;
     const nNeurons = Math.min(layer.neurons, 12); // cap visual neurons
-    const yStep = nNeurons > 1 ? (SVH - 80) / (nNeurons - 1) : 0;
+    const yStep = nNeurons > 1 ? (SVH - 150) / (nNeurons - 1) : 0;
     return {
       x,
       neurons: Array.from({ length: nNeurons }, (_, ni) => ({
@@ -296,7 +296,7 @@ export default function NeuralNetworkClient() {
                             strokeWidth={isHovered ? 2 : 1.5}
                           />
                           {isHovered && (
-                            <text x={layer.x} y={n.y + 4} fill="white" fontSize="7" textAnchor="middle" fontWeight="bold">
+                            <text x={layer.x} y={n.y + 7} fill="white" fontSize="22" textAnchor="middle" fontWeight="bold">
                               {actVal.toFixed(2)}
                             </text>
                           )}
@@ -308,14 +308,14 @@ export default function NeuralNetworkClient() {
                   {/* Layer labels + activation */}
                   {layerPositions.map((layer, li) => (
                     <g key={`label-${li}`}>
-                      <text x={layer.x} y={SVH - 12} fill="#94a3b8" fontSize="10" textAnchor="middle">
+                      <text x={layer.x} y={SVH - 48} fill="#94a3b8" fontSize="24" textAnchor="middle">
                         {layer.label}
                       </text>
-                      <text x={layer.x} y={SVH - 2} fill="#475569" fontSize="8" textAnchor="middle">
+                      <text x={layer.x} y={SVH - 20} fill="#475569" fontSize="22" textAnchor="middle">
                         {layer.activation !== "linear" ? `[${ACTIVATIONS[layer.activation].label}]` : ""}
                       </text>
                       {layer.totalNeurons > 12 && (
-                        <text x={layer.x} y={SVH - 24} fill="#475569" fontSize="8" textAnchor="middle">
+                        <text x={layer.x} y={SVH - 76} fill="#475569" fontSize="22" textAnchor="middle">
                           ({layer.totalNeurons})
                         </text>
                       )}

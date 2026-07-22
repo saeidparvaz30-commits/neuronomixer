@@ -207,7 +207,7 @@ export default function BootstrapSection({ onBootstrapDone }: BootstrapSectionPr
                 return (
                   <g>
                     <line x1={mx} y1={0} x2={mx} y2={90} stroke="var(--color-accent)" strokeWidth="2" strokeDasharray="4 2" />
-                    <text x={mx + 4} y={12} fill="var(--color-accent)" fontSize="9" fontWeight="600">mean</text>
+                    <text x={mx + 4} y={12} fill="var(--color-accent)" fontSize="13" fontWeight="600">mean</text>
                   </g>
                 );
               })()}
@@ -219,7 +219,7 @@ export default function BootstrapSection({ onBootstrapDone }: BootstrapSectionPr
                   x={((v - origMin) / (origMax - origMin)) * 400}
                   y={105}
                   fill="#475569"
-                  fontSize="8"
+                  fontSize="13"
                   textAnchor="middle"
                 >
                   {v}

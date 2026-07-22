@@ -12,7 +12,7 @@ interface Props {
 
 const W = 560;
 const H = 260;
-const PAD = { left: 44, right: 16, top: 14, bottom: 34 };
+const PAD = { left: 52, right: 16, top: 14, bottom: 46 };
 
 export default function TradeoffChart({ tried, currentKey, exploredCount }: Props) {
   const maxK = HEALTH_RECORDS.length;
@@ -78,9 +78,9 @@ export default function TradeoffChart({ tried, currentKey, exploredCount }: Prop
             />
             <text
               x={PAD.left - 6}
-              y={y(u) + 3}
+              y={y(u) + 5}
               textAnchor="end"
-              fontSize={9}
+              fontSize={17}
               fill="#475569"
             >
               {u}%
@@ -91,9 +91,9 @@ export default function TradeoffChart({ tried, currentKey, exploredCount }: Prop
           <text
             key={`k${k}`}
             x={x(k)}
-            y={H - PAD.bottom + 14}
+            y={H - PAD.bottom + 19}
             textAnchor="middle"
-            fontSize={9}
+            fontSize={17}
             fill="#475569"
           >
             {k}
@@ -112,8 +112,8 @@ export default function TradeoffChart({ tried, currentKey, exploredCount }: Prop
         />
         <text
           x={x(TARGET_K) + 4}
-          y={PAD.top + 8}
-          fontSize={9}
+          y={PAD.top + 12}
+          fontSize={17}
           fill="var(--color-accent)"
         >
           target k = {TARGET_K}
@@ -121,9 +121,9 @@ export default function TradeoffChart({ tried, currentKey, exploredCount }: Prop
         {/* Axis titles */}
         <text
           x={(PAD.left + W - PAD.right) / 2}
-          y={H - 6}
+          y={H - 4}
           textAnchor="middle"
-          fontSize={10}
+          fontSize={18}
           fill="#94a3b8"
         >
           privacy: k-anonymity (smallest group size)
@@ -132,7 +132,7 @@ export default function TradeoffChart({ tried, currentKey, exploredCount }: Prop
           x={12}
           y={(PAD.top + H - PAD.bottom) / 2}
           textAnchor="middle"
-          fontSize={10}
+          fontSize={18}
           fill="#94a3b8"
           transform={`rotate(-90 12 ${(PAD.top + H - PAD.bottom) / 2})`}
         >

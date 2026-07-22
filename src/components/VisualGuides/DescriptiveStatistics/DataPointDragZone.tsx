@@ -202,7 +202,7 @@ export default function DataPointDragZone({
     return Math.max(...buckets.values(), 1);
   }, [effectivePoints]);
 
-  const svgHeight = AXIS_Y + 60 + Math.max(0, (maxStack - 1)) * DOT_SPACING;
+  const svgHeight = AXIS_Y + 88 + Math.max(0, (maxStack - 1)) * DOT_SPACING;
 
   const meanX = toX(mean);
   const medianX = toX(median);
@@ -227,7 +227,7 @@ export default function DataPointDragZone({
               <line
                 key={t}
                 x1={toX(t)}
-                y1={8}
+                y1={26}
                 x2={toX(t)}
                 y2={AXIS_Y}
                 stroke="#1e293b"
@@ -258,9 +258,9 @@ export default function DataPointDragZone({
                 />
                 <text
                   x={toX(t)}
-                  y={AXIS_Y + 17}
+                  y={AXIS_Y + 26}
                   textAnchor="middle"
-                  fontSize={10}
+                  fontSize={23}
                   fill="#475569"
                   fontFamily="monospace"
                 >
@@ -272,9 +272,9 @@ export default function DataPointDragZone({
             {/* Axis label */}
             <text
               x={SVG_WIDTH / 2}
-              y={AXIS_Y + 32}
+              y={AXIS_Y + 78}
               textAnchor="middle"
-              fontSize={10}
+              fontSize={24}
               fill="#475569"
             >
               Salary ($k)
@@ -283,7 +283,7 @@ export default function DataPointDragZone({
             {/* ── Mean line ─────────────────────────────────────────────── */}
             <line
               x1={meanX}
-              y1={8}
+              y1={26}
               x2={meanX}
               y2={AXIS_Y}
               stroke="#3b82f6"
@@ -293,9 +293,9 @@ export default function DataPointDragZone({
             />
             <text
               x={meanX}
-              y={5}
+              y={20}
               textAnchor="middle"
-              fontSize={9}
+              fontSize={23}
               fill="#3b82f6"
               fontFamily="monospace"
             >
@@ -305,7 +305,7 @@ export default function DataPointDragZone({
             {/* ── Median line ───────────────────────────────────────────── */}
             <line
               x1={medianX}
-              y1={8}
+              y1={26}
               x2={medianX}
               y2={AXIS_Y}
               stroke="#3bb4a4"
@@ -315,9 +315,9 @@ export default function DataPointDragZone({
             />
             <text
               x={medianX}
-              y={5}
+              y={20}
               textAnchor="middle"
-              fontSize={9}
+              fontSize={23}
               fill="#3bb4a4"
               fontFamily="monospace"
             >
@@ -397,10 +397,10 @@ export default function DataPointDragZone({
             {tooltip && (
               <g>
                 <rect
-                  x={Math.min(toX(tooltip.value) - 22, SVG_WIDTH - 60)}
-                  y={tooltip.y - DOT_RADIUS - 26}
-                  width={44}
-                  height={20}
+                  x={Math.min(toX(tooltip.value) - 42, SVG_WIDTH - 90)}
+                  y={tooltip.y - DOT_RADIUS - 40}
+                  width={84}
+                  height={30}
                   rx={4}
                   fill="#0f172a"
                   stroke="var(--color-accent)"
@@ -408,10 +408,10 @@ export default function DataPointDragZone({
                   opacity={0.95}
                 />
                 <text
-                  x={Math.min(toX(tooltip.value), SVG_WIDTH - 38)}
-                  y={tooltip.y - DOT_RADIUS - 12}
+                  x={Math.min(toX(tooltip.value), SVG_WIDTH - 48)}
+                  y={tooltip.y - DOT_RADIUS - 18}
                   textAnchor="middle"
-                  fontSize={10}
+                  fontSize={23}
                   fill="var(--color-accent)"
                   fontFamily="monospace"
                 >

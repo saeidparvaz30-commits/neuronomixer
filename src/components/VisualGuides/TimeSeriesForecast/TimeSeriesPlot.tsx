@@ -3,7 +3,7 @@
 import React from "react";
 
 const W = 600;
-const PAD = { l: 52, r: 20, t: 16, b: 40 };
+const PAD = { l: 64, r: 20, t: 16, b: 44 };
 
 function toX(i: number, len: number) {
   return PAD.l + (i / (len - 1)) * (W - PAD.l - PAD.r);
@@ -51,8 +51,8 @@ export default function TimeSeriesPlot({
   const padded_min = min - range * 0.08;
   const padded_max = max + range * 0.08;
 
-  // X axis: show every 6th label (every 6 months)
-  const xTickStep = Math.max(1, Math.floor(n / 8));
+  // X axis: sparser ticks so the larger labels never collide
+  const xTickStep = Math.max(1, Math.floor(n / 4));
   const xTicks: number[] = [];
   for (let i = 0; i < n; i += xTickStep) xTicks.push(i);
   if (xTicks[xTicks.length - 1] !== n - 1) xTicks.push(n - 1);
@@ -112,10 +112,10 @@ export default function TimeSeriesPlot({
               />
               <text
                 x={PAD.l - 6}
-                y={sy + 3.5}
+                y={sy + 6}
                 textAnchor="end"
                 fill="#475569"
-                fontSize={9}
+                fontSize={19}
               >
                 {Math.abs(t) >= 1000
                   ? (t / 1000).toFixed(1) + "k"
@@ -147,10 +147,10 @@ export default function TimeSeriesPlot({
             <text
               key={`x-${i}`}
               x={sx}
-              y={H - PAD.b + 14}
+              y={H - PAD.b + 22}
               textAnchor="middle"
               fill="#475569"
-              fontSize={9}
+              fontSize={19}
             >
               {labels[i]}
             </text>

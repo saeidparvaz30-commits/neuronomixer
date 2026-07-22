@@ -26,15 +26,15 @@ export default function FalseDiscoveryVisualization({
   const sigCount = testResults.filter(r => r.significant).length;
 
   const HIST_W = 500;
-  const HIST_H = 120;
-  const HIST_PAD = { l: 32, r: 8, t: 10, b: 24 };
+  const HIST_H = 140;
+  const HIST_PAD = { l: 32, r: 8, t: 10, b: 44 };
   const histIW = HIST_W - HIST_PAD.l - HIST_PAD.r;
   const histIH = HIST_H - HIST_PAD.t - HIST_PAD.b;
 
   // ── Manhattan-style plot ─────────────────────────────────────────────────────
   const MAN_W = 500;
-  const MAN_H = 120;
-  const MAN_PAD = { l: 40, r: 10, t: 10, b: 24 };
+  const MAN_H = 140;
+  const MAN_PAD = { l: 40, r: 10, t: 10, b: 44 };
   const manIW = MAN_W - MAN_PAD.l - MAN_PAD.r;
   const manIH = MAN_H - MAN_PAD.t - MAN_PAD.b;
 
@@ -104,10 +104,10 @@ export default function FalseDiscoveryVisualization({
             <text
               key={t}
               x={HIST_PAD.l + t * histIW}
-              y={HIST_PAD.t + histIH + 12}
+              y={HIST_PAD.t + histIH + 16}
               textAnchor="middle"
               fill="#475569"
-              fontSize="8"
+              fontSize="16"
             >
               {t.toFixed(2)}
             </text>
@@ -116,10 +116,10 @@ export default function FalseDiscoveryVisualization({
           {/* Axis label */}
           <text
             x={HIST_PAD.l + histIW / 2}
-            y={HIST_H - 2}
+            y={HIST_H - 4}
             textAnchor="middle"
             fill="#475569"
-            fontSize="8"
+            fontSize="16"
           >
             p-value
           </text>
@@ -127,9 +127,9 @@ export default function FalseDiscoveryVisualization({
           {/* Alpha cutoff label */}
           <text
             x={HIST_PAD.l + 0.05 * histIW + 2}
-            y={HIST_PAD.t + 8}
+            y={HIST_PAD.t + 12}
             fill="var(--color-accent)"
-            fontSize="7"
+            fontSize="16"
           >
             α=0.05
           </text>
@@ -165,7 +165,7 @@ export default function FalseDiscoveryVisualization({
             x2={MAN_PAD.l + manIW} y2={thresholdY}
             stroke="#ef4444" strokeWidth="1" strokeDasharray="4,3"
           />
-          <text x={MAN_PAD.l + manIW - 2} y={thresholdY - 3} textAnchor="end" fill="#ef4444" fontSize="7">
+          <text x={MAN_PAD.l + manIW - 2} y={thresholdY - 4} textAnchor="end" fill="#ef4444" fontSize="16">
             α=0.05
           </text>
 
@@ -173,11 +173,11 @@ export default function FalseDiscoveryVisualization({
           {[0, 1, 2, Math.ceil(maxLogP)].map(v => (
             <text
               key={v}
-              x={MAN_PAD.l - 3}
-              y={manY(v) + 3}
+              x={MAN_PAD.l - 4}
+              y={manY(v) + 5}
               textAnchor="end"
               fill="#475569"
-              fontSize="7"
+              fontSize="16"
             >
               {v}
             </text>
@@ -207,22 +207,22 @@ export default function FalseDiscoveryVisualization({
           {/* X-axis label */}
           <text
             x={MAN_PAD.l + manIW / 2}
-            y={MAN_H - 2}
+            y={MAN_H - 4}
             textAnchor="middle"
             fill="#475569"
-            fontSize="8"
+            fontSize="16"
           >
             Test Number
           </text>
 
           {/* Y-axis label */}
           <text
-            x={8}
+            x={14}
             y={MAN_PAD.t + manIH / 2}
             textAnchor="middle"
             fill="#475569"
-            fontSize="8"
-            transform={`rotate(-90, 8, ${MAN_PAD.t + manIH / 2})`}
+            fontSize="16"
+            transform={`rotate(-90, 14, ${MAN_PAD.t + manIH / 2})`}
           >
             −log₁₀(p)
           </text>

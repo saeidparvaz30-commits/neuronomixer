@@ -92,7 +92,7 @@ function Histogram({ data, isNormal }: { data: number[]; isNormal: boolean }) {
       {ticks.map(({ val, x }) => (
         <g key={x}>
           <line x1={x} y1={PAD.top + plotH} x2={x} y2={PAD.top + plotH + 3} stroke="#475569" strokeWidth={0.5} />
-          <text x={x} y={H - 3} textAnchor="middle" fontSize={7} fill="#475569">
+          <text x={x} y={H - 3} textAnchor="middle" fontSize={10} fill="#475569">
             {val > 1000 ? `${(val / 1000).toFixed(1)}k` : val.toFixed(val < 10 ? 1 : 0)}
           </text>
         </g>
@@ -155,7 +155,7 @@ function QQPlot({ data, isNormal }: { data: number[]; isNormal: boolean }) {
         <circle key={i} cx={p.cx} cy={p.cy} r={2} fill={dotColor} opacity={0.5} />
       ))}
       {/* X axis label */}
-      <text x={PAD.left + plotW / 2} y={H - 2} textAnchor="middle" fontSize={7} fill="#475569">
+      <text x={PAD.left + plotW / 2} y={H - 2} textAnchor="middle" fontSize={10} fill="#475569">
         Theoretical Quantiles
       </text>
       {/* X ticks */}
@@ -165,7 +165,7 @@ function QQPlot({ data, isNormal }: { data: number[]; isNormal: boolean }) {
         return (
           <g key={q}>
             <line x1={x} y1={PAD.top + plotH} x2={x} y2={PAD.top + plotH + 3} stroke="#475569" strokeWidth={0.5} />
-            <text x={x} y={PAD.top + plotH + 11} textAnchor="middle" fontSize={7} fill="#475569">{q}</text>
+            <text x={x} y={PAD.top + plotH + 12} textAnchor="middle" fontSize={10} fill="#475569">{q}</text>
           </g>
         );
       })}
@@ -176,7 +176,7 @@ function QQPlot({ data, isNormal }: { data: number[]; isNormal: boolean }) {
         return (
           <g key={i}>
             <line x1={PAD.left - 3} y1={y} x2={PAD.left} y2={y} stroke="#475569" strokeWidth={0.5} />
-            <text x={PAD.left - 5} y={y + 3} textAnchor="end" fontSize={6.5} fill="#475569">
+            <text x={PAD.left - 5} y={y + 3.5} textAnchor="end" fontSize={10} fill="#475569">
               {val > 1000 ? `${(val / 1000).toFixed(0)}k` : val.toFixed(0)}
             </text>
           </g>

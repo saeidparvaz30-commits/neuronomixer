@@ -15,7 +15,7 @@ const DATA_POINTS = [
 
 const W = 640;
 const H = 260;
-const PAD_L = 52;
+const PAD_L = 70;
 const PAD_R = 24;
 const PAD_T = 20;
 const PAD_B = 50;
@@ -49,7 +49,7 @@ export default function DataComparisonChart({ animate = true }: Props) {
             <g key={v}>
               <line x1={PAD_L} y1={y} x2={W - PAD_R} y2={y}
                 stroke="#1e293b" strokeWidth={1} />
-              <text x={PAD_L - 6} y={y + 4} fill="#475569" fontSize={9} textAnchor="end">
+              <text x={PAD_L - 6} y={y + 6} fill="#475569" fontSize={20} textAnchor="end">
                 {v}%
               </text>
             </g>
@@ -59,7 +59,7 @@ export default function DataComparisonChart({ animate = true }: Props) {
         {/* Y-axis label */}
         <text
           x={10} y={H / 2}
-          fill="#94a3b8" fontSize={9} textAnchor="middle"
+          fill="#94a3b8" fontSize={20} textAnchor="middle"
           transform={`rotate(-90, 10, ${H / 2})`}
         >
           Accuracy
@@ -87,7 +87,7 @@ export default function DataComparisonChart({ animate = true }: Props) {
               />
               <motion.text
                 x={xScratch + barW / 2} y={yPos(d.fromScratch) - 4}
-                fill="#94a3b8" fontSize={9} textAnchor="middle"
+                fill="#94a3b8" fontSize={20} textAnchor="middle"
                 initial={animate ? { opacity: 0 } : {}}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 + i * 0.1 }}
@@ -106,7 +106,7 @@ export default function DataComparisonChart({ animate = true }: Props) {
               />
               <motion.text
                 x={xTransfer + barW / 2} y={yPos(d.transfer) - 4}
-                fill="#3bb4a4" fontSize={9} textAnchor="middle"
+                fill="#3bb4a4" fontSize={20} textAnchor="middle"
                 initial={animate ? { opacity: 0 } : {}}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.45 + i * 0.1 }}
@@ -128,7 +128,7 @@ export default function DataComparisonChart({ animate = true }: Props) {
                   />
                   <text
                     x={cx + barW / 2 + 14} y={(yPos(d.fromScratch) + yPos(d.transfer)) / 2 + 4}
-                    fill="var(--color-accent)" fontSize={8} fontWeight="600"
+                    fill="var(--color-accent)" fontSize={20} fontWeight="600"
                   >
                     +{d.transfer - d.fromScratch}%
                   </text>
@@ -136,7 +136,7 @@ export default function DataComparisonChart({ animate = true }: Props) {
               )}
 
               {/* X-axis label */}
-              <text x={cx} y={H - PAD_B + 16} fill="#94a3b8" fontSize={9} textAnchor="middle">
+              <text x={cx} y={H - PAD_B + 22} fill="#94a3b8" fontSize={20} textAnchor="middle">
                 {d.label}
               </text>
             </g>
@@ -148,18 +148,23 @@ export default function DataComparisonChart({ animate = true }: Props) {
           stroke="#334155" strokeWidth={1.5} />
 
         {/* X-axis label */}
-        <text x={W / 2} y={H - 4} fill="#94a3b8" fontSize={10} textAnchor="middle">
+        <text x={W / 2} y={H - 4} fill="#94a3b8" fontSize={20} textAnchor="middle">
           Training Samples
         </text>
 
-        {/* Legend */}
-        <g transform={`translate(${W - PAD_R - 160}, ${PAD_T})`}>
-          <rect x={0} y={0} width={10} height={10} rx={2} fill="#475569" />
-          <text x={14} y={9} fill="#94a3b8" fontSize={9}>From Scratch</text>
-          <rect x={90} y={0} width={10} height={10} rx={2} fill="#3bb4a4" />
-          <text x={104} y={9} fill="#94a3b8" fontSize={9}>Transfer Learning</text>
-        </g>
       </svg>
+
+      {/* Legend (HTML so it stays legible at any width) */}
+      <div className="flex items-center gap-4 mt-1 px-1">
+        <span className="flex items-center gap-1.5 text-[11px] text-[#94a3b8]">
+          <span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#475569]" />
+          From Scratch
+        </span>
+        <span className="flex items-center gap-1.5 text-[11px] text-[#94a3b8]">
+          <span className="inline-block w-2.5 h-2.5 rounded-sm bg-[#3bb4a4]" />
+          Transfer Learning
+        </span>
+      </div>
     </div>
   );
 }

@@ -6,8 +6,8 @@ import { METRIC_META } from "./types";
 
 const CHART_W = 680;
 const CHART_H = 240;
-const PAD_L = 46;
-const PAD_B = 34;
+const PAD_L = 52;
+const PAD_B = 56;
 const PAD_T = 12;
 const PAD_R = 16;
 
@@ -114,10 +114,10 @@ export default function TradeoffCurve({
               />
               <text
                 x={px(fa)}
-                y={PAD_T + plotH + 15}
+                y={PAD_T + plotH + 24}
                 textAnchor="middle"
                 fill="#475569"
-                fontSize={9}
+                fontSize={21}
               >
                 {Math.round(fa * 100)}%
               </text>
@@ -138,10 +138,10 @@ export default function TradeoffCurve({
                 />
                 <text
                   x={PAD_L - 7}
-                  y={py(d) + 3}
+                  y={py(d) + 7}
                   textAnchor="end"
                   fill="#475569"
-                  fontSize={9}
+                  fontSize={21}
                 >
                   {d.toFixed(0)}
                 </text>
@@ -150,10 +150,10 @@ export default function TradeoffCurve({
           })}
           <text
             x={PAD_L + plotW / 2}
-            y={CHART_H - 4}
+            y={CHART_H - 6}
             textAnchor="middle"
             fill="#94a3b8"
-            fontSize={10}
+            fontSize={21}
           >
             false-alarm probability per {T}-hour window (in-control traffic)
           </text>
@@ -162,7 +162,7 @@ export default function TradeoffCurve({
             y={PAD_T + plotH / 2}
             textAnchor="middle"
             fill="#94a3b8"
-            fontSize={10}
+            fontSize={21}
             transform={`rotate(-90 12 ${PAD_T + plotH / 2})`}
           >
             mean detection delay (h)
@@ -195,7 +195,7 @@ export default function TradeoffCurve({
                     x={px(current.falseAlarmProb) + 10}
                     y={py(current.meanDelay) - 8}
                     fill="var(--color-accent)"
-                    fontSize={10}
+                    fontSize={21}
                     fontWeight={700}
                   >
                     h = {current.h}

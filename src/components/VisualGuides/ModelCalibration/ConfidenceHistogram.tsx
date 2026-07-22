@@ -10,8 +10,8 @@ interface Props {
 }
 
 const W = 520;
-const H = 190;
-const M = { top: 18, right: 14, bottom: 34, left: 40 };
+const H = 214;
+const M = { top: 24, right: 14, bottom: 52, left: 44 };
 const PW = W - M.left - M.right;
 const PH = H - M.top - M.bottom;
 
@@ -46,7 +46,7 @@ function ConfidenceHistogramInner({ bins, n, viewLabel }: Props) {
                 x={bx + bw / 2}
                 y={M.top + PH - bh - 4}
                 textAnchor="middle"
-                fontSize={9}
+                fontSize={16}
                 fill="#94a3b8"
               >
                 {b.count}
@@ -54,9 +54,9 @@ function ConfidenceHistogramInner({ bins, n, viewLabel }: Props) {
             )}
             <text
               x={bx + bw / 2}
-              y={H - M.bottom + 14}
+              y={H - M.bottom + 18}
               textAnchor="middle"
-              fontSize={9}
+              fontSize={16}
               fill="#475569"
             >
               {b.lo.toFixed(1)}
@@ -72,16 +72,16 @@ function ConfidenceHistogramInner({ bins, n, viewLabel }: Props) {
         stroke="#334155"
         strokeWidth={1}
       />
-      <text x={M.left + PW / 2} y={H - 4} textAnchor="middle" fontSize={11} fill="#94a3b8">
+      <text x={M.left + PW / 2} y={H - 6} textAnchor="middle" fontSize={17} fill="#94a3b8">
         Predicted probability
       </text>
       <text
-        x={12}
+        x={16}
         y={M.top + PH / 2}
         textAnchor="middle"
-        fontSize={11}
+        fontSize={17}
         fill="#94a3b8"
-        transform={`rotate(-90 12 ${M.top + PH / 2})`}
+        transform={`rotate(-90 16 ${M.top + PH / 2})`}
       >
         Count
       </text>

@@ -44,15 +44,15 @@ function ScatterPlotInner({ rows, strategy }: Props) {
           <line x1={PAD} y1={H - PAD} x2={W - PAD} y2={H - PAD} stroke="#334155" strokeWidth="1" />
 
           {/* Axis labels */}
-          <text x={W / 2} y={H - 4} textAnchor="middle" fontSize="9" fill="#475569" fontFamily="Inter, sans-serif">Feature_A</text>
-          <text x={10} y={H / 2} textAnchor="middle" fontSize="9" fill="#475569" fontFamily="Inter, sans-serif" transform={`rotate(-90,10,${H / 2})`}>Feature_B</text>
+          <text x={W / 2} y={H - 4} textAnchor="middle" fontSize="11" fill="#475569" fontFamily="Inter, sans-serif">Feature_A</text>
+          <text x={10} y={H / 2} textAnchor="middle" fontSize="11" fill="#475569" fontFamily="Inter, sans-serif" transform={`rotate(-90,10,${H / 2})`}>Feature_B</text>
 
           {/* Tick labels */}
           {xTicks().map((v) => (
-            <text key={`xl-${v}`} x={toX(v)} y={H - PAD + 11} textAnchor="middle" fontSize="7" fill="#334155" fontFamily="monospace">{v}</text>
+            <text key={`xl-${v}`} x={toX(v)} y={H - PAD + 11} textAnchor="middle" fontSize="10" fill="#334155" fontFamily="monospace">{v}</text>
           ))}
           {yTicks().map((v) => (
-            <text key={`yl-${v}`} x={PAD - 4} y={toY(v) + 3} textAnchor="end" fontSize="7" fill="#334155" fontFamily="monospace">{v}</text>
+            <text key={`yl-${v}`} x={PAD - 4} y={toY(v) + 3} textAnchor="end" fontSize="10" fill="#334155" fontFamily="monospace">{v}</text>
           ))}
 
           {/* Ghost original points (always shown, faded) */}

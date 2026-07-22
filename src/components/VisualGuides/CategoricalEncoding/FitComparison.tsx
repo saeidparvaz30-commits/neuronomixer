@@ -12,7 +12,7 @@ interface Props {
 
 const W = 560;
 const H = 330;
-const M = { top: 18, right: 16, bottom: 48, left: 52 };
+const M = { top: 18, right: 16, bottom: 48, left: 64 };
 const PW = W - M.left - M.right;
 const PH = H - M.top - M.bottom;
 
@@ -72,7 +72,7 @@ function FitComparisonInner({ fits, revealed, onRun }: Props) {
         {[250, 300, 350, 400, 450].map((p) => (
           <g key={p}>
             <line x1={M.left} y1={yPos(p)} x2={W - M.right} y2={yPos(p)} stroke="#1e293b" strokeWidth={1} />
-            <text x={M.left - 8} y={yPos(p) + 4} textAnchor="end" fontSize={10} fill="#475569">
+            <text x={M.left - 8} y={yPos(p) + 6} textAnchor="end" fontSize={17} fill="#475569">
               {p}
             </text>
           </g>
@@ -85,7 +85,7 @@ function FitComparisonInner({ fits, revealed, onRun }: Props) {
             x={xPos(code)}
             y={H - M.bottom + 18}
             textAnchor="middle"
-            fontSize={10}
+            fontSize={17}
             fill="#94a3b8"
           >
             {c} ({code})
@@ -138,14 +138,14 @@ function FitComparisonInner({ fits, revealed, onRun }: Props) {
         {/* Axes */}
         <line x1={M.left} y1={yPos(Y_MIN)} x2={W - M.right} y2={yPos(Y_MIN)} stroke="#334155" strokeWidth={1} />
         <line x1={M.left} y1={yPos(Y_MIN)} x2={M.left} y2={M.top} stroke="#334155" strokeWidth={1} />
-        <text x={M.left + PW / 2} y={H - 6} textAnchor="middle" fontSize={11} fill="#94a3b8">
+        <text x={M.left + PW / 2} y={H - 6} textAnchor="middle" fontSize={18} fill="#94a3b8">
           Neighborhood (ordinal code in parentheses)
         </text>
         <text
           x={14}
           y={M.top + PH / 2}
           textAnchor="middle"
-          fontSize={11}
+          fontSize={18}
           fill="#94a3b8"
           transform={`rotate(-90 14 ${M.top + PH / 2})`}
         >

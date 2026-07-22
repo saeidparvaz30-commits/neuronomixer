@@ -18,7 +18,7 @@ interface Props {
 
 const W = 560;
 const H = 320;
-const PAD = { l: 38, r: 12, t: 14, b: 30 };
+const PAD = { l: 40, r: 12, t: 14, b: 38 };
 const X_MIN = -1.06;
 const X_MAX = 1.06;
 const Y_MIN = -2.2;
@@ -71,9 +71,9 @@ function PolyFitChartInner({ points, fittedCurve, trueCurve, color, summary }: P
             />
             <text
               x={PAD.l - 6}
-              y={sy(v) + 3}
+              y={sy(v) + 5}
               textAnchor="end"
-              fontSize={10}
+              fontSize={17}
               fill="#475569"
             >
               {v}
@@ -92,9 +92,9 @@ function PolyFitChartInner({ points, fittedCurve, trueCurve, color, summary }: P
             />
             <text
               x={sx(v)}
-              y={H - PAD.b + 14}
+              y={H - PAD.b + 18}
               textAnchor="middle"
-              fontSize={10}
+              fontSize={17}
               fill="#475569"
             >
               {v}
@@ -103,9 +103,9 @@ function PolyFitChartInner({ points, fittedCurve, trueCurve, color, summary }: P
         ))}
         <text
           x={W - PAD.r}
-          y={H - 4}
+          y={H - 2}
           textAnchor="end"
-          fontSize={10}
+          fontSize={17}
           fill="#475569"
         >
           x

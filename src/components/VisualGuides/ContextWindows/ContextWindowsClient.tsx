@@ -46,7 +46,7 @@ function fmtTokens(n: number) {
 // ── SVG Recall Chart ───────────────────────────────────────────────────────────
 
 const W = 540, H = 200;
-const P = { t: 20, r: 20, b: 36, l: 44 };
+const P = { t: 20, r: 20, b: 56, l: 44 };
 const IW = W - P.l - P.r, IH = H - P.t - P.b;
 const sx = (p: number) => P.l + (p / 100) * IW;
 const sy = (a: number) => P.t + ((100 - a) / 100) * IH;
@@ -65,10 +65,10 @@ function RecallChart({ onViewed }: { onViewed: () => void }) {
       <svg ref={ref} viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[540px]" aria-label="Recall vs position">
         <polygon points={dangerPts} fill="#ef444420" />
         {[25,50,75,100].map(p => <line key={p} x1={P.l} y1={sy(p)} x2={P.l+IW} y2={sy(p)} stroke="#1e293b" strokeWidth={1} />)}
-        {[0,25,50,75,100].map(p => <text key={p} x={sx(p)} y={H-6} textAnchor="middle" fontSize={10} fill="#94a3b8">{p}%</text>)}
-        {[25,50,75,100].map(p => <text key={p} x={P.l-6} y={sy(p)+4} textAnchor="end" fontSize={10} fill="#94a3b8">{p}%</text>)}
-        <text x={P.l+IW/2} y={H-0} textAnchor="middle" fontSize={10} fill="#94a3b8">Position in context</text>
-        <text x={sx(50)} y={sy(59)} textAnchor="middle" fontSize={9} fill="#ef4444" fontWeight="600">Danger zone: may be forgotten</text>
+        {[0,25,50,75,100].map(p => <text key={p} x={sx(p)} y={P.t+IH+18} textAnchor="middle" fontSize={17} fill="#94a3b8">{p}%</text>)}
+        {[25,50,75,100].map(p => <text key={p} x={P.l-6} y={sy(p)+6} textAnchor="end" fontSize={17} fill="#94a3b8">{p}%</text>)}
+        <text x={P.l+IW/2} y={H-4} textAnchor="middle" fontSize={17} fill="#94a3b8">Position in context</text>
+        <text x={sx(50)} y={sy(59)} textAnchor="middle" fontSize={17} fill="#ef4444" fontWeight="600">Danger zone: may be forgotten</text>
         <motion.path d={linePath} fill="none" stroke="#3bb4a4" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round"
           initial={{ pathLength: 0 }} animate={inView ? { pathLength: 1 } : { pathLength: 0 }} transition={{ duration: 1.4, ease: "easeInOut" }} />
         {inView && RECALL_POINTS.map(p => (

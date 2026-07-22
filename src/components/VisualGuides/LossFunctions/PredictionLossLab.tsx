@@ -21,10 +21,10 @@ interface Props {
 
 // Number line geometry (viewBox units)
 const NL_W = 640;
-const NL_H = 110;
+const NL_H = 126;
 const NL_L = 28;
 const NL_R = 612;
-const NL_AXIS_Y = 66;
+const NL_AXIS_Y = 82;
 
 // Loss curve chart geometry (viewBox units)
 const CH_W = 640;
@@ -192,7 +192,7 @@ export default function PredictionLossLab({ onAdjust }: Props) {
         {[-8, -6, -4, -2, 0, 2, 4, 6, 8].map((t) => (
           <g key={t}>
             <line x1={predToPx(t)} y1={NL_AXIS_Y - 4} x2={predToPx(t)} y2={NL_AXIS_Y + 4} stroke="#334155" strokeWidth={1} />
-            <text x={predToPx(t)} y={NL_AXIS_Y + 20} textAnchor="middle" fontSize={10} fill="#475569">
+            <text x={predToPx(t)} y={NL_AXIS_Y + 24} textAnchor="middle" fontSize={20} fill="#475569">
               {t}
             </text>
           </g>
@@ -210,9 +210,9 @@ export default function PredictionLossLab({ onAdjust }: Props) {
         />
         <text
           x={(predToPx(TARGET) + predToPx(pred)) / 2}
-          y={NL_AXIS_Y - 32}
+          y={NL_AXIS_Y - 36}
           textAnchor="middle"
-          fontSize={10}
+          fontSize={20}
           fill="#94a3b8"
         >
           e = {fmt(e, 1)}
@@ -228,7 +228,7 @@ export default function PredictionLossLab({ onAdjust }: Props) {
             transform={`rotate(45 ${predToPx(TARGET)} ${NL_AXIS_Y})`}
             fill="var(--color-accent)"
           />
-          <text x={predToPx(TARGET)} y={NL_AXIS_Y - 44} textAnchor="middle" fontSize={10} fontWeight={600} fill="var(--color-accent)">
+          <text x={predToPx(TARGET)} y={NL_AXIS_Y - 58} textAnchor="middle" fontSize={20} fontWeight={600} fill="var(--color-accent)">
             target = {TARGET}
           </text>
         </g>
@@ -247,7 +247,7 @@ export default function PredictionLossLab({ onAdjust }: Props) {
         >
           <circle cx={predToPx(pred)} cy={NL_AXIS_Y} r={13} fill="transparent" stroke="none" />
           <circle cx={predToPx(pred)} cy={NL_AXIS_Y} r={9} fill="#1e5d8a" stroke="#f1f5f9" strokeWidth={2} />
-          <text x={predToPx(pred)} y={NL_AXIS_Y - 16} textAnchor="middle" fontSize={10} fontWeight={600} fill="#f1f5f9">
+          <text x={predToPx(pred)} y={NL_AXIS_Y - 16} textAnchor="middle" fontSize={20} fontWeight={600} fill="#f1f5f9">
             {fmt(pred, 1)}
           </text>
         </g>
@@ -329,14 +329,14 @@ export default function PredictionLossLab({ onAdjust }: Props) {
           {[0, 5, 10, 15, 20, 25].map((t) => (
             <g key={t}>
               <line x1={CH_L} y1={chartY(t)} x2={CH_R} y2={chartY(t)} stroke="#1e293b" strokeWidth={1} />
-              <text x={CH_L - 8} y={chartY(t) + 3} textAnchor="end" fontSize={9} fill="#475569">
+              <text x={CH_L - 8} y={chartY(t) + 6} textAnchor="end" fontSize={20} fill="#475569">
                 {t}
               </text>
             </g>
           ))}
           {/* x ticks */}
           {[-8, -4, 0, 2, 4, 8].map((t) => (
-            <text key={t} x={chartX(t)} y={CH_B + 16} textAnchor="middle" fontSize={9} fill="#475569">
+            <text key={t} x={chartX(t)} y={CH_B + 22} textAnchor="middle" fontSize={20} fill="#475569">
               {t}
             </text>
           ))}
@@ -359,7 +359,7 @@ export default function PredictionLossLab({ onAdjust }: Props) {
           </g>
 
           {/* Target tick on x axis */}
-          <text x={chartX(TARGET)} y={CH_T + 10} textAnchor="middle" fontSize={9} fill="var(--color-accent)">
+          <text x={chartX(TARGET)} y={CH_T + 16} textAnchor="middle" fontSize={20} fill="var(--color-accent)">
             target
           </text>
         </svg>

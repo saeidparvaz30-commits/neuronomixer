@@ -169,18 +169,18 @@ export default function LearningCurve() {
           />
 
           {/* Zone labels */}
-          <text x={cx(underfitEnd / 2)} y={PAD.t + 16} fill="#ef4444" fontSize="10" textAnchor="middle" fontWeight="600" opacity={0.8}>
+          <text x={cx(underfitEnd / 2)} y={PAD.t + 16} fill="#ef4444" fontSize="17" textAnchor="middle" fontWeight="600" opacity={0.8}>
             Underfitting
           </text>
-          <text x={cx((underfitEnd + overfitStart) / 2)} y={PAD.t + 16} fill="var(--color-success)" fontSize="10" textAnchor="middle" fontWeight="600" opacity={0.8}>
+          <text x={cx((underfitEnd + overfitStart) / 2)} y={PAD.t + 16} fill="var(--color-success)" fontSize="17" textAnchor="middle" fontWeight="600" opacity={0.8}>
             Sweet Spot
           </text>
-          <text x={cx((overfitStart + 1) / 2)} y={PAD.t + 16} fill="var(--color-warning)" fontSize="10" textAnchor="middle" fontWeight="600" opacity={0.8}>
+          <text x={cx((overfitStart + 1) / 2)} y={PAD.t + 82} fill="var(--color-warning)" fontSize="17" textAnchor="middle" fontWeight="600" opacity={0.8}>
             Overfitting
           </text>
 
           {/* Optimal label */}
-          <text x={cx(optT) + 5} y={PAD.t + 30} fill="var(--color-accent)" fontSize="9" fontWeight="600">
+          <text x={cx(optT) + 5} y={PAD.t + 30} fill="var(--color-accent)" fontSize="17" fontWeight="600">
             Optimal
           </text>
 
@@ -190,13 +190,13 @@ export default function LearningCurve() {
 
           {/* X-axis labels */}
           {xLabels.map(({ t, label }) => (
-            <text key={label} x={cx(t)} y={H - 8} fill="#475569" fontSize="10" textAnchor="middle">
+            <text key={label} x={cx(t)} y={PAD.t + CH + 20} fill="#475569" fontSize="17" textAnchor="middle">
               {label}
             </text>
           ))}
 
           {/* X-axis title */}
-          <text x={W / 2} y={H - PAD.b + 36} fill="#475569" fontSize="10" textAnchor="middle">
+          <text x={W / 2} y={H - 6} fill="#475569" fontSize="17" textAnchor="middle">
             Model Complexity →
           </text>
 
@@ -205,7 +205,7 @@ export default function LearningCurve() {
             x={14}
             y={PAD.t + CH / 2}
             fill="#475569"
-            fontSize="10"
+            fontSize="17"
             textAnchor="middle"
             transform={`rotate(-90, 14, ${PAD.t + CH / 2})`}
           >
@@ -213,12 +213,12 @@ export default function LearningCurve() {
           </text>
 
           {/* Legend */}
-          <g transform={`translate(${W - PAD.r - 140}, ${PAD.t + 8})`}>
-            <rect width="136" height="46" rx="4" fill="#0a0e1a" stroke="#1e293b" strokeWidth="1" />
-            <line x1="8" y1="16" x2="28" y2="16" stroke="#3bb4a4" strokeWidth="2.5" />
-            <text x="34" y="20" fill="#94a3b8" fontSize="10">Training Error</text>
-            <line x1="8" y1="34" x2="28" y2="34" stroke="#ef4444" strokeWidth="2.5" />
-            <text x="34" y="38" fill="#94a3b8" fontSize="10">Validation Error</text>
+          <g transform={`translate(${W - PAD.r - 204}, ${PAD.t + 8})`}>
+            <rect width="200" height="56" rx="4" fill="#0a0e1a" stroke="#1e293b" strokeWidth="1" />
+            <line x1="8" y1="17" x2="28" y2="17" stroke="#3bb4a4" strokeWidth="2.5" />
+            <text x="34" y="23" fill="#94a3b8" fontSize="17">Training Error</text>
+            <line x1="8" y1="41" x2="28" y2="41" stroke="#ef4444" strokeWidth="2.5" />
+            <text x="34" y="47" fill="#94a3b8" fontSize="17">Validation Error</text>
           </g>
         </svg>
       </div>

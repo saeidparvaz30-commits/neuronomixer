@@ -16,7 +16,7 @@ const N_HIDDEN = 5;
 const N_OUTPUT = 3;
 
 // Neuron radius
-const R = 18;
+const R = 24;
 
 // Compute y positions for a layer with N neurons, centered vertically
 function layerY(n: number): number[] {
@@ -167,16 +167,16 @@ function getNeuronDisplayValue(
     if (step >= 5) {
       // Show gradient in backward steps
       const grad = FORWARD_DATA.dH[index];
-      return grad.toFixed(3);
+      return grad.toFixed(2);
     }
-    return FORWARD_DATA.aH[index].toFixed(3);
+    return FORWARD_DATA.aH[index].toFixed(2);
   }
   if (step >= 3 && layer === "output") {
     if (step >= 5) {
       const grad = FORWARD_DATA.dO[index];
-      return grad.toFixed(3);
+      return grad.toFixed(2);
     }
-    return FORWARD_DATA.aO[index].toFixed(3);
+    return FORWARD_DATA.aO[index].toFixed(2);
   }
   return null;
 }
@@ -345,16 +345,16 @@ export default function NetworkVisualization({ step }: Props) {
                 {displayVal !== null ? (
                   <text
                     x={LAYER_X[0]}
-                    y={cy + 4}
+                    y={cy + 6}
                     fill="white"
-                    fontSize="9"
+                    fontSize="17"
                     fontWeight="bold"
                     textAnchor="middle"
                   >
                     {displayVal}
                   </text>
                 ) : (
-                  <text x={LAYER_X[0]} y={cy + 4} fill="#94a3b8" fontSize="10" textAnchor="middle">
+                  <text x={LAYER_X[0]} y={cy + 6} fill="#94a3b8" fontSize="17" textAnchor="middle">
                     x{i + 1}
                   </text>
                 )}
@@ -388,22 +388,22 @@ export default function NetworkVisualization({ step }: Props) {
                 {displayVal !== null ? (
                   <text
                     x={LAYER_X[1]}
-                    y={cy + 4}
+                    y={cy + 6}
                     fill={isDead ? "#94a3b8" : "white"}
-                    fontSize="8"
+                    fontSize="17"
                     fontWeight="bold"
                     textAnchor="middle"
                   >
                     {displayVal}
                   </text>
                 ) : (
-                  <text x={LAYER_X[1]} y={cy + 4} fill="#475569" fontSize="10" textAnchor="middle">
+                  <text x={LAYER_X[1]} y={cy + 6} fill="#475569" fontSize="17" textAnchor="middle">
                     h{i + 1}
                   </text>
                 )}
                 {/* Dead neuron indicator */}
                 {isDead && step >= 2 && (
-                  <text x={LAYER_X[1]} y={cy - R - 5} fill="#64748b" fontSize="8" textAnchor="middle">
+                  <text x={LAYER_X[1]} y={cy - R - 5} fill="#64748b" fontSize="17" textAnchor="middle">
                     dead
                   </text>
                 )}
@@ -435,16 +435,16 @@ export default function NetworkVisualization({ step }: Props) {
                 {displayVal !== null ? (
                   <text
                     x={LAYER_X[2]}
-                    y={cy + 4}
+                    y={cy + 6}
                     fill="white"
-                    fontSize="8"
+                    fontSize="17"
                     fontWeight="bold"
                     textAnchor="middle"
                   >
                     {displayVal}
                   </text>
                 ) : (
-                  <text x={LAYER_X[2]} y={cy + 4} fill="#475569" fontSize="10" textAnchor="middle">
+                  <text x={LAYER_X[2]} y={cy + 6} fill="#475569" fontSize="17" textAnchor="middle">
                     o{i + 1}
                   </text>
                 )}
@@ -452,9 +452,9 @@ export default function NetworkVisualization({ step }: Props) {
                 {step >= 4 && (
                   <text
                     x={LAYER_X[2] + R + 8}
-                    y={cy + 4}
+                    y={cy + 6}
                     fill="var(--color-accent)"
-                    fontSize="9"
+                    fontSize="17"
                     fontWeight="600"
                   >
                     y={[1, 0, 0][i]}
@@ -511,10 +511,10 @@ export default function NetworkVisualization({ step }: Props) {
             { x: LAYER_X[2], label: "Output", sub: "(3, Softmax)" },
           ].map(({ x, label, sub }) => (
             <g key={label}>
-              <text x={x} y={SVH - 20} fill="#94a3b8" fontSize="11" textAnchor="middle" fontWeight="600">
+              <text x={x} y={SVH - 26} fill="#94a3b8" fontSize="18" textAnchor="middle" fontWeight="600">
                 {label}
               </text>
-              <text x={x} y={SVH - 8} fill="#475569" fontSize="9" textAnchor="middle">
+              <text x={x} y={SVH - 6} fill="#475569" fontSize="17" textAnchor="middle">
                 {sub}
               </text>
             </g>
@@ -522,8 +522,8 @@ export default function NetworkVisualization({ step }: Props) {
 
           {/* ── Tooltip ── */}
           {tooltip && (() => {
-            const tw = 140;
-            const th = tooltip.sub ? 46 : 32;
+            const tw = 180;
+            const th = tooltip.sub ? 74 : 52;
             const tx = Math.min(Math.max(tooltip.x - tw / 2, 8), SVW - tw - 8);
             const ty = tooltip.y - R - th - 10;
             const clampedTy = ty < 8 ? tooltip.y + R + 10 : ty;
@@ -542,27 +542,27 @@ export default function NetworkVisualization({ step }: Props) {
                 />
                 <text
                   x={tx + 8}
-                  y={clampedTy + 14}
+                  y={clampedTy + 20}
                   fill="var(--color-accent)"
-                  fontSize="10"
+                  fontSize="17"
                   fontWeight="700"
                 >
                   {tooltip.label}
                 </text>
                 <text
                   x={tx + 8}
-                  y={clampedTy + 27}
+                  y={clampedTy + 44}
                   fill="white"
-                  fontSize="9"
+                  fontSize="17"
                 >
                   {tooltip.value}
                 </text>
                 {tooltip.sub && (
                   <text
                     x={tx + 8}
-                    y={clampedTy + 40}
+                    y={clampedTy + 68}
                     fill="#94a3b8"
-                    fontSize="9"
+                    fontSize="17"
                   >
                     {tooltip.sub}
                   </text>
@@ -574,12 +574,12 @@ export default function NetworkVisualization({ step }: Props) {
           {/* ── Weight update legend on step 8 ── */}
           {step === 8 && (
             <g>
-              <rect x={8} y={8} width={200} height={52} rx={6} fill="#0f172a" stroke="#4ade80" strokeWidth="1" opacity={0.9} />
-              <text x={16} y={24} fill="#4ade80" fontSize="10" fontWeight="700">Weight Update Preview</text>
-              <text x={16} y={38} fill="#94a3b8" fontSize="9">
+              <rect x={8} y={8} width={266} height={84} rx={6} fill="#0f172a" stroke="#4ade80" strokeWidth="1" opacity={0.9} />
+              <text x={16} y={30} fill="#4ade80" fontSize="17" fontWeight="700">Weight Update Preview</text>
+              <text x={16} y={54} fill="#94a3b8" fontSize="17">
                 W_IH[0][0]: {FIXED_WEIGHTS_IH[0][0].toFixed(4)} → {FORWARD_DATA.newW_IH[0][0].toFixed(4)}
               </text>
-              <text x={16} y={52} fill="#94a3b8" fontSize="9">
+              <text x={16} y={78} fill="#94a3b8" fontSize="17">
                 W_HO[0][0]: {FIXED_WEIGHTS_HO[0][0].toFixed(4)} → {FORWARD_DATA.newW_HO[0][0].toFixed(4)}
               </text>
             </g>
@@ -588,8 +588,8 @@ export default function NetworkVisualization({ step }: Props) {
           {/* ── Loss badge on step 4 ── */}
           {step === 4 && (
             <g>
-              <rect x={SVW / 2 - 70} y={8} width={140} height={32} rx={8} fill="#b45309" opacity={0.9} />
-              <text x={SVW / 2} y={29} fill="white" fontSize="11" fontWeight="700" textAnchor="middle">
+              <rect x={SVW / 2 - 80} y={8} width={160} height={34} rx={8} fill="#b45309" opacity={0.9} />
+              <text x={SVW / 2} y={31} fill="white" fontSize="18" fontWeight="700" textAnchor="middle">
                 Loss = {FORWARD_DATA.loss.toFixed(4)}
               </text>
             </g>

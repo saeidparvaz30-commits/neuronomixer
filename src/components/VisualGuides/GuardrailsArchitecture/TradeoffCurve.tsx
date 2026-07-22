@@ -57,7 +57,7 @@ export default function TradeoffCurve({ reference, current }: Props) {
                 stroke="#1e293b"
                 strokeWidth={1}
               />
-              <text x={x(t)} y={H - PAD_B + 16} fill="#475569" fontSize={9} textAnchor="middle">
+              <text x={x(t)} y={H - PAD_B + 16} fill="#475569" fontSize={11} textAnchor="middle">
                 {Math.round(t * 100)}
               </text>
             </g>
@@ -72,14 +72,14 @@ export default function TradeoffCurve({ reference, current }: Props) {
                 stroke="#1e293b"
                 strokeWidth={1}
               />
-              <text x={PAD_L - 8} y={y(t) + 3} fill="#475569" fontSize={9} textAnchor="end">
+              <text x={PAD_L - 8} y={y(t) + 4} fill="#475569" fontSize={11} textAnchor="end">
                 {Math.round(t * 100)}
               </text>
             </g>
           ))}
 
           {/* Ideal corner marker (top-left: high block, low FP) */}
-          <text x={PAD_L + 2} y={PAD_T + 11} fill="#22c55e" fontSize={9}>
+          <text x={PAD_L + 2} y={PAD_T + 13} fill="#22c55e" fontSize={11}>
             ideal
           </text>
 
@@ -88,7 +88,7 @@ export default function TradeoffCurve({ reference, current }: Props) {
             x={PAD_L + PLOT_W / 2}
             y={H - 4}
             fill="#94a3b8"
-            fontSize={10}
+            fontSize={12}
             textAnchor="middle"
           >
             False-positive rate (% benign blocked)
@@ -97,7 +97,7 @@ export default function TradeoffCurve({ reference, current }: Props) {
             x={12}
             y={PAD_T + PLOT_H / 2}
             fill="#94a3b8"
-            fontSize={10}
+            fontSize={12}
             textAnchor="middle"
             transform={`rotate(-90 12 ${PAD_T + PLOT_H / 2})`}
           >

@@ -173,7 +173,7 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
               x={PAD.l + ((v - minV) / (maxV - minV)) * chartW}
               y={H - 4}
               fill="#475569"
-              fontSize="8"
+              fontSize="10"
               textAnchor="middle"
             >
               {v}

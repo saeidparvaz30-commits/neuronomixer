@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import { motion } from "framer-motion";
 import { tPDF, tCDF, TestType } from "./types";
 
-const W = 520, H = 220, PAD = { l: 28, r: 16, t: 16, b: 32 };
+const W = 520, H = 236, PAD = { l: 28, r: 16, t: 16, b: 48 };
 const IW = W - PAD.l - PAD.r;
 const IH = H - PAD.t - PAD.b;
 const T_RANGE = 4;
@@ -97,7 +97,7 @@ export default function DistributionCurve({ df, tStat, alpha, testType, hasResul
         {[critT, ...(testType === "two-tailed" ? [-critT] : [])].map((cv, i) => (
           <g key={i}>
             <line x1={tx(cv)} y1={PAD.t} x2={tx(cv)} y2={PAD.t + IH} stroke="#ef4444" strokeWidth="1" strokeDasharray="3 2" />
-            <text x={tx(cv)} y={PAD.t + IH + 12} textAnchor="middle" fill="#ef4444" fontSize="8">
+            <text x={tx(cv)} y={PAD.t + IH + 30} textAnchor="middle" fill="#ef4444" fontSize="16">
               {cv.toFixed(2)}
             </text>
           </g>
@@ -115,7 +115,7 @@ export default function DistributionCurve({ df, tStat, alpha, testType, hasResul
               x2={tx(tStat)} y2={PAD.t + IH}
               stroke="var(--color-accent)" strokeWidth="2"
             />
-            <text x={tx(tStat) + 3} y={PAD.t + 14} fill="var(--color-accent)" fontSize="9" fontWeight="600">
+            <text x={tx(tStat) + 3} y={PAD.t + 46} fill="var(--color-accent)" fontSize="17" fontWeight="600">
               t={tStat.toFixed(2)}
             </text>
           </motion.g>
@@ -123,17 +123,17 @@ export default function DistributionCurve({ df, tStat, alpha, testType, hasResul
 
         {/* X-axis ticks */}
         {[-4, -3, -2, -1, 0, 1, 2, 3, 4].map(v => (
-          <text key={v} x={tx(v)} y={PAD.t + IH + 12} textAnchor="middle" fill="#475569" fontSize="8">
+          <text key={v} x={tx(v)} y={PAD.t + IH + 14} textAnchor="middle" fill="#475569" fontSize="16">
             {v}
           </text>
         ))}
 
         {/* Legend */}
         <g>
-          <rect x={W - PAD.r - 100} y={PAD.t + 2} width={8} height={8} fill="#ef4444" opacity="0.5" />
-          <text x={W - PAD.r - 89} y={PAD.t + 9} fill="#94a3b8" fontSize="8">Critical region (α)</text>
-          <rect x={W - PAD.r - 100} y={PAD.t + 14} width={8} height={8} fill="var(--color-accent)" opacity="0.5" />
-          <text x={W - PAD.r - 89} y={PAD.t + 21} fill="#94a3b8" fontSize="8">P-value region</text>
+          <rect x={W - PAD.r - 170} y={PAD.t + 2} width={10} height={10} fill="#ef4444" opacity="0.5" />
+          <text x={W - PAD.r - 156} y={PAD.t + 11} fill="#94a3b8" fontSize="16">Critical region (α)</text>
+          <rect x={W - PAD.r - 170} y={PAD.t + 20} width={10} height={10} fill="var(--color-accent)" opacity="0.5" />
+          <text x={W - PAD.r - 156} y={PAD.t + 29} fill="#94a3b8" fontSize="16">P-value region</text>
         </g>
       </svg>
 

@@ -26,7 +26,7 @@ function ScatterPlot({
   onHover: (id: number | null) => void;
   hoveredId: number | null;
 }) {
-  const W = 480, H = 380, PAD = { l: 44, r: 16, t: 16, b: 44 };
+  const W = 480, H = 380, PAD = { l: 54, r: 16, t: 16, b: 48 };
   const IW = W - PAD.l - PAD.r, IH = H - PAD.t - PAD.b;
 
   const tx = (v: number) => PAD.l + (v / 100) * IW;
@@ -73,15 +73,15 @@ function ScatterPlot({
         <g key={t}>
           <line x1={tx(t)} y1={PAD.t} x2={tx(t)} y2={PAD.t + IH} stroke="#1e293b" strokeWidth="1" />
           <line x1={PAD.l} y1={ty(t)} x2={PAD.l + IW} y2={ty(t)} stroke="#1e293b" strokeWidth="1" />
-          <text x={tx(t)} y={PAD.t + IH + 14} textAnchor="middle" fill="#475569" fontSize="9">{t}</text>
-          <text x={PAD.l - 6} y={ty(t) + 3} textAnchor="end" fill="#475569" fontSize="9">{t}</text>
+          <text x={tx(t)} y={PAD.t + IH + 18} textAnchor="middle" fill="#475569" fontSize="15">{t}</text>
+          <text x={PAD.l - 6} y={ty(t) + 5} textAnchor="end" fill="#475569" fontSize="15">{t}</text>
         </g>
       ))}
 
       {/* Identity line (y=x) */}
       <line x1={tx(0)} y1={ty(0)} x2={tx(100)} y2={ty(100)}
         stroke="#3bb4a4" strokeWidth="1" strokeDasharray="4,3" opacity="0.4" />
-      <text x={tx(90)} y={ty(93)} fill="#3bb4a4" fontSize="7" opacity="0.6">y = x</text>
+      <text x={tx(90)} y={ty(93)} fill="#3bb4a4" fontSize="15" opacity="0.6">y = x</text>
 
       {/* Regression line */}
       {showRegression && regLine && (() => {
@@ -135,17 +135,17 @@ function ScatterPlot({
         const lx = tx(s.test1) + 10, ly = ty(s.test2) - 10;
         return (
           <g>
-            <rect x={lx - 2} y={ly - 10} width={70} height={26} rx="4" fill="#0f172a" stroke="#334155" />
-            <text x={lx + 2} y={ly + 2} fill="white" fontSize="8" fontWeight="bold">{s.name}</text>
-            <text x={lx + 2} y={ly + 12} fill="#94a3b8" fontSize="7">T1:{s.test1} T2:{s.test2}</text>
+            <rect x={lx - 2} y={ly - 14} width={116} height={42} rx="4" fill="#0f172a" stroke="#334155" />
+            <text x={lx + 4} y={ly + 2} fill="white" fontSize="15" fontWeight="bold">{s.name}</text>
+            <text x={lx + 4} y={ly + 22} fill="#94a3b8" fontSize="15">T1:{s.test1} T2:{s.test2}</text>
           </g>
         );
       })()}
 
       {/* Axes labels */}
-      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="10">Test 1 Score</text>
-      <text x={10} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="10"
-        transform={`rotate(-90, 10, ${PAD.t + IH / 2})`}>Test 2 Score</text>
+      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="16">Test 1 Score</text>
+      <text x={13} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="16"
+        transform={`rotate(-90, 13, ${PAD.t + IH / 2})`}>Test 2 Score</text>
     </svg>
   );
 }

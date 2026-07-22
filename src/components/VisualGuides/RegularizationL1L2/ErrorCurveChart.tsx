@@ -13,7 +13,7 @@ interface Props {
 
 const W = 560;
 const H = 270;
-const PAD = { l: 48, r: 14, t: 16, b: 34 };
+const PAD = { l: 52, r: 14, t: 16, b: 46 };
 
 const X_TICKS: { lambda: number; label: string }[] = [
   { lambda: 1e-5, label: "1e-5" },
@@ -61,14 +61,14 @@ function ErrorCurveChartInner({ curve, currentStep, color, modeLabel }: Props) {
         {yTicks.map((v) => (
           <g key={v}>
             <line x1={PAD.l} x2={W - PAD.r} y1={sy(v)} y2={sy(v)} stroke="#1e293b" strokeWidth={1} />
-            <text x={PAD.l - 6} y={sy(v) + 3} textAnchor="end" fontSize={9} fill="#475569">
+            <text x={PAD.l - 6} y={sy(v) + 5} textAnchor="end" fontSize={17} fill="#475569">
               {v >= 1 ? v.toFixed(0) : v.toString()}
             </text>
           </g>
         ))}
 
         {/* X ticks */}
-        <text x={sx(0)} y={H - PAD.b + 14} textAnchor="middle" fontSize={9} fill="#475569">
+        <text x={sx(0)} y={H - PAD.b + 20} textAnchor="middle" fontSize={17} fill="#475569">
           0
         </text>
         {X_TICKS.map((t) => (
@@ -83,19 +83,19 @@ function ErrorCurveChartInner({ curve, currentStep, color, modeLabel }: Props) {
             />
             <text
               x={sx(stepFromLambda(t.lambda))}
-              y={H - PAD.b + 14}
+              y={H - PAD.b + 20}
               textAnchor="middle"
-              fontSize={9}
+              fontSize={17}
               fill="#475569"
             >
               {t.label}
             </text>
           </g>
         ))}
-        <text x={W - PAD.r} y={H - 6} textAnchor="end" fontSize={10} fill="#475569">
+        <text x={W - PAD.r} y={H - 4} textAnchor="end" fontSize={18} fill="#475569">
           λ (log scale)
         </text>
-        <text x={12} y={PAD.t + 8} fontSize={10} fill="#475569">
+        <text x={4} y={PAD.t - 2} fontSize={18} fill="#475569">
           MSE
         </text>
 

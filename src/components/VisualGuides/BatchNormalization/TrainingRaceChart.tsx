@@ -6,7 +6,7 @@ import { TRAINING_CURVES } from "./batchNormLogic";
 
 const W = 480;
 const H = 220;
-const PAD = { top: 20, right: 20, bottom: 40, left: 48 };
+const PAD = { top: 20, right: 20, bottom: 40, left: 64 };
 
 const CHART_W = W - PAD.left - PAD.right;
 const CHART_H = H - PAD.top - PAD.bottom;
@@ -109,10 +109,10 @@ export default function TrainingRaceChart() {
             <text
               key={t}
               x={PAD.left - 6}
-              y={lossToY(t) + 4}
+              y={lossToY(t) + 5}
               textAnchor="end"
               fill="#475569"
-              fontSize={10}
+              fontSize={15}
             >
               {t.toFixed(2)}
             </text>
@@ -126,7 +126,7 @@ export default function TrainingRaceChart() {
               y={H - PAD.bottom + 16}
               textAnchor="middle"
               fill="#475569"
-              fontSize={10}
+              fontSize={15}
             >
               {t}
             </text>
@@ -134,12 +134,12 @@ export default function TrainingRaceChart() {
 
           {/* Axis labels */}
           <text
-            x={PAD.left - 36}
+            x={PAD.left - 50}
             y={PAD.top + CHART_H / 2}
             textAnchor="middle"
             fill="#94a3b8"
-            fontSize={10}
-            transform={`rotate(-90, ${PAD.left - 36}, ${PAD.top + CHART_H / 2})`}
+            fontSize={15}
+            transform={`rotate(-90, ${PAD.left - 50}, ${PAD.top + CHART_H / 2})`}
           >
             Loss
           </text>
@@ -148,7 +148,7 @@ export default function TrainingRaceChart() {
             y={H - 2}
             textAnchor="middle"
             fill="#94a3b8"
-            fontSize={10}
+            fontSize={15}
           >
             Epoch
           </text>

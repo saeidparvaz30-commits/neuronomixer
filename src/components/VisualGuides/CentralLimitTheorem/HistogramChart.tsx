@@ -75,7 +75,7 @@ export default function HistogramChart({
   if (data.length === 0 || bins.length === 0) {
     return (
       <svg viewBox={`0 0 ${width} ${height}`} width="100%" className="block">
-        <text x={width / 2} y={height / 2} textAnchor="middle" fill="#475569" fontSize="10">
+        <text x={width / 2} y={height / 2} textAnchor="middle" fill="#475569" fontSize="12">
           No data yet
         </text>
       </svg>
@@ -126,7 +126,7 @@ export default function HistogramChart({
       {ticks.map((v) => (
         <g key={v}>
           <line x1={tx(v)} y1={PAD.t + IH} x2={tx(v)} y2={PAD.t + IH + 3} stroke="#475569" strokeWidth="0.5" />
-          <text x={tx(v)} y={PAD.t + IH + 11} textAnchor="middle" fill="#475569" fontSize="7">
+          <text x={tx(v)} y={PAD.t + IH + 14} textAnchor="middle" fill="#475569" fontSize="12">
             {v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}
           </text>
         </g>

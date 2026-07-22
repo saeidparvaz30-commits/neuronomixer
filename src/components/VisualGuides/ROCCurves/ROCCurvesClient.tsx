@@ -99,7 +99,7 @@ function scoreHistogram(samples: Sample[], bins = 30): { bin: number; pos: numbe
 }
 
 // ── SVG constants ─────────────────────────────────────────────────────────────
-const RW = 380; const RH = 320; const RP = 40;
+const RW = 380; const RH = 320; const RP = 48;
 
 function rx(fpr: number) { return RP + fpr * (RW - 2 * RP); }
 function ry(tpr: number) { return RH - RP - tpr * (RH - 2 * RP); }
@@ -260,17 +260,21 @@ export default function ROCCurvesClient() {
                   <React.Fragment key={v}>
                     <line x1={rx(v)} y1={ry(0)} x2={rx(v)} y2={ry(1)} stroke="#1e293b" strokeWidth="1" />
                     <line x1={rx(0)} y1={ry(v)} x2={rx(1)} y2={ry(v)} stroke="#1e293b" strokeWidth="1" />
-                    <text x={rx(v)} y={RH - RP + 14} fill="#94a3b8" fontSize="9" textAnchor="middle">{v}</text>
-                    <text x={RP - 6} y={ry(v) + 3} fill="#94a3b8" fontSize="9" textAnchor="end">{v}</text>
+                    {(v === 0 || v === 0.5 || v === 1) && (
+                      <text x={rx(v)} y={RH - RP + 16} fill="#94a3b8" fontSize="12" textAnchor="middle">{v}</text>
+                    )}
+                    {(v === 0 || v === 0.5 || v === 1) && (
+                      <text x={RP - 6} y={ry(v) + 4} fill="#94a3b8" fontSize="12" textAnchor="end">{v}</text>
+                    )}
                   </React.Fragment>
                 ))}
                 {/* Diagonal (random baseline) */}
                 <line x1={rx(0)} y1={ry(0)} x2={rx(1)} y2={ry(1)} stroke="#334155" strokeWidth="1" strokeDasharray="5 4" />
-                <text x={rx(0.6)} y={ry(0.5) - 8} fill="#334155" fontSize="9" textAnchor="middle" transform={`rotate(-45 ${rx(0.6)} ${ry(0.5) - 8})`}>random</text>
+                <text x={rx(0.6)} y={ry(0.5) - 8} fill="#334155" fontSize="12" textAnchor="middle" transform={`rotate(-45 ${rx(0.6)} ${ry(0.5) - 8})`}>random</text>
 
                 {/* Axis labels */}
-                <text x={RW / 2} y={RH - 5} fill="#94a3b8" fontSize="10" textAnchor="middle">False Positive Rate (FPR)</text>
-                <text x={12} y={RH / 2} fill="#94a3b8" fontSize="10" textAnchor="middle" transform={`rotate(-90 12 ${RH / 2})`}>True Positive Rate (TPR)</text>
+                <text x={RW / 2} y={RH - 4} fill="#94a3b8" fontSize="13" textAnchor="middle">False Positive Rate (FPR)</text>
+                <text x={13} y={RH / 2} fill="#94a3b8" fontSize="13" textAnchor="middle" transform={`rotate(-90 13 ${RH / 2})`}>True Positive Rate (TPR)</text>
 
                 {/* ROC curves for selected models */}
                 {MODELS.filter(m => selectedModels.has(m.id)).map(m => {
@@ -295,7 +299,7 @@ export default function ROCCurvesClient() {
                       />
                       {/* AUC label */}
                       <text x={rx(0.6)} y={ry(0.9 - MODELS.indexOf(m) * 0.12)}
-                        fill={m.color} fontSize="10" fontWeight="bold">
+                        fill={m.color} fontSize="12" fontWeight="bold">
                         AUC = {auc.toFixed(3)}
                       </text>
                     </g>
@@ -313,8 +317,10 @@ export default function ROCCurvesClient() {
                 <line x1={rx(thresholdPoint.fpr)} y1={ry(0)} x2={rx(thresholdPoint.fpr)} y2={ry(thresholdPoint.tpr)}
                   stroke={primaryModel.color} strokeWidth="1" strokeDasharray="3 3" opacity={0.5} />
 
-                <text x={rx(thresholdPoint.fpr) + 8} y={ry(thresholdPoint.tpr) - 6}
-                  fill={primaryModel.color} fontSize="9" fontWeight="bold">
+                <text x={thresholdPoint.fpr > 0.5 ? rx(thresholdPoint.fpr) - 8 : rx(thresholdPoint.fpr) + 8}
+                  y={ry(thresholdPoint.tpr) - 6}
+                  textAnchor={thresholdPoint.fpr > 0.5 ? "end" : "start"}
+                  fill={primaryModel.color} fontSize="12" fontWeight="bold">
                   TPR={thresholdPoint.tpr.toFixed(2)} FPR={thresholdPoint.fpr.toFixed(2)}
                 </text>
               </svg>
@@ -348,12 +354,12 @@ export default function ROCCurvesClient() {
                   return (
                     <>
                       <line x1={tx} y1={DP} x2={tx} y2={DH - DP} stroke="var(--color-accent)" strokeWidth="2" />
-                      <text x={tx + 3} y={DP + 12} fill="var(--color-accent)" fontSize="9">threshold={threshold.toFixed(2)}</text>
+                      <text x={tx + 3} y={DP + 13} fill="var(--color-accent)" fontSize="12">threshold={threshold.toFixed(2)}</text>
                     </>
                   );
                 })()}
-                <text x={DP} y={DH - 5} fill="#3bb4a4" fontSize="9">■ Positive class</text>
-                <text x={DP + 100} y={DH - 5} fill="var(--color-accent)" fontSize="9">■ Negative class</text>
+                <text x={DP} y={DH - 4} fill="#3bb4a4" fontSize="12">■ Positive class</text>
+                <text x={DP + 130} y={DH - 4} fill="var(--color-accent)" fontSize="12">■ Negative class</text>
               </svg>
             </div>
           </div>

@@ -3,7 +3,7 @@
 import React from "react";
 import { DAG, DAGNode, DAGEdge } from "./types";
 
-const NODE_R = 30; // radius of each node circle
+const NODE_R = 36; // radius of each node circle
 
 interface DAGCanvasProps {
   dag: DAG;
@@ -83,7 +83,7 @@ function EdgeArrow({
             x={midX}
             y={midY - 6}
             textAnchor="middle"
-            fontSize="8"
+            fontSize="15"
             fill={color}
             style={{ pointerEvents: "none" }}
           >
@@ -164,10 +164,10 @@ function NodeCircle({
         <text
           key={i}
           x={node.x}
-          y={node.y + (i - (arr.length - 1) / 2) * 13}
+          y={node.y + (i - (arr.length - 1) / 2) * 17}
           textAnchor="middle"
           dominantBaseline="middle"
-          fontSize={arr.length > 1 ? "9" : "10"}
+          fontSize="15"
           fontWeight="600"
           fill={isControlled ? "#3bb4a4" : "#f1f5f9"}
           style={{ pointerEvents: "none", transition: "fill 0.3s ease" }}
@@ -179,10 +179,10 @@ function NodeCircle({
       {isControlled && (
         <>
           <rect
-            x={node.x - 24}
+            x={node.x - 52}
             y={node.y + NODE_R + 4}
-            width={48}
-            height={14}
+            width={104}
+            height={22}
             rx={4}
             fill="#0f3d35"
             stroke="#3bb4a4"
@@ -190,10 +190,10 @@ function NodeCircle({
           />
           <text
             x={node.x}
-            y={node.y + NODE_R + 11}
+            y={node.y + NODE_R + 15}
             textAnchor="middle"
             dominantBaseline="middle"
-            fontSize="7"
+            fontSize="15"
             fill="#3bb4a4"
             fontWeight="700"
             style={{ pointerEvents: "none" }}

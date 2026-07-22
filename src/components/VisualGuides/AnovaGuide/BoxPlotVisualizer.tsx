@@ -63,7 +63,7 @@ export default function BoxPlotVisualizer({ groups, grandMean, highlightGroup }:
   const PADDING_LEFT = 44;
   const PADDING_RIGHT = 16;
   const PADDING_TOP = 16;
-  const PADDING_BOTTOM = 32;
+  const PADDING_BOTTOM = 44;
 
   const plotW = SVG_W - PADDING_LEFT - PADDING_RIGHT;
   const plotH = SVG_H - PADDING_TOP - PADDING_BOTTOM;
@@ -117,10 +117,10 @@ export default function BoxPlotVisualizer({ groups, grandMean, highlightGroup }:
                 />
                 <text
                   x={PADDING_LEFT - 6}
-                  y={y + 4}
+                  y={y + 5}
                   textAnchor="end"
                   fill="#475569"
-                  fontSize={9}
+                  fontSize={16}
                   fontFamily="monospace"
                 >
                   {tick.toFixed(0)}
@@ -144,7 +144,7 @@ export default function BoxPlotVisualizer({ groups, grandMean, highlightGroup }:
             x={SVG_W - PADDING_RIGHT + 2}
             y={yScale(grandMean) + 4}
             fill="var(--color-accent)"
-            fontSize={8}
+            fontSize={16}
           >
             x̄
           </text>
@@ -232,20 +232,20 @@ export default function BoxPlotVisualizer({ groups, grandMean, highlightGroup }:
                 {/* Group label */}
                 <text
                   x={cx}
-                  y={SVG_H - PADDING_BOTTOM + 14}
+                  y={SVG_H - PADDING_BOTTOM + 16}
                   textAnchor="middle"
                   fill={g.color}
-                  fontSize={10}
+                  fontSize={17}
                   fontWeight="600"
                 >
                   {g.groupName}
                 </text>
                 <text
                   x={cx}
-                  y={SVG_H - PADDING_BOTTOM + 26}
+                  y={SVG_H - PADDING_BOTTOM + 34}
                   textAnchor="middle"
                   fill="#475569"
-                  fontSize={8}
+                  fontSize={16}
                   fontFamily="monospace"
                 >
                   x̄={mean(g.values).toFixed(1)}

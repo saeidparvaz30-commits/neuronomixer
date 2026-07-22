@@ -240,7 +240,7 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
           ))}
 
           {/* Axis labels */}
-          <text x={toSvgX(0.5)} y={H - 4} textAnchor="middle" fill="#475569" fontSize={10}>
+          <text x={toSvgX(0.5)} y={H - 4} textAnchor="middle" fill="#475569" fontSize={11}>
             Feature 1 (dim 1)
           </text>
           <text
@@ -248,7 +248,7 @@ export default function CurseOfDimensionality({ onHighDimExplored }: Props) {
             y={toSvgY(0.5)}
             textAnchor="middle"
             fill="#475569"
-            fontSize={10}
+            fontSize={11}
             transform={`rotate(-90, 10, ${toSvgY(0.5)})`}
           >
             Feature 2 (dim 2)

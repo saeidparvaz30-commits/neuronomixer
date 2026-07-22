@@ -176,8 +176,8 @@ export default function AIAgentsClient() {
                   return <motion.line key={p.id} x1={f.x} y1={f.y} x2={t.x} y2={t.y} strokeWidth="0.8" strokeDasharray="2 1.5"
                     animate={{ stroke: activePhase === i ? p.color : "#1e293b", opacity: activePhase === i ? 1 : 0.4 }} transition={{ duration: 0.3 }} />;
                 })}
-                <text x="50" y="47" textAnchor="middle" style={{ fill: "#94a3b8", fontSize: "3.5px", fontWeight: 600 }}>Goal:</text>
-                <text x="50" y="52" textAnchor="middle" style={{ fill: "white", fontSize: "3px", fontWeight: 700 }}>Book a flight to Tokyo</text>
+                <text x="50" y="47" textAnchor="middle" style={{ fill: "#94a3b8", fontSize: "4.5px", fontWeight: 600 }}>Goal:</text>
+                <text x="50" y="52.5" textAnchor="middle" style={{ fill: "white", fontSize: "4px", fontWeight: 700 }}>Book a flight to Tokyo</text>
               </svg>
               {LOOP_PHASES.map((p, i) => {
                 const pos = polarPos(p.angle, 33);

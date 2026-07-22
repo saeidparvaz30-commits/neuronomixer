@@ -19,10 +19,10 @@ interface CurvePoint {
 
 const SVG_W = 520;
 const SVG_H = 260;
-const PAD_L = 46;
+const PAD_L = 56;
 const PAD_R = 16;
 const PAD_T = 16;
-const PAD_B = 38;
+const PAD_B = 44;
 
 const N_MIN = 50;
 const N_MAX = 3000;
@@ -176,7 +176,7 @@ export default function CostPrecisionCurve({
               x={PAD_L - 6}
               y={moeToY(t) + 4}
               textAnchor="end"
-              fontSize={9}
+              fontSize={16}
               fill="#475569"
             >
               {t}%
@@ -188,9 +188,9 @@ export default function CostPrecisionCurve({
             <text
               key={`xlabel-${t}`}
               x={nToX(t === 0 ? N_MIN : t)}
-              y={SVG_H - PAD_B + 14}
+              y={SVG_H - PAD_B + 18}
               textAnchor="middle"
-              fontSize={9}
+              fontSize={16}
               fill="#475569"
             >
               {t === 0 ? "50" : t >= 1000 ? `${t / 1000}K` : t}
@@ -202,7 +202,7 @@ export default function CostPrecisionCurve({
             x={PAD_L + (SVG_W - PAD_L - PAD_R) / 2}
             y={SVG_H - 4}
             textAnchor="middle"
-            fontSize={10}
+            fontSize={17}
             fill="#94a3b8"
           >
             Sample Size (n)
@@ -211,7 +211,7 @@ export default function CostPrecisionCurve({
             x={10}
             y={PAD_T + (SVG_H - PAD_T - PAD_B) / 2}
             textAnchor="middle"
-            fontSize={10}
+            fontSize={17}
             fill="#94a3b8"
             transform={`rotate(-90, 10, ${PAD_T + (SVG_H - PAD_T - PAD_B) / 2})`}
           >
@@ -237,10 +237,10 @@ export default function CostPrecisionCurve({
               <g key={`ann-${n}`}>
                 <circle cx={ax} cy={ay} r={3} fill="#1e5d8a" />
                 <text
-                  x={ax}
+                  x={Math.max(ax, 80)}
                   y={ay - 8}
                   textAnchor="middle"
-                  fontSize={8}
+                  fontSize={16}
                   fill="#475569"
                 >
                   {label}
@@ -275,20 +275,20 @@ export default function CostPrecisionCurve({
           {currentN >= N_MIN && currentN <= N_MAX && (
             <g>
               <rect
-                x={Math.min(dotX - 36, SVG_W - PAD_R - 72)}
-                y={dotY - 34}
-                width={72}
-                height={22}
+                x={Math.min(dotX - 55, SVG_W - PAD_R - 110)}
+                y={dotY - 40}
+                width={110}
+                height={26}
                 rx={4}
                 fill="#1e293b"
                 stroke="var(--color-accent)"
                 strokeWidth={0.8}
               />
               <text
-                x={Math.min(dotX, SVG_W - PAD_R - 36)}
-                y={dotY - 18}
+                x={Math.min(dotX, SVG_W - PAD_R - 55)}
+                y={dotY - 21}
                 textAnchor="middle"
-                fontSize={9}
+                fontSize={16}
                 fill="var(--color-accent)"
                 fontWeight="bold"
               >

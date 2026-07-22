@@ -8,7 +8,7 @@ const H = 240;
 const PAD_L = 46;
 const PAD_R = 14;
 const PAD_T = 14;
-const PAD_B = 30;
+const PAD_B = 48;
 
 function sx(m: number): number {
   return PAD_L + (m / MAX_ROUNDS) * (W - PAD_L - PAD_R);
@@ -76,7 +76,7 @@ export default function ErrorChart({
               y={sy(t).toFixed(2)}
               textAnchor="end"
               dominantBaseline="middle"
-              fontSize={10}
+              fontSize={20}
               fill="#475569"
             >
               {t.toFixed(2)}
@@ -87,9 +87,9 @@ export default function ErrorChart({
           <text
             key={`x${t}`}
             x={sx(t).toFixed(2)}
-            y={H - PAD_B + 14}
+            y={H - PAD_B + 20}
             textAnchor="middle"
-            fontSize={10}
+            fontSize={20}
             fill="#475569"
           >
             {t}
@@ -97,9 +97,9 @@ export default function ErrorChart({
         ))}
         <text
           x={(W + PAD_L - PAD_R) / 2}
-          y={H - 4}
+          y={H - 6}
           textAnchor="middle"
-          fontSize={10}
+          fontSize={20}
           fill="#475569"
         >
           boosting rounds
@@ -119,9 +119,9 @@ export default function ErrorChart({
             />
             <text
               x={W - PAD_R - 2}
-              y={Number(sy(deepTestMse).toFixed(2)) - 5}
+              y={Number(sy(deepTestMse).toFixed(2)) - 7}
               textAnchor="end"
-              fontSize={9}
+              fontSize={20}
               fill="#a855f7"
             >
               deep tree test MSE {deepTestMse.toFixed(3)}

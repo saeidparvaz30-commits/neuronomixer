@@ -142,16 +142,16 @@ export default function RelationshipsPanel({ sentinelOn, pair, onPairChange }: P
                 fillOpacity={0.55}
               />
             ))}
-            <text x={PAD} y={SH - PAD + 14} fontSize={8} fill="#475569" fontFamily="monospace">
+            <text x={PAD} y={SH - PAD + 14} fontSize={10} fill="#475569" fontFamily="monospace">
               {xMin.toFixed(1)}
             </text>
-            <text x={SW - 6} y={SH - PAD + 14} fontSize={8} fill="#475569" fontFamily="monospace" textAnchor="end">
+            <text x={SW - 6} y={SH - PAD + 14} fontSize={10} fill="#475569" fontFamily="monospace" textAnchor="end">
               {xMax.toFixed(1)}
             </text>
-            <text x={PAD - 4} y={SH - PAD} fontSize={8} fill="#475569" fontFamily="monospace" textAnchor="end">
+            <text x={PAD - 4} y={SH - PAD} fontSize={10} fill="#475569" fontFamily="monospace" textAnchor="end">
               {yMin.toFixed(1)}
             </text>
-            <text x={PAD - 4} y={14} fontSize={8} fill="#475569" fontFamily="monospace" textAnchor="end">
+            <text x={PAD - 4} y={14} fontSize={10} fill="#475569" fontFamily="monospace" textAnchor="end">
               {yMax.toFixed(1)}
             </text>
           </svg>

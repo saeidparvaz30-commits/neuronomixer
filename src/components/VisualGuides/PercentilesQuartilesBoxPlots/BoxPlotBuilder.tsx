@@ -7,11 +7,11 @@ import { seededRandom } from "./types";
 
 // ── SVG layout constants ──────────────────────────────────────────────────────
 const VB_W = 800;
-const VB_H = 200;
+const VB_H = 240;
 const PAD_L = 40;
 const PAD_R = 40;
-const PAD_T = 24;
-const PAD_B = 32;
+const PAD_T = 56;
+const PAD_B = 48;
 const PLOT_W = VB_W - PAD_L - PAD_R;
 const SCATTER_CENTER_Y = PAD_T + (VB_H - PAD_T - PAD_B) * 0.35;
 const BOX_TOP = PAD_T + (VB_H - PAD_T - PAD_B) * 0.15;
@@ -163,7 +163,7 @@ export default function BoxPlotBuilder({
         {ticks.map(({ v, x }) => (
           <g key={v} aria-hidden="true">
             <line x1={x} y1={AXIS_Y} x2={x} y2={AXIS_Y + 4} stroke="#475569" strokeWidth={1} />
-            <text x={x} y={AXIS_Y + 14} textAnchor="middle" fontSize={9} fill="#475569">
+            <text x={x} y={AXIS_Y + 24} textAnchor="middle" fontSize={24} fill="#475569">
               {formatTick(v)}
             </text>
           </g>
@@ -174,7 +174,7 @@ export default function BoxPlotBuilder({
           x={PAD_L + PLOT_W / 2}
           y={VB_H - 2}
           textAnchor="middle"
-          fontSize={9}
+          fontSize={24}
           fill="#475569"
           aria-hidden="true"
         >
@@ -212,13 +212,13 @@ export default function BoxPlotBuilder({
               exit={{ opacity: 0 }}
               aria-label="Z-score reference labels"
             >
-              <text x={zNeg1X} y={BOX_TOP - 4} textAnchor="middle" fontSize={9} fill="#3bb4a4" fontWeight="600">
+              <text x={zNeg1X} y={BOX_TOP - 6} textAnchor="middle" fontSize={24} fill="#3bb4a4" fontWeight="600">
                 -1σ
               </text>
-              <text x={zPos1X} y={BOX_TOP - 4} textAnchor="middle" fontSize={9} fill="#3bb4a4" fontWeight="600">
+              <text x={zPos1X} y={BOX_TOP - 6} textAnchor="middle" fontSize={24} fill="#3bb4a4" fontWeight="600">
                 +1σ
               </text>
-              <text x={toX(0)} y={BOX_TOP - 4} textAnchor="middle" fontSize={9} fill="#94a3b8">
+              <text x={toX(0)} y={BOX_TOP - 6} textAnchor="middle" fontSize={24} fill="#94a3b8">
                 0
               </text>
               <line
@@ -289,9 +289,9 @@ export default function BoxPlotBuilder({
               />
               <text
                 x={medX}
-                y={BOX_TOP - 12}
+                y={BOX_TOP - 34}
                 textAnchor="middle"
-                fontSize={9}
+                fontSize={24}
                 fill="#ef4444"
                 fontWeight="600"
               >
@@ -354,11 +354,11 @@ export default function BoxPlotBuilder({
                 transition={{ duration: 0.3, delay: 0.2 }}
               />
               {/* Q1 label */}
-              <text x={q1X - 3} y={BOX_TOP - 5} textAnchor="end" fontSize={9} fill="var(--color-accent)" fontWeight="600">
+              <text x={q1X - 3} y={BOX_TOP - 6} textAnchor="end" fontSize={24} fill="var(--color-accent)" fontWeight="600">
                 Q1={fmt(stats.q1)}
               </text>
               {/* Q3 label */}
-              <text x={q3X + 3} y={BOX_TOP - 5} textAnchor="start" fontSize={9} fill="var(--color-accent)" fontWeight="600">
+              <text x={q3X + 3} y={BOX_TOP - 6} textAnchor="start" fontSize={24} fill="var(--color-accent)" fontWeight="600">
                 Q3={fmt(stats.q3)}
               </text>
             </motion.g>

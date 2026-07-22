@@ -36,11 +36,11 @@ type Props = {
 };
 
 const W = 560;
-const H = 220;
+const H = 240;
 const PAD_L = 40;
 const PAD_R = 10;
 const PAD_T = 10;
-const PAD_B = 24;
+const PAD_B = 44;
 const Y_MAX = 1.5;
 
 function xOf(step: number): number {
@@ -142,7 +142,7 @@ export default function RacePanel({
                   x={PAD_L - 6}
                   y={(yOf(v) + 3).toFixed(1)}
                   textAnchor="end"
-                  fontSize="9"
+                  fontSize="17"
                   fill="#475569"
                 >
                   {v.toFixed(1)}
@@ -163,7 +163,7 @@ export default function RacePanel({
               x={W - PAD_R - 2}
               y={(yOf(ln2) - 4).toFixed(1)}
               textAnchor="end"
-              fontSize="9"
+              fontSize="17"
               fill="#94a3b8"
             >
               coin flip: ln 2 = {ln2.toFixed(3)}
@@ -173,9 +173,9 @@ export default function RacePanel({
               <text
                 key={s}
                 x={xOf(s).toFixed(1)}
-                y={H - 8}
+                y={H - 26}
                 textAnchor="middle"
-                fontSize="9"
+                fontSize="17"
                 fill="#475569"
               >
                 {s}
@@ -183,9 +183,9 @@ export default function RacePanel({
             ))}
             <text
               x={(W / 2).toFixed(1)}
-              y={H - 0.5}
+              y={H - 4}
               textAnchor="middle"
-              fontSize="8"
+              fontSize="17"
               fill="#334155"
             >
               gradient step
@@ -210,9 +210,9 @@ export default function RacePanel({
                   />
                   {c.diverged && (
                     <text
-                      x={(lastX + 4).toFixed(1)}
+                      x={Math.min(lastX + 4, W - PAD_R - 96).toFixed(1)}
                       y={(lastY + 3).toFixed(1)}
-                      fontSize="9"
+                      fontSize="17"
                       fill={SCHEME_META[c.scheme].color}
                     >
                       x diverged

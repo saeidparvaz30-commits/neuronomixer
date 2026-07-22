@@ -108,14 +108,14 @@ function OverlayChart({
 
       {/* X ticks */}
       {xTicks.map(v => (
-        <text key={v} x={tx(v)} y={PAD.t + IH + 14} textAnchor="middle" fill="#475569" fontSize="8">
+        <text key={v} x={tx(v)} y={PAD.t + IH + 20} textAnchor="middle" fill="#475569" fontSize="16">
           {Math.abs(v) < 0.005 ? "0" : v.toFixed(1)}
         </text>
       ))}
 
       {/* Y label */}
-      <text x={10} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="9"
-        transform={`rotate(-90, 10, ${PAD.t + IH / 2})`}>PDF</text>
+      <text x={14} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="16"
+        transform={`rotate(-90, 14, ${PAD.t + IH / 2})`}>PDF</text>
     </svg>
   );
 }

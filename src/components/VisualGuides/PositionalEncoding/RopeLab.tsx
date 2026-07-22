@@ -331,7 +331,7 @@ export default function RopeLab({
             x={xFor(-CURVE_MAX_GAP).toFixed(2)}
             y={CURVE_H - 8}
             fill="#475569"
-            fontSize="10"
+            fontSize="19"
             textAnchor="start"
           >
             -{CURVE_MAX_GAP}
@@ -340,7 +340,7 @@ export default function RopeLab({
             x={xFor(0).toFixed(2)}
             y={CURVE_H - 8}
             fill="#475569"
-            fontSize="10"
+            fontSize="19"
             textAnchor="middle"
           >
             0
@@ -349,16 +349,16 @@ export default function RopeLab({
             x={xFor(CURVE_MAX_GAP).toFixed(2)}
             y={CURVE_H - 8}
             fill="#475569"
-            fontSize="10"
+            fontSize="19"
             textAnchor="end"
           >
             +{CURVE_MAX_GAP}
           </text>
           <text
             x="10"
-            y={CURVE_PAD.top + 8}
+            y={CURVE_PAD.top + 12}
             fill="#475569"
-            fontSize="10"
+            fontSize="19"
             textAnchor="start"
           >
             score

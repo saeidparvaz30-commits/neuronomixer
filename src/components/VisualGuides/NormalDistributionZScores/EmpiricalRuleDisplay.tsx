@@ -5,8 +5,8 @@ import { normalPDF } from "./types";
 
 // ── SVG dimensions ─────────────────────────────────────────────────────────────
 const VW = 560;
-const VH = 200;
-const PAD = { l: 20, r: 20, t: 36, b: 36 };
+const VH = 212;
+const PAD = { l: 20, r: 20, t: 36, b: 48 };
 const IW = VW - PAD.l - PAD.r;
 const IH = VH - PAD.t - PAD.b;
 const CURVE_POINTS = 300;
@@ -154,15 +154,15 @@ export default function EmpiricalRuleDisplay({ showStandardNormal, onToggle, onV
 
         {/* Percentage labels */}
         {/* 99.7% */}
-        <text x={center} y={labelY} textAnchor="middle" fill="var(--color-accent)" fontSize="8" opacity={0.6} fontWeight="600">
+        <text x={center} y={labelY} textAnchor="middle" fill="var(--color-accent)" fontSize="17" opacity={0.6} fontWeight="600">
           99.7%
         </text>
         {/* 95% */}
-        <text x={center} y={labelY + 10} textAnchor="middle" fill="var(--color-accent)" fontSize="8" opacity={0.75} fontWeight="600">
+        <text x={center} y={labelY + 19} textAnchor="middle" fill="var(--color-accent)" fontSize="17" opacity={0.75} fontWeight="600">
           95%
         </text>
         {/* 68% */}
-        <text x={center} y={labelY + 20} textAnchor="middle" fill="var(--color-accent)" fontSize="8" opacity={0.9} fontWeight="600">
+        <text x={center} y={labelY + 38} textAnchor="middle" fill="var(--color-accent)" fontSize="17" opacity={0.9} fontWeight="600">
           68%
         </text>
 
@@ -177,10 +177,10 @@ export default function EmpiricalRuleDisplay({ showStandardNormal, onToggle, onV
           return (
             <g key={n}>
               <line x1={sx} y1={baselineY} x2={sx} y2={baselineY + 3} stroke="#475569" strokeWidth="1" />
-              <text x={sx} y={baselineY + 13} textAnchor="middle" fill="#475569" fontSize="8">
+              <text x={sx} y={baselineY + 17} textAnchor="middle" fill="#475569" fontSize="17">
                 {label}
               </text>
-              <text x={sx} y={baselineY + 23} textAnchor="middle" fill="#334155" fontSize="7">
+              <text x={sx} y={baselineY + 35} textAnchor="middle" fill="#334155" fontSize="17">
                 {sdLabel}
               </text>
             </g>

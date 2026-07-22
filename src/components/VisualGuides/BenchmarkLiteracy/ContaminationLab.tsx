@@ -19,10 +19,10 @@ type Props = {
 
 const W = 560;
 const H = 250;
-const PL = 42;
+const PL = 48;
 const PR = 14;
 const PT = 14;
-const PB = 34;
+const PB = 48;
 
 function x(c: number): number {
   return PL + c * (W - PL - PR);
@@ -161,9 +161,9 @@ export default function ContaminationLab({
               />
               <text
                 x={PL - 6}
-                y={y(pct) + 3}
+                y={y(pct) + 6}
                 textAnchor="end"
-                fontSize="10"
+                fontSize="17"
                 fill="#475569"
               >
                 {pct}%
@@ -175,9 +175,9 @@ export default function ContaminationLab({
             <text
               key={c}
               x={x(c)}
-              y={H - PB + 14}
+              y={H - PB + 16}
               textAnchor="middle"
-              fontSize="10"
+              fontSize="17"
               fill="#475569"
             >
               {Math.round(c * 100)}%
@@ -187,7 +187,7 @@ export default function ContaminationLab({
             x={(PL + W - PR) / 2}
             y={H - 4}
             textAnchor="middle"
-            fontSize="10"
+            fontSize="17"
             fill="#475569"
           >
             share of public test set leaked into training

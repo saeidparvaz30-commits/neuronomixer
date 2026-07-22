@@ -20,7 +20,7 @@ type Props = {
 
 const W = 560;
 const H = 340;
-const M = { top: 18, right: 96, bottom: 46, left: 58 } as const;
+const M = { top: 18, right: 112, bottom: 46, left: 58 } as const;
 const PLOT_W = W - M.left - M.right;
 const PLOT_H = H - M.top - M.bottom;
 
@@ -141,7 +141,7 @@ export default function LossChart({ results, bestPerBudget }: Props) {
               x={M.left - 8}
               y={(yPos(t) + 3.5).toFixed(1)}
               textAnchor="end"
-              fontSize="10"
+              fontSize="17"
               fill="#475569"
             >
               {t}
@@ -161,9 +161,9 @@ export default function LossChart({ results, bestPerBudget }: Props) {
             />
             <text
               x={xPos(paramCount(w)).toFixed(1)}
-              y={H - M.bottom + 16}
+              y={H - M.bottom + 20}
               textAnchor="middle"
-              fontSize="10"
+              fontSize="17"
               fill="#475569"
             >
               {paramCount(w)}
@@ -174,7 +174,7 @@ export default function LossChart({ results, bestPerBudget }: Props) {
           x={M.left + PLOT_W / 2}
           y={H - 8}
           textAnchor="middle"
-          fontSize="10"
+          fontSize="18"
           fill="#94a3b8"
         >
           parameters (log scale)
@@ -183,7 +183,7 @@ export default function LossChart({ results, bestPerBudget }: Props) {
           x={M.left - 44}
           y={M.top + PLOT_H / 2}
           textAnchor="middle"
-          fontSize="10"
+          fontSize="18"
           fill="#94a3b8"
           transform={`rotate(-90 ${M.left - 44} ${M.top + PLOT_H / 2})`}
         >
@@ -203,7 +203,7 @@ export default function LossChart({ results, bestPerBudget }: Props) {
         <text
           x={M.left + 4}
           y={(yPos(baseline) - 5).toFixed(1)}
-          fontSize="9"
+          fontSize="17"
           fill="#475569"
         >
           predict the training mean ({baseline.toFixed(2)})
@@ -238,7 +238,7 @@ export default function LossChart({ results, bestPerBudget }: Props) {
             <text
               x={(s.pts[s.pts.length - 1].x + 12).toFixed(1)}
               y={(s.pts[s.pts.length - 1].y + 3.5).toFixed(1)}
-              fontSize="10"
+              fontSize="17"
               fontWeight="600"
               fill={BUDGET_COLORS[s.d]}
             >

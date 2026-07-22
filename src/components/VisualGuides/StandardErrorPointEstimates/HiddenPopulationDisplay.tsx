@@ -105,8 +105,8 @@ export default function HiddenPopulationDisplay({
               <text
                 key={v}
                 x={xPos}
-                y={plotH + 12}
-                fontSize={8}
+                y={plotH + 14}
+                fontSize={11}
                 fill="#475569"
                 textAnchor="middle"
               >
@@ -128,8 +128,8 @@ export default function HiddenPopulationDisplay({
               />
               <text
                 x={((POP_MEAN - X_MIN) / (X_MAX - X_MIN)) * plotW + 3}
-                y={10}
-                fontSize={8}
+                y={12}
+                fontSize={11}
                 fill="var(--color-accent)"
                 fontWeight="bold"
               >

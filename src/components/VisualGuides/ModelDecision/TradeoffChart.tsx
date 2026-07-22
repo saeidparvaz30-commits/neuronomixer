@@ -83,9 +83,9 @@ export default function TradeoffChart({ rows, selectedId, onSelect }: Props) {
             />
             <text
               x={PAD.left - 8}
-              y={yFor(cap) + 3.5}
+              y={yFor(cap) + 6}
               textAnchor="end"
-              fontSize={10}
+              fontSize={21}
               fill="#475569"
               fontFamily="monospace"
             >
@@ -108,9 +108,9 @@ export default function TradeoffChart({ rows, selectedId, onSelect }: Props) {
             />
             <text
               x={xFor(t)}
-              y={H - PAD.bottom + 16}
+              y={H - PAD.bottom + 22}
               textAnchor="middle"
-              fontSize={10}
+              fontSize={21}
               fill="#475569"
               fontFamily="monospace"
             >
@@ -124,18 +124,18 @@ export default function TradeoffChart({ rows, selectedId, onSelect }: Props) {
           x={PAD.left + INNER_W / 2}
           y={H - 8}
           textAnchor="middle"
-          fontSize={11}
+          fontSize={22}
           fill="#94a3b8"
         >
           blended price per Mtok, log scale
         </text>
         <text
-          x={14}
+          x={19}
           y={PAD.top + INNER_H / 2}
           textAnchor="middle"
-          fontSize={11}
+          fontSize={22}
           fill="#94a3b8"
-          transform={`rotate(-90 14 ${PAD.top + INNER_H / 2})`}
+          transform={`rotate(-90 19 ${PAD.top + INNER_H / 2})`}
         >
           capability index
         </text>
@@ -182,9 +182,9 @@ export default function TradeoffChart({ rows, selectedId, onSelect }: Props) {
               />
               <text
                 x={cx}
-                y={cy + 16}
+                y={cy + 24}
                 textAnchor="middle"
-                fontSize={9}
+                fontSize={21}
                 fill={DIM}
               >
                 {r.model.short}
@@ -207,9 +207,9 @@ export default function TradeoffChart({ rows, selectedId, onSelect }: Props) {
               <circle cx={cx} cy={cy} r={5.5} fill={TEAL} opacity={0.9} />
               <text
                 x={cx}
-                y={cy + 17}
+                y={cy + 25}
                 textAnchor="middle"
-                fontSize={9}
+                fontSize={21}
                 fill="#94a3b8"
               >
                 {r.model.short}
@@ -232,9 +232,9 @@ export default function TradeoffChart({ rows, selectedId, onSelect }: Props) {
               <circle cx={cx} cy={cy} r={7} fill={PINK} />
               <text
                 x={cx}
-                y={cy - 12}
+                y={cy - 14}
                 textAnchor="middle"
-                fontSize={9.5}
+                fontSize={21}
                 fontWeight={700}
                 fill={PINK}
               >

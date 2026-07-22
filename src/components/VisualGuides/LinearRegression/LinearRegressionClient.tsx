@@ -89,8 +89,8 @@ function RegressionScatter({
         <g key={t}>
           <line x1={tx(t)} y1={PAD.t} x2={tx(t)} y2={PAD.t + IH} stroke="#1e293b" strokeWidth="1" />
           <line x1={PAD.l} y1={ty(t)} x2={PAD.l + IW} y2={ty(t)} stroke="#1e293b" strokeWidth="1" />
-          <text x={tx(t)} y={PAD.t + IH + 14} textAnchor="middle" fill="#475569" fontSize="9">{t}</text>
-          <text x={PAD.l - 6} y={ty(t) + 3} textAnchor="end" fill="#475569" fontSize="9">{t}</text>
+          <text x={tx(t)} y={PAD.t + IH + 18} textAnchor="middle" fill="#475569" fontSize="16">{t}</text>
+          <text x={PAD.l - 6} y={ty(t) + 5} textAnchor="end" fill="#475569" fontSize="16">{t}</text>
         </g>
       ))}
 
@@ -137,11 +137,11 @@ function RegressionScatter({
       ))}
 
       {/* Axes labels */}
-      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="10">X (Feature)</text>
-      <text x={10} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="10"
+      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="16">X (Feature)</text>
+      <text x={10} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="16"
         transform={`rotate(-90, 10, ${PAD.t + IH / 2})`}>Y (Target)</text>
       {points.length < 2 && (
-        <text x={PAD.l + IW / 2} y={PAD.t + IH / 2} textAnchor="middle" fill="#334155" fontSize="12">
+        <text x={PAD.l + IW / 2} y={PAD.t + IH / 2} textAnchor="middle" fill="#334155" fontSize="17">
           Click to add points
         </text>
       )}
@@ -188,10 +188,10 @@ function LossCurve({ reg }: { reg: ReturnType<typeof computeRegression> }) {
       />
       <line x1={PAD.l} y1={PAD.t + IH} x2={PAD.l + IW} y2={PAD.t + IH} stroke="#334155" strokeWidth="1" />
       <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={PAD.t + IH} stroke="#334155" strokeWidth="1" />
-      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="8">Slope</text>
-      <text x={8} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="8"
+      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="10">Slope</text>
+      <text x={8} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="10"
         transform={`rotate(-90, 8, ${PAD.t + IH / 2})`}>MSE</text>
-      <text x={tx(center) + 8} y={ty(baseMse) - 4} fill="var(--color-accent)" fontSize="7">optimal</text>
+      <text x={tx(center) + 8} y={ty(baseMse) - 4} fill="var(--color-accent)" fontSize="10">optimal</text>
     </svg>
   );
 }

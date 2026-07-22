@@ -18,7 +18,7 @@ function TruncatedDeceptive() {
         return (
           <g key={v}>
             <line x1={44} y1={y} x2={180} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={40} y={y + 4} textAnchor="end" fontSize="8.5" fill="#475569">${v}M</text>
+            <text x={40} y={y + 4} textAnchor="end" fontSize="10" fill="#475569">${v}M</text>
           </g>
         );
       })}
@@ -27,8 +27,8 @@ function TruncatedDeceptive() {
       {/* bars */}
       <rect x={60} y={16 + (1 - (995 - 990) / 10) * 120} width={42} height={(5 / 10) * 120} rx="3" fill="#3bb4a4" opacity="0.8" />
       <rect x={118} y={16} width={42} height={120} rx="3" fill="var(--color-accent)" opacity="0.8" />
-      <text x={81} y={148} textAnchor="middle" fontSize="9" fill="#94a3b8">2023</text>
-      <text x={139} y={148} textAnchor="middle" fontSize="9" fill="#94a3b8">2024</text>
+      <text x={81} y={148} textAnchor="middle" fontSize="10" fill="#94a3b8">2023</text>
+      <text x={139} y={148} textAnchor="middle" fontSize="10" fill="#94a3b8">2024</text>
       {/* zigzag break indicator */}
       <polyline points="44,140 50,143 44,146 50,149" fill="none" stroke="#ef4444" strokeWidth="1.5" />
     </svg>
@@ -43,7 +43,7 @@ function TruncatedHonest() {
         return (
           <g key={v}>
             <line x1={44} y1={y} x2={180} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={40} y={y + 4} textAnchor="end" fontSize="8.5" fill="#475569">${v}M</text>
+            <text x={40} y={y + 4} textAnchor="end" fontSize="10" fill="#475569">${v}M</text>
           </g>
         );
       })}
@@ -51,8 +51,8 @@ function TruncatedHonest() {
       <line x1={44} y1={136} x2={180} y2={136} stroke="#334155" strokeWidth="1.5" />
       <rect x={60} y={16 + (1 - 995 / 1000) * 120} width={42} height={(995 / 1000) * 120} rx="3" fill="#3bb4a4" opacity="0.8" />
       <rect x={118} y={16 + (1 - 1000 / 1000) * 120} width={42} height={(1000 / 1000) * 120} rx="3" fill="var(--color-accent)" opacity="0.8" />
-      <text x={81} y={148} textAnchor="middle" fontSize="9" fill="#94a3b8">2023</text>
-      <text x={139} y={148} textAnchor="middle" fontSize="9" fill="#94a3b8">2024</text>
+      <text x={81} y={148} textAnchor="middle" fontSize="10" fill="#94a3b8">2023</text>
+      <text x={139} y={148} textAnchor="middle" fontSize="10" fill="#94a3b8">2024</text>
     </svg>
   );
 }
@@ -87,7 +87,7 @@ function CherryDeceptive() {
         <circle key={i} cx={x} cy={toY(subset[i])} r="3" fill="#3bb4a4" />
       ))}
       {["Jul", "Aug", "Sep", "Oct", "Nov", "Dec", ""].map((m, i) => (
-        m && <text key={i} x={xs[i]} y={topPad + chartH + 16} textAnchor="middle" fontSize="8.5" fill="#94a3b8">{m}</text>
+        m && <text key={i} x={xs[i]} y={topPad + chartH + 16} textAnchor="middle" fontSize="10" fill="#94a3b8">{m}</text>
       ))}
     </svg>
   );
@@ -120,9 +120,9 @@ function CherryHonest() {
       ))}
       {/* Mark the cherry-picked range */}
       <line x1={xs[6]} y1={topPad + 2} x2={xs[6]} y2={topPad + chartH} stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="3,2" />
-      <text x={xs[6] + 2} y={topPad + 10} fontSize="7.5" fill="var(--color-accent)">shown →</text>
+      <text x={xs[6] + 2} y={topPad + 10} fontSize="10" fill="var(--color-accent)">shown →</text>
       {["J", "", "M", "", "M", "", "J", "", "S", "", "N", "", ""].map((m, i) => (
-        m && <text key={i} x={xs[i]} y={topPad + chartH + 16} textAnchor="middle" fontSize="8" fill="#94a3b8">{m}</text>
+        m && <text key={i} x={xs[i]} y={topPad + chartH + 16} textAnchor="middle" fontSize="10" fill="#94a3b8">{m}</text>
       ))}
     </svg>
   );
@@ -157,10 +157,10 @@ function DualDeceptive() {
       <line x1={leftPad} y1={topPad + chartH} x2={totalW - rightPad} y2={topPad + chartH} stroke="#334155" strokeWidth="1.5" />
       <polyline points={casePts} fill="none" stroke="#3bb4a4" strokeWidth="2" strokeLinejoin="round" />
       <polyline points={tempPts} fill="none" stroke="#ef4444" strokeWidth="2" strokeLinejoin="round" strokeDasharray="4,2" />
-      <text x={8} y={topPad + 10} fontSize="7" fill="#3bb4a4">Cases</text>
-      <text x={totalW - rightPad + 2} y={topPad + 10} fontSize="7" fill="#ef4444">Temp</text>
+      <text x={8} y={topPad + 10} fontSize="10" fill="#3bb4a4">Cases</text>
+      <text x={totalW - rightPad + 2} y={topPad + 10} fontSize="10" fill="#ef4444">Temp</text>
       {xs.filter((_, i) => i % 2 === 0).map((x, i) => (
-        <text key={i} x={x} y={topPad + chartH + 16} textAnchor="middle" fontSize="7.5" fill="#94a3b8">{DUAL_MONTHS[i * 2]}</text>
+        <text key={i} x={x} y={topPad + chartH + 16} textAnchor="middle" fontSize="10" fill="#94a3b8">{DUAL_MONTHS[i * 2]}</text>
       ))}
     </svg>
   );
@@ -187,12 +187,12 @@ function DualHonest() {
   return (
     <svg viewBox={`0 0 ${totalW} ${totalH}`} className="w-full max-h-[160px]" aria-label="Honest separate charts showing no correlation">
       {/* Top: cases */}
-      <text x={leftPad} y={topPad - 2} fontSize="8" fill="#3bb4a4">COVID Cases</text>
+      <text x={leftPad} y={topPad - 2} fontSize="10" fill="#3bb4a4">COVID Cases</text>
       <line x1={leftPad} y1={topPad} x2={leftPad} y2={topPad + chartH} stroke="#334155" strokeWidth="1" />
       <line x1={leftPad} y1={topPad + chartH} x2={totalW - 10} y2={topPad + chartH} stroke="#334155" strokeWidth="1" />
       <polyline points={casePts} fill="none" stroke="#3bb4a4" strokeWidth="2" strokeLinejoin="round" />
       {/* Bottom: temps */}
-      <text x={leftPad} y={topPad + chartH + 20} fontSize="8" fill="#ef4444">Temperature (°C)</text>
+      <text x={leftPad} y={topPad + chartH + 20} fontSize="10" fill="#ef4444">Temperature (°C)</text>
       <line x1={leftPad} y1={topPad + chartH + 28} x2={leftPad} y2={topPad + chartH * 2 + 28} stroke="#334155" strokeWidth="1" />
       <line x1={leftPad} y1={topPad + chartH * 2 + 28} x2={totalW - 10} y2={topPad + chartH * 2 + 28} stroke="#334155" strokeWidth="1" />
       <polyline points={xs.map((x, i) => `${x},${topPad + chartH + 28 + chartH - (TEMPS[i] / maxTemps) * chartH}`).join(" ")} fill="none" stroke="#ef4444" strokeWidth="2" strokeLinejoin="round" strokeDasharray="4,2" />
@@ -248,7 +248,7 @@ function PieDeceptive() {
         const lx = cx + (r * 0.7) * Math.cos(p.midAngle) + 18;
         const ly = cy + (r * 0.7) * Math.sin(p.midAngle) * 0.45 + 8;
         return (
-          <text key={i} x={lx} y={ly} textAnchor="middle" fontSize="8.5" fill="#f1f5f9" fontWeight="600">{p.label}</text>
+          <text key={i} x={lx} y={ly} textAnchor="middle" fontSize="10" fill="#f1f5f9" fontWeight="600">{p.label}</text>
         );
       })}
     </svg>
@@ -269,15 +269,15 @@ function PieHonest() {
 
   return (
     <svg viewBox={`0 0 ${totalW} ${chartH}`} className="w-full max-h-[140px]" aria-label="Honest flat bar chart of proportions">
-      <text x={leftPad} y={14} fontSize="8.5" fill="#94a3b8">Honest: flat bar chart</text>
+      <text x={leftPad} y={14} fontSize="10" fill="#94a3b8">Honest: flat bar chart</text>
       {data.map((d, i) => {
         const bW = d.pct * maxW;
         const y = 24 + i * (barH + 8);
         return (
           <g key={i}>
             <rect x={leftPad} y={y} width={bW} height={barH} rx="3" fill={d.color} opacity="0.8" />
-            <text x={leftPad - 4} y={y + barH / 2 + 4} textAnchor="end" fontSize="9" fill="#94a3b8">{d.label}</text>
-            <text x={leftPad + bW + 4} y={y + barH / 2 + 4} textAnchor="start" fontSize="9" fill="#f1f5f9" fontWeight="600">{d.value}</text>
+            <text x={leftPad - 4} y={y + barH / 2 + 4} textAnchor="end" fontSize="10" fill="#94a3b8">{d.label}</text>
+            <text x={leftPad + bW + 4} y={y + barH / 2 + 4} textAnchor="start" fontSize="10" fill="#f1f5f9" fontWeight="600">{d.value}</text>
           </g>
         );
       })}
@@ -319,7 +319,7 @@ function StackedDeceptive() {
       <polygon points={`${xs[0]},${toY(cum1[0])} ${area2Top} ${xs[xs.length-1]},${toY(cum1[xs.length-1])} ${area2Bot}`} fill="var(--color-accent)" opacity="0.6" />
       <polygon points={`${xs[0]},${toY(cum2[0])} ${area3Top} ${xs[xs.length-1]},${toY(cum2[xs.length-1])} ${area3Bot}`} fill="#a855f7" opacity="0.6" />
       {xs.filter((_, i) => i % 2 === 0).map((x, i) => (
-        <text key={i} x={x} y={topPad + chartH + 16} textAnchor="middle" fontSize="8" fill="#94a3b8">{STACKED_MONTHS[i * 2]}</text>
+        <text key={i} x={x} y={topPad + chartH + 16} textAnchor="middle" fontSize="10" fill="#94a3b8">{STACKED_MONTHS[i * 2]}</text>
       ))}
     </svg>
   );
@@ -345,7 +345,7 @@ function StackedHonest() {
         const pts = xs.map((x, i) => `${x},${toY(s[i])}`).join(" ");
         return (
           <g key={si}>
-            <text x={leftPad} y={yOff - 2} fontSize="7.5" fill={colors[si]}>{labels[si]}</text>
+            <text x={leftPad} y={yOff - 2} fontSize="10" fill={colors[si]}>{labels[si]}</text>
             <line x1={leftPad} y1={yOff} x2={leftPad} y2={yOff + chartH} stroke="#1e293b" strokeWidth="1" />
             <line x1={leftPad} y1={yOff + chartH} x2={totalW - 5} y2={yOff + chartH} stroke="#1e293b" strokeWidth="1" />
             <polyline points={pts} fill="none" stroke={colors[si]} strokeWidth="2" strokeLinejoin="round" />

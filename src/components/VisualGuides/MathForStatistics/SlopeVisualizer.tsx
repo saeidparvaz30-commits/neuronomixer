@@ -160,9 +160,9 @@ export default function SlopeVisualizer({ onAdjust }: SlopeVisualizerProps) {
             <text
               key={x}
               x={toSvgX(x)}
-              y={SVG_H - PAD.bottom + 14}
+              y={SVG_H - PAD.bottom + 16}
               textAnchor="middle"
-              fontSize={9}
+              fontSize={15}
               fill="#475569"
             >
               {x}
@@ -174,9 +174,9 @@ export default function SlopeVisualizer({ onAdjust }: SlopeVisualizerProps) {
             <text
               key={y}
               x={PAD.left - 6}
-              y={toSvgY(y) + 3.5}
+              y={toSvgY(y) + 5}
               textAnchor="end"
-              fontSize={9}
+              fontSize={15}
               fill="#475569"
             >
               {y}
@@ -212,18 +212,18 @@ export default function SlopeVisualizer({ onAdjust }: SlopeVisualizerProps) {
               {/* Labels */}
               <text
                 x={(px0 + pRunX) / 2}
-                y={py0 + 12}
+                y={py0 + 16}
                 textAnchor="middle"
-                fontSize={9}
+                fontSize={15}
                 fill="#3bb4a4"
               >
                 run=1
               </text>
               <text
                 x={pRunX + 6}
-                y={(py0 + pRiseY) / 2 + 3}
+                y={(py0 + pRiseY) / 2 + 5}
                 textAnchor="start"
-                fontSize={9}
+                fontSize={15}
                 fill="var(--color-accent)"
               >
                 rise={m.toFixed(1)}

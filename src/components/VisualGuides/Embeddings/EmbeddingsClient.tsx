@@ -555,7 +555,7 @@ export default function EmbeddingsClient() {
                       <text
                         x={cx + r + 4}
                         y={cy + 4}
-                        fontSize={isSelected || isResult ? 12 : 10}
+                        fontSize={isSelected || isResult ? 18 : 16}
                         fontWeight={isSelected || isResult || isArithmetic ? "bold" : "normal"}
                         fill={isResult ? "var(--color-accent)" : isSelected || isArithmetic ? "white" : "#94a3b8"}
                       >

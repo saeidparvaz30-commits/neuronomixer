@@ -15,8 +15,8 @@ interface Props {
 }
 
 const BINS = 20;
-const PW = 380, PH = 110;
-const PP = { l: 20, r: 12, t: 8, b: 20 };
+const PW = 380, PH = 130;
+const PP = { l: 20, r: 12, t: 8, b: 40 };
 
 function PermHistogram({ permStats, observedT, testType }: { permStats: number[]; observedT: number | null; testType: TestType }) {
   if (permStats.length === 0) return null;
@@ -58,7 +58,7 @@ function PermHistogram({ permStats, observedT, testType }: { permStats: number[]
             x2={tx(observedT)} y2={PP.t + IH}
             stroke="var(--color-accent)" strokeWidth="2"
           />
-          <text x={tx(observedT) + 3} y={PP.t + 10} fill="var(--color-accent)" fontSize="8" fontWeight="600">
+          <text x={tx(observedT) + 3} y={PP.t + 14} fill="var(--color-accent)" fontSize="13" fontWeight="600">
             t={observedT.toFixed(2)}
           </text>
           {testType === "two-tailed" && Math.abs(observedT) > 0.1 && (
@@ -72,11 +72,11 @@ function PermHistogram({ permStats, observedT, testType }: { permStats: number[]
       )}
 
       {[-4, -2, 0, 2, 4].map(v => (
-        <text key={v} x={tx(v)} y={PP.t + IH + 12} textAnchor="middle" fill="#475569" fontSize="7">
+        <text key={v} x={tx(v)} y={PP.t + IH + 14} textAnchor="middle" fill="#475569" fontSize="12">
           {v}
         </text>
       ))}
-      <text x={PP.l + IW / 2} y={PH - 2} textAnchor="middle" fill="#475569" fontSize="7">
+      <text x={PP.l + IW / 2} y={PH - 4} textAnchor="middle" fill="#475569" fontSize="12">
         Permutation t-statistics
       </text>
     </svg>

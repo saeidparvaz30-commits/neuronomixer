@@ -136,7 +136,7 @@ export default function BeamTree({ levels, width }: Props) {
                     x={c.x + NODE_W - 6}
                     y={c.y - 4}
                     textAnchor="end"
-                    fontSize={8}
+                    fontSize={10}
                     fill={n.kept ? "#d4af37" : "#475569"}
                   >
                     {n.kept ? `#${(n.rank ?? 0) + 1}` : "cut"}

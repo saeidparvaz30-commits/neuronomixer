@@ -138,7 +138,7 @@ export default function FlopsCompare({
                   y={(yy + 3).toFixed(2)}
                   textAnchor="end"
                   fill="#475569"
-                  fontSize="9"
+                  fontSize="12"
                   fontFamily="monospace"
                 >
                   {formatFlops(yMax * f)}
@@ -147,7 +147,7 @@ export default function FlopsCompare({
             );
           })}
           {/* x labels */}
-          <text x={PAD.left} y={H - 12} fill="#475569" fontSize="9" fontFamily="monospace">
+          <text x={PAD.left} y={H - 12} fill="#475569" fontSize="12" fontFamily="monospace">
             token 1
           </text>
           <text
@@ -155,7 +155,7 @@ export default function FlopsCompare({
             y={H - 12}
             textAnchor="end"
             fill="#475569"
-            fontSize="9"
+            fontSize="12"
             fontFamily="monospace"
           >
             token {gen}
@@ -165,7 +165,7 @@ export default function FlopsCompare({
             y={H - 12}
             textAnchor="middle"
             fill="#475569"
-            fontSize="9"
+            fontSize="12"
           >
             generated token index
           </text>

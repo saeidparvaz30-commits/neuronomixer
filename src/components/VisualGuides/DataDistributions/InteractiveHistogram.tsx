@@ -6,7 +6,7 @@ import { HistBin } from "./types";
 
 const W = 560;
 const H = 280;
-const PAD = { l: 44, r: 16, t: 20, b: 40 };
+const PAD = { l: 64, r: 16, t: 20, b: 40 };
 const IW = W - PAD.l - PAD.r;
 const IH = H - PAD.t - PAD.b;
 
@@ -100,8 +100,8 @@ export default function InteractiveHistogram({
               stroke="#1e293b" strokeWidth="1"
             />
             <text
-              x={PAD.l - 5} y={ty(t) + 3.5}
-              textAnchor="end" fill="#475569" fontSize="8"
+              x={PAD.l - 5} y={ty(t) + 6}
+              textAnchor="end" fill="#475569" fontSize="17"
             >
               {(t * 100).toFixed(1)}%
             </text>
@@ -197,8 +197,8 @@ export default function InteractiveHistogram({
         {xTicks.map((v, i) => (
           <text
             key={i}
-            x={tx(v)} y={PAD.t + IH + 14}
-            textAnchor="middle" fill="#475569" fontSize="8"
+            x={tx(v)} y={PAD.t + IH + 18}
+            textAnchor="middle" fill="#475569" fontSize="17"
           >
             {v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)}
           </text>
@@ -208,22 +208,22 @@ export default function InteractiveHistogram({
         {tooltip && (
           <g>
             <rect
-              x={Math.min(tooltip.x + 6, W - 120)}
-              y={Math.max(tooltip.y - 30, 4)}
-              width={108} height={30}
+              x={Math.min(tooltip.x + 6, W - 166)}
+              y={Math.max(tooltip.y - 48, 4)}
+              width={154} height={46}
               rx="4" fill="#0f172a" stroke="#1e293b" strokeWidth="1"
             />
             <text
-              x={Math.min(tooltip.x + 12, W - 114)}
-              y={Math.max(tooltip.y - 16, 16)}
-              fill="#f1f5f9" fontSize="8.5" fontWeight="600"
+              x={Math.min(tooltip.x + 12, W - 160)}
+              y={Math.max(tooltip.y - 29, 23)}
+              fill="#f1f5f9" fontSize="17" fontWeight="600"
             >
               {tooltip.binLabel}
             </text>
             <text
-              x={Math.min(tooltip.x + 12, W - 114)}
-              y={Math.max(tooltip.y - 4, 28)}
-              fill="#94a3b8" fontSize="8"
+              x={Math.min(tooltip.x + 12, W - 160)}
+              y={Math.max(tooltip.y - 8, 44)}
+              fill="#94a3b8" fontSize="17"
             >
               rel. freq: {(tooltip.height * 100).toFixed(1)}%
             </text>

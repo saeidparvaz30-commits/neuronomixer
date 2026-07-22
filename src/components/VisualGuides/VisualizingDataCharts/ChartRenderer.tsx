@@ -32,7 +32,7 @@ function TestScoresBarChart() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 6} y={y + 4} textAnchor="end" fontSize="10" fill="#475569">{v}</text>
+            <text x={leftPad - 6} y={y + 4} textAnchor="end" fontSize="12" fill="#475569">{v}</text>
           </g>
         );
       })}
@@ -47,8 +47,8 @@ function TestScoresBarChart() {
         return (
           <g key={d.label}>
             <rect x={x} y={y} width={barW} height={barH} rx="4" fill="#3bb4a4" opacity="0.85" />
-            <text x={x + barW / 2} y={y - 5} textAnchor="middle" fontSize="11" fontWeight="600" fill="#f1f5f9">{d.value}</text>
-            <text x={x + barW / 2} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{d.label}</text>
+            <text x={x + barW / 2} y={y - 5} textAnchor="middle" fontSize="12" fontWeight="600" fill="#f1f5f9">{d.value}</text>
+            <text x={x + barW / 2} y={topPad + chartH + 18} textAnchor="middle" fontSize="12" fill="#94a3b8">{d.label}</text>
           </g>
         );
       })}
@@ -78,7 +78,7 @@ function TestScoresHistogram() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 6} y={y + 4} textAnchor="end" fontSize="10" fill="#475569">{v}</text>
+            <text x={leftPad - 6} y={y + 4} textAnchor="end" fontSize="12" fill="#475569">{v}</text>
           </g>
         );
       })}
@@ -91,7 +91,7 @@ function TestScoresHistogram() {
         return (
           <g key={b.label}>
             <rect x={x} y={y} width={barW} height={barH} fill="#3bb4a4" opacity="0.75" />
-            <text x={x + barW / 2} y={topPad + chartH + 18} textAnchor="middle" fontSize="9" fill="#94a3b8">{b.label}</text>
+            <text x={x + barW / 2} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{b.label}</text>
           </g>
         );
       })}
@@ -125,7 +125,7 @@ function TestScoresBoxPlot() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 6} y={y + 4} textAnchor="end" fontSize="10" fill="#475569">{v}</text>
+            <text x={leftPad - 6} y={y + 4} textAnchor="end" fontSize="12" fill="#475569">{v}</text>
           </g>
         );
       })}
@@ -173,7 +173,7 @@ function TestScoresLineChart() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 6} y={y + 4} textAnchor="end" fontSize="10" fill="#475569">{v}</text>
+            <text x={leftPad - 6} y={y + 4} textAnchor="end" fontSize="12" fill="#475569">{v}</text>
           </g>
         );
       })}
@@ -184,7 +184,7 @@ function TestScoresLineChart() {
         <g key={i}>
           <circle cx={x} cy={toY(data[i])} r="4" fill="#ef4444" />
           <text x={x} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{labels[i]}</text>
-          <text x={x} y={toY(data[i]) - 8} textAnchor="middle" fontSize="10" fill="#f1f5f9">{data[i]}</text>
+          <text x={x} y={toY(data[i]) - 8} textAnchor="middle" fontSize="11" fill="#f1f5f9">{data[i]}</text>
         </g>
       ))}
     </svg>
@@ -218,7 +218,7 @@ function SalesLineChart() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="9" fill="#475569">{v}k</text>
+            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="11" fill="#475569">{v}k</text>
           </g>
         );
       })}
@@ -229,7 +229,7 @@ function SalesLineChart() {
         <g key={i}>
           <circle cx={x} cy={toY(SALES_VALUES[i])} r="3" fill="#3bb4a4" />
           {i % 2 === 0 && (
-            <text x={x} y={topPad + chartH + 18} textAnchor="middle" fontSize="9" fill="#94a3b8">{SALES_MONTHS[i]}</text>
+            <text x={x} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{SALES_MONTHS[i]}</text>
           )}
         </g>
       ))}
@@ -261,7 +261,7 @@ function SalesAreaChart() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="9" fill="#475569">{v}k</text>
+            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="11" fill="#475569">{v}k</text>
           </g>
         );
       })}
@@ -270,7 +270,7 @@ function SalesAreaChart() {
       <polygon points={areaPts} fill="#3bb4a4" opacity="0.2" />
       <polyline points={linePts} fill="none" stroke="#3bb4a4" strokeWidth="2.5" strokeLinejoin="round" />
       {xs.filter((_, i) => i % 2 === 0).map((x, i) => (
-        <text key={i} x={x} y={topPad + chartH + 18} textAnchor="middle" fontSize="9" fill="#94a3b8">{SALES_MONTHS[i * 2]}</text>
+        <text key={i} x={x} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{SALES_MONTHS[i * 2]}</text>
       ))}
     </svg>
   );
@@ -297,7 +297,7 @@ function SalesBarChart() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="9" fill="#475569">{v}k</text>
+            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="11" fill="#475569">{v}k</text>
           </g>
         );
       })}
@@ -310,7 +310,7 @@ function SalesBarChart() {
           <g key={i}>
             <rect x={x} y={topPad + chartH - bH} width={barW} height={bH} rx="2" fill="#3bb4a4" opacity="0.8" />
             {i % 2 === 0 && (
-              <text x={x + barW / 2} y={topPad + chartH + 18} textAnchor="middle" fontSize="8.5" fill="#94a3b8">{SALES_MONTHS[i]}</text>
+              <text x={x + barW / 2} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{SALES_MONTHS[i]}</text>
             )}
           </g>
         );
@@ -340,7 +340,7 @@ function SalesScatterPlot() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="9" fill="#475569">{v}k</text>
+            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="11" fill="#475569">{v}k</text>
           </g>
         );
       })}
@@ -350,7 +350,7 @@ function SalesScatterPlot() {
         <g key={i}>
           <circle cx={x} cy={toY(SALES_VALUES[i])} r="4.5" fill="#3bb4a4" opacity="0.7" />
           {i % 2 === 0 && (
-            <text x={x} y={topPad + chartH + 18} textAnchor="middle" fontSize="9" fill="#94a3b8">{SALES_MONTHS[i]}</text>
+            <text x={x} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{SALES_MONTHS[i]}</text>
           )}
         </g>
       ))}
@@ -379,8 +379,8 @@ function LifeExpSortedBar() {
   const topPad = 16;
   const minVal = 55;
   const maxVal = 90;
-  const barH = 8;
-  const gap = 2;
+  const barH = 10;
+  const gap = 3;
   const totalH = LIFE_DATA.length * (barH + gap) + topPad + bottomPad;
   const totalW = 340;
 
@@ -395,7 +395,7 @@ function LifeExpSortedBar() {
         return (
           <g key={v}>
             <line x1={x} y1={topPad} x2={x} y2={totalH - bottomPad} stroke="#1e293b" strokeWidth="1" />
-            <text x={x} y={totalH - 6} textAnchor="middle" fontSize="9" fill="#475569">{v}</text>
+            <text x={x} y={totalH - 6} textAnchor="middle" fontSize="11" fill="#475569">{v}</text>
           </g>
         );
       })}
@@ -407,8 +407,8 @@ function LifeExpSortedBar() {
         return (
           <g key={d.country}>
             <rect x={leftPad} y={y} width={barWidth} height={barH} rx="1.5" fill="#3bb4a4" opacity={opacity} />
-            <text x={leftPad - 4} y={y + barH - 1} textAnchor="end" fontSize="8.5" fill="#94a3b8">{d.country}</text>
-            <text x={toX(d.value) + 3} y={y + barH - 1} textAnchor="start" fontSize="8.5" fill="#f1f5f9">{d.value}</text>
+            <text x={leftPad - 4} y={y + barH - 1} textAnchor="end" fontSize="11" fill="#94a3b8">{d.country}</text>
+            <text x={toX(d.value) + 3} y={y + barH - 1} textAnchor="start" fontSize="11" fill="#f1f5f9">{d.value}</text>
           </g>
         );
       })}
@@ -430,7 +430,7 @@ function LifeExpBoxPlot() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 20} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 6} y={y + 4} textAnchor="end" fontSize="10" fill="#475569">{v}</text>
+            <text x={leftPad - 6} y={y + 4} textAnchor="end" fontSize="12" fill="#475569">{v}</text>
           </g>
         );
       })}
@@ -452,7 +452,7 @@ function LifeExpBoxPlot() {
             <rect x={cx - 25} y={q3Y} width={50} height={q1Y - q3Y} rx="2" fill="none" stroke="#3bb4a4" strokeWidth="2" />
             <line x1={cx - 25} y1={medY} x2={cx + 25} y2={medY} stroke="var(--color-accent)" strokeWidth="2.5" />
             <text x={cx} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">All Countries</text>
-            <text x={cx + 36} y={medY + 3} textAnchor="start" fontSize="9" fill="var(--color-accent)">median</text>
+            <text x={cx + 36} y={medY + 3} textAnchor="start" fontSize="11" fill="var(--color-accent)">median</text>
           </g>
         );
       })()}
@@ -484,7 +484,7 @@ function LifeExpHistogram() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="10" fill="#475569">{v}</text>
+            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="12" fill="#475569">{v}</text>
           </g>
         );
       })}
@@ -496,7 +496,7 @@ function LifeExpHistogram() {
         return (
           <g key={b.label}>
             <rect x={x} y={topPad + chartH - bH} width={barW} height={bH} fill="#3bb4a4" opacity="0.75" />
-            <text x={x + barW / 2} y={topPad + chartH + 18} textAnchor="middle" fontSize="8.5" fill="#94a3b8">{b.label}</text>
+            <text x={x + barW / 2} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{b.label}</text>
           </g>
         );
       })}
@@ -523,7 +523,7 @@ function LifeExpScatter() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="9" fill="#475569">{v}</text>
+            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="11" fill="#475569">{v}</text>
           </g>
         );
       })}
@@ -532,7 +532,7 @@ function LifeExpScatter() {
       {pts.map((p, i) => (
         <circle key={i} cx={p.x} cy={p.y} r="3" fill="#3bb4a4" opacity="0.7" />
       ))}
-      <text x={totalW / 2} y={topPad + chartH + 20} textAnchor="middle" fontSize="9" fill="#94a3b8">Country index (unsorted)</text>
+      <text x={totalW / 2} y={topPad + chartH + 20} textAnchor="middle" fontSize="11" fill="#94a3b8">Country index (unsorted)</text>
     </svg>
   );
 }
@@ -563,13 +563,14 @@ function TrafficMultiLine() {
   }
 
   return (
+    <div>
     <svg viewBox={`0 0 ${totalW} ${chartH + bottomPad + topPad}`} className="w-full max-h-[240px]" aria-label="Multi-line chart of website traffic">
       {[0, 5000, 10000, 15000].map((v) => {
         const y = toY(v);
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="9" fill="#475569">{v / 1000}k</text>
+            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="11" fill="#475569">{v / 1000}k</text>
           </g>
         );
       })}
@@ -583,14 +584,28 @@ function TrafficMultiLine() {
             {xs.map((x, i) => (
               <circle key={i} cx={x} cy={toY(series[i])} r="3.5" fill={PAGE_COLORS[si]} />
             ))}
-            <text x={xs[xs.length - 1] + 5} y={toY(series[series.length - 1]) + 4} textAnchor="start" fontSize="8.5" fill={PAGE_COLORS[si]}>{TRAFFIC_PAGES[si]}</text>
           </g>
         );
       })}
       {xs.map((x, i) => (
-        <text key={i} x={x} y={topPad + chartH + 18} textAnchor="middle" fontSize="10" fill="#94a3b8">{TRAFFIC_MONTHS[i]}</text>
+        <text key={i} x={x} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{TRAFFIC_MONTHS[i]}</text>
       ))}
     </svg>
+    <TrafficPagesLegend />
+    </div>
+  );
+}
+
+function TrafficPagesLegend() {
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
+      {TRAFFIC_PAGES.map((page, i) => (
+        <span key={page} className="flex items-center gap-1 text-[10px] text-[#94a3b8]">
+          <span className="inline-block w-2 h-2 rounded-sm" style={{ background: PAGE_COLORS[i] }} />
+          {page}
+        </span>
+      ))}
+    </div>
   );
 }
 
@@ -616,7 +631,7 @@ function TrafficGroupedBar() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="9" fill="#475569">{v / 1000}k</text>
+            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="11" fill="#475569">{v / 1000}k</text>
           </g>
         );
       })}
@@ -633,7 +648,7 @@ function TrafficGroupedBar() {
                 <rect key={si} x={x} y={topPad + chartH - h} width={barW} height={h} rx="1" fill={PAGE_COLORS[si]} opacity="0.8" />
               );
             })}
-            <text x={gx + (5 * (barW + 1)) / 2} y={topPad + chartH + 18} textAnchor="middle" fontSize="10" fill="#94a3b8">{month}</text>
+            <text x={gx + (5 * (barW + 1)) / 2} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{month}</text>
           </g>
         );
       })}
@@ -671,7 +686,7 @@ function TrafficStackedArea() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="9" fill="#475569">{v / 1000}k</text>
+            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="11" fill="#475569">{v / 1000}k</text>
           </g>
         );
       })}
@@ -689,7 +704,7 @@ function TrafficStackedArea() {
         );
       })}
       {xs.map((x, i) => (
-        <text key={i} x={x} y={topPad + chartH + 18} textAnchor="middle" fontSize="10" fill="#94a3b8">{TRAFFIC_MONTHS[i]}</text>
+        <text key={i} x={x} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{TRAFFIC_MONTHS[i]}</text>
       ))}
     </svg>
   );
@@ -731,7 +746,7 @@ function TrafficBoxPlot() {
         return (
           <g key={v}>
             <line x1={leftPad} y1={y} x2={totalW - 10} y2={y} stroke="#1e293b" strokeWidth="1" />
-            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="9" fill="#475569">{v / 1000}k</text>
+            <text x={leftPad - 5} y={y + 4} textAnchor="end" fontSize="11" fill="#475569">{v / 1000}k</text>
           </g>
         );
       })}
@@ -744,7 +759,7 @@ function TrafficBoxPlot() {
             <line x1={cx} y1={toY(b.min)} x2={cx} y2={toY(b.max)} stroke={PAGE_COLORS[i]} strokeWidth="1.5" />
             <rect x={cx - boxW / 2} y={toY(b.q3)} width={boxW} height={toY(b.q1) - toY(b.q3)} rx="2" fill="none" stroke={PAGE_COLORS[i]} strokeWidth="1.5" />
             <line x1={cx - boxW / 2} y1={toY(b.med)} x2={cx + boxW / 2} y2={toY(b.med)} stroke={PAGE_COLORS[i]} strokeWidth="2" />
-            <text x={cx} y={topPad + chartH + 18} textAnchor="middle" fontSize="8.5" fill="#94a3b8">{b.page}</text>
+            <text x={cx} y={topPad + chartH + 18} textAnchor="middle" fontSize="11" fill="#94a3b8">{b.page}</text>
           </g>
         );
       })}

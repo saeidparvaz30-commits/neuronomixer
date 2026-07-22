@@ -101,27 +101,27 @@ export default function Scatter2D({
         {tooltip && (
           <g>
             <rect
-              x={Math.min(tooltip.cx + 8, W - 110)}
+              x={Math.min(tooltip.cx + 8, W - 150)}
               y={Math.max(tooltip.cy - 30, 4)}
-              width={100} height={44}
+              width={140} height={52}
               rx={6} ry={6}
               fill="#0f172a" stroke="#334155" strokeWidth="1"
             />
             <text
-              x={Math.min(tooltip.cx + 58, W - 60)}
-              y={Math.max(tooltip.cy - 12, 20)}
+              x={Math.min(tooltip.cx + 78, W - 80)}
+              y={Math.max(tooltip.cy - 10, 24)}
               textAnchor="middle"
               fill={DIGIT_COLORS[tooltip.digit]}
-              fontSize="11" fontWeight="700"
+              fontSize="18" fontWeight="700"
             >
               Digit {tooltip.digit}
             </text>
             <text
-              x={Math.min(tooltip.cx + 58, W - 60)}
-              y={Math.max(tooltip.cy + 4, 36)}
+              x={Math.min(tooltip.cx + 78, W - 80)}
+              y={Math.max(tooltip.cy + 12, 46)}
               textAnchor="middle"
               fill="#475569"
-              fontSize="9"
+              fontSize="17"
             >
               ({tooltip.x.toFixed(2)}, {tooltip.y.toFixed(2)})
             </text>

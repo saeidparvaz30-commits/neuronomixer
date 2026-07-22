@@ -8,14 +8,14 @@ interface Props {
   contextDisplay: string;
 }
 
-const LABEL_X = 126;
-const BAR_X = 134;
-const BAR_MAX_W = 430;
-const PCT_X = 570;
+const LABEL_X = 210;
+const BAR_X = 218;
+const BAR_MAX_W = 320;
+const PCT_X = 544;
 const VB_W = 660;
-const ROW_H = 46;
-const BAR_H = 9;
-const BAR_GAP = 12;
+const ROW_H = 70;
+const BAR_H = 12;
+const BAR_GAP = 24;
 
 const SERIES: { id: StageId; label: string }[] = [
   { id: "base", label: "Base model" },
@@ -83,9 +83,9 @@ export default function DistributionChart({ rows, contextDisplay }: Props) {
             <g key={row.token}>
               <text
                 x={LABEL_X}
-                y={rowTop + 24}
+                y={rowTop + 40}
                 textAnchor="end"
-                fontSize={11}
+                fontSize={22}
                 fill={row.isOther ? "#475569" : "#94a3b8"}
                 fontFamily="ui-monospace, monospace"
                 fontStyle={row.isOther ? "italic" : "normal"}
@@ -107,9 +107,9 @@ export default function DistributionChart({ rows, contextDisplay }: Props) {
                     />
                     <text
                       x={PCT_X}
-                      y={y + BAR_H - 1}
+                      y={y + BAR_H + 4}
                       textAnchor="start"
-                      fontSize={9}
+                      fontSize={20}
                       fill={SERIES_COLORS[b.id]}
                       fontFamily="ui-monospace, monospace"
                     >

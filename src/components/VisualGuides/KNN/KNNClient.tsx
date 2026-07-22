@@ -164,10 +164,10 @@ function KNNPlot({
       ))}
 
       {/* Axis labels */}
-      <text x={PAD + IW / 2} y={H - 2} textAnchor="middle" fill="#475569" fontSize="10">Feature 1</text>
-      <text x={8} y={PAD + IH / 2} textAnchor="middle" fill="#475569" fontSize="10"
-        transform={`rotate(-90, 8, ${PAD + IH / 2})`}>Feature 2</text>
-      <text x={PAD + 4} y={PAD + 14} fill="#475569" fontSize="9">Click to add query point (▲)</text>
+      <text x={PAD + IW / 2} y={H - 2} textAnchor="middle" fill="#475569" fontSize="16">Feature 1</text>
+      <text x={10} y={PAD + IH / 2} textAnchor="middle" fill="#475569" fontSize="16"
+        transform={`rotate(-90, 10, ${PAD + IH / 2})`}>Feature 2</text>
+      <text x={PAD + 4} y={PAD + 18} fill="#475569" fontSize="16">Click to add query point (▲)</text>
     </svg>
   );
 }
@@ -205,14 +205,14 @@ function AccuracyChart({ trainAcc, validAcc, currentK }: { trainAcc: number[]; v
         stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="3,2" />
 
       {yTicks.map(v => (
-        <text key={v} x={PAD.l - 3} y={ty(v) + 3} textAnchor="end" fill="#475569" fontSize="7">{v}</text>
+        <text key={v} x={PAD.l - 3} y={ty(v) + 3} textAnchor="end" fill="#475569" fontSize="10">{v}</text>
       ))}
       {[1, 5, 10, 15, 20].map(k => (
-        <text key={k} x={tx(k)} y={PAD.t + IH + 12} textAnchor="middle" fill="#475569" fontSize="7">{k}</text>
+        <text key={k} x={tx(k)} y={PAD.t + IH + 12} textAnchor="middle" fill="#475569" fontSize="10">{k}</text>
       ))}
-      <text x={PAD.l + IW / 2} y={H - 2} textAnchor="middle" fill="#475569" fontSize="8">K</text>
-      <text x={PAD.l + IW - 2} y={ty(trainAcc[maxK - 1]) - 3} fill="#3b82f6" fontSize="7">Train</text>
-      <text x={PAD.l + IW - 2} y={ty(validAcc[maxK - 1]) + 8} fill="#f97316" fontSize="7">Valid</text>
+      <text x={PAD.l + IW / 2} y={H - 2} textAnchor="middle" fill="#475569" fontSize="10">K</text>
+      <text x={PAD.l + IW - 2} y={ty(trainAcc[maxK - 1]) - 3} textAnchor="end" fill="#3b82f6" fontSize="10">Train</text>
+      <text x={PAD.l + IW - 2} y={ty(validAcc[maxK - 1]) + 10} textAnchor="end" fill="#f97316" fontSize="10">Valid</text>
     </svg>
   );
 }

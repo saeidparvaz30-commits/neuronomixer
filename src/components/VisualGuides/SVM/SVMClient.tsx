@@ -422,7 +422,7 @@ export default function SVMClient() {
               {showMargin && marginWidth > 3 && wNorm > 0.01 && (
                 <text
                   x={sx(50)} y={sy(y0b) - 12}
-                  fill="white" fontSize="11" textAnchor="middle" opacity={0.7}
+                  fill="white" fontSize="16" textAnchor="middle" opacity={0.7}
                 >
                   margin = {marginWidth.toFixed(1)}
                 </text>

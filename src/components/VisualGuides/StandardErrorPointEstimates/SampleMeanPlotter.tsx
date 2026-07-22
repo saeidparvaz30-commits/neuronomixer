@@ -21,7 +21,7 @@ const SVG_H = 200;
 const PAD_L = 12;
 const PAD_R = 12;
 const PAD_T = 20;
-const PAD_B = 28;
+const PAD_B = 32;
 const PLOT_W = SVG_W - PAD_L - PAD_R;
 const PLOT_H = SVG_H - PAD_T - PAD_B;
 
@@ -120,9 +120,9 @@ export default function SampleMeanPlotter({
                 strokeDasharray="4,3"
               />
               <text
-                x={meanX + 3}
-                y={PAD_T + 10}
-                fontSize={9}
+                x={meanX + 4}
+                y={PAD_T + 16}
+                fontSize={19}
                 fill="#ef4444"
                 fontWeight="bold"
               >
@@ -154,7 +154,7 @@ export default function SampleMeanPlotter({
               x={SVG_W / 2}
               y={PAD_T + PLOT_H / 2 + 4}
               textAnchor="middle"
-              fontSize={11}
+              fontSize={19}
               fill="#334155"
             >
               Draw samples to see means appear here
@@ -186,8 +186,8 @@ export default function SampleMeanPlotter({
                 />
                 <text
                   x={x}
-                  y={PAD_T + PLOT_H + 14}
-                  fontSize={9}
+                  y={PAD_T + PLOT_H + 20}
+                  fontSize={19}
                   fill="#475569"
                   textAnchor="middle"
                 >

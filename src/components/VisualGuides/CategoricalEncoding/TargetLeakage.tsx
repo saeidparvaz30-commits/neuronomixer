@@ -19,7 +19,7 @@ interface Props {
 
 const W = 560;
 const H = 300;
-const M = { top: 18, right: 16, bottom: 44, left: 52 };
+const M = { top: 18, right: 16, bottom: 44, left: 68 };
 const PW = W - M.left - M.right;
 const PH = H - M.top - M.bottom;
 
@@ -82,7 +82,7 @@ function TargetLeakageInner({ curve, k, onChange }: Props) {
               stroke={t === 0 ? "#334155" : "#1e293b"}
               strokeWidth={t === 0 ? 1.5 : 1}
             />
-            <text x={M.left - 8} y={yPos(t) + 4} textAnchor="end" fontSize={10} fill="#475569">
+            <text x={M.left - 8} y={yPos(t) + 6} textAnchor="end" fontSize={17} fill="#475569">
               {t.toFixed(1)}
             </text>
           </g>
@@ -93,7 +93,7 @@ function TargetLeakageInner({ curve, k, onChange }: Props) {
             x={xPos(tick)}
             y={H - M.bottom + 16}
             textAnchor="middle"
-            fontSize={10}
+            fontSize={17}
             fill="#475569"
           >
             {tick}
@@ -130,14 +130,14 @@ function TargetLeakageInner({ curve, k, onChange }: Props) {
         {/* Axes */}
         <line x1={M.left} y1={M.top + PH} x2={W - M.right} y2={M.top + PH} stroke="#334155" strokeWidth={1} />
         <line x1={M.left} y1={M.top} x2={M.left} y2={M.top + PH} stroke="#334155" strokeWidth={1} />
-        <text x={M.left + PW / 2} y={H - 6} textAnchor="middle" fontSize={11} fill="#94a3b8">
+        <text x={M.left + PW / 2} y={H - 6} textAnchor="middle" fontSize={18} fill="#94a3b8">
           Number of categories (k)
         </text>
         <text
           x={14}
           y={M.top + PH / 2}
           textAnchor="middle"
-          fontSize={11}
+          fontSize={18}
           fill="#94a3b8"
           transform={`rotate(-90 14 ${M.top + PH / 2})`}
         >

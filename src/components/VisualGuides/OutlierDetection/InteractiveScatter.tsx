@@ -146,14 +146,14 @@ export default function InteractiveScatter({
         {/* Tick labels */}
         {ticks.map(v => (
           <React.Fragment key={`tl-${v}`}>
-            <text x={toSvgX(v)} y={PAD.t + IH + 14} textAnchor="middle" fontSize="8" fill="#475569" fontFamily="Inter,sans-serif">{v}</text>
-            {v > 0 && <text x={PAD.l - 6} y={toSvgY(v) + 3} textAnchor="end" fontSize="8" fill="#475569" fontFamily="Inter,sans-serif">{v}</text>}
+            <text x={toSvgX(v)} y={PAD.t + IH + 16} textAnchor="middle" fontSize="15" fill="#475569" fontFamily="Inter,sans-serif">{v}</text>
+            {v > 0 && <text x={PAD.l - 6} y={toSvgY(v) + 5} textAnchor="end" fontSize="15" fill="#475569" fontFamily="Inter,sans-serif">{v}</text>}
           </React.Fragment>
         ))}
 
         {/* Axis labels */}
-        <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="9" fill="#94a3b8" fontFamily="Inter,sans-serif">X Value</text>
-        <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fontSize="9" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,12,${PAD.t + IH / 2})`}>Y Value</text>
+        <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="16" fill="#94a3b8" fontFamily="Inter,sans-serif">X Value</text>
+        <text x={14} y={PAD.t + IH / 2} textAnchor="middle" fontSize="16" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,14,${PAD.t + IH / 2})`}>Y Value</text>
 
         {/* Z-score shading + fence lines (x fences vertical, y fences horizontal) */}
         {method === "zscore" && sdX > 0 && (
@@ -240,11 +240,11 @@ export default function InteractiveScatter({
               {/* Hover tooltip */}
               {isHov && (
                 <g style={{ pointerEvents: "none" }}>
-                  <rect x={px - 54} y={py - 46} width="108" height="34" rx="5" fill="#0f172a" stroke="#334155" strokeWidth="1" />
-                  <text x={px} y={py - 30} textAnchor="middle" fontSize="9" fill="#f1f5f9" fontFamily="Inter,sans-serif">
+                  <rect x={px - 120} y={py - 60} width="240" height="46" rx="5" fill="#0f172a" stroke="#334155" strokeWidth="1" />
+                  <text x={px} y={py - 42} textAnchor="middle" fontSize="15" fill="#f1f5f9" fontFamily="Inter,sans-serif">
                     ({pt.x}, {pt.y}) {isOutlier ? "⚠" : ""}
                   </text>
-                  <text x={px} y={py - 19} textAnchor="middle" fontSize="7.5" fill="#94a3b8" fontFamily="Inter,sans-serif">
+                  <text x={px} y={py - 22} textAnchor="middle" fontSize="15" fill="#94a3b8" fontFamily="Inter,sans-serif">
                     drag · double-click to remove
                   </text>
                 </g>
@@ -253,20 +253,30 @@ export default function InteractiveScatter({
           );
         })}
 
-        {/* Legend */}
-        <g style={{ pointerEvents: "none" }}>
-          <circle cx={PAD.l + 6}   cy={H - 10} r="4" fill="#3bb4a4" />
-          <text   x={PAD.l + 14}  y={H - 7} fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">Normal</text>
-          <circle cx={PAD.l + 60}  cy={H - 10} r="4" fill={outlierColor} />
-          <text   x={PAD.l + 68}  y={H - 7} fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">Outlier</text>
-          <line x1={PAD.l + 114} y1={H - 10} x2={PAD.l + 128} y2={H - 10} stroke="#3bb4a4" strokeWidth="1.5" strokeDasharray="5 3" />
-          <text   x={PAD.l + 132} y={H - 7} fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">Mean X</text>
-          <line x1={PAD.l + 180} y1={H - 10} x2={PAD.l + 194} y2={H - 10} stroke="var(--color-accent)" strokeWidth="1.5" />
-          <text   x={PAD.l + 198} y={H - 7} fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">Median X</text>
-          <line x1={PAD.l + 254} y1={H - 10} x2={PAD.l + 268} y2={H - 10} stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="6 3" />
-          <text   x={PAD.l + 272} y={H - 7} fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">Trend</text>
-        </g>
       </svg>
+      {/* Legend (HTML so it never scales below readable size) */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-[11px] text-[#94a3b8]">
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block w-2.5 h-2.5 rounded-full bg-[#3bb4a4]" aria-hidden="true" />
+          Normal
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block w-2.5 h-2.5 rounded-full" style={{ background: outlierColor }} aria-hidden="true" />
+          Outlier
+        </span>
+        <span className="flex items-center gap-1.5">
+          <svg width="16" height="4" aria-hidden="true"><line x1="0" y1="2" x2="16" y2="2" stroke="#3bb4a4" strokeWidth="1.5" strokeDasharray="5 3" /></svg>
+          Mean X
+        </span>
+        <span className="flex items-center gap-1.5">
+          <svg width="16" height="4" aria-hidden="true"><line x1="0" y1="2" x2="16" y2="2" stroke="var(--color-accent)" strokeWidth="1.5" /></svg>
+          Median X
+        </span>
+        <span className="flex items-center gap-1.5">
+          <svg width="16" height="4" aria-hidden="true"><line x1="0" y1="2" x2="16" y2="2" stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="6 3" /></svg>
+          Trend
+        </span>
+      </div>
       <p className="text-[10px] text-[#475569] mt-1 text-center">Drag to move · click empty area to add · double-click to remove</p>
     </div>
   );

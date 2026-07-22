@@ -97,14 +97,14 @@ function MiniDotPlot({
         ))}
         {/* Empty */}
         {data.length === 0 && (
-          <text x={MINI_W / 2} y={PAD.t + PLOT_H / 2 + 3} textAnchor="middle" fontSize={8} fill="#334155">
+          <text x={MINI_W / 2} y={PAD.t + PLOT_H / 2 + 3} textAnchor="middle" fontSize={10} fill="#334155">
             No data
           </text>
         )}
         {/* Axis */}
         <line x1={PAD.l} y1={PAD.t + PLOT_H} x2={PAD.l + PLOT_W} y2={PAD.t + PLOT_H} stroke="#334155" strokeWidth={1} />
         {ticks.map((v) => (
-          <text key={v} x={xSvgLocal(v)} y={PAD.t + PLOT_H + 12} fontSize={7} fill="#475569" textAnchor="middle">
+          <text key={v} x={xSvgLocal(v)} y={PAD.t + PLOT_H + 13} fontSize={10} fill="#475569" textAnchor="middle">
             {v}
           </text>
         ))}

@@ -6,11 +6,11 @@ import type { StatsResult } from "./types";
 import { seededRandom } from "./types";
 
 const VB_W = 800;
-const VB_H = 120;
+const VB_H = 132;
 const PAD_L = 40;
 const PAD_R = 40;
 const PAD_T = 16;
-const PAD_B = 28;
+const PAD_B = 40;
 const PLOT_W = VB_W - PAD_L - PAD_R;
 const AXIS_Y = VB_H - PAD_B;
 const SCATTER_CENTER_Y = PAD_T + (AXIS_Y - PAD_T) * 0.45;
@@ -100,7 +100,7 @@ export default function DataPointsVisualization({
         {ticks.map(({ v, x }) => (
           <g key={v} aria-hidden="true">
             <line x1={x} y1={AXIS_Y} x2={x} y2={AXIS_Y + 4} stroke="#475569" strokeWidth={1} />
-            <text x={x} y={AXIS_Y + 13} textAnchor="middle" fontSize={8} fill="#475569">
+            <text x={x} y={AXIS_Y + 28} textAnchor="middle" fontSize={24} fill="#475569">
               {fmtTick(v)}
             </text>
           </g>

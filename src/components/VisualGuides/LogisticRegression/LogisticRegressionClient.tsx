@@ -76,20 +76,20 @@ function ComparisonScatterLinear() {
       {/* Impossible zones */}
       <path d={impossibleBelow} fill="#ef444420" />
       <path d={impossibleAbove} fill="#ef444420" />
-      <text x={tx(8)} y={ty(-0.12)} fill="#ef4444" fontSize="9" textAnchor="middle">Impossible!</text>
-      <text x={tx(8)} y={ty(1.15)} fill="#ef4444" fontSize="9" textAnchor="middle">Impossible!</text>
+      <text x={tx(8)} y={ty(-0.12)} fill="#ef4444" fontSize="16" textAnchor="middle">Impossible!</text>
+      <text x={tx(8)} y={ty(1.15)} fill="#ef4444" fontSize="16" textAnchor="middle">Impossible!</text>
 
       {/* Grid */}
       {yTicks.map(t => (
         <g key={t}>
           <line x1={PAD.l} y1={ty(t)} x2={PAD.l + IW} y2={ty(t)} stroke="#1e293b" strokeWidth="1" />
-          <text x={PAD.l - 6} y={ty(t) + 3} textAnchor="end" fill="#475569" fontSize="8">{t}</text>
+          <text x={PAD.l - 6} y={ty(t) + 5} textAnchor="end" fill="#475569" fontSize="16">{t}</text>
         </g>
       ))}
       {xTicks.map(t => (
         <g key={t}>
           <line x1={tx(t)} y1={PAD.t} x2={tx(t)} y2={PAD.t + IH} stroke="#1e293b" strokeWidth="1" />
-          <text x={tx(t)} y={PAD.t + IH + 14} textAnchor="middle" fill="#475569" fontSize="8">{t}</text>
+          <text x={tx(t)} y={PAD.t + IH + 18} textAnchor="middle" fill="#475569" fontSize="16">{t}</text>
         </g>
       ))}
 
@@ -120,13 +120,13 @@ function ComparisonScatterLinear() {
       {/* Axes */}
       <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={PAD.t + IH} stroke="#334155" strokeWidth="1.5" />
       <line x1={PAD.l} y1={PAD.t + IH} x2={PAD.l + IW} y2={PAD.t + IH} stroke="#334155" strokeWidth="1.5" />
-      <text x={PAD.l + IW / 2} y={H + 20} textAnchor="middle" fill="#94a3b8" fontSize="10">Study Hours</text>
-      <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fill="#94a3b8" fontSize="10"
-        transform={`rotate(-90, 12, ${PAD.t + IH / 2})`}>P(Pass)</text>
+      <text x={PAD.l + IW / 2} y={H + 20} textAnchor="middle" fill="#94a3b8" fontSize="17">Study Hours</text>
+      <text x={15} y={PAD.t + IH / 2} textAnchor="middle" fill="#94a3b8" fontSize="17"
+        transform={`rotate(-90, 15, ${PAD.t + IH / 2})`}>P(Pass)</text>
 
       {/* Legend */}
       <line x1={tx(0.5)} y1={H + 28} x2={tx(1.5)} y2={H + 28} stroke="#ef4444" strokeWidth="2.5" />
-      <text x={tx(1.7)} y={H + 32} fill="#94a3b8" fontSize="8">Linear fit</text>
+      <text x={tx(1.7)} y={H + 26} fill="#94a3b8" fontSize="16">Linear fit</text>
     </svg>
   );
 }
@@ -141,13 +141,13 @@ function ComparisonScatterLogistic() {
       {yTicks.map(t => (
         <g key={t}>
           <line x1={PAD.l} y1={ty(t)} x2={PAD.l + IW} y2={ty(t)} stroke="#1e293b" strokeWidth="1" />
-          <text x={PAD.l - 6} y={ty(t) + 3} textAnchor="end" fill="#475569" fontSize="8">{t}</text>
+          <text x={PAD.l - 6} y={ty(t) + 5} textAnchor="end" fill="#475569" fontSize="16">{t}</text>
         </g>
       ))}
       {xTicks.map(t => (
         <g key={t}>
           <line x1={tx(t)} y1={PAD.t} x2={tx(t)} y2={PAD.t + IH} stroke="#1e293b" strokeWidth="1" />
-          <text x={tx(t)} y={PAD.t + IH + 14} textAnchor="middle" fill="#475569" fontSize="8">{t}</text>
+          <text x={tx(t)} y={PAD.t + IH + 18} textAnchor="middle" fill="#475569" fontSize="16">{t}</text>
         </g>
       ))}
 
@@ -178,14 +178,14 @@ function ComparisonScatterLogistic() {
       {/* Axes */}
       <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={PAD.t + IH} stroke="#334155" strokeWidth="1.5" />
       <line x1={PAD.l} y1={PAD.t + IH} x2={PAD.l + IW} y2={PAD.t + IH} stroke="#334155" strokeWidth="1.5" />
-      <text x={PAD.l + IW / 2} y={H + 20} textAnchor="middle" fill="#94a3b8" fontSize="10">Study Hours</text>
-      <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fill="#94a3b8" fontSize="10"
-        transform={`rotate(-90, 12, ${PAD.t + IH / 2})`}>P(Pass)</text>
+      <text x={PAD.l + IW / 2} y={H + 20} textAnchor="middle" fill="#94a3b8" fontSize="17">Study Hours</text>
+      <text x={15} y={PAD.t + IH / 2} textAnchor="middle" fill="#94a3b8" fontSize="17"
+        transform={`rotate(-90, 15, ${PAD.t + IH / 2})`}>P(Pass)</text>
 
       {/* Legend */}
       <path d="M 60 316 L 100 316" stroke="#3bb4a4" strokeWidth="2.5" fill="none" />
-      <text x={104} y={320} fill="#94a3b8" fontSize="8">Logistic S-curve</text>
-      <text x={PAD.l + IW - 60} y={ty(1) - 6} fill="#475569" fontSize="8">Stays within [0,1]</text>
+      <text x={104} y={320} fill="#94a3b8" fontSize="16">Logistic S-curve</text>
+      <text x={PAD.l + IW - 4} y={ty(1) - 6} textAnchor="end" fill="#475569" fontSize="16">Stays within [0,1]</text>
     </svg>
   );
 }
@@ -204,13 +204,13 @@ function InteractiveSCurve({
       {yTicks.map(t => (
         <g key={t}>
           <line x1={PAD.l} y1={ty(t)} x2={PAD.l + IW} y2={ty(t)} stroke="#1e293b" strokeWidth="1" />
-          <text x={PAD.l - 6} y={ty(t) + 3} textAnchor="end" fill="#475569" fontSize="8">{t}</text>
+          <text x={PAD.l - 6} y={ty(t) + 5} textAnchor="end" fill="#475569" fontSize="16">{t}</text>
         </g>
       ))}
       {xTicks.map(t => (
         <g key={t}>
           <line x1={tx(t)} y1={PAD.t} x2={tx(t)} y2={PAD.t + IH} stroke="#1e293b" strokeWidth="1" />
-          <text x={tx(t)} y={PAD.t + IH + 14} textAnchor="middle" fill="#475569" fontSize="8">{t}</text>
+          <text x={tx(t)} y={PAD.t + IH + 18} textAnchor="middle" fill="#475569" fontSize="16">{t}</text>
         </g>
       ))}
 
@@ -255,7 +255,7 @@ function InteractiveSCurve({
             stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="3,2" opacity="0.6"
           />
           <circle cx={tx(inflection)} cy={ty(0.5)} r="4" fill="var(--color-accent)" opacity="0.9" />
-          <text x={tx(inflection) + 6} y={ty(0.5) - 12} fill="var(--color-accent)" fontSize="8">
+          <text x={tx(inflection) + 8} y={ty(0.5) - 14} fill="var(--color-accent)" fontSize="16">
             50% @ {inflection.toFixed(1)}h
           </text>
         </g>
@@ -264,9 +264,9 @@ function InteractiveSCurve({
       {/* Axes */}
       <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={PAD.t + IH} stroke="#334155" strokeWidth="1.5" />
       <line x1={PAD.l} y1={PAD.t + IH} x2={PAD.l + IW} y2={PAD.t + IH} stroke="#334155" strokeWidth="1.5" />
-      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#94a3b8" fontSize="10">Study Hours</text>
-      <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fill="#94a3b8" fontSize="10"
-        transform={`rotate(-90, 12, ${PAD.t + IH / 2})`}>P(Pass)</text>
+      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#94a3b8" fontSize="17">Study Hours</text>
+      <text x={15} y={PAD.t + IH / 2} textAnchor="middle" fill="#94a3b8" fontSize="17"
+        transform={`rotate(-90, 15, ${PAD.t + IH / 2})`}>P(Pass)</text>
     </svg>
   );
 }
@@ -291,13 +291,13 @@ function ThresholdScatter({
       {yTicks.map(t => (
         <g key={t}>
           <line x1={PAD.l} y1={ty(t)} x2={PAD.l + IW} y2={ty(t)} stroke="#1e293b" strokeWidth="1" />
-          <text x={PAD.l - 6} y={ty(t) + 3} textAnchor="end" fill="#475569" fontSize="8">{t}</text>
+          <text x={PAD.l - 6} y={ty(t) + 5} textAnchor="end" fill="#475569" fontSize="16">{t}</text>
         </g>
       ))}
       {xTicks.map(t => (
         <g key={t}>
           <line x1={tx(t)} y1={PAD.t} x2={tx(t)} y2={PAD.t + IH} stroke="#1e293b" strokeWidth="1" />
-          <text x={tx(t)} y={PAD.t + IH + 14} textAnchor="middle" fill="#475569" fontSize="8">{t}</text>
+          <text x={tx(t)} y={PAD.t + IH + 18} textAnchor="middle" fill="#475569" fontSize="16">{t}</text>
         </g>
       ))}
 
@@ -310,7 +310,7 @@ function ThresholdScatter({
         x2={PAD.l + IW} y2={ty(threshold)}
         stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="5,3"
       />
-      <text x={PAD.l + IW + 2} y={ty(threshold) + 3} fill="var(--color-accent)" fontSize="7.5">
+      <text x={PAD.l + IW - 4} y={ty(threshold) - 6} textAnchor="end" fill="var(--color-accent)" fontSize="16">
         {(threshold * 100).toFixed(0)}%
       </text>
 
@@ -364,9 +364,9 @@ function ThresholdScatter({
       {/* Axes */}
       <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={PAD.t + IH} stroke="#334155" strokeWidth="1.5" />
       <line x1={PAD.l} y1={PAD.t + IH} x2={PAD.l + IW} y2={PAD.t + IH} stroke="#334155" strokeWidth="1.5" />
-      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#94a3b8" fontSize="10">Study Hours</text>
-      <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fill="#94a3b8" fontSize="10"
-        transform={`rotate(-90, 12, ${PAD.t + IH / 2})`}>P(Pass)</text>
+      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#94a3b8" fontSize="17">Study Hours</text>
+      <text x={15} y={PAD.t + IH / 2} textAnchor="middle" fill="#94a3b8" fontSize="17"
+        transform={`rotate(-90, 15, ${PAD.t + IH / 2})`}>P(Pass)</text>
     </svg>
   );
 }
@@ -391,8 +391,8 @@ function CalibrationPlot({ b0, b1 }: { b0: number; b1: number }) {
         <g key={t}>
           <line x1={CP.l} y1={ctyP(t)} x2={CP.l + CIW} y2={ctyP(t)} stroke="#1e293b" strokeWidth="1" />
           <line x1={ctxP(t)} y1={CP.t} x2={ctxP(t)} y2={CP.t + CIH} stroke="#1e293b" strokeWidth="1" />
-          <text x={CP.l - 5} y={ctyP(t) + 3} textAnchor="end" fill="#475569" fontSize="8">{t.toFixed(1)}</text>
-          <text x={ctxP(t)} y={CP.t + CIH + 14} textAnchor="middle" fill="#475569" fontSize="8">{t.toFixed(1)}</text>
+          <text x={CP.l - 5} y={ctyP(t) + 4} textAnchor="end" fill="#475569" fontSize="13">{t.toFixed(1)}</text>
+          <text x={ctxP(t)} y={CP.t + CIH + 16} textAnchor="middle" fill="#475569" fontSize="13">{t.toFixed(1)}</text>
         </g>
       ))}
 
@@ -402,7 +402,7 @@ function CalibrationPlot({ b0, b1 }: { b0: number; b1: number }) {
         x2={ctxP(1)} y2={ctyP(1)}
         stroke="#475569" strokeWidth="1.5" strokeDasharray="5,3"
       />
-      <text x={ctxP(0.75)} y={ctyP(0.82)} fill="#475569" fontSize="7.5" transform={`rotate(-45, ${ctxP(0.75)}, ${ctyP(0.82)})`}>
+      <text x={ctxP(0.75)} y={ctyP(0.82)} fill="#475569" fontSize="13" transform={`rotate(-45, ${ctxP(0.75)}, ${ctyP(0.82)})`}>
         Perfect
       </text>
 
@@ -423,7 +423,7 @@ function CalibrationPlot({ b0, b1 }: { b0: number; b1: number }) {
             stroke="#0f172a"
             strokeWidth="1"
           />
-          <text x={ctxP(d.predicted)} y={ctyP(d.actual) - 9} textAnchor="middle" fill="var(--color-accent)" fontSize="7">
+          <text x={ctxP(d.predicted)} y={ctyP(d.actual) - 11} textAnchor="middle" fill="var(--color-accent)" fontSize="13">
             {(d.actual * 100).toFixed(0)}%
           </text>
         </g>
@@ -432,9 +432,9 @@ function CalibrationPlot({ b0, b1 }: { b0: number; b1: number }) {
       {/* Axes */}
       <line x1={CP.l} y1={CP.t} x2={CP.l} y2={CP.t + CIH} stroke="#334155" strokeWidth="1.5" />
       <line x1={CP.l} y1={CP.t + CIH} x2={CP.l + CIW} y2={CP.t + CIH} stroke="#334155" strokeWidth="1.5" />
-      <text x={CP.l + CIW / 2} y={CH - 6} textAnchor="middle" fill="#94a3b8" fontSize="9">Mean Predicted Probability</text>
-      <text x={13} y={CP.t + CIH / 2} textAnchor="middle" fill="#94a3b8" fontSize="9"
-        transform={`rotate(-90, 13, ${CP.t + CIH / 2})`}>Actual Fraction Passed</text>
+      <text x={CP.l + CIW / 2} y={CH - 6} textAnchor="middle" fill="#94a3b8" fontSize="14">Mean Predicted Probability</text>
+      <text x={14} y={CP.t + CIH / 2} textAnchor="middle" fill="#94a3b8" fontSize="14"
+        transform={`rotate(-90, 14, ${CP.t + CIH / 2})`}>Actual Fraction Passed</text>
     </svg>
   );
 }

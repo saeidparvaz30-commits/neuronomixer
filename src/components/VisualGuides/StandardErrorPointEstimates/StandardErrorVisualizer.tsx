@@ -122,7 +122,7 @@ function MiniDotPlot({
             x={MINI_W / 2}
             y={PAD.t + PLOT_H / 2 + 3}
             textAnchor="middle"
-            fontSize={8}
+            fontSize={10}
             fill="#334155"
           >
             No data yet
@@ -142,8 +142,8 @@ function MiniDotPlot({
           <text
             key={v}
             x={xPos(v)}
-            y={PAD.t + PLOT_H + 12}
-            fontSize={7}
+            y={PAD.t + PLOT_H + 13}
+            fontSize={10}
             fill="#475569"
             textAnchor="middle"
           >

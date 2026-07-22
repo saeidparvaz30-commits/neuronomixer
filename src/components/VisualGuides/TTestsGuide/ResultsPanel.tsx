@@ -139,9 +139,9 @@ function CINumberLine({
       {/* Null value line */}
       <line x1={nullX} y1={4} x2={nullX} y2={H - 4} stroke="#ef4444" strokeWidth="1.5" strokeDasharray="2,2" />
       {/* Labels */}
-      <text x={ciLX} y={H - 2} textAnchor="middle" fill="var(--color-accent)" fontSize="7">{ciLower.toFixed(2)}</text>
-      <text x={ciUX} y={H - 2} textAnchor="middle" fill="var(--color-accent)" fontSize="7">{ciUpper.toFixed(2)}</text>
-      <text x={nullX} y={8} textAnchor="middle" fill="#ef4444" fontSize="7">H₀={nullValue}</text>
+      <text x={ciLX} y={H - 2} textAnchor="middle" fill="var(--color-accent)" fontSize="10">{ciLower.toFixed(2)}</text>
+      <text x={ciUX} y={H - 2} textAnchor="middle" fill="var(--color-accent)" fontSize="10">{ciUpper.toFixed(2)}</text>
+      <text x={nullX} y={8} textAnchor="middle" fill="#ef4444" fontSize="10">H₀={nullValue}</text>
     </svg>
   );
 }

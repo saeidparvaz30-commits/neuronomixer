@@ -15,7 +15,7 @@ const EVAL: Record<FunctionId, (x: number) => number> = {
 // ── SVG dimensions & coordinate mapping ──────────────────────────────────────
 const W = 480;
 const H = 300;
-const PAD_L = 44;
+const PAD_L = 56;
 const PAD_R = 20;
 const PAD_T = 16;
 const PAD_B = 32;
@@ -222,7 +222,7 @@ export default function FunctionPlotter({
             x={toSvgX(v)}
             y={H - PAD_B + 12}
             fill="#475569"
-            fontSize="8"
+            fontSize="15"
             textAnchor="middle"
           >
             {v}
@@ -232,9 +232,9 @@ export default function FunctionPlotter({
           <text
             key={`ytick-${v}`}
             x={PAD_L - 4}
-            y={toSvgY(v) + 3}
+            y={toSvgY(v) + 5}
             fill="#475569"
-            fontSize="8"
+            fontSize="15"
             textAnchor="end"
           >
             {v}
@@ -246,7 +246,7 @@ export default function FunctionPlotter({
           x={(PAD_L + W - PAD_R) / 2}
           y={H - 4}
           fill="#475569"
-          fontSize="9"
+          fontSize="16"
           textAnchor="middle"
         >
           x
@@ -255,7 +255,7 @@ export default function FunctionPlotter({
           x={9}
           y={(PAD_T + H - PAD_B) / 2}
           fill="#475569"
-          fontSize="9"
+          fontSize="16"
           textAnchor="middle"
           transform={`rotate(-90, 9, ${(PAD_T + H - PAD_B) / 2})`}
         >
@@ -279,7 +279,7 @@ export default function FunctionPlotter({
               x={toSvgX(-3.8)}
               y={toSvgY(0.9)}
               fill="#ef4444"
-              fontSize="8"
+              fontSize="15"
               opacity={0.8}
             >
               Dead zone (x&lt;0)
@@ -294,7 +294,7 @@ export default function FunctionPlotter({
               x={toSvgX(-4.5)}
               y={toSvgY(0.35)}
               fill="#3bb4a4"
-              fontSize="7.5"
+              fontSize="15"
               opacity={0.75}
             >
               ~0 grad
@@ -303,7 +303,7 @@ export default function FunctionPlotter({
               x={toSvgX(3.2)}
               y={toSvgY(0.35)}
               fill="#3bb4a4"
-              fontSize="7.5"
+              fontSize="15"
               opacity={0.75}
             >
               ~0 grad
@@ -349,26 +349,26 @@ export default function FunctionPlotter({
             {/* Tooltip */}
             <g
               transform={`translate(${
-                hoverPoint.sx > W - 110 ? hoverPoint.sx - 108 : hoverPoint.sx + 8
+                hoverPoint.sx > W - 160 ? hoverPoint.sx - 154 : hoverPoint.sx + 8
               }, ${
-                hoverPoint.sy < PAD_T + 36 ? hoverPoint.sy + 6 : hoverPoint.sy - 36
+                hoverPoint.sy < PAD_T + 54 ? hoverPoint.sy + 6 : hoverPoint.sy - 54
               })`}
             >
               <rect
-                width="96"
-                height="26"
+                width="146"
+                height="44"
                 rx="5"
                 fill="#1e293b"
                 stroke="#334155"
                 strokeWidth="1"
               />
-              <text x="8" y="11" fill="#94a3b8" fontSize="8">
+              <text x="8" y="18" fill="#94a3b8" fontSize="15">
                 x ={" "}
                 <tspan fill="white" fontWeight="bold">
                   {hoverPoint.x.toFixed(2)}
                 </tspan>
               </text>
-              <text x="8" y="21" fill="#94a3b8" fontSize="8">
+              <text x="8" y="37" fill="#94a3b8" fontSize="15">
                 f(x) ={" "}
                 <tspan fill={properties.color} fontWeight="bold">
                   {hoverPoint.y.toFixed(4)}

@@ -85,7 +85,7 @@ function LossChart({
                 x={L - 5}
                 y={(y + 3).toFixed(2)}
                 textAnchor="end"
-                fontSize="8"
+                fontSize="10"
                 fill="#475569"
               >
                 {(yMin + g * (yMax - yMin)).toFixed(0)}
@@ -93,10 +93,10 @@ function LossChart({
             </g>
           );
         })}
-        <text x={W - R} y={H - 2} textAnchor="end" fontSize="8" fill="#334155">
+        <text x={W - R} y={H - 2} textAnchor="end" fontSize="10" fill="#334155">
           epoch (max {EPOCHS_PER_BETA})
         </text>
-        <text x={L} y={H - 2} fontSize="8" fill="#334155">
+        <text x={L} y={H - 2} fontSize="10" fill="#334155">
           {unit}
         </text>
         {series.map(

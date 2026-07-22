@@ -41,6 +41,10 @@ function CIIntervalBar({
 }) {
   const x = (frac: number) => 40 + frac * 560;
   return (
+    <div>
+      <p className="text-[11px] text-[#94a3b8] mb-1">
+        Measured pass rate with exact 95% CI (Clopper-Pearson)
+      </p>
     <svg
       viewBox="0 0 640 92"
       className="w-full h-auto"
@@ -60,10 +64,10 @@ function CIIntervalBar({
           <line x1={x(t)} y1={42} x2={x(t)} y2={50} stroke="#334155" strokeWidth={2} />
           <text
             x={x(t)}
-            y={68}
+            y={72}
             textAnchor="middle"
             fill="#475569"
-            fontSize={11}
+            fontSize={20}
             fontFamily="monospace"
           >
             {Math.round(t * 100)}%
@@ -114,17 +118,15 @@ function CIIntervalBar({
             y={24}
             textAnchor="middle"
             fill="var(--color-accent)"
-            fontSize={11}
+            fontSize={20}
             fontFamily="monospace"
           >
             {pct(estimate)}
           </text>
         </>
       )}
-      <text x={40} y={16} fill="#94a3b8" fontSize={11}>
-        Measured pass rate with exact 95% CI (Clopper-Pearson)
-      </text>
     </svg>
+    </div>
   );
 }
 
@@ -141,6 +143,10 @@ function WidthChart({
   const y = (w: number) => 160 - w * 136;
   const pointsAttr = snapshots.map((s) => `${x(s.n)},${y(s.width)}`).join(" ");
   return (
+    <div>
+      <p className="text-[11px] text-[#94a3b8] mb-1">
+        CI width (points) vs tasks in your set
+      </p>
     <svg
       viewBox="0 0 640 196"
       className="w-full h-auto"
@@ -163,11 +169,11 @@ function WidthChart({
         <g key={w}>
           <line x1={44} y1={y(w)} x2={48} y2={y(w)} stroke="#334155" strokeWidth={1.5} />
           <text
-            x={38}
-            y={y(w) + 4}
+            x={40}
+            y={y(w) + 6}
             textAnchor="end"
             fill="#475569"
-            fontSize={10}
+            fontSize={20}
             fontFamily="monospace"
           >
             {Math.round(w * 100)}
@@ -178,18 +184,15 @@ function WidthChart({
         <text
           key={n}
           x={x(n)}
-          y={178}
+          y={182}
           textAnchor="middle"
           fill="#475569"
-          fontSize={10}
+          fontSize={20}
           fontFamily="monospace"
         >
           {n}
         </text>
       ))}
-      <text x={52} y={16} fill="#94a3b8" fontSize={11}>
-        CI width (points) vs tasks in your set
-      </text>
       {/* target line */}
       <line
         x1={48}
@@ -206,7 +209,7 @@ function WidthChart({
         y={y(targetWidth) - 6}
         textAnchor="end"
         fill="var(--cat-accent)"
-        fontSize={10}
+        fontSize={20}
       >
         target {Math.round(targetWidth * 100)} pts
       </text>
@@ -230,6 +233,7 @@ function WidthChart({
         </>
       )}
     </svg>
+    </div>
   );
 }
 

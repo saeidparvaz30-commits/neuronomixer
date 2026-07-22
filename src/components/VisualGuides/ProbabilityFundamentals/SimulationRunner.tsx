@@ -16,7 +16,7 @@ interface ConvergenceChartProps {
 function ConvergenceChart({ history, theoretical, totalTrials }: ConvergenceChartProps) {
   const W = 560;
   const H = 200;
-  const PAD = { top: 16, right: 16, bottom: 32, left: 44 };
+  const PAD = { top: 16, right: 16, bottom: 32, left: 52 };
   const innerW = W - PAD.left - PAD.right;
   const innerH = H - PAD.top - PAD.bottom;
 
@@ -69,10 +69,10 @@ function ConvergenceChart({ history, theoretical, totalTrials }: ConvergenceChar
         <text
           key={t}
           x={PAD.left - 6}
-          y={yOf(t) + 4}
+          y={yOf(t) + 6}
           textAnchor="end"
           fill="#475569"
-          fontSize={10}
+          fontSize={17}
         >
           {t.toFixed(2)}
         </text>
@@ -84,7 +84,7 @@ function ConvergenceChart({ history, theoretical, totalTrials }: ConvergenceChar
         y={H - 4}
         textAnchor="middle"
         fill="#475569"
-        fontSize={10}
+        fontSize={17}
       >
         Trials
       </text>
@@ -101,10 +101,10 @@ function ConvergenceChart({ history, theoretical, totalTrials }: ConvergenceChar
       />
       <text
         x={PAD.left + innerW - 2}
-        y={yOf(theoretical) - 4}
+        y={yOf(theoretical) - 6}
         textAnchor="end"
         fill="#ef4444"
-        fontSize={9}
+        fontSize={17}
       >
         Theory {theoretical.toFixed(3)}
       </text>

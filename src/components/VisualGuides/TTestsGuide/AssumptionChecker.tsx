@@ -110,10 +110,10 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
           {/* Normal curve */}
           <polyline points={curvePoints} fill="none" stroke="var(--color-accent)" strokeWidth="1.5" />
           {/* Axis labels */}
-          <text x={PAD.l} y={H_SVG - 4} textAnchor="middle" fill="#475569" fontSize="7">
+          <text x={PAD.l} y={H_SVG - 4} textAnchor="middle" fill="#475569" fontSize="10">
             {mn.toFixed(0)}
           </text>
-          <text x={PAD.l + IW} y={H_SVG - 4} textAnchor="middle" fill="#475569" fontSize="7">
+          <text x={PAD.l + IW} y={H_SVG - 4} textAnchor="middle" fill="#475569" fontSize="10">
             {mx.toFixed(0)}
           </text>
         </svg>
@@ -164,10 +164,10 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
               <circle key={i} cx={tx(q)} cy={ty(d)} r="2" fill="white" opacity="0.7" />
             );
           })}
-          <text x={PAD.l + IW / 2} y={H_SVG - 4} textAnchor="middle" fill="#475569" fontSize="6">
+          <text x={PAD.l + IW / 2} y={H_SVG - 4} textAnchor="middle" fill="#475569" fontSize="10">
             Theoretical quantiles
           </text>
-          <text x={PAD.l - 4} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="6"
+          <text x={PAD.l - 4} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="10"
             transform={`rotate(-90, ${PAD.l - 12}, ${PAD.t + IH / 2})`}>
             Observed
           </text>

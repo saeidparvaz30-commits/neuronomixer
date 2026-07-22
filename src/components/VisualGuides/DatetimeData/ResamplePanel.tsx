@@ -112,9 +112,9 @@ export default function ResamplePanel({ granularity, onGranularityChange }: Prop
               />
               <text
                 x={M.left - 6}
-                y={yOf(f * yMax) + 3}
+                y={yOf(f * yMax) + 5}
                 textAnchor="end"
-                fontSize={9}
+                fontSize={15}
                 fill="#475569"
               >
                 {Math.round(f * yMax)}
@@ -126,9 +126,9 @@ export default function ResamplePanel({ granularity, onGranularityChange }: Prop
             <text
               key={t}
               x={xOf(t)}
-              y={H - 8}
+              y={H - 6}
               textAnchor="middle"
-              fontSize={9}
+              fontSize={15}
               fill="#475569"
             >
               {fmtDate(partsFromMs(t))}
@@ -146,8 +146,8 @@ export default function ResamplePanel({ granularity, onGranularityChange }: Prop
           />
           <text
             x={xOf(SPIKE_START) + 4}
-            y={M.top + 8}
-            fontSize={9}
+            y={M.top + 12}
+            fontSize={15}
             fill="var(--color-warning)"
           >
             incident
