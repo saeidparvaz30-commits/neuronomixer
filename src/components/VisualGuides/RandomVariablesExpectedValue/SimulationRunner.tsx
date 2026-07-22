@@ -159,7 +159,7 @@ export default function SimulationRunner({
 
       {/* Stats */}
       {sim.trialCount > 0 && (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-3 text-center">
             <p className="text-[10px] text-[#94a3b8] mb-1">Trials Run</p>
             <p className="text-[16px] font-bold text-white font-mono">

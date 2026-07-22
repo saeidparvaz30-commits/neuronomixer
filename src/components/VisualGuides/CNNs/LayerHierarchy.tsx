@@ -90,8 +90,8 @@ export default function LayerHierarchy({ onView }: LayerHierarchyProps) {
           {/* Input */}
           <g>
             <rect x="10" y="55" width="70" height="50" rx="8" fill="#0f172a" stroke="#334155" strokeWidth="1.5" />
-            <text x="45" y="82" fill="#94a3b8" fontSize="10" textAnchor="middle" fontWeight="600">Input</text>
-            <text x="45" y="95" fill="#475569" fontSize="8" textAnchor="middle">8×8</text>
+            <text x="45" y="82" fill="#94a3b8" fontSize="13" textAnchor="middle" fontWeight="600">Input</text>
+            <text x="45" y="95" fill="#475569" fontSize="13" textAnchor="middle">8×8</text>
           </g>
 
           {/* Arrows input → layer1 */}
@@ -142,12 +142,13 @@ export default function LayerHierarchy({ onView }: LayerHierarchyProps) {
                   onBlur={() => setFocusedLayer(null)}
                   style={{ outline: "none" }}
                   whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   transition={{ duration: 0.15 }}
                 />
                 <text
                   x={x + 60} y="55"
                   fill={isActive ? layer.color : "#94a3b8"}
-                  fontSize="11" textAnchor="middle" fontWeight="700"
+                  fontSize="14" textAnchor="middle" fontWeight="700"
                   className="pointer-events-none"
                 >
                   {layer.label}
@@ -155,7 +156,7 @@ export default function LayerHierarchy({ onView }: LayerHierarchyProps) {
                 <text
                   x={x + 60} y="70"
                   fill={isActive ? layer.color : "#475569"}
-                  fontSize="9" textAnchor="middle"
+                  fontSize="13" textAnchor="middle"
                   className="pointer-events-none"
                 >
                   {layer.depth} Layer
@@ -163,7 +164,7 @@ export default function LayerHierarchy({ onView }: LayerHierarchyProps) {
                 <text
                   x={x + 60} y="90"
                   fill={isActive ? "#f1f5f9" : "#94a3b8"}
-                  fontSize="9.5" textAnchor="middle" fontWeight="500"
+                  fontSize="13" textAnchor="middle" fontWeight="500"
                   className="pointer-events-none"
                 >
                   {layer.detects}
@@ -186,7 +187,7 @@ export default function LayerHierarchy({ onView }: LayerHierarchyProps) {
                 <text
                   x={x + 60} y="145"
                   fill={isActive ? layer.color : "#334155"}
-                  fontSize="8" textAnchor="middle"
+                  fontSize="13" textAnchor="middle"
                   className="pointer-events-none"
                 >
                   {isActive ? "▲ click to close" : "click to explore"}
@@ -215,8 +216,8 @@ export default function LayerHierarchy({ onView }: LayerHierarchyProps) {
           {/* Output */}
           <g>
             <rect x="620" y="55" width="70" height="50" rx="8" fill="#0f172a" stroke="#334155" strokeWidth="1.5" />
-            <text x="655" y="78" fill="#94a3b8" fontSize="10" textAnchor="middle" fontWeight="600">Output</text>
-            <text x="655" y="91" fill="#475569" fontSize="8" textAnchor="middle">Prediction</text>
+            <text x="655" y="78" fill="#94a3b8" fontSize="13" textAnchor="middle" fontWeight="600">Output</text>
+            <text x="655" y="91" fill="#475569" fontSize="13" textAnchor="middle">Prediction</text>
           </g>
         </svg>
       </div>

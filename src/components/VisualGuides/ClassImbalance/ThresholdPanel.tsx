@@ -92,6 +92,7 @@ function ThresholdPanelInner({
           <p className="text-[11px] font-semibold uppercase tracking-wide text-[#94a3b8] mb-2">
             Confusion matrix
           </p>
+          <div className="overflow-x-auto">
           <table className="w-full border-collapse text-[12px]">
             <thead>
               <tr className="bg-[#1e293b]">
@@ -129,6 +130,7 @@ function ThresholdPanelInner({
               </tr>
             </tbody>
           </table>
+          </div>
           <p className="text-[10.5px] text-[#475569] mt-2 leading-relaxed">
             {cm.tp + cm.fn} actual positives, {cm.fp + cm.tn} actual negatives. New to
             these four cells? Start with the confusion matrix guide linked below.

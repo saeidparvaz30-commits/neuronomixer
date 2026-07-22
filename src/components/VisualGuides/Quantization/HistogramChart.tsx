@@ -70,15 +70,15 @@ export default function HistogramChart({ series, xMin, xMax, height = 170, ariaL
             </g>
           );
         })}
-        <text x={2} y={height - 6} fill="#475569" fontSize={10}>
+        <text x={2} y={height - 6} fill="#475569" fontSize={19}>
           {formatSmall(xMin)}
         </text>
         {zeroX !== null && (
-          <text x={zeroX} y={height - 6} fill="#475569" fontSize={10} textAnchor="middle">
+          <text x={zeroX} y={height - 6} fill="#475569" fontSize={19} textAnchor="middle">
             0
           </text>
         )}
-        <text x={W - 2} y={height - 6} fill="#475569" fontSize={10} textAnchor="end">
+        <text x={W - 2} y={height - 6} fill="#475569" fontSize={19} textAnchor="end">
           {formatSmall(xMax)}
         </text>
       </svg>

@@ -32,7 +32,7 @@ import {
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const W = 480, H = 380;
-const PAD = { l: 48, r: 16, t: 16, b: 44 };
+const PAD = { l: 56, r: 16, t: 16, b: 44 };
 const IW = W - PAD.l - PAD.r;
 const IH = H - PAD.t - PAD.b;
 
@@ -145,7 +145,7 @@ function interpretR(stats: CorrelationStats): string {
 // ── Mini scatter for Anscombe & causation ─────────────────────────────────────
 
 const SW = 220, SH = 175;
-const SPAD = { l: 28, r: 8, t: 8, b: 28 };
+const SPAD = { l: 40, r: 8, t: 8, b: 28 };
 const SIW = SW - SPAD.l - SPAD.r;
 const SIH = SH - SPAD.t - SPAD.b;
 
@@ -195,18 +195,18 @@ function MiniScatter({
       <line x1={SPAD.l} y1={SPAD.t + SIH} x2={SPAD.l + SIW} y2={SPAD.t + SIH} stroke="#334155" strokeWidth="1.5" />
       {/* Tick labels */}
       {xTicks.map((v) => (
-        <text key={`xt${v}`} x={sx(v)} y={SPAD.t + SIH + 10} textAnchor="middle" fontSize="6" fill="#475569" fontFamily="Inter,sans-serif">
+        <text key={`xt${v}`} x={sx(v)} y={SPAD.t + SIH + 12} textAnchor="middle" fontSize="10" fill="#475569" fontFamily="Inter,sans-serif">
           {fmtTick(v)}
         </text>
       ))}
       {yTicks.map((v) => (
-        <text key={`yt${v}`} x={SPAD.l - 3} y={sy(v) + 2} textAnchor="end" fontSize="6" fill="#475569" fontFamily="Inter,sans-serif">
+        <text key={`yt${v}`} x={SPAD.l - 3} y={sy(v) + 4} textAnchor="end" fontSize="10" fill="#475569" fontFamily="Inter,sans-serif">
           {fmtTick(v)}
         </text>
       ))}
       {/* Axis labels */}
       {xLabel && (
-        <text x={SPAD.l + SIW / 2} y={SH - 2} textAnchor="middle" fontSize="7" fill="#94a3b8" fontFamily="Inter,sans-serif">
+        <text x={SPAD.l + SIW / 2} y={SH - 2} textAnchor="middle" fontSize="10" fill="#94a3b8" fontFamily="Inter,sans-serif">
           {xLabel}
         </text>
       )}
@@ -215,7 +215,7 @@ function MiniScatter({
           x={9}
           y={SPAD.t + SIH / 2}
           textAnchor="middle"
-          fontSize="7"
+          fontSize="10"
           fill="#94a3b8"
           fontFamily="Inter,sans-serif"
           transform={`rotate(-90, 9, ${SPAD.t + SIH / 2})`}
@@ -321,6 +321,7 @@ function AnscombeQuartet({ onViewed }: { onViewed: () => void }) {
               }}
               onClick={() => handleSelect(ds.id)}
               whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
               transition={{ duration: 0.15 }}
             >
               <div className="flex items-center justify-between mb-2">
@@ -983,8 +984,8 @@ function InteractiveScatterLifted({
             <>
               <line x1={toSvgX(stats.meanX, range.xMin, range.xMax)} y1={PAD.t} x2={toSvgX(stats.meanX, range.xMin, range.xMax)} y2={PAD.t + IH} stroke="#94a3b8" strokeWidth="1" strokeDasharray="5 3" opacity="0.5" />
               <line x1={PAD.l} y1={toSvgY(stats.meanY, range.yMin, range.yMax)} x2={PAD.l + IW} y2={toSvgY(stats.meanY, range.yMin, range.yMax)} stroke="#94a3b8" strokeWidth="1" strokeDasharray="5 3" opacity="0.5" />
-              <text x={toSvgX(stats.meanX, range.xMin, range.xMax) + 3} y={PAD.t + 10} fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">x̄</text>
-              <text x={PAD.l + 3} y={toSvgY(stats.meanY, range.yMin, range.yMax) - 3} fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">ȳ</text>
+              <text x={toSvgX(stats.meanX, range.xMin, range.xMax) + 3} y={PAD.t + 10} fontSize="15" fill="#94a3b8" fontFamily="Inter,sans-serif">x̄</text>
+              <text x={PAD.l + 3} y={toSvgY(stats.meanY, range.yMin, range.yMax) - 3} fontSize="15" fill="#94a3b8" fontFamily="Inter,sans-serif">ȳ</text>
             </>
           )}
 
@@ -994,15 +995,15 @@ function InteractiveScatterLifted({
 
           {/* Tick labels */}
           {xTicks.map((v) => (
-            <text key={`xl-${v}`} x={toSvgX(v, range.xMin, range.xMax)} y={PAD.t + IH + 13} textAnchor="middle" fontSize="8" fill="#475569" fontFamily="Inter,sans-serif">{fmtTick(v)}</text>
+            <text key={`xl-${v}`} x={toSvgX(v, range.xMin, range.xMax)} y={PAD.t + IH + 16} textAnchor="middle" fontSize="15" fill="#475569" fontFamily="Inter,sans-serif">{fmtTick(v)}</text>
           ))}
           {yTicks.map((v) => (
-            <text key={`yl-${v}`} x={PAD.l - 5} y={toSvgY(v, range.yMin, range.yMax) + 3} textAnchor="end" fontSize="8" fill="#475569" fontFamily="Inter,sans-serif">{fmtTick(v)}</text>
+            <text key={`yl-${v}`} x={PAD.l - 5} y={toSvgY(v, range.yMin, range.yMax) + 5} textAnchor="end" fontSize="15" fill="#475569" fontFamily="Inter,sans-serif">{fmtTick(v)}</text>
           ))}
 
           {/* Axis labels */}
-          <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="9" fill="#94a3b8" fontFamily="Inter,sans-serif">X</text>
-          <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fontSize="9" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,12,${PAD.t + IH / 2})`}>Y</text>
+          <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="22" fill="#94a3b8" fontFamily="Inter,sans-serif">X</text>
+          <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fontSize="22" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,12,${PAD.t + IH / 2})`}>Y</text>
 
           {/* OLS line */}
           {points.length >= 2 && (

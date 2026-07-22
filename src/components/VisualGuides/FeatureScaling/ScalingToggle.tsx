@@ -10,7 +10,7 @@ type Props = { active: ScalingMethod; onChange: (m: ScalingMethod) => void };
 
 function ScalingToggleInner({ active, onChange }: Props) {
   return (
-    <div className="inline-flex rounded-xl border border-[#1e293b] bg-[#0f172a] p-1 gap-1" role="radiogroup" aria-label="Feature scaling method">
+    <div className="inline-flex flex-wrap rounded-xl border border-[#1e293b] bg-[#0f172a] p-1 gap-1" role="radiogroup" aria-label="Feature scaling method">
       {METHODS.map((m) => {
         const meta      = METHOD_META[m];
         const isActive  = active === m;

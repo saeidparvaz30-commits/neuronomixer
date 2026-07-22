@@ -25,10 +25,10 @@ interface Props {
 
 const W = 640;
 const H = 300;
-const ML = 48;
+const ML = 64;
 const MR = 14;
 const MT = 14;
-const MB = 34;
+const MB = 48;
 const PW = W - ML - MR;
 const PH = H - MT - MB;
 const SPAN = 1.6;
@@ -182,7 +182,7 @@ export default function IsoFlopExplorer({
         {plot.yTicks.map((t) => (
           <g key={`y${t.label}`}>
             <line x1={ML} y1={t.py} x2={ML + PW} y2={t.py} stroke="#1e293b" strokeWidth={1} />
-            <text x={ML - 6} y={t.py + 3} textAnchor="end" fontSize={10} fill="#475569">
+            <text x={ML - 6} y={t.py + 6} textAnchor="end" fontSize={20} fill="#475569">
               {t.label}
             </text>
           </g>
@@ -191,22 +191,22 @@ export default function IsoFlopExplorer({
           <text
             key={`x${t.label}`}
             x={t.px}
-            y={MT + PH + 16}
+            y={MT + PH + 22}
             textAnchor="middle"
-            fontSize={10}
+            fontSize={20}
             fill="#475569"
           >
             {t.label}
           </text>
         ))}
-        <text x={ML + PW / 2} y={H - 4} textAnchor="middle" fontSize={10} fill="#475569">
+        <text x={ML + PW / 2} y={H - 4} textAnchor="middle" fontSize={20} fill="#475569">
           Parameters N (log scale)
         </text>
         <text
           x={12}
           y={MT + PH / 2}
           textAnchor="middle"
-          fontSize={10}
+          fontSize={20}
           fill="#475569"
           transform={`rotate(-90 12 ${MT + PH / 2})`}
         >
@@ -222,7 +222,7 @@ export default function IsoFlopExplorer({
 
         {/* Optimal marker */}
         <circle cx={plot.optX} cy={plot.optY} r={5} fill="var(--color-accent)" />
-        <text x={plot.optX} y={parseFloat(plot.optY) - 10} textAnchor="middle" fontSize={10} fill="var(--color-accent)" fontWeight={600}>
+        <text x={plot.optX} y={parseFloat(plot.optY) - 10} textAnchor="middle" fontSize={20} fill="var(--color-accent)" fontWeight={600}>
           optimal
         </text>
 
@@ -240,12 +240,12 @@ export default function IsoFlopExplorer({
         {plot.userVisible && (
           <circle cx={plot.userX} cy={plot.userY} r={5} fill="#3bb4a4" stroke="#0f172a" strokeWidth={1.5} />
         )}
-        <text x={plot.userX} y={MT + 10} textAnchor="middle" fontSize={10} fill="#3bb4a4" fontWeight={600}>
+        <text x={plot.userX} y={MT + 18} textAnchor="middle" fontSize={20} fill="#3bb4a4" fontWeight={600}>
           you
         </text>
 
         {/* Neighbor labels */}
-        <text x={ML + PW - 4} y={MT + 12} textAnchor="end" fontSize={9} fill="#1e5d8a">
+        <text x={ML + PW - 4} y={MT + 40} textAnchor="end" fontSize={20} fill="#1e5d8a">
           dashed: C / 10 and C x 10
         </text>
       </svg>

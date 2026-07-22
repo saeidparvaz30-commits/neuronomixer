@@ -86,7 +86,7 @@ function StrategyPanelInner({ selected, onSelect }: Props) {
                     style={{ overflow: "hidden" }}
                   >
                     <div className="mt-3 pt-3 border-t border-white/[0.06]">
-                      <div className="grid grid-cols-3 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                         <div className="flex flex-col items-center rounded-lg bg-[#1e293b]/50 py-2">
                           <span className="text-[18px] font-extrabold" style={{ color: STRATEGY_META[id].lossColor }}>
                             {meta.dataLoss}

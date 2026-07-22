@@ -12,7 +12,7 @@ interface Props {
 
 const W = 560;
 const H = 230;
-const PAD = { l: 30, r: 10, t: 26, b: 28 };
+const PAD = { l: 46, r: 10, t: 30, b: 42 };
 
 function CoefficientBarsInner({ weights, color, zeroCount, modeLabel }: Props) {
   const innerW = W - PAD.l - PAD.r;
@@ -37,7 +37,7 @@ function CoefficientBarsInner({ weights, color, zeroCount, modeLabel }: Props) {
           return (
             <g key={v}>
               <line x1={PAD.l} x2={W - PAD.r} y1={y} y2={y} stroke="#1e293b" strokeWidth={1} />
-              <text x={PAD.l - 4} y={y + 3} textAnchor="end" fontSize={9} fill="#475569">
+              <text x={PAD.l - 4} y={y + 3} textAnchor="end" fontSize={17} fill="#475569">
                 {v > 0 ? maxAbs.toFixed(1) : `-${maxAbs.toFixed(1)}`}
               </text>
             </g>
@@ -45,7 +45,7 @@ function CoefficientBarsInner({ weights, color, zeroCount, modeLabel }: Props) {
         })}
         {/* Zero line */}
         <line x1={PAD.l} x2={W - PAD.r} y1={zeroY} y2={zeroY} stroke="#334155" strokeWidth={1.5} />
-        <text x={PAD.l - 4} y={zeroY + 3} textAnchor="end" fontSize={9} fill="#475569">
+        <text x={PAD.l - 4} y={zeroY + 3} textAnchor="end" fontSize={17} fill="#475569">
           0
         </text>
 
@@ -80,9 +80,9 @@ function CoefficientBarsInner({ weights, color, zeroCount, modeLabel }: Props) {
               {/* Value label */}
               <text
                 x={cx}
-                y={isZero ? zeroY - 9 : w >= 0 ? y - 5 : y + h + 11}
+                y={isZero ? zeroY - 10 : w >= 0 ? y - 6 : y + h + 16}
                 textAnchor="middle"
-                fontSize={9}
+                fontSize={17}
                 fill={isZero ? undefined : "#94a3b8"}
                 style={isZero ? { fill: "var(--color-success)" } : undefined}
                 fontWeight={isZero ? 700 : 400}
@@ -90,7 +90,7 @@ function CoefficientBarsInner({ weights, color, zeroCount, modeLabel }: Props) {
                 {isZero ? "0" : w.toFixed(2)}
               </text>
               {/* Feature label */}
-              <text x={cx} y={H - 10} textAnchor="middle" fontSize={10} fill="#475569">
+              <text x={cx} y={H - 8} textAnchor="middle" fontSize={17} fill="#475569">
                 {`x^${j + 1}`}
               </text>
             </g>

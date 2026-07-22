@@ -16,7 +16,7 @@ const MEASURES = [
     },
     note: "Sensitive to scale differences: always standardize first.",
     icon: (
-      <svg viewBox="0 0 32 32" width={20} height={20} fill="none">
+      <svg viewBox="0 0 32 32" width={20} height={20} fill="none" aria-hidden="true">
         <circle cx={8} cy={24} r={3} fill="#3bb4a4" fillOpacity={0.7} />
         <circle cx={24} cy={8} r={3} fill="#3bb4a4" fillOpacity={0.7} />
         <line x1={8} y1={24} x2={24} y2={8} stroke="#3bb4a4" strokeWidth={2} />
@@ -35,7 +35,7 @@ const MEASURES = [
     },
     note: "Less affected by the curse of dimensionality than Euclidean.",
     icon: (
-      <svg viewBox="0 0 32 32" width={20} height={20} fill="none">
+      <svg viewBox="0 0 32 32" width={20} height={20} fill="none" aria-hidden="true">
         <circle cx={8} cy={24} r={3} fill="var(--color-accent)" fillOpacity={0.7} />
         <circle cx={24} cy={8} r={3} fill="var(--color-accent)" fillOpacity={0.7} />
         <polyline points="8,24 24,24 24,8" stroke="var(--color-accent)" strokeWidth={2} fill="none" />
@@ -54,7 +54,7 @@ const MEASURES = [
     },
     note: "Direction matters, not scale: perfect for sparse high-dim vectors.",
     icon: (
-      <svg viewBox="0 0 32 32" width={20} height={20} fill="none">
+      <svg viewBox="0 0 32 32" width={20} height={20} fill="none" aria-hidden="true">
         <circle cx={16} cy={16} r={10} stroke="#a855f7" strokeWidth={1} strokeDasharray="3,2" />
         <line x1={16} y1={16} x2={26} y2={8} stroke="#a855f7" strokeWidth={2} />
         <line x1={16} y1={16} x2={10} y2={6} stroke="#a855f7" strokeWidth={2} strokeDasharray="3,2" />
@@ -74,7 +74,7 @@ const MEASURES = [
     },
     note: "Reduces to Euclidean when features are uncorrelated and unit variance.",
     icon: (
-      <svg viewBox="0 0 32 32" width={20} height={20} fill="none">
+      <svg viewBox="0 0 32 32" width={20} height={20} fill="none" aria-hidden="true">
         <ellipse cx={16} cy={16} rx={12} ry={7} stroke="#ef4444" strokeWidth={1.5} />
         <ellipse cx={16} cy={16} rx={7} ry={4} stroke="#ef4444" strokeWidth={1} strokeDasharray="2,2" />
         <circle cx={16} cy={16} r={2} fill="#ef4444" />

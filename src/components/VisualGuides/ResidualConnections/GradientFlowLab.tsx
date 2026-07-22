@@ -12,10 +12,10 @@ import {
 
 const W = 680;
 const H = 270;
-const L = 52;
+const L = 76;
 const R = 14;
 const T = 16;
-const B = 34;
+const B = 48;
 const PLOT_W = W - L - R;
 const PLOT_H = H - T - B;
 
@@ -159,7 +159,7 @@ export default function GradientFlowLab({
                 stroke="#1e293b"
                 strokeWidth="1"
               />
-              <text x={L - 6} y={(y + 3).toFixed(2)} textAnchor="end" fill="#475569" fontSize="10">
+              <text x={L - 6} y={(y + 6).toFixed(2)} textAnchor="end" fill="#475569" fontSize="21">
                 {g === 1 ? "10" : g === -1 ? "0.1" : `1e${g}`}
               </text>
             </g>
@@ -202,16 +202,16 @@ export default function GradientFlowLab({
             <text
               key={`t${l}`}
               x={(xFor(l) + barW / 2).toFixed(2)}
-              y={H - 18}
+              y={H - 30}
               textAnchor="middle"
               fill="#475569"
-              fontSize="10"
+              fontSize="21"
             >
               {l}
             </text>
           ) : null
         )}
-        <text x={L + PLOT_W / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="10">
+        <text x={L + PLOT_W / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="21">
           layer (0 = input side, {depth} = output side)
         </text>
         <text
@@ -219,7 +219,7 @@ export default function GradientFlowLab({
           y={T + PLOT_H / 2}
           textAnchor="middle"
           fill="#475569"
-          fontSize="10"
+          fontSize="21"
           transform={`rotate(-90 12 ${(T + PLOT_H / 2).toFixed(0)})`}
         >
           gradient norm (log)

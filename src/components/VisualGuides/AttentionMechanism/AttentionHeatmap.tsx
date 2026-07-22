@@ -21,6 +21,7 @@ export default function AttentionHeatmap({ heat, title, subtitle }: Props) {
       {subtitle && (
         <p className="text-[10px] text-[#475569] mb-2">{subtitle}</p>
       )}
+      <div className="overflow-x-auto">
       <table
         className="w-full text-[10px]"
         style={{ borderCollapse: "collapse" }}
@@ -63,6 +64,7 @@ export default function AttentionHeatmap({ heat, title, subtitle }: Props) {
           ))}
         </tbody>
       </table>
+      </div>
       <p className="text-[10px] text-[#475569] mt-1.5">
         A perfect lookup is a bright diagonal: cue A attends to the slot typed
         A, and so on. Weights in each row sum to 1.

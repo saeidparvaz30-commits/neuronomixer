@@ -73,10 +73,10 @@ export default function SharedSpaceScatter({ points }: Props) {
           stroke="#1e293b"
           strokeWidth={1}
         />
-        <text x={width - pad} y={sy(0) - 5} fontSize={9} fill="#475569" textAnchor="end">
+        <text x={width - pad} y={sy(0) - 5} fontSize={13} fill="#475569" textAnchor="end">
           e[0]
         </text>
-        <text x={sx(0) + 5} y={pad + 8} fontSize={9} fill="#475569">
+        <text x={sx(0) + 5} y={pad + 8} fontSize={13} fill="#475569">
           e[1]
         </text>
         {points.map((p, i) =>

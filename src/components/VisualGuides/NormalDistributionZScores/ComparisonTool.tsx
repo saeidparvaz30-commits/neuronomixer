@@ -43,7 +43,7 @@ function ScoreInput({ label, color, value, mean, stdDev, onValueChange, onMeanCh
   return (
     <div className="flex-1 min-w-[140px] rounded-xl border p-3" style={{ borderColor: color + "40" }}>
       <p className="text-[11px] font-bold mb-3" style={{ color }}>{label}</p>
-      <div className="grid grid-cols-3 gap-2 mb-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
         <div>
           <label className={labelClass}>Score</label>
           <input type="number" value={value} onChange={handleChange(onValueChange)} className={inputClass} step="1" />
@@ -194,7 +194,7 @@ export default function ComparisonTool({
             return (
               <g key={v}>
                 <line x1={sx} y1={baselineY} x2={sx} y2={baselineY + 3} stroke="#334155" strokeWidth="1" />
-                <text x={sx} y={baselineY + 11} textAnchor="middle" fill="#334155" fontSize="7.5">
+                <text x={sx} y={baselineY + 15} textAnchor="middle" fill="#334155" fontSize="15">
                   {v}
                 </text>
               </g>
@@ -206,7 +206,7 @@ export default function ComparisonTool({
             <g>
               <line x1={zA_x} y1={PAD.t} x2={zA_x} y2={baselineY} stroke="#3bb4a4" strokeWidth="2" strokeDasharray="3 2" />
               <circle cx={zA_x} cy={PAD.t + 8} r={5} fill="#3bb4a4" stroke="#0f172a" strokeWidth="1.5" />
-              <text x={zA_x} y={PAD.t - 2} textAnchor="middle" fill="#3bb4a4" fontSize="8" fontWeight="bold">
+              <text x={zA_x} y={PAD.t - 2} textAnchor="middle" fill="#3bb4a4" fontSize="16" fontWeight="bold">
                 A
               </text>
             </g>
@@ -217,7 +217,7 @@ export default function ComparisonTool({
             <g>
               <line x1={zB_x} y1={PAD.t} x2={zB_x} y2={baselineY} stroke="var(--color-warning)" strokeWidth="2" strokeDasharray="3 2" />
               <circle cx={zB_x} cy={PAD.t + 8} r={5} fill="var(--color-warning)" stroke="#0f172a" strokeWidth="1.5" />
-              <text x={zB_x} y={PAD.t - 2} textAnchor="middle" fill="var(--color-warning)" fontSize="8" fontWeight="bold">
+              <text x={zB_x} y={PAD.t - 2} textAnchor="middle" fill="var(--color-warning)" fontSize="16" fontWeight="bold">
                 B
               </text>
             </g>

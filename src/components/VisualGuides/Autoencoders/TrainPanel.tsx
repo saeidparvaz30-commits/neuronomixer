@@ -177,7 +177,7 @@ export default function TrainPanel({
 
       {/* Run stats */}
       {runInfo && phase === "trained" && (
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           <div className="rounded-xl border border-[#1e293b] p-2.5">
             <p className="text-[10px] text-[#475569] mb-0.5">Final loss</p>
             <p className="text-[13px] font-mono font-bold text-[var(--color-success)]">

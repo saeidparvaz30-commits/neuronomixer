@@ -50,10 +50,10 @@ export default function ConfoundReveal({ onReveal }: Props) {
         ))}
         <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={PAD.t + IH} stroke="#334155" strokeWidth="1.5" />
         <line x1={PAD.l} y1={PAD.t + IH} x2={PAD.l + IW} y2={PAD.t + IH} stroke="#334155" strokeWidth="1.5" />
-        {xTicks.map(v => <text key={`xl-${v}`} x={toX(v)} y={PAD.t + IH + 16} textAnchor="middle" fontSize="9" fill="#475569" fontFamily="Inter,sans-serif">{v}</text>)}
-        {yTicks.map(v => <text key={`yl-${v}`} x={PAD.l - 8} y={toY(v) + 3} textAnchor="end" fontSize="9" fill="#475569" fontFamily="Inter,sans-serif">{v}</text>)}
-        <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="10" fill="#94a3b8" fontFamily="Inter,sans-serif">Ice Cream Sales ($1000s/month)</text>
-        <text x={14} y={PAD.t + IH / 2} textAnchor="middle" fontSize="10" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,14,${PAD.t + IH / 2})`}>Shark Attacks (count/month)</text>
+        {xTicks.map(v => <text key={`xl-${v}`} x={toX(v)} y={PAD.t + IH + 16} textAnchor="middle" fontSize="16" fill="#475569" fontFamily="Inter,sans-serif">{v}</text>)}
+        {yTicks.map(v => <text key={`yl-${v}`} x={PAD.l - 8} y={toY(v) + 5} textAnchor="end" fontSize="16" fill="#475569" fontFamily="Inter,sans-serif">{v}</text>)}
+        <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="17" fill="#94a3b8" fontFamily="Inter,sans-serif">Ice Cream Sales ($1000s/month)</text>
+        <text x={14} y={PAD.t + IH / 2} textAnchor="middle" fontSize="17" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,14,${PAD.t + IH / 2})`}>Shark Attacks (count/month)</text>
 
         {/* Regression line */}
         <line

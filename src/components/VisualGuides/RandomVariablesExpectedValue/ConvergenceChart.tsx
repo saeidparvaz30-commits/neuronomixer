@@ -12,7 +12,7 @@ interface ConvergenceChartProps {
 
 const W = 560;
 const H = 200;
-const PAD = { top: 20, right: 20, bottom: 36, left: 56 };
+const PAD = { top: 20, right: 20, bottom: 40, left: 66 };
 const IW = W - PAD.left - PAD.right;
 const IH = H - PAD.top - PAD.bottom;
 
@@ -103,7 +103,7 @@ export default function ConvergenceChart({
             y={yOf(t) + 4}
             textAnchor="end"
             fill="#475569"
-            fontSize={9}
+            fontSize={17}
           >
             {t.toFixed(2)}
           </text>
@@ -125,7 +125,7 @@ export default function ConvergenceChart({
               y={H - 4}
               textAnchor="middle"
               fill="#475569"
-              fontSize={9}
+              fontSize={17}
             >
               {trial >= 1000 ? `${trial / 1000}k` : trial}
             </text>
@@ -138,7 +138,7 @@ export default function ConvergenceChart({
           y={H - 4}
           textAnchor="middle"
           fill="#475569"
-          fontSize={9}
+          fontSize={17}
         />
 
         {/* Axes */}
@@ -174,7 +174,7 @@ export default function ConvergenceChart({
           y={evY - 4}
           textAnchor="end"
           fill="var(--color-accent)"
-          fontSize={9}
+          fontSize={17}
           fontWeight="600"
         >
           EV = {theoreticalEV.toFixed(3)}
@@ -202,28 +202,25 @@ export default function ConvergenceChart({
           />
         )}
 
-        {/* Convergence annotation, computed from the actual final gap to EV */}
-        {isComplete && history.length > 0 && (() => {
-          const finalAvg = history[history.length - 1].avg;
-          const gap = Math.abs(finalAvg - theoreticalEV);
-          const tol = 0.05 * Math.max(Math.abs(theoreticalEV), maxAvg - minAvg, 0.1);
-          const converged = gap <= tol;
-          return (
-            <text
-              x={PAD.left + IW * 0.5}
-              y={PAD.top + 12}
-              textAnchor="middle"
-              fill={converged ? "#3bb4a4" : "var(--color-warning)"}
-              fontSize={10}
-              fontWeight="600"
-            >
-              {converged
-                ? `Converged near EV = ${theoreticalEV.toFixed(3)}`
-                : `Average ${finalAvg.toFixed(3)} still differs from EV = ${theoreticalEV.toFixed(3)}: rare outcomes need many more trials`}
-            </text>
-          );
-        })()}
       </svg>
+
+      {/* Convergence annotation, computed from the actual final gap to EV (HTML so it stays legible) */}
+      {isComplete && history.length > 0 && (() => {
+        const finalAvg = history[history.length - 1].avg;
+        const gap = Math.abs(finalAvg - theoreticalEV);
+        const tol = 0.05 * Math.max(Math.abs(theoreticalEV), maxAvg - minAvg, 0.1);
+        const converged = gap <= tol;
+        return (
+          <p
+            className="mt-2 text-[11px] font-semibold"
+            style={{ color: converged ? "#3bb4a4" : "var(--color-warning)" }}
+          >
+            {converged
+              ? `Converged near EV = ${theoreticalEV.toFixed(3)}`
+              : `Average ${finalAvg.toFixed(3)} still differs from EV = ${theoreticalEV.toFixed(3)}: rare outcomes need many more trials`}
+          </p>
+        );
+      })()}
 
       {/* Legend */}
       <div className="flex items-center gap-5 mt-2">

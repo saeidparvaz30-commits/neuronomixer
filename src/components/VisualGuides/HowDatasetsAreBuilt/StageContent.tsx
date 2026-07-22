@@ -39,27 +39,27 @@ function RawSourceVisual() {
 
 function CollectionVisual() {
   const sources = [
-    { id: "API",  y: 18 },
-    { id: "CSV",  y: 42 },
-    { id: "DB",   y: 66 },
-    { id: "Form", y: 90 },
+    { id: "API",  y: 24 },
+    { id: "CSV",  y: 60 },
+    { id: "DB",   y: 96 },
+    { id: "Form", y: 132 },
   ];
 
   return (
     <div className="bg-[#1e293b]/20 rounded-xl border border-[#1e293b] overflow-hidden mb-6 p-4">
       <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[var(--color-warning)] mb-3">Live Collection</p>
-      <svg width="100%" height="110" viewBox="0 0 520 110" className="overflow-visible">
+      <svg viewBox="0 0 520 170" className="w-full h-auto overflow-visible">
         {/* Source boxes */}
         {sources.map((s) => (
           <g key={s.id}>
-            <rect x="4" y={s.y - 10} width="48" height="20" rx="5" fill="#f9731618" stroke="#f9731644" />
-            <text x="28" y={s.y + 5} textAnchor="middle" fontSize="9" fill="var(--color-warning)" fontFamily="monospace">{s.id}</text>
+            <rect x="4" y={s.y - 12} width="48" height="24" rx="5" fill="#f9731618" stroke="#f9731644" />
+            <text x="28" y={s.y + 6} textAnchor="middle" fontSize="16" fill="var(--color-warning)" fontFamily="monospace">{s.id}</text>
           </g>
         ))}
 
         {/* Dashed lines from sources to staging */}
         {sources.map((s) => (
-          <line key={`line-${s.id}`} x1="54" y1={s.y} x2="370" y2="55" stroke="var(--color-warning)" strokeWidth="1" strokeDasharray="4 3" opacity="0.3" />
+          <line key={`line-${s.id}`} x1="54" y1={s.y} x2="360" y2="85" stroke="var(--color-warning)" strokeWidth="1" strokeDasharray="4 3" opacity="0.3" />
         ))}
 
         {/* Traveling dots per source — pure SVG SMIL so they stay on the lines */}
@@ -67,17 +67,17 @@ function CollectionVisual() {
           [0, 1, 2].map((j) => (
             <circle key={`${s.id}-${j}`} r="3" fill="var(--color-warning)">
               <animateMotion dur="1.6s" begin={`${si * 0.3 + j * 0.55}s`} repeatCount="indefinite"
-                path={`M54,${s.y} L370,55`} />
+                path={`M54,${s.y} L360,85`} />
               <animate attributeName="opacity" values="0;1;1;0" dur="1.6s" begin={`${si * 0.3 + j * 0.55}s`} repeatCount="indefinite" />
             </circle>
           ))
         )}
 
         {/* Staging area */}
-        <rect x="370" y="20" width="140" height="70" rx="8" fill="#f9731610" stroke="#f9731640" />
-        <text x="440" y="46" textAnchor="middle" fontSize="8" fill="#94a3b8" fontFamily="monospace">staging_area</text>
+        <rect x="360" y="25" width="156" height="120" rx="8" fill="#f9731610" stroke="#f9731640" />
+        <text x="438" y="48" textAnchor="middle" fontSize="16" fill="#94a3b8" fontFamily="monospace">staging_area</text>
         {["id,name,revenue", "1,Alice,4500", "2,Bob,null", "3,Carol,8200"].map((row, ri) => (
-          <motion.text key={ri} x="440" y={58 + ri * 9} textAnchor="middle" fontSize="7" fill={ri === 0 ? "var(--color-warning)" : "#475569"} fontFamily="monospace"
+          <motion.text key={ri} x="438" y={72 + ri * 22} textAnchor="middle" fontSize="16" fill={ri === 0 ? "var(--color-warning)" : "#475569"} fontFamily="monospace"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 + ri * 0.3 }}>
             {row}
           </motion.text>
@@ -196,7 +196,7 @@ function CleaningVisual() {
 
         {/* Drag handle */}
         <div
-          className="absolute top-0 bottom-0 z-10 flex items-center"
+          className="absolute top-0 bottom-0 z-10 flex items-center touch-none"
           style={{ left: `${pct}%`, transform: "translateX(-50%)" }}
           onPointerDown={(e) => { dragging.current = true; (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); }}
           role="slider" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct)}
@@ -303,7 +303,7 @@ function AnalysisReadyVisual() {
               animate={{ strokeDasharray: `${pct * circumference} ${circumference}` }}
               transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
             />
-            <text x="26" y="31" textAnchor="middle" fontSize="9" fontWeight="bold" fill="var(--color-accent)" fontFamily="Inter, sans-serif">98%</text>
+            <text x="26" y="31" textAnchor="middle" fontSize="10" fontWeight="bold" fill="var(--color-accent)" fontFamily="Inter, sans-serif">98%</text>
           </svg>
           <span className="text-[10px] text-[#94a3b8]">Quality</span>
         </div>

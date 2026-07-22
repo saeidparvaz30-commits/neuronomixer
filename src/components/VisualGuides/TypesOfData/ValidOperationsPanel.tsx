@@ -24,6 +24,7 @@ export default function ValidOperationsPanel({ scale }: Props) {
             onMouseLeave={() => setTooltip(null)}
             onFocus={() => setTooltip(op.name)}
             onBlur={() => setTooltip(null)}
+            onClick={() => setTooltip(op.name)}
             tabIndex={0}
             role="listitem"
           >

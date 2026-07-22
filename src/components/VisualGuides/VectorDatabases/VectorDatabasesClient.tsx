@@ -248,7 +248,7 @@ export default function VectorDatabasesClient() {
           </h2>
           <p className="text-sm text-[#475569] mb-4 ml-8">
             Each document is embedded as a point in vector space. Similar topics cluster together.
-            Hover a dot to read its text.
+            Tap or hover a dot to read its text.
           </p>
 
           <div className="bg-[#1e293b]/50 border border-[#1e293b] rounded-2xl p-5">
@@ -310,6 +310,7 @@ export default function VectorDatabasesClient() {
                       key={doc.id}
                       onMouseEnter={() => setHoveredDoc(doc.id)}
                       onMouseLeave={() => setHoveredDoc(null)}
+                      onClick={() => setHoveredDoc(doc.id)}
                       style={{ cursor: "pointer" }}
                     >
                       {isTop3 && (
@@ -336,7 +337,7 @@ export default function VectorDatabasesClient() {
                     <g>
                       <circle cx={qx} cy={qy} r={14} fill="#ec4899" fillOpacity={0.15}
                         stroke="#ec4899" strokeWidth={1} strokeOpacity={0.5} />
-                      <text x={qx} y={qy + 5} textAnchor="middle" fontSize={14}
+                      <text x={qx} y={qy + 6} textAnchor="middle" fontSize={16}
                         fill="white" style={{ userSelect: "none" }}>★</text>
                     </g>
                   );
@@ -347,18 +348,18 @@ export default function VectorDatabasesClient() {
                   const doc = DOCUMENTS.find((d) => d.id === hoveredDoc)!;
                   const cx = toSvgX(doc.x);
                   const cy = toSvgY(doc.y);
-                  const tipW = 160;
+                  const tipW = 240;
                   const tipX = Math.min(cx - tipW / 2, SVG_W - tipW - 4);
-                  const tipY = cy - 36;
+                  const tipY = cy - 40;
                   return (
                     <g>
                       <rect x={Math.max(tipX, 4)} y={Math.max(tipY, 4)}
-                        width={tipW} height={24} rx={4}
+                        width={tipW} height={28} rx={4}
                         fill="#0f172a" stroke="#1e293b" strokeWidth={1} />
                       <text
                         x={Math.max(tipX, 4) + tipW / 2}
-                        y={Math.max(tipY, 4) + 15}
-                        textAnchor="middle" fontSize={10}
+                        y={Math.max(tipY, 4) + 19}
+                        textAnchor="middle" fontSize={16}
                         fill="#e2e8f0"
                         style={{ pointerEvents: "none" }}
                       >
@@ -595,8 +596,8 @@ export default function VectorDatabasesClient() {
                     [40, 55], [90, 60], [130, 55],
                   ].map(([x, y], i) => (
                     <g key={i}>
-                      <circle cx={x} cy={y} r={6} fill="#1e5d8a" stroke="#3bb4a4" strokeWidth={1} />
-                      <text x={x} y={y + 4} textAnchor="middle" fontSize={7} fill="#94a3b8">{i + 1}</text>
+                      <circle cx={x} cy={y} r={7} fill="#1e5d8a" stroke="#3bb4a4" strokeWidth={1} />
+                      <text x={x} y={y + 4} textAnchor="middle" fontSize={10} fill="#94a3b8">{i + 1}</text>
                     </g>
                   ))}
                   {/* Edges */}

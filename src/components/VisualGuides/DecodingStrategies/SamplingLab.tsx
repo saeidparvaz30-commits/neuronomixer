@@ -82,7 +82,7 @@ export default function SamplingLab({
   const L = 56;
   const R = 16;
   const T = 14;
-  const B = 40;
+  const B = 48;
   const lps = experiments.map((e) => e.meanLogProb);
   const lpMin = experiments.length > 0 ? Math.min(...lps) - 0.15 : -3;
   const lpMax = experiments.length > 0 ? Math.max(...lps) + 0.15 : 0;
@@ -329,9 +329,9 @@ export default function SamplingLab({
                   />
                   <text
                     x={xOf(d).toFixed(1)}
-                    y={H - B + 16}
+                    y={H - B + 18}
                     textAnchor="middle"
-                    fontSize={9}
+                    fontSize={16}
                     fill="#475569"
                   >
                     {d.toFixed(2)}
@@ -342,9 +342,9 @@ export default function SamplingLab({
                 <text
                   key={i}
                   x={L - 6}
-                  y={(yOf(lp) + 3).toFixed(1)}
+                  y={(yOf(lp) + 5).toFixed(1)}
                   textAnchor="end"
-                  fontSize={9}
+                  fontSize={16}
                   fill="#475569"
                 >
                   {lp.toFixed(2)}
@@ -352,9 +352,9 @@ export default function SamplingLab({
               ))}
               <text
                 x={(L + (W - R)) / 2}
-                y={H - 8}
+                y={H - 6}
                 textAnchor="middle"
-                fontSize={10}
+                fontSize={17}
                 fill="#94a3b8"
               >
                 diversity (unique continuations / {BATCH_SIZE})
@@ -363,7 +363,7 @@ export default function SamplingLab({
                 x={12}
                 y={(T + (H - B)) / 2}
                 textAnchor="middle"
-                fontSize={10}
+                fontSize={17}
                 fill="#94a3b8"
                 transform={`rotate(-90 12 ${(T + (H - B)) / 2})`}
               >
@@ -374,15 +374,15 @@ export default function SamplingLab({
                   <circle
                     cx={xOf(e.diversity).toFixed(1)}
                     cy={yOf(e.meanLogProb).toFixed(1)}
-                    r={7}
+                    r={11}
                     fill={POINT_COLORS[i % POINT_COLORS.length]}
                     opacity={0.9}
                   />
                   <text
                     x={xOf(e.diversity).toFixed(1)}
-                    y={(yOf(e.meanLogProb) + 3).toFixed(1)}
+                    y={(yOf(e.meanLogProb) + 5).toFixed(1)}
                     textAnchor="middle"
-                    fontSize={9}
+                    fontSize={16}
                     fontWeight={700}
                     fill="#0a0e1a"
                   >

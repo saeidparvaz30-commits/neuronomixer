@@ -20,7 +20,7 @@ interface Props {
 
 // Chart geometry (viewBox units)
 const W = 640;
-const H = 340;
+const H = 356;
 const L = 46;
 const R = 624;
 const T = 16;
@@ -142,20 +142,20 @@ export default function OutlierBattle({ onOutlierOn }: Props) {
         {[0, 5, 10, 15, 20, 25].map((t) => (
           <g key={`y${t}`}>
             <line x1={L} y1={py(t)} x2={R} y2={py(t)} stroke="#1e293b" strokeWidth={1} />
-            <text x={L - 8} y={py(t) + 3} textAnchor="end" fontSize={9} fill="#475569">
+            <text x={L - 8} y={py(t) + 6} textAnchor="end" fontSize={20} fill="#475569">
               {t}
             </text>
           </g>
         ))}
         {[0, 2, 4, 6, 8, 10, 12].map((t) => (
-          <text key={`x${t}`} x={px(t)} y={B + 16} textAnchor="middle" fontSize={9} fill="#475569">
+          <text key={`x${t}`} x={px(t)} y={B + 22} textAnchor="middle" fontSize={20} fill="#475569">
             {t}
           </text>
         ))}
-        <text x={(L + R) / 2} y={H - 6} textAnchor="middle" fontSize={10} fill="#94a3b8">
+        <text x={(L + R) / 2} y={H - 6} textAnchor="middle" fontSize={32} fill="#94a3b8">
           x
         </text>
-        <text x={14} y={(T + B) / 2} textAnchor="middle" fontSize={10} fill="#94a3b8" transform={`rotate(-90 14 ${(T + B) / 2})`}>
+        <text x={18} y={(T + B) / 2} textAnchor="middle" fontSize={32} fill="#94a3b8">
           y
         </text>
 
@@ -193,7 +193,7 @@ export default function OutlierBattle({ onOutlierOn }: Props) {
                   strokeWidth={1.5}
                 />
                 {isOutlier && (
-                  <text x={px(p.x)} y={py(p.y) - 12} textAnchor="middle" fontSize={10} fontWeight={600} fill="var(--color-warning)">
+                  <text x={px(p.x)} y={py(p.y) - 12} textAnchor="middle" fontSize={20} fontWeight={600} fill="var(--color-warning)">
                     outlier ({p.x}, {p.y})
                   </text>
                 )}

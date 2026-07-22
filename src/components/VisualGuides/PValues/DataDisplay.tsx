@@ -86,8 +86,8 @@ export default function DataDisplay({ groupA, groupB, pValue, alpha, effectSize 
         <line x1={PAD.l} y1={PAD.t + IH} x2={W - PAD.r} y2={PAD.t + IH} stroke="#334155" strokeWidth="1" />
 
         {/* Group labels */}
-        <text x={PAD.l - 6} y={rowA + 4} textAnchor="end" fill="#3bb4a4" fontSize="9" fontWeight="600">A</text>
-        <text x={PAD.l - 6} y={rowB + 4} textAnchor="end" fill="#1e5d8a" fontSize="9" fontWeight="600">B</text>
+        <text x={PAD.l - 6} y={rowA + 4} textAnchor="end" fill="#3bb4a4" fontSize="13" fontWeight="600">A</text>
+        <text x={PAD.l - 6} y={rowB + 4} textAnchor="end" fill="#1e5d8a" fontSize="13" fontWeight="600">B</text>
 
         {/* Group A dots */}
         {dotsA.map((v, i) => (
@@ -119,7 +119,7 @@ export default function DataDisplay({ groupA, groupB, pValue, alpha, effectSize 
           x2={tx(meanA)} y2={rowA + 18}
           stroke="var(--color-accent)" strokeWidth="2"
         />
-        <text x={tx(meanA)} y={rowA - 22} textAnchor="middle" fill="var(--color-accent)" fontSize="8" fontWeight="600">
+        <text x={tx(meanA)} y={rowA - 22} textAnchor="middle" fill="var(--color-accent)" fontSize="13" fontWeight="600">
           Mean: {meanA.toFixed(1)}
         </text>
 
@@ -128,7 +128,7 @@ export default function DataDisplay({ groupA, groupB, pValue, alpha, effectSize 
           x2={tx(meanB)} y2={rowB + 18}
           stroke="var(--color-accent)" strokeWidth="2"
         />
-        <text x={tx(meanB)} y={rowB + 30} textAnchor="middle" fill="var(--color-accent)" fontSize="8" fontWeight="600">
+        <text x={tx(meanB)} y={rowB + 30} textAnchor="middle" fill="var(--color-accent)" fontSize="13" fontWeight="600">
           Mean: {meanB.toFixed(1)}
         </text>
 
@@ -157,7 +157,7 @@ export default function DataDisplay({ groupA, groupB, pValue, alpha, effectSize 
               y={(rowA + rowB) / 2 - 5}
               textAnchor="middle"
               fill={diffColor}
-              fontSize="9"
+              fontSize="14"
               fontWeight="700"
             >
               Δ = {diff.toFixed(1)}
@@ -167,7 +167,7 @@ export default function DataDisplay({ groupA, groupB, pValue, alpha, effectSize 
 
         {/* X-axis ticks */}
         {[minV, (minV + maxV) / 2, maxV].map((v, i) => (
-          <text key={i} x={tx(v)} y={PAD.t + IH + 14} textAnchor="middle" fill="#475569" fontSize="8">
+          <text key={i} x={tx(v)} y={PAD.t + IH + 16} textAnchor="middle" fill="#475569" fontSize="13">
             {v.toFixed(0)}
           </text>
         ))}

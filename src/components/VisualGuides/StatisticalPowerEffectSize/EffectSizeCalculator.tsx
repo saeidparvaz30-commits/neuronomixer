@@ -80,7 +80,7 @@ export default function EffectSizeCalculator({
       </div>
 
       {/* Number inputs */}
-      <div className="grid grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
         {[
           { label: "Group 1 mean", value: group1Mean, onChange: onGroup1Change },
           { label: "Group 2 mean", value: group2Mean, onChange: onGroup2Change },

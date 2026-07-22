@@ -13,7 +13,7 @@ export default function TrialCounter({ sim, totalTrials, theoretical }: TrialCou
   const diff = Math.abs(sim.experimental - theoretical);
 
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
       <div className="rounded-xl border border-[#1e293b] bg-[#0f172a] px-3 py-3 text-center">
         <p className="text-[10px] font-semibold uppercase tracking-[1.5px] text-[#94a3b8] mb-1">
           Trial

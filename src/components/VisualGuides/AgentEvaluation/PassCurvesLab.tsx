@@ -20,7 +20,7 @@ const H = 280;
 const PAD_L = 46;
 const PAD_R = 14;
 const PAD_T = 12;
-const PAD_B = 30;
+const PAD_B = 44;
 
 function xPos(k: number): number {
   return PAD_L + ((k - 1) / (K_MAX - 1)) * (W - PAD_L - PAD_R);
@@ -150,9 +150,9 @@ pass^k = p^k              "does it do the task in every one of k tries"`}
               />
               <text
                 x={PAD_L - 8}
-                y={yPos(v) + 3.5}
+                y={yPos(v) + 6}
                 textAnchor="end"
-                fontSize={10}
+                fontSize={17}
                 fill="#475569"
               >
                 {Math.round(v * 100)}%
@@ -165,7 +165,7 @@ pass^k = p^k              "does it do the task in every one of k tries"`}
               x={xPos(pt.k)}
               y={H - PAD_B + 16}
               textAnchor="middle"
-              fontSize={10}
+              fontSize={17}
               fill="#475569"
             >
               {pt.k}
@@ -175,7 +175,7 @@ pass^k = p^k              "does it do the task in every one of k tries"`}
             x={(PAD_L + W - PAD_R) / 2}
             y={H - 2}
             textAnchor="middle"
-            fontSize={10}
+            fontSize={17}
             fill="#475569"
           >
             k (attempts)

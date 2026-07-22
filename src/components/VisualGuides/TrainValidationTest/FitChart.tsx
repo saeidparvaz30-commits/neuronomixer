@@ -21,7 +21,7 @@ interface Props {
 
 const W = 640;
 const H = 340;
-const ML = 40;
+const ML = 56;
 const MR = 12;
 const MT = 12;
 const MB = 28;
@@ -123,7 +123,7 @@ export default function FitChart({
                 y={sy(t)}
                 textAnchor="end"
                 dominantBaseline="middle"
-                fontSize="10"
+                fontSize="20"
                 fill="#475569"
               >
                 {t}
@@ -136,7 +136,7 @@ export default function FitChart({
               x={sx(t)}
               y={H - 10}
               textAnchor="middle"
-              fontSize="10"
+              fontSize="20"
               fill="#475569"
             >
               {t}

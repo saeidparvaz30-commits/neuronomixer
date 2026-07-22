@@ -71,17 +71,17 @@ function MiniBarChart({
           transition={{ duration: 0.55, ease: "easeOut", delay: 0.08 }}
         />
         {/* labels above bars */}
-        <text x={xA + barW / 2} y={H - maxH * rateA - 4} textAnchor="middle" fontSize="9" fill={COL_A} fontWeight="700">
+        <text x={xA + barW / 2} y={H - maxH * rateA - 4} textAnchor="middle" fontSize="10" fill={COL_A} fontWeight="700">
           {(rateA * 100).toFixed(0)}%
         </text>
-        <text x={xB + barW / 2} y={H - maxH * rateB - 4} textAnchor="middle" fontSize="9" fill={COL_B} fontWeight="700">
+        <text x={xB + barW / 2} y={H - maxH * rateB - 4} textAnchor="middle" fontSize="10" fill={COL_B} fontWeight="700">
           {(rateB * 100).toFixed(0)}%
         </text>
         {/* axis labels */}
-        <text x={xA + barW / 2} y={H - 1} textAnchor="middle" fontSize="8" fill="#475569">
+        <text x={xA + barW / 2} y={H - 1} textAnchor="middle" fontSize="10" fill="#475569">
           {groupALabel.slice(0, 3)}
         </text>
-        <text x={xB + barW / 2} y={H - 1} textAnchor="middle" fontSize="8" fill="#475569">
+        <text x={xB + barW / 2} y={H - 1} textAnchor="middle" fontSize="10" fill="#475569">
           {groupBLabel.slice(0, 3)}
         </text>
       </svg>
@@ -473,14 +473,14 @@ function RatePair({ rA, rB, label }: { rA: number; rB: number; label: string }) 
           animate={{ height: barH * rB, y: barH * (1 - rB) }}
           transition={{ duration: 0.3 }}
         />
-        <text x={14 + barW / 2} y={barH * (1 - rA) - 2} textAnchor="middle" fontSize="8" fill={COL_A} fontWeight="700">
+        <text x={14 + barW / 2} y={barH * (1 - rA) - 2} textAnchor="middle" fontSize="10" fill={COL_A} fontWeight="700">
           {(rA * 100).toFixed(0)}%
         </text>
-        <text x={14 + barW + gap + barW / 2} y={barH * (1 - rB) - 2} textAnchor="middle" fontSize="8" fill={COL_B} fontWeight="700">
+        <text x={14 + barW + gap + barW / 2} y={barH * (1 - rB) - 2} textAnchor="middle" fontSize="10" fill={COL_B} fontWeight="700">
           {(rB * 100).toFixed(0)}%
         </text>
-        <text x={14 + barW / 2} y={barH + 12} textAnchor="middle" fontSize="7" fill="#475569">A</text>
-        <text x={14 + barW + gap + barW / 2} y={barH + 12} textAnchor="middle" fontSize="7" fill="#475569">B</text>
+        <text x={14 + barW / 2} y={barH + 13} textAnchor="middle" fontSize="10" fill="#475569">A</text>
+        <text x={14 + barW + gap + barW / 2} y={barH + 13} textAnchor="middle" fontSize="10" fill="#475569">B</text>
       </svg>
     </div>
   );

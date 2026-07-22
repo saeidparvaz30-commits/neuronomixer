@@ -203,7 +203,7 @@ function WaterfallBody({
                 y={axisY + 16}
                 textAnchor="middle"
                 fill="#475569"
-                fontSize={10}
+                fontSize={14}
                 fontFamily="monospace"
               >
                 {v}
@@ -215,7 +215,7 @@ function WaterfallBody({
             y={H - 2}
             textAnchor="middle"
             fill="#475569"
-            fontSize={10}
+            fontSize={14}
           >
             P(churn)
           </text>
@@ -226,15 +226,15 @@ function WaterfallBody({
             const right = Math.max(b.x0, b.x1);
             const wPx = Math.max(q(x(right)) - q(x(left)), 1.5);
             const endX = x(b.x1);
-            const textRight = endX + 6 + 44 < W;
+            const textRight = endX + 6 + 56 < W;
             return (
               <g key={b.label + i}>
                 <text
                   x={LABEL_W}
-                  y={q(y + BAR_H / 2 + 3.5)}
+                  y={q(y + BAR_H / 2 + 5)}
                   textAnchor="end"
                   fill="#94a3b8"
-                  fontSize={11}
+                  fontSize={14}
                 >
                   {b.label}
                 </text>
@@ -249,10 +249,10 @@ function WaterfallBody({
                 />
                 <text
                   x={q(textRight ? endX + 6 : x(left) - 6)}
-                  y={q(y + BAR_H / 2 + 3.5)}
+                  y={q(y + BAR_H / 2 + 5)}
                   textAnchor={textRight ? "start" : "end"}
                   fill="#f1f5f9"
-                  fontSize={11}
+                  fontSize={14}
                   fontFamily="monospace"
                 >
                   {b.text}

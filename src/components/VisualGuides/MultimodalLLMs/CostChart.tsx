@@ -28,7 +28,7 @@ export default function CostChart({ currentPatchSize }: Props) {
 
   const width = 460;
   const barMaxW = 250;
-  const rowH = 34;
+  const rowH = 52;
   const height = rows.length * rowH + 8;
 
   return (
@@ -50,7 +50,7 @@ export default function CostChart({ currentPatchSize }: Props) {
               <text
                 x={0}
                 y={y + 15}
-                fontSize={11}
+                fontSize={14}
                 fontFamily="monospace"
                 fill={isCurrent ? "#f1f5f9" : "#94a3b8"}
               >
@@ -65,9 +65,9 @@ export default function CostChart({ currentPatchSize }: Props) {
                 fill={isCurrent ? "var(--color-accent)" : "#334155"}
               />
               <text
-                x={64 + barW + 8}
-                y={y + 14}
-                fontSize={11}
+                x={64}
+                y={y + 38}
+                fontSize={14}
                 fontFamily="monospace"
                 fill={isCurrent ? "#f1f5f9" : "#94a3b8"}
               >

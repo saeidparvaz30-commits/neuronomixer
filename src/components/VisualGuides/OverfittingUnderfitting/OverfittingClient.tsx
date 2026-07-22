@@ -288,7 +288,7 @@ export default function OverfittingClient() {
                 ))}
 
                 {/* Degree label */}
-                <text x={W - PAD} y={PAD} fill="white" fontSize="11" textAnchor="end" fontWeight="bold">
+                <text x={W - PAD} y={PAD} fill="white" fontSize="16" textAnchor="end" fontWeight="bold">
                   degree {degree}
                 </text>
               </svg>

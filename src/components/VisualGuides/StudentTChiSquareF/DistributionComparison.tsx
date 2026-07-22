@@ -149,34 +149,34 @@ function TTab({ tDF, onTDFChange }: TTabProps) {
                     x={PAD_X}
                     y={SVG_H * 0.35}
                     fill={tColor}
-                    fontSize={9}
+                    fontSize={19}
                     opacity={0.8}
                   >
                     heavier
                   </text>
                   <text
                     x={PAD_X}
-                    y={SVG_H * 0.35 + 11}
+                    y={SVG_H * 0.35 + 22}
                     fill={tColor}
-                    fontSize={9}
+                    fontSize={19}
                     opacity={0.8}
                   >
                     tail
                   </text>
                   <text
-                    x={SVG_W - PAD_X - 38}
+                    x={SVG_W - PAD_X - 70}
                     y={SVG_H * 0.35}
                     fill={tColor}
-                    fontSize={9}
+                    fontSize={19}
                     opacity={0.8}
                   >
                     heavier
                   </text>
                   <text
-                    x={SVG_W - PAD_X - 38}
-                    y={SVG_H * 0.35 + 11}
+                    x={SVG_W - PAD_X - 70}
+                    y={SVG_H * 0.35 + 22}
                     fill={tColor}
-                    fontSize={9}
+                    fontSize={19}
                     opacity={0.8}
                   >
                     tail
@@ -194,7 +194,7 @@ function TTab({ tDF, onTDFChange }: TTabProps) {
                     y={SVG_H - 4}
                     textAnchor="middle"
                     fill="#475569"
-                    fontSize={9}
+                    fontSize={19}
                   >
                     {v}
                   </text>
@@ -340,9 +340,9 @@ function ChiSquareTab({ chiSquareDF, onChiSquareDFChange }: ChiSquareTabProps) {
                     />
                     <text
                       x={meanX + 4}
-                      y={PAD_Y + 14}
+                      y={PAD_Y + 20}
                       fill={color}
-                      fontSize={9}
+                      fontSize={19}
                       opacity={0.8}
                     >
                       mean={chiSquareDF}
@@ -362,7 +362,7 @@ function ChiSquareTab({ chiSquareDF, onChiSquareDFChange }: ChiSquareTabProps) {
                       y={SVG_H - 4}
                       textAnchor="middle"
                       fill="#475569"
-                      fontSize={9}
+                      fontSize={19}
                     >
                       {v}
                     </text>
@@ -498,7 +498,7 @@ function FTab({ fDF1, fDF2, onFDF1Change, onFDF2Change }: FTabProps) {
                     y={SVG_H - 4}
                     textAnchor="middle"
                     fill="#475569"
-                    fontSize={9}
+                    fontSize={19}
                   >
                     {v}
                   </text>

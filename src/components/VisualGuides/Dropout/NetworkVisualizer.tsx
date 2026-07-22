@@ -154,7 +154,7 @@ export default function NetworkVisualizer({ config }: NetworkVisualizerProps) {
                       <circle
                         cx={nx}
                         cy={ny}
-                        r={18}
+                        r={22}
                         fill={baseColor}
                         opacity={0.12}
                       />
@@ -162,12 +162,12 @@ export default function NetworkVisualizer({ config }: NetworkVisualizerProps) {
                       <motion.circle
                         key={`${nLayout.id}-active`}
                         initial={{ opacity: 0, r: 4 }}
-                        animate={{ opacity: 1, r: 11 }}
+                        animate={{ opacity: 1, r: 16 }}
                         exit={{ opacity: 0, r: 4 }}
                         transition={{ duration: 0.3 }}
                         cx={nx}
                         cy={ny}
-                        r={11}
+                        r={16}
                         fill={baseColor}
                         stroke="#0f172a"
                         strokeWidth={1.5}
@@ -176,9 +176,9 @@ export default function NetworkVisualizer({ config }: NetworkVisualizerProps) {
                       {(layerKey === "hidden1" || layerKey === "hidden2" || layerKey === "output") && (
                         <text
                           x={nx}
-                          y={ny + 3.5}
+                          y={ny + 5}
                           fill="#0f172a"
-                          fontSize="7"
+                          fontSize="14"
                           textAnchor="middle"
                           fontWeight="bold"
                         >
@@ -197,7 +197,7 @@ export default function NetworkVisualizer({ config }: NetworkVisualizerProps) {
                         transition={{ duration: 0.3 }}
                         cx={nx}
                         cy={ny}
-                        r={11}
+                        r={16}
                         fill="#7f1d1d"
                         stroke="#ef4444"
                         strokeWidth={1.5}
@@ -206,9 +206,9 @@ export default function NetworkVisualizer({ config }: NetworkVisualizerProps) {
                       />
                       <text
                         x={nx}
-                        y={ny + 4}
+                        y={ny + 5}
                         fill="#ef4444"
-                        fontSize="11"
+                        fontSize="14"
                         textAnchor="middle"
                         fontWeight="bold"
                         opacity={0.9}
@@ -229,7 +229,7 @@ export default function NetworkVisualizer({ config }: NetworkVisualizerProps) {
               x={layer.x}
               y={SVH - 8}
               fill="#94a3b8"
-              fontSize="9.5"
+              fontSize="14"
               textAnchor="middle"
             >
               {layer.label}
@@ -246,19 +246,19 @@ export default function NetworkVisualizer({ config }: NetworkVisualizerProps) {
               return (
                 <g key={`badge-${s.layer}`}>
                   <rect
-                    x={x - 26}
-                    y={6}
-                    width={52}
-                    height={18}
+                    x={x - 48}
+                    y={4}
+                    width={96}
+                    height={22}
                     rx={4}
                     fill={dropped > 0 ? "#7f1d1d40" : "#14532d40"}
                     stroke={dropped > 0 ? "#ef444440" : "#22c55e40"}
                   />
                   <text
                     x={x}
-                    y={18}
+                    y={20}
                     fill={dropped > 0 ? "#ef4444" : "#22c55e"}
-                    fontSize="8.5"
+                    fontSize="14"
                     textAnchor="middle"
                     fontWeight="600"
                   >

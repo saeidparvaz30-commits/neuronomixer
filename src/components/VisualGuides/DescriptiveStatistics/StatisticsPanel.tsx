@@ -84,6 +84,7 @@ export default function StatisticsPanel({
             }`}
             onMouseEnter={() => onStdDevHover(true)}
             onMouseLeave={() => onStdDevHover(false)}
+            onClick={() => onStdDevHover(true)}
           >
             <div className="flex items-start justify-between gap-2 mb-1">
               <span className="text-[13px] font-semibold text-white">
@@ -99,7 +100,7 @@ export default function StatisticsPanel({
             <p className="text-[11px] text-[#94a3b8] leading-relaxed">
               Square root of variance. Same units as data.{" "}
               <span className="text-[var(--color-accent)]/80">
-                Hover to see distances on chart.
+                Tap or hover to see distances on chart.
               </span>
             </p>
           </motion.div>

@@ -167,7 +167,7 @@ export default function PopulationPanel({
         Choose a population. Each has a very different shape, but sample means will always converge.
       </p>
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {DIST_ORDER.map((type) => {
           const data =
             type === selectedDistribution ? populationData : previewData[type] ?? [];

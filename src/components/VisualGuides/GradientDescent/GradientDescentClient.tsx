@@ -114,14 +114,14 @@ function LossCurve({ history }: { history: GDState[] }) {
 
   return (
     <svg viewBox={`0 0 ${LCW} ${LCH}`} className="w-full">
-      <text x={lp - 5} y={tp + 4} fill="#94a3b8" fontSize="9" textAnchor="end">Loss</text>
-      <text x={LCW - rp} y={LCH - 4} fill="#94a3b8" fontSize="9" textAnchor="end">Step</text>
+      <text x={lp - 5} y={tp + 4} fill="#94a3b8" fontSize="11" textAnchor="end">Loss</text>
+      <text x={LCW - rp} y={LCH - 4} fill="#94a3b8" fontSize="11" textAnchor="end">Step</text>
       <line x1={lp} y1={tp} x2={lp} y2={LCH - bp} stroke="#334155" strokeWidth="1" />
       <line x1={lp} y1={LCH - bp} x2={LCW - rp} y2={LCH - bp} stroke="#334155" strokeWidth="1" />
       <path d={pathD} fill="none" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
       <circle cx={x(history.length - 1)} cy={y(history[history.length - 1].loss)} r={3} fill="var(--color-accent)" />
-      <text x={lp} y={LCH - bp + 12} fill="#94a3b8" fontSize="8">0</text>
-      <text x={LCW - rp} y={LCH - bp + 12} fill="#94a3b8" fontSize="8" textAnchor="end">{history.length - 1}</text>
+      <text x={lp} y={LCH - bp + 13} fill="#94a3b8" fontSize="11">0</text>
+      <text x={LCW - rp} y={LCH - bp + 13} fill="#94a3b8" fontSize="11" textAnchor="end">{history.length - 1}</text>
     </svg>
   );
 }
@@ -355,8 +355,8 @@ export default function GradientDescentClient() {
                 )}
 
                 {/* Axis labels */}
-                <text x={CW / 2} y={CH - 6} fill="#94a3b8" fontSize="10" textAnchor="middle">w (weight)</text>
-                <text x={10} y={CH / 2} fill="#94a3b8" fontSize="10" textAnchor="middle" transform={`rotate(-90, 10, ${CH / 2})`}>b (bias)</text>
+                <text x={CW / 2} y={CH - 6} fill="#94a3b8" fontSize="13" textAnchor="middle">w (weight)</text>
+                <text x={12} y={CH / 2} fill="#94a3b8" fontSize="13" textAnchor="middle" transform={`rotate(-90, 12, ${CH / 2})`}>b (bias)</text>
 
                 {/* GD path */}
                 {history.length >= 2 && (
@@ -389,7 +389,7 @@ export default function GradientDescentClient() {
                   r={5} fill="none" stroke="#3bb4a4" strokeWidth="1.5" strokeDasharray="3 2" opacity={0.8}
                 />
                 <text x={toSVG_contour(landscape.minW) + 7} y={toSVG_contourY(landscape.minB) + 4}
-                  fill="#3bb4a4" fontSize="9" opacity={0.8}>min</text>
+                  fill="#3bb4a4" fontSize="13" opacity={0.8}>min</text>
               </svg>
             </div>
 

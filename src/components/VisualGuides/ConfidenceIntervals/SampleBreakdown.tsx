@@ -9,7 +9,7 @@ interface Props {
 }
 
 const SVG_W = 400;
-const SVG_H = 36;
+const SVG_H = 80;
 const PAD_L = 20;
 const PAD_R = 20;
 const X_MIN = 75;
@@ -71,6 +71,7 @@ export default function SampleBreakdown({ interval, confidenceLevel }: Props) {
             className="rounded-xl border overflow-hidden"
             style={{ borderColor: borderColor + "40" }}
           >
+            <div className="overflow-x-auto">
             <table className="w-full text-[11px]">
               <thead>
                 <tr
@@ -129,6 +130,7 @@ export default function SampleBreakdown({ interval, confidenceLevel }: Props) {
                 ))}
               </tbody>
             </table>
+            </div>
             <p className="text-[9px] text-[#334155] px-2 py-1 border-t" style={{ borderColor: borderColor + "20" }}>
               + {SAMPLE_N - 10} more values not shown
             </p>
@@ -262,16 +264,16 @@ export default function SampleBreakdown({ interval, confidenceLevel }: Props) {
               strokeWidth="1.5"
             />
             {/* Labels */}
-            <text x={mcx} y={SVG_H - 4} textAnchor="middle" fill="#94a3b8" fontSize="7">
+            <text x={mcx} y={SVG_H - 6} textAnchor="middle" fill="#94a3b8" fontSize="13">
               x̄={interval.mean.toFixed(1)}
             </text>
-            <text x={trueLine + 2} y={10} fill="var(--color-accent)" fontSize="7">
+            <text x={trueLine + 2} y={14} fill="var(--color-accent)" fontSize="13">
               μ=100
             </text>
-            <text x={lx1} y={SVG_H / 2 - 7} textAnchor="middle" fill={borderColor} fontSize="7">
+            <text x={lx1} y={SVG_H / 2 - 9} textAnchor="middle" fill={borderColor} fontSize="13">
               {interval.lower.toFixed(1)}
             </text>
-            <text x={lx2} y={SVG_H / 2 - 7} textAnchor="middle" fill={borderColor} fontSize="7">
+            <text x={lx2} y={SVG_H / 2 - 9} textAnchor="middle" fill={borderColor} fontSize="13">
               {interval.upper.toFixed(1)}
             </text>
           </svg>

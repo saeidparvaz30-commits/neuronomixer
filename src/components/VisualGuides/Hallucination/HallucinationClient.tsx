@@ -242,14 +242,14 @@ export default function HallucinationClient() {
                 <React.Fragment key={v}>
                   <line x1={30} y1={10 + (100 - v) * 1.6} x2={230} y2={10 + (100 - v) * 1.6} stroke="#1e293b" strokeWidth="0.8" strokeDasharray="3 3" />
                   <line x1={30 + v * 2} y1={10} x2={30 + v * 2} y2={170} stroke="#1e293b" strokeWidth="0.8" strokeDasharray="3 3" />
-                  <text x={30 + v * 2} y={182} textAnchor="middle" fontSize="8" fill="#475569">{v}%</text>
-                  {v > 0 && <text x={22} y={10 + (100 - v) * 1.6 + 3} textAnchor="end" fontSize="8" fill="#475569">{v}%</text>}
+                  <text x={30 + v * 2} y={182} textAnchor="middle" fontSize="10" fill="#475569">{v}%</text>
+                  {v > 0 && <text x={22} y={10 + (100 - v) * 1.6 + 3} textAnchor="end" fontSize="10" fill="#475569">{v}%</text>}
                 </React.Fragment>
               ))}
-              <text x={130} y={196} textAnchor="middle" fontSize="9" fill="#94a3b8">Model Confidence →</text>
-              <text x={8} y={90} textAnchor="middle" fontSize="9" fill="#94a3b8" transform="rotate(-90 8 90)">Accuracy →</text>
+              <text x={130} y={196} textAnchor="middle" fontSize="10" fill="#94a3b8">Model Confidence →</text>
+              <text x={8} y={90} textAnchor="middle" fontSize="10" fill="#94a3b8" transform="rotate(-90 8 90)">Accuracy →</text>
               <line x1={30} y1={170} x2={230} y2={10} stroke="#3bb4a4" strokeWidth="1.5" strokeDasharray="5 3" opacity="0.6" />
-              <text x={165} y={52} fontSize="8" fill="#3bb4a4" opacity="0.8">Ideal</text>
+              <text x={165} y={52} fontSize="10" fill="#3bb4a4" opacity="0.8">Ideal</text>
               {CAL_DOTS.map((d, i) => (
                 <motion.circle key={`c${i}`} cx={30 + d.cx * 2} cy={10 + (100 - d.cy) * 1.6} r="4" fill="#3bb4a4"
                   initial={{ opacity: 0, scale: 0 }} animate={plotInView ? { opacity: 0.85, scale: 1 } : { opacity: 0, scale: 0 }} transition={{ delay: i * 0.08, duration: 0.3 }} />

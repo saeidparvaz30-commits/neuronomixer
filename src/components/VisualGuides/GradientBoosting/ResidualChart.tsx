@@ -62,7 +62,7 @@ export default function ResidualChart({
               y={sy(t).toFixed(2)}
               textAnchor="end"
               dominantBaseline="middle"
-              fontSize={10}
+              fontSize={20}
               fill="#475569"
             >
               {t}
@@ -81,9 +81,9 @@ export default function ResidualChart({
         />
         <text
           x={W - PAD_R - 2}
-          y={Number(sy(0).toFixed(2)) - 5}
+          y={Number(sy(0).toFixed(2)) - 7}
           textAnchor="end"
-          fontSize={9}
+          fontSize={20}
           fill="#475569"
         >
           residual = 0

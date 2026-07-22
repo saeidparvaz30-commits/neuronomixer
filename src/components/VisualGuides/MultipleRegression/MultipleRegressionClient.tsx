@@ -100,10 +100,10 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
             />
             <text
               x={tx(t)}
-              y={PAD.t + IH + 16}
+              y={PAD.t + IH + 20}
               textAnchor="middle"
               fill="#475569"
-              fontSize="9"
+              fontSize="16"
             >
               {t}°
             </text>
@@ -121,10 +121,10 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
             />
             <text
               x={PAD.l - 8}
-              y={ty(t) + 3.5}
+              y={ty(t) + 5}
               textAnchor="end"
               fill="#475569"
-              fontSize="9"
+              fontSize="16"
             >
               {t}
             </text>
@@ -155,17 +155,17 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
           y={H - 4}
           textAnchor="middle"
           fill="#94a3b8"
-          fontSize="10"
+          fontSize="17"
         >
           Temperature (°C)
         </text>
         <text
-          x={14}
+          x={15}
           y={PAD.t + IH / 2}
           textAnchor="middle"
           fill="#94a3b8"
-          fontSize="10"
-          transform={`rotate(-90, 14, ${PAD.t + IH / 2})`}
+          fontSize="17"
+          transform={`rotate(-90, 15, ${PAD.t + IH / 2})`}
         >
           Sales ($k)
         </text>
@@ -229,6 +229,13 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
               });
             }}
             onMouseLeave={() => setTooltip(null)}
+            onClick={() => {
+              setTooltip({
+                x: tx(p.temperature),
+                y: ty(p.sales),
+                point: p,
+              });
+            }}
           />
         ))}
 
@@ -237,9 +244,9 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
           <g>
             <rect
               x={tooltip.x + 8}
-              y={tooltip.y - 36}
-              width={130}
-              height={52}
+              y={tooltip.y - 52}
+              width={165}
+              height={68}
               rx="4"
               fill="#0f172a"
               stroke="#1e293b"
@@ -247,17 +254,17 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
             />
             <text
               x={tooltip.x + 14}
-              y={tooltip.y - 20}
+              y={tooltip.y - 34}
               fill="#f1f5f9"
-              fontSize="9"
+              fontSize="16"
               fontWeight="600"
             >
               {tooltip.point.weekend ? "Weekend" : "Weekday"}
             </text>
-            <text x={tooltip.x + 14} y={tooltip.y - 8} fill="#94a3b8" fontSize="9">
+            <text x={tooltip.x + 14} y={tooltip.y - 14} fill="#94a3b8" fontSize="16">
               Temp: {tooltip.point.temperature}°C
             </text>
-            <text x={tooltip.x + 14} y={tooltip.y + 4} fill="#94a3b8" fontSize="9">
+            <text x={tooltip.x + 14} y={tooltip.y + 6} fill="#94a3b8" fontSize="16">
               Sales: ${tooltip.point.sales}k
             </text>
           </g>
@@ -717,7 +724,7 @@ export default function MultipleRegressionClient() {
                 interaction={interaction}
               />
               <p className="text-[10px] text-[#334155] mt-3 text-center">
-                Hover over any point to see its values.
+                Tap or hover any point to see its values.
               </p>
             </motion.div>
 

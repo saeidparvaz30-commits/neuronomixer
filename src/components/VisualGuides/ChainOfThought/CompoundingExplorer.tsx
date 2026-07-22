@@ -13,10 +13,10 @@ const TABLE_NS = [2, 4, 8, 12, 16, 24, 32, 40];
 
 const W = 640;
 const H = 240;
-const L = 42;
+const L = 54;
 const R = 12;
 const T = 12;
-const B = 28;
+const B = 48;
 const PLOT_W = W - L - R;
 const PLOT_H = H - T - B;
 
@@ -173,9 +173,9 @@ export default function CompoundingExplorer({
             />
             <text
               x={L - 6}
-              y={(yPos(g) + 3).toFixed(2)}
+              y={(yPos(g) + 6).toFixed(2)}
               textAnchor="end"
-              fontSize="9"
+              fontSize="20"
               fill="#475569"
             >
               {Math.round(g * 100)}%
@@ -186,15 +186,15 @@ export default function CompoundingExplorer({
           <text
             key={n}
             x={xPos(n).toFixed(2)}
-            y={H - 10}
+            y={H - B + 22}
             textAnchor="middle"
-            fontSize="9"
+            fontSize="20"
             fill="#475569"
           >
             {n}
           </text>
         ))}
-        <text x={W - R} y={H - 10} textAnchor="end" fontSize="9" fill="#334155">
+        <text x={W - R} y={H - 4} textAnchor="end" fontSize="20" fill="#334155">
           digits
         </text>
         {/* Marker at selected n */}

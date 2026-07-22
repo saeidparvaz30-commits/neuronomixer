@@ -344,3 +344,14 @@ Every guide must pass all of these before shipping:
 - No raw hex for accent/warning/success; CSS vars only
 - No `Co-Authored-By` lines in commits
 - Do not push to remote before local verification
+
+## 15. Mobile / Responsive (v3, required)
+
+The shell (sections 2, 3, 6) already handles page-level responsiveness. These rules govern everything INSIDE a panel. A guide is not done until it passes the mobile gate (`scripts/mobile-gate.mjs`) at 360px client width.
+
+1. **Grids collapse below `sm:`.** Fixed `grid-cols-N` (N >= 3) must be written `grid-cols-2 sm:grid-cols-N`, or `grid-cols-1 sm:grid-cols-N` when cells hold sentences. `grid-cols-2` may stay only when each cell is a short stat chip.
+2. **Tables are always wrapped** in `<div className="overflow-x-auto">`.
+3. **SVG labels render >= 10px at 360px viewport.** Minimum SVG font-size in user units = `ceil(viewBoxWidth / 33)` (viewBox 800 -> 24, 600 -> 19, 400 -> 13). If larger text collides, reduce tick density or shorten labels; never shrink the font below the threshold. Prefer moving chart titles and captions OUT of the SVG into HTML, which does not scale down.
+4. **Touch targets >= 40px hit area.** Custom drag surfaces set `touch-action: none` (Tailwind `touch-none`). Native `<input type="range">` inherits the shared 24px-tall hit area from globals.css.
+5. **No hover-only affordances.** Every `whileHover` reveal has a tap/focus equivalent (`whileTap`, `onClick`, or `onFocus`); instruction copy says "Tap or hover", never "Hover" alone.
+6. **Horizontal-scroll escape hatch** (`min-w` + `overflow-x-auto`) only for intrinsically wide diagrams (timelines, pipelines); `min-w` <= 560px and nothing may be clipped without a reachable scroll.

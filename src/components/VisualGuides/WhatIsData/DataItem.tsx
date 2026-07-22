@@ -385,8 +385,10 @@ function DataItemInner({
         }
         transition={{ duration: 0.4 }}
         whileHover={!isDragging && !sorted ? { scale: 1.03 } : undefined}
+        whileTap={!isDragging && !sorted ? { scale: 0.97 } : undefined}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
+        onClick={() => setShowTooltip(true)}
         onPointerDown={(e) => {
           if (!sorted) onPointerDown(e, item.id);
         }}
@@ -406,7 +408,7 @@ function DataItemInner({
             ? correct
               ? "border-[#3bb4a4]/40 bg-[#3bb4a4]/5 cursor-default"
               : "border-[#ef4444]/40 bg-[#ef4444]/5 cursor-default"
-            : "border-[#1e293b] bg-[#1e293b]/60 hover:border-[#334155]"
+            : "touch-none border-[#1e293b] bg-[#1e293b]/60 hover:border-[#334155]"
           }
           ${isDragging ? "cursor-grabbing opacity-90" : !sorted ? "cursor-grab" : ""}
           ${isSelected ? "ring-2 ring-[var(--color-accent)]" : ""}

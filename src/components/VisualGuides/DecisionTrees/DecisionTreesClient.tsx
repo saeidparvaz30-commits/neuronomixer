@@ -139,9 +139,9 @@ function DecisionScatter({
       ))}
 
       {/* Axis labels */}
-      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="10">Feature 1 (X)</text>
-      <text x={10} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="10"
-        transform={`rotate(-90, 10, ${PAD.t + IH / 2})`}>Feature 2 (Y)</text>
+      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="15">Feature 1 (X)</text>
+      <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fill="#475569" fontSize="15"
+        transform={`rotate(-90, 12, ${PAD.t + IH / 2})`}>Feature 2 (Y)</text>
     </svg>
   );
 }

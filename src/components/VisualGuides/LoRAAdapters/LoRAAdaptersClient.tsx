@@ -235,16 +235,16 @@ export default function LoRAAdaptersClient() {
               {[94,96,98,100].map(y=><line key={y} x1={SL} y1={yS(y)} x2={SW-SR} y2={yS(y)} stroke="#1e293b" strokeWidth={1}/>)}
               <line x1={SL} y1={ST} x2={SL} y2={SH-SB} stroke="#334155" strokeWidth={1.5}/>
               <line x1={SL} y1={SH-SB} x2={SW-SR} y2={SH-SB} stroke="#334155" strokeWidth={1.5}/>
-              {[94,96,98,100].map(y=><text key={y} x={SL-6} y={yS(y)+4} textAnchor="end" fontSize={9} fill="#475569">{y}%</text>)}
-              {[0.05,0.2,0.5,1,5,25,100].map(x=><text key={x} x={xS(x)} y={SH-SB+14} textAnchor="middle" fontSize={9} fill="#475569">{x<1?x:`${x}%`}</text>)}
-              <text x={(SL+SW-SR)/2} y={SH-4} textAnchor="middle" fontSize={9} fill="#94a3b8">% of original params trained (log scale)</text>
-              <text x={10} y={(ST+SH-SB)/2} textAnchor="middle" fontSize={9} fill="#94a3b8" transform={`rotate(-90,10,${(ST+SH-SB)/2})`}>Performance vs full FT (%)</text>
+              {[94,96,98,100].map(y=><text key={y} x={SL-6} y={yS(y)+5} textAnchor="end" fontSize={15} fill="#475569">{y}%</text>)}
+              {[0.05,0.2,0.5,1,5,25,100].map(x=><text key={x} x={xS(x)} y={SH-SB+18} textAnchor="middle" fontSize={15} fill="#475569">{x<1?x:`${x}%`}</text>)}
+              <text x={(SL+SW-SR)/2} y={SH-4} textAnchor="middle" fontSize={15} fill="#94a3b8">% of original params trained (log scale)</text>
+              <text x={12} y={(ST+SH-SB)/2} textAnchor="middle" fontSize={15} fill="#94a3b8" transform={`rotate(-90,12,${(ST+SH-SB)/2})`}>Performance vs full FT (%)</text>
               {SCATTER.map((pt,i)=>{
                 const cx=xS(pt.x), cy=yS(pt.y);
                 return (
                   <motion.g key={pt.label} initial={{opacity:0,scale:0}} animate={{opacity:1,scale:1}} transition={{delay:i*0.12,duration:0.35,type:"spring"}} style={{originX:cx,originY:cy}}>
                     {pt.diamond?<rect x={cx-6} y={cy-6} width={12} height={12} fill={pt.color} opacity={0.85} transform={`rotate(45,${cx},${cy})`} rx={1}/>:<circle cx={cx} cy={cy} r={6} fill={pt.color} opacity={0.85}/>}
-                    <text x={cx+10} y={cy+4} fontSize={9} fill={pt.color} fontWeight="600">{pt.label}</text>
+                    <text x={cx+10} y={cy+5} fontSize={15} fill={pt.color} fontWeight="600">{pt.label}</text>
                   </motion.g>
                 );
               })}

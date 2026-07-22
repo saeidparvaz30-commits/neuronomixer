@@ -277,49 +277,49 @@ function VennSVG({ highlighted, onRegionClick }: VennSVGProps) {
       <circle cx={cxB} cy={cy} r={r} fill="none" stroke={GOLD} strokeWidth={1.5} />
 
       {/* Labels */}
-      <text x={cxA - r * 0.55} y={cy} textAnchor="middle" fill="#f1f5f9" fontSize={12} fontWeight="bold">
+      <text x={cxA - r * 0.55} y={cy} textAnchor="middle" fill="#f1f5f9" fontSize={16} fontWeight="bold">
         A
       </text>
-      <text x={cxA - r * 0.55} y={cy + 16} textAnchor="middle" fill={TEAL} fontSize={9}>
+      <text x={cxA - r * 0.55} y={cy + 18} textAnchor="middle" fill={TEAL} fontSize={15}>
         Even
       </text>
 
-      <text x={cxB + r * 0.55} y={cy} textAnchor="middle" fill="#f1f5f9" fontSize={12} fontWeight="bold">
+      <text x={cxB + r * 0.55} y={cy} textAnchor="middle" fill="#f1f5f9" fontSize={16} fontWeight="bold">
         B
       </text>
-      <text x={cxB + r * 0.55} y={cy + 16} textAnchor="middle" fill={GOLD} fontSize={9}>
+      <text x={cxB + r * 0.55} y={cy + 18} textAnchor="middle" fill={GOLD} fontSize={15}>
         {"> 3"}
       </text>
 
       {/* A-only label */}
-      <text x={cxA - 28} y={cy - 8} textAnchor="middle" fill="#94a3b8" fontSize={9}>
+      <text x={cxA - 28} y={cy - 12} textAnchor="middle" fill="#94a3b8" fontSize={15}>
         1/6
       </text>
-      <text x={cxA - 28} y={cy + 6} textAnchor="middle" fill="#94a3b8" fontSize={9}>
+      <text x={cxA - 28} y={cy + 8} textAnchor="middle" fill="#94a3b8" fontSize={15}>
         (die=2)
       </text>
 
       {/* Intersection label */}
-      <text x={(cxA + cxB) / 2} y={cy - 8} textAnchor="middle" fill="#f1f5f9" fontSize={9}>
+      <text x={(cxA + cxB) / 2} y={cy - 12} textAnchor="middle" fill="#f1f5f9" fontSize={15}>
         2/6
       </text>
-      <text x={(cxA + cxB) / 2} y={cy + 6} textAnchor="middle" fill="#94a3b8" fontSize={9}>
+      <text x={(cxA + cxB) / 2} y={cy + 8} textAnchor="middle" fill="#94a3b8" fontSize={15}>
         (4,6)
       </text>
 
       {/* B-only label */}
-      <text x={cxB + 28} y={cy - 8} textAnchor="middle" fill="#94a3b8" fontSize={9}>
+      <text x={cxB + 28} y={cy - 12} textAnchor="middle" fill="#94a3b8" fontSize={15}>
         1/6
       </text>
-      <text x={cxB + 28} y={cy + 6} textAnchor="middle" fill="#94a3b8" fontSize={9}>
+      <text x={cxB + 28} y={cy + 8} textAnchor="middle" fill="#94a3b8" fontSize={15}>
         (die=5)
       </text>
 
       {/* Neither label */}
-      <text x={24} y={20} fill="#475569" fontSize={9} textAnchor="start">
+      <text x={24} y={20} fill="#475569" fontSize={15} textAnchor="start">
         Neither
       </text>
-      <text x={24} y={32} fill="#475569" fontSize={9} textAnchor="start">
+      <text x={24} y={38} fill="#475569" fontSize={15} textAnchor="start">
         2/6 (1,3)
       </text>
     </svg>

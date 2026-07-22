@@ -66,19 +66,19 @@ function ScatterPlotInner({ method, selectedPair, onSelectPoint }: Props) {
 
         {/* Tick labels */}
         {xTicks.map((v) => (
-          <text key={`xl-${v}`} x={toSvgX(v)} y={PAD.t + IH + 14} textAnchor="middle" fontSize="8" fill="#475569" fontFamily="Inter,sans-serif">
+          <text key={`xl-${v}`} x={toSvgX(v)} y={PAD.t + IH + 17} textAnchor="middle" fontSize="14" fill="#475569" fontFamily="Inter,sans-serif">
             {niceNum(v, method)}
           </text>
         ))}
         {yTicks.map((v) => (
-          <text key={`yl-${v}`} x={PAD.l - 6} y={toSvgY(v) + 3} textAnchor="end" fontSize="8" fill="#475569" fontFamily="Inter,sans-serif">
+          <text key={`yl-${v}`} x={PAD.l - 6} y={toSvgY(v) + 4} textAnchor="end" fontSize="14" fill="#475569" fontFamily="Inter,sans-serif">
             {niceNum(v, method)}
           </text>
         ))}
 
         {/* Axis labels */}
-        <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="9" fill="#94a3b8" fontFamily="Inter,sans-serif">{meta.xLabel}</text>
-        <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fontSize="9" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,12,${PAD.t + IH / 2})`}>{meta.yLabel}</text>
+        <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="15" fill="#94a3b8" fontFamily="Inter,sans-serif">{meta.xLabel}</text>
+        <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fontSize="15" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,12,${PAD.t + IH / 2})`}>{meta.yLabel}</text>
 
         {/* Ghost raw points (shown when not in raw mode) */}
         {method !== "raw" && RAW_DATA.map((pt, i) => {
@@ -128,7 +128,7 @@ function ScatterPlotInner({ method, selectedPair, onSelectPoint }: Props) {
 
               {/* Selection label */}
               {isSel && (
-                <text cx={cx} cy={cy - 14} textAnchor="middle" fontSize="8" fill="var(--color-accent)" fontFamily="Inter,sans-serif">
+                <text cx={cx} cy={cy - 14} textAnchor="middle" fontSize="14" fill="var(--color-accent)" fontFamily="Inter,sans-serif">
                   <tspan x={cx} dy={-14}>{selIdx === 0 ? "A" : "B"}</tspan>
                 </text>
               )}
@@ -136,11 +136,11 @@ function ScatterPlotInner({ method, selectedPair, onSelectPoint }: Props) {
               {/* Hover tooltip */}
               {isHov && !isSel && (
                 <g>
-                  <rect x={cx - 46} y={cy - 38} width="92" height="28" rx="5" fill="#1e293b" stroke="#334155" strokeWidth="1" />
-                  <text x={cx} y={cy - 28} textAnchor="middle" fontSize="8" fill="#f1f5f9" fontFamily="Inter,sans-serif">
+                  <rect x={cx - 50} y={cy - 52} width="100" height="42" rx="5" fill="#1e293b" stroke="#334155" strokeWidth="1" />
+                  <text x={cx} y={cy - 36} textAnchor="middle" fontSize="14" fill="#f1f5f9" fontFamily="Inter,sans-serif">
                     Age: {pt.age}
                   </text>
-                  <text x={cx} y={cy - 18} textAnchor="middle" fontSize="8" fill="#f1f5f9" fontFamily="Inter,sans-serif">
+                  <text x={cx} y={cy - 16} textAnchor="middle" fontSize="14" fill="#f1f5f9" fontFamily="Inter,sans-serif">
                     ${(pt.salary / 1000).toFixed(0)}k
                   </text>
                 </g>

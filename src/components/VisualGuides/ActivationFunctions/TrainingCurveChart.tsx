@@ -66,7 +66,7 @@ const CURVE_LABELS: Record<FunctionId, string> = {
 // ── SVG dimensions ─────────────────────────────────────────────────────────────
 const CW = 460;
 const CH = 200;
-const PAD_L = 40;
+const PAD_L = 52;
 const PAD_R = 16;
 const PAD_T = 12;
 const PAD_B = 32;
@@ -174,9 +174,9 @@ export default function TrainingCurveChart({
           <text
             key={`yt-${y}`}
             x={PAD_L - 4}
-            y={toSy(y) + 3}
+            y={toSy(y) + 5}
             fill="#475569"
-            fontSize="8"
+            fontSize="14"
             textAnchor="end"
           >
             {y.toFixed(1)}
@@ -188,7 +188,7 @@ export default function TrainingCurveChart({
             x={toSx(x)}
             y={CH - PAD_B + 12}
             fill="#475569"
-            fontSize="8"
+            fontSize="14"
             textAnchor="middle"
           >
             {x}
@@ -200,7 +200,7 @@ export default function TrainingCurveChart({
           x={(PAD_L + CW - PAD_R) / 2}
           y={CH - 4}
           fill="#475569"
-          fontSize="8.5"
+          fontSize="15"
           textAnchor="middle"
         >
           Iterations
@@ -209,7 +209,7 @@ export default function TrainingCurveChart({
           x={9}
           y={(PAD_T + CH - PAD_B) / 2}
           fill="#475569"
-          fontSize="8.5"
+          fontSize="15"
           textAnchor="middle"
           transform={`rotate(-90, 9, ${(PAD_T + CH - PAD_B) / 2})`}
         >

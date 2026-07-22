@@ -32,10 +32,10 @@ function Axes({ xLabel, yLabel }: { xLabel: string; yLabel: string }) {
       <line x1={PAD} y1={S - PAD} x2={PAD} y2={S - PAD - PLOT} stroke="#334155" strokeWidth={1} />
       {[0, 0.5, 1].map((v) => (
         <g key={v}>
-          <text x={px(v)} y={S - PAD + 14} fill="#475569" fontSize={9} textAnchor="middle">
+          <text x={px(v)} y={S - PAD + 14} fill="#475569" fontSize={10} textAnchor="middle">
             {v.toFixed(1)}
           </text>
-          <text x={PAD - 6} y={py(v) + 3} fill="#475569" fontSize={9} textAnchor="end">
+          <text x={PAD - 6} y={py(v) + 3} fill="#475569" fontSize={10} textAnchor="end">
             {v.toFixed(1)}
           </text>
         </g>

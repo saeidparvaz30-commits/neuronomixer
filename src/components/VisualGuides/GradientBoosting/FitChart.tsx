@@ -8,7 +8,7 @@ const H = 300;
 const PAD_L = 42;
 const PAD_R = 14;
 const PAD_T = 14;
-const PAD_B = 30;
+const PAD_B = 48;
 
 const Y_MIN = Math.min(...TRAIN.ys, ...TRUE_GRID) - 0.5;
 const Y_MAX = Math.max(...TRAIN.ys, ...TRUE_GRID) + 0.5;
@@ -66,7 +66,7 @@ export default function FitChart({ ensemble, deep, round }: FitChartProps) {
               y={sy(t).toFixed(2)}
               textAnchor="end"
               dominantBaseline="middle"
-              fontSize={10}
+              fontSize={20}
               fill="#475569"
             >
               {t}
@@ -85,9 +85,9 @@ export default function FitChart({ ensemble, deep, round }: FitChartProps) {
             />
             <text
               x={sx(t).toFixed(2)}
-              y={H - PAD_B + 14}
+              y={H - PAD_B + 20}
               textAnchor="middle"
-              fontSize={10}
+              fontSize={20}
               fill="#475569"
             >
               {t}
@@ -96,9 +96,9 @@ export default function FitChart({ ensemble, deep, round }: FitChartProps) {
         ))}
         <text
           x={(W + PAD_L - PAD_R) / 2}
-          y={H - 4}
+          y={H - 6}
           textAnchor="middle"
-          fontSize={10}
+          fontSize={20}
           fill="#475569"
         >
           x

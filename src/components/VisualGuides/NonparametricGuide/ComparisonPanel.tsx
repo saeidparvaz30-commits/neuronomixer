@@ -13,7 +13,7 @@ interface Props {
 
 function NormalCurveIcon() {
   return (
-    <svg width={32} height={20} viewBox="0 0 32 20" className="opacity-70">
+    <svg width={32} height={20} viewBox="0 0 32 20" className="opacity-70" aria-hidden="true">
       <path
         d="M2 18 Q8 18 10 10 Q14 2 16 2 Q18 2 22 10 Q24 18 30 18"
         fill="none"
@@ -27,7 +27,7 @@ function NormalCurveIcon() {
 
 function RankIcon() {
   return (
-    <svg width={32} height={20} viewBox="0 0 32 20" className="opacity-70">
+    <svg width={32} height={20} viewBox="0 0 32 20" className="opacity-70" aria-hidden="true">
       {[4, 10, 16, 22, 28].map((cx, i) => (
         <g key={i}>
           <circle cx={cx} cy={10} r={4} fill="none" stroke="#3bb4a4" strokeWidth={1.2} />

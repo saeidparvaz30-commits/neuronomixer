@@ -166,7 +166,7 @@ export default function VennDiagramBuilder({ onAdjust }: VennDiagramBuilderProps
             x={4} y={4} width={SVG_W - 8} height={SVG_H - 8} rx={12}
             fill="none" stroke="#334155" strokeWidth={1.5}
           />
-          <text x={12} y={22} fontSize={10} fill="#334155" fontFamily="monospace">
+          <text x={12} y={22} fontSize={11} fill="#334155" fontFamily="monospace">
             U={U}
           </text>
 
@@ -244,10 +244,10 @@ export default function VennDiagramBuilder({ onAdjust }: VennDiagramBuilderProps
           </text>
 
           {/* Count labels */}
-          <text x={CX_A - 26} y={CY + 22} fontSize={10} fill="#475569" textAnchor="middle">{A_ONLY}</text>
-          <text x={(CX_A + CX_B) / 2} y={CY + 5} fontSize={10} fill="#475569" textAnchor="middle">{INTER}</text>
-          <text x={CX_B + 26} y={CY + 22} fontSize={10} fill="#475569" textAnchor="middle">{B_ONLY}</text>
-          <text x={SVG_W - 30} y={SVG_H - 12} fontSize={9} fill="#334155" textAnchor="end">
+          <text x={CX_A - 26} y={CY + 22} fontSize={11} fill="#475569" textAnchor="middle">{A_ONLY}</text>
+          <text x={(CX_A + CX_B) / 2} y={CY + 5} fontSize={11} fill="#475569" textAnchor="middle">{INTER}</text>
+          <text x={CX_B + 26} y={CY + 22} fontSize={11} fill="#475569" textAnchor="middle">{B_ONLY}</text>
+          <text x={SVG_W - 30} y={SVG_H - 12} fontSize={11} fill="#334155" textAnchor="end">
             neither: {NEITHER}
           </text>
         </svg>

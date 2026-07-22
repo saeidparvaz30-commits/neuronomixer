@@ -34,7 +34,7 @@ type Feedback = "low" | "high" | "correct" | null;
 
 const CW = 720;
 const CH = 240;
-const PAD = { left: 56, right: 14, top: 12, bottom: 30 };
+const PAD = { left: 68, right: 14, top: 12, bottom: 46 };
 
 export default function CacheSavings({
   promptTokens,
@@ -220,8 +220,8 @@ export default function CacheSavings({
             <text
               key={f}
               x={PAD.left - 6}
-              y={yOf(maxY * f) + 3}
-              fontSize={10}
+              y={yOf(maxY * f) + 5}
+              fontSize={14}
               fill="#475569"
               textAnchor="end"
             >
@@ -232,8 +232,8 @@ export default function CacheSavings({
             <text
               key={n}
               x={xOf(n)}
-              y={CH - PAD.bottom + 16}
-              fontSize={10}
+              y={CH - PAD.bottom + 18}
+              fontSize={14}
               fill="#475569"
               textAnchor="middle"
             >
@@ -243,7 +243,7 @@ export default function CacheSavings({
           <text
             x={CW - PAD.right}
             y={CH - 4}
-            fontSize={10}
+            fontSize={14}
             fill="#475569"
             textAnchor="end"
           >
@@ -264,7 +264,7 @@ export default function CacheSavings({
               <text
                 x={xOf(breakEven)}
                 y={PAD.top + 10}
-                fontSize={10}
+                fontSize={14}
                 fill="var(--color-success)"
                 textAnchor="middle"
               >

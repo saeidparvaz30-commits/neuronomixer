@@ -218,7 +218,7 @@ export default function Phase4Analyze({
             <text
               x={toSvgX(zCrit) + 4}
               y={PAD.t + 12}
-              fontSize={9}
+              fontSize={15}
               fill="#ef4444"
             >
               z={zCrit.toFixed(2)}
@@ -227,7 +227,7 @@ export default function Phase4Analyze({
               <text
                 x={toSvgX(-zCrit) - 4}
                 y={PAD.t + 12}
-                fontSize={9}
+                fontSize={15}
                 fill="#ef4444"
                 textAnchor="end"
               >
@@ -236,8 +236,8 @@ export default function Phase4Analyze({
             )}
             <text
               x={zSvgX + 4}
-              y={PAD.t + 24}
-              fontSize={9}
+              y={PAD.t + 32}
+              fontSize={15}
               fill={isSignificant ? "#3bb4a4" : "var(--color-accent)"}
             >
               z={z.toFixed(2)}
@@ -260,7 +260,7 @@ export default function Phase4Analyze({
                 x={toSvgX(v)}
                 y={H - PAD.b + 14}
                 textAnchor="middle"
-                fontSize={9}
+                fontSize={15}
                 fill="#475569"
               >
                 {v}
@@ -268,7 +268,7 @@ export default function Phase4Analyze({
             ))}
 
             {/* X axis label */}
-            <text x={W / 2} y={H - 2} textAnchor="middle" fontSize={9} fill="#475569">
+            <text x={W / 2} y={H - 2} textAnchor="middle" fontSize={15} fill="#475569">
               z-statistic
             </text>
           </svg>

@@ -35,12 +35,18 @@ function Challenge1({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
   const [tooltip, setTooltip]       = useState<string | null>(null);
 
   function handleCell(rowIdx: number, col: string) {
-    if (isPassed) return;
     const problem = matchProblem(rowIdx, col);
     const key     = `${rowIdx}:${col}`;
 
+    if (problem && (isPassed || found.has(problem.key))) {
+      // Re-show the hint so found cells stay reviewable by tap as well as hover
+      setTooltip(problem.hint);
+      setTimeout(() => setTooltip(null), 3500);
+      return;
+    }
+    if (isPassed) return;
+
     if (problem) {
-      if (found.has(problem.key)) return;
       const next = new Set(found);
       next.add(problem.key);
       setFound(next);
@@ -126,7 +132,7 @@ function Challenge1({ isPassed, onPass }: { isPassed: boolean; onPass: () => voi
       {isPassed && (
         <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
           className="mt-2 px-3 py-2 rounded-lg bg-[#3bb4a4]/10 border border-[#3bb4a4]/30 text-[12px] text-[var(--color-success)]">
-          All 3 problems found! Nulls, format inconsistencies, and duplicates appear in virtually every real-world dataset. Hover the red cells to review each issue.
+          All 3 problems found! Nulls, format inconsistencies, and duplicates appear in virtually every real-world dataset. Tap or hover the red cells to review each issue.
         </motion.div>
       )}
     </div>

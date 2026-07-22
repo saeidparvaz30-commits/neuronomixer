@@ -17,7 +17,7 @@ const NEXT_GUIDE_SLUG = "logistic-regression";
 // ── SVG helpers ────────────────────────────────────────────────────────────────
 
 const PLOT_W = 340, PLOT_H = 260;
-const PAD = { l: 46, r: 20, t: 20, b: 42 };
+const PAD = { l: 52, r: 20, t: 20, b: 46 };
 const IW = PLOT_W - PAD.l - PAD.r;
 const IH = PLOT_H - PAD.t - PAD.b;
 
@@ -50,13 +50,15 @@ function PlotAxes({ xMin, xMax, yMin, yMax, xLabel, yLabel }: AxisProps) {
       <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={PAD.t + IH} stroke="#334155" strokeWidth="1.5" />
       <line x1={PAD.l} y1={PAD.t + IH} x2={PAD.l + IW} y2={PAD.t + IH} stroke="#334155" strokeWidth="1.5" />
       {xTicks.map((v, i) => (
-        <text key={`xl${i}`} x={toSvgX(v, xMin, xMax)} y={PAD.t + IH + 14} textAnchor="middle" fontSize="8" fill="#475569" fontFamily="Inter,sans-serif">{axisTicksFmt(v)}</text>
+        <text key={`xl${i}`} x={toSvgX(v, xMin, xMax)} y={PAD.t + IH + 16} textAnchor="middle" fontSize="11" fill="#475569" fontFamily="Inter,sans-serif">{axisTicksFmt(v)}</text>
       ))}
       {yTicks.map((v, i) => (
-        <text key={`yl${i}`} x={PAD.l - 5} y={toSvgY(v, yMin, yMax) + 3} textAnchor="end" fontSize="8" fill="#475569" fontFamily="Inter,sans-serif">{axisTicksFmt(v)}</text>
+        i % 2 === 0 ? (
+          <text key={`yl${i}`} x={PAD.l - 5} y={toSvgY(v, yMin, yMax) + 4} textAnchor="end" fontSize="11" fill="#475569" fontFamily="Inter,sans-serif">{axisTicksFmt(v)}</text>
+        ) : null
       ))}
-      <text x={PAD.l + IW / 2} y={PLOT_H - 4} textAnchor="middle" fontSize="9" fill="#94a3b8" fontFamily="Inter,sans-serif">{xLabel}</text>
-      <text x={10} y={PAD.t + IH / 2} textAnchor="middle" fontSize="9" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,10,${PAD.t + IH / 2})`}>{yLabel}</text>
+      <text x={PAD.l + IW / 2} y={PLOT_H - 4} textAnchor="middle" fontSize="12" fill="#94a3b8" fontFamily="Inter,sans-serif">{xLabel}</text>
+      <text x={11} y={PAD.t + IH / 2} textAnchor="middle" fontSize="12" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,11,${PAD.t + IH / 2})`}>{yLabel}</text>
     </>
   );
 }
@@ -115,8 +117,8 @@ function ResidualsVsFitted({ points, modelState }: ResidualsPlotProps) {
               />
               {isHov && (
                 <g style={{ pointerEvents: "none" }}>
-                  <rect x={cx - 44} y={cy - 36} width="88" height="22" rx="4" fill="#0f172a" stroke="#334155" strokeWidth="1" />
-                  <text x={cx} y={cy - 22} textAnchor="middle" fontSize="8" fill="#f1f5f9" fontFamily="Inter,sans-serif">
+                  <rect x={cx - 64} y={cy - 40} width="128" height="26" rx="4" fill="#0f172a" stroke="#334155" strokeWidth="1" />
+                  <text x={cx} y={cy - 23} textAnchor="middle" fontSize="11" fill="#f1f5f9" fontFamily="Inter,sans-serif">
                     Fitted={pt.fitted.toFixed(1)}, Res={pt.residual.toFixed(2)}
                   </text>
                 </g>
@@ -193,8 +195,8 @@ function QQPlot({ points, modelState }: QQPlotProps) {
               />
               {isHov && (
                 <g style={{ pointerEvents: "none" }}>
-                  <rect x={cx - 44} y={cy - 36} width="88" height="22" rx="4" fill="#0f172a" stroke="#334155" strokeWidth="1" />
-                  <text x={cx} y={cy - 22} textAnchor="middle" fontSize="8" fill="#f1f5f9" fontFamily="Inter,sans-serif">
+                  <rect x={cx - 64} y={cy - 40} width="128" height="26" rx="4" fill="#0f172a" stroke="#334155" strokeWidth="1" />
+                  <text x={cx} y={cy - 23} textAnchor="middle" fontSize="11" fill="#f1f5f9" fontFamily="Inter,sans-serif">
                     Th={pt.theoretical.toFixed(2)}, Obs={pt.observed.toFixed(2)}
                   </text>
                 </g>
@@ -264,8 +266,8 @@ function ScaleLocation({ points, modelState }: ScaleLocationProps) {
               />
               {isHov && (
                 <g style={{ pointerEvents: "none" }}>
-                  <rect x={cx - 44} y={cy - 36} width="88" height="22" rx="4" fill="#0f172a" stroke="#334155" strokeWidth="1" />
-                  <text x={cx} y={cy - 22} textAnchor="middle" fontSize="8" fill="#f1f5f9" fontFamily="Inter,sans-serif">
+                  <rect x={cx - 64} y={cy - 40} width="128" height="26" rx="4" fill="#0f172a" stroke="#334155" strokeWidth="1" />
+                  <text x={cx} y={cy - 23} textAnchor="middle" fontSize="11" fill="#f1f5f9" fontFamily="Inter,sans-serif">
                     Fitted={pt.fitted.toFixed(1)}, √|r|={sqrtAbsStd[i].toFixed(2)}
                   </text>
                 </g>
@@ -326,15 +328,15 @@ function LeveragePlot({ points, modelState, onTogglePoint }: LeveragePlotProps) 
             stroke="#ef4444" strokeWidth="1" strokeDasharray="4 3" opacity="0.5"
           />
         ))}
-        <text x={PAD.l + IW - 2} y={toSvgY(2, yMin, yMax) - 3} textAnchor="end" fontSize="8" fill="#ef4444" opacity="0.7" fontFamily="Inter,sans-serif">+2</text>
-        <text x={PAD.l + IW - 2} y={toSvgY(-2, yMin, yMax) + 10} textAnchor="end" fontSize="8" fill="#ef4444" opacity="0.7" fontFamily="Inter,sans-serif">-2</text>
+        <text x={PAD.l + IW - 2} y={toSvgY(2, yMin, yMax) - 3} textAnchor="end" fontSize="11" fill="#ef4444" opacity="0.7" fontFamily="Inter,sans-serif">+2</text>
+        <text x={PAD.l + IW - 2} y={toSvgY(-2, yMin, yMax) + 10} textAnchor="end" fontSize="11" fill="#ef4444" opacity="0.7" fontFamily="Inter,sans-serif">-2</text>
         {/* Vertical leverage threshold line */}
         <line
           x1={toSvgX(levThreshold, xMin, xMax)} y1={PAD.t}
           x2={toSvgX(levThreshold, xMin, xMax)} y2={PAD.t + IH}
           stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="5 3" opacity="0.6"
         />
-        <text x={toSvgX(levThreshold, xMin, xMax) + 2} y={PAD.t + 10} fontSize="7" fill="var(--color-accent)" opacity="0.7" fontFamily="Inter,sans-serif">Lev threshold</text>
+        <text x={toSvgX(levThreshold, xMin, xMax) + 2} y={PAD.t + 12} fontSize="11" fill="var(--color-accent)" opacity="0.7" fontFamily="Inter,sans-serif">Lev threshold</text>
         {/* Cook's D=0.5 contour (positive side) */}
         {cook05Pos.length > 1 && cookContourX.slice(0, cook05Pos.length).map((h, i) => {
           if (i === 0) return null;
@@ -369,12 +371,12 @@ function LeveragePlot({ points, modelState, onTogglePoint }: LeveragePlotProps) 
                 style={{ transition: "r 0.1s" }}
               />
               {flagged && (
-                <text x={cx + 6} y={cy - 5} fontSize="8" fill="#ef4444" fontFamily="Inter,sans-serif">#{pt.id}</text>
+                <text x={cx + 6} y={cy - 5} fontSize="11" fill="#ef4444" fontFamily="Inter,sans-serif">#{pt.id}</text>
               )}
               {isHov && (
                 <g style={{ pointerEvents: "none" }}>
-                  <rect x={cx - 50} y={cy - 38} width="100" height="22" rx="4" fill="#0f172a" stroke="#334155" strokeWidth="1" />
-                  <text x={cx} y={cy - 24} textAnchor="middle" fontSize="8" fill="#f1f5f9" fontFamily="Inter,sans-serif">
+                  <rect x={cx - 64} y={cy - 42} width="128" height="26" rx="4" fill="#0f172a" stroke="#334155" strokeWidth="1" />
+                  <text x={cx} y={cy - 25} textAnchor="middle" fontSize="11" fill="#f1f5f9" fontFamily="Inter,sans-serif">
                     h={pt.leverage.toFixed(3)}, D={pt.cooksD.toFixed(3)}
                   </text>
                 </g>
@@ -400,6 +402,7 @@ function VIFTable({ data }: { data: VIFResult[] }) {
     problematic: { label: "PROBLEMATIC", color: "#ef4444", bg: "rgba(239,68,68,0.12)"  },
   };
   return (
+    <div className="overflow-x-auto">
     <table className="w-full text-[12px]">
       <thead>
         <tr className="border-b border-[#1e293b]">
@@ -426,6 +429,7 @@ function VIFTable({ data }: { data: VIFResult[] }) {
         })}
       </tbody>
     </table>
+    </div>
   );
 }
 
@@ -783,6 +787,7 @@ export default function RegressionDiagnosticsClient() {
                 <motion.div
                   initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
                   className="rounded-2xl border border-[#1e293b] bg-[#0f172a] overflow-hidden">
+                  <div className="overflow-x-auto">
                   <table className="w-full text-[12px]">
                     <thead>
                       <tr className="border-b border-[#1e293b]">
@@ -809,6 +814,7 @@ export default function RegressionDiagnosticsClient() {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 </motion.div>
               )}
             </motion.section>

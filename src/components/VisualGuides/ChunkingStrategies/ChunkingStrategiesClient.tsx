@@ -235,7 +235,7 @@ function TradeoffChart() {
         y={PAD.top - 6}
         textAnchor="middle"
         fill="#d4af37"
-        fontSize={10}
+        fontSize={15}
       >
         Optimal Zone
       </text>
@@ -260,9 +260,9 @@ function TradeoffChart() {
       />
 
       {/* Y labels */}
-      <text x={PAD.left - 6} y={PAD.top + 4} textAnchor="end" fill="#94a3b8" fontSize={9}>100%</text>
-      <text x={PAD.left - 6} y={PAD.top + iH / 2 + 4} textAnchor="end" fill="#94a3b8" fontSize={9}>50%</text>
-      <text x={PAD.left - 6} y={PAD.top + iH + 4} textAnchor="end" fill="#94a3b8" fontSize={9}>0%</text>
+      <text x={PAD.left - 6} y={PAD.top + 4} textAnchor="end" fill="#94a3b8" fontSize={15}>100%</text>
+      <text x={PAD.left - 6} y={PAD.top + iH / 2 + 4} textAnchor="end" fill="#94a3b8" fontSize={15}>50%</text>
+      <text x={PAD.left - 6} y={PAD.top + iH + 4} textAnchor="end" fill="#94a3b8" fontSize={15}>0%</text>
 
       {/* X labels */}
       {xLabels.map((lbl, i) => (
@@ -272,7 +272,7 @@ function TradeoffChart() {
           y={PAD.top + iH + 16}
           textAnchor="middle"
           fill="#94a3b8"
-          fontSize={9}
+          fontSize={15}
         >
           {lbl}
         </text>
@@ -304,9 +304,9 @@ function TradeoffChart() {
 
       {/* Legend */}
       <circle cx={PAD.left + 8} cy={PAD.top + iH + 30} r={4} fill="#3bb4a4" />
-      <text x={PAD.left + 16} y={PAD.top + iH + 34} fill="#94a3b8" fontSize={10}>Retrieval precision</text>
-      <circle cx={PAD.left + 130} cy={PAD.top + iH + 30} r={4} fill="#ec4899" />
-      <text x={PAD.left + 138} y={PAD.top + iH + 34} fill="#94a3b8" fontSize={10}>Context coherence</text>
+      <text x={PAD.left + 16} y={PAD.top + iH + 34} fill="#94a3b8" fontSize={15}>Retrieval precision</text>
+      <circle cx={PAD.left + 220} cy={PAD.top + iH + 30} r={4} fill="#ec4899" />
+      <text x={PAD.left + 228} y={PAD.top + iH + 34} fill="#94a3b8" fontSize={15}>Context coherence</text>
     </svg>
   );
 }

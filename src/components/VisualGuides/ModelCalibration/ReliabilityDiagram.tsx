@@ -53,10 +53,10 @@ function ReliabilityDiagramInner({ bins, ece, n, viewLabel }: Props) {
         {[0, 0.25, 0.5, 0.75, 1].map((t) => (
           <g key={t}>
             <line x1={x(0)} y1={y(t)} x2={x(1)} y2={y(t)} stroke="#1e293b" strokeWidth={1} />
-            <text x={x(0) - 8} y={y(t) + 4} textAnchor="end" fontSize={10} fill="#475569">
+            <text x={x(0) - 8} y={y(t) + 5} textAnchor="end" fontSize={16} fill="#475569">
               {t.toFixed(2)}
             </text>
-            <text x={x(t)} y={H - M.bottom + 16} textAnchor="middle" fontSize={10} fill="#475569">
+            <text x={x(t)} y={H - M.bottom + 20} textAnchor="middle" fontSize={16} fill="#475569">
               {t.toFixed(2)}
             </text>
           </g>
@@ -123,14 +123,14 @@ function ReliabilityDiagramInner({ bins, ece, n, viewLabel }: Props) {
         {/* Axes */}
         <line x1={x(0)} y1={y(0)} x2={x(1)} y2={y(0)} stroke="#334155" strokeWidth={1} />
         <line x1={x(0)} y1={y(0)} x2={x(0)} y2={y(1)} stroke="#334155" strokeWidth={1} />
-        <text x={x(0.5)} y={H - 6} textAnchor="middle" fontSize={11} fill="#94a3b8">
+        <text x={x(0.5)} y={H - 6} textAnchor="middle" fontSize={17} fill="#94a3b8">
           Mean predicted probability (confidence)
         </text>
         <text
           x={14}
           y={y(0.5)}
           textAnchor="middle"
-          fontSize={11}
+          fontSize={17}
           fill="#94a3b8"
           transform={`rotate(-90 14 ${y(0.5)})`}
         >

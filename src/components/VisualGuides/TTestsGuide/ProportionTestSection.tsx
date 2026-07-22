@@ -56,23 +56,23 @@ function ProportionBars({
         stroke="white" strokeWidth="1.5" />
 
       {/* Labels */}
-      <text x={PAD.l - 4} y={y1 + barH / 2 + 4} textAnchor="end" fill="#1e5d8a" fontSize="8" fontWeight="600">
+      <text x={PAD.l - 4} y={y1 + barH / 2 + 4} textAnchor="end" fill="#1e5d8a" fontSize="10" fontWeight="600">
         Treat
       </text>
-      <text x={PAD.l - 4} y={y2 + barH / 2 + 4} textAnchor="end" fill="#3bb4a4" fontSize="8" fontWeight="600">
+      <text x={PAD.l - 4} y={y2 + barH / 2 + 4} textAnchor="end" fill="#3bb4a4" fontSize="10" fontWeight="600">
         Control
       </text>
-      <text x={scale(p1) + 4} y={y1 + barH / 2 + 4} fill="white" fontSize="8">
+      <text x={scale(p1) + 4} y={y1 + barH / 2 + 4} fill="white" fontSize="10">
         {(p1 * 100).toFixed(1)}%
       </text>
-      <text x={scale(p2) + 4} y={y2 + barH / 2 + 4} fill="white" fontSize="8">
+      <text x={scale(p2) + 4} y={y2 + barH / 2 + 4} fill="white" fontSize="10">
         {(p2 * 100).toFixed(1)}%
       </text>
-      <text x={PAD.l - 2} y={H - 6} textAnchor="end" fill="#475569" fontSize="7">0%</text>
-      <text x={scale(0.5)} y={H - 6} textAnchor="middle" fill="#475569" fontSize="7">50%</text>
-      <text x={scale(1)} y={H - 6} textAnchor="middle" fill="#475569" fontSize="7">100%</text>
-      <text x={scale(0.25)} y={H - 6} textAnchor="middle" fill="#475569" fontSize="7">25%</text>
-      <text x={scale(0.75)} y={H - 6} textAnchor="middle" fill="#475569" fontSize="7">75%</text>
+      <text x={PAD.l - 2} y={H - 6} textAnchor="end" fill="#475569" fontSize="10">0%</text>
+      <text x={scale(0.5)} y={H - 6} textAnchor="middle" fill="#475569" fontSize="10">50%</text>
+      <text x={scale(1)} y={H - 6} textAnchor="middle" fill="#475569" fontSize="10">100%</text>
+      <text x={scale(0.25)} y={H - 6} textAnchor="middle" fill="#475569" fontSize="10">25%</text>
+      <text x={scale(0.75)} y={H - 6} textAnchor="middle" fill="#475569" fontSize="10">75%</text>
     </svg>
   );
 }
@@ -247,9 +247,9 @@ export default function ProportionTestSection({ onTestRun }: Props) {
                         <rect x={tx(lo)} y={14} width={tx(hi) - tx(lo)} height={12} fill="var(--color-accent)" opacity="0.7" rx="2" />
                         <circle cx={tx((lo + hi) / 2)} cy={20} r="3" fill="var(--color-accent)" />
                         <line x1={zx} y1={6} x2={zx} y2={34} stroke="#ef4444" strokeWidth="1.5" strokeDasharray="2,2" />
-                        <text x={zx} y={6} textAnchor="middle" fill="#ef4444" fontSize="7">0</text>
-                        <text x={tx(lo)} y={36} textAnchor="middle" fill="var(--color-accent)" fontSize="7">{(lo * 100).toFixed(1)}%</text>
-                        <text x={tx(hi)} y={36} textAnchor="middle" fill="var(--color-accent)" fontSize="7">{(hi * 100).toFixed(1)}%</text>
+                        <text x={zx} y={6} textAnchor="middle" fill="#ef4444" fontSize="10">0</text>
+                        <text x={tx(lo)} y={36} textAnchor="middle" fill="var(--color-accent)" fontSize="10">{(lo * 100).toFixed(1)}%</text>
+                        <text x={tx(hi)} y={36} textAnchor="middle" fill="var(--color-accent)" fontSize="10">{(hi * 100).toFixed(1)}%</text>
                       </>
                     );
                   })()}

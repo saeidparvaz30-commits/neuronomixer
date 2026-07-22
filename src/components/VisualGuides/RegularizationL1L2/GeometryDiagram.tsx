@@ -47,7 +47,7 @@ function Contours({ radii }: { radii: [number, number][] }) {
         />
       ))}
       <circle cx={CX} cy={CY} r={3} fill="#94a3b8" />
-      <text x={CX} y={CY - 10} textAnchor="middle" fontSize={9} fill="#94a3b8">
+      <text x={CX} y={CY - 10} textAnchor="middle" fontSize={10} fill="#94a3b8">
         OLS minimum
       </text>
     </g>
@@ -83,7 +83,7 @@ function GeometryDiagramInner() {
             <text x={OX - 6} y={OY - T - 10} textAnchor="end" fontSize={10} fontWeight={700} style={{ fill: "var(--color-success)" }}>
               corner touch: w1 = 0
             </text>
-            <text x={OX - T + 4} y={OY + T - 2} fontSize={9} fill="#a855f7">
+            <text x={OX - T + 4} y={OY + T - 2} fontSize={10} fill="#a855f7">
               |w1| + |w2| ≤ t
             </text>
           </svg>
@@ -119,7 +119,7 @@ function GeometryDiagramInner() {
             <text x={166} y={124} fontSize={10} fontWeight={700} style={{ fill: "var(--color-success)" }}>
               both shrink, none = 0
             </text>
-            <text x={OX - T + 2} y={OY + T + 12} fontSize={9} fill="#3bb4a4">
+            <text x={OX - T + 2} y={OY + T + 12} fontSize={10} fill="#3bb4a4">
               w1² + w2² ≤ t²
             </text>
           </svg>

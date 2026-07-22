@@ -65,10 +65,10 @@ export default function InteractionLab({ rows, fits, interactionOn, onToggle, se
             <g key={v}>
               <line x1={s(v)} x2={s(v)} y1={14} y2={H - 36} stroke="#1e293b" strokeWidth={1} />
               <line x1={PAD} x2={W - 14} y1={syFlip(v)} y2={syFlip(v)} stroke="#1e293b" strokeWidth={1} />
-              <text x={s(v)} y={H - 20} textAnchor="middle" fontSize={10} fill="#475569">
+              <text x={s(v)} y={H - 18} textAnchor="middle" fontSize={13} fill="#475569">
                 {v}
               </text>
-              <text x={PAD - 6} y={syFlip(v) + 3} textAnchor="end" fontSize={10} fill="#475569">
+              <text x={PAD - 6} y={syFlip(v) + 4} textAnchor="end" fontSize={13} fill="#475569">
                 {v}
               </text>
             </g>
@@ -92,10 +92,10 @@ export default function InteractionLab({ rows, fits, interactionOn, onToggle, se
               opacity={0.6}
             />
           ))}
-          <text x={W - 14} y={H - 4} textAnchor="end" fontSize={10} fill="#475569">
+          <text x={W - 14} y={H - 4} textAnchor="end" fontSize={13} fill="#475569">
             actual cost ($)
           </text>
-          <text x={12} y={12} fontSize={10} fill="#475569">
+          <text x={12} y={14} fontSize={13} fill="#475569">
             predicted ($)
           </text>
         </svg>

@@ -29,7 +29,7 @@ import {
 
 const SVG_W = 520;
 const SVG_H = 420;
-const PAD = { l: 56, r: 20, t: 20, b: 54 };
+const PAD = { l: 60, r: 20, t: 20, b: 54 };
 const PLOT_W = SVG_W - PAD.l - PAD.r;
 const PLOT_H = SVG_H - PAD.t - PAD.b;
 
@@ -296,8 +296,8 @@ function ScatterPlot({
               stroke="#1e293b" strokeWidth={1}
             />
             <text
-              x={sx} y={PAD.t + PLOT_H + 18}
-              textAnchor="middle" fill="#475569" fontSize={10}
+              x={sx} y={PAD.t + PLOT_H + 20}
+              textAnchor="middle" fill="#475569" fontSize={16}
             >
               {Number.isInteger(t) ? t : t.toFixed(1)}
             </text>
@@ -315,8 +315,8 @@ function ScatterPlot({
               stroke="#1e293b" strokeWidth={1}
             />
             <text
-              x={PAD.l - 8} y={sy + 3.5}
-              textAnchor="end" fill="#475569" fontSize={10}
+              x={PAD.l - 8} y={sy + 5}
+              textAnchor="end" fill="#475569" fontSize={16}
             >
               {Number.isInteger(t) ? t : t.toFixed(1)}
             </text>
@@ -331,13 +331,13 @@ function ScatterPlot({
       {/* Axis labels */}
       <text
         x={PAD.l + PLOT_W / 2} y={SVG_H - 8}
-        textAnchor="middle" fill="#94a3b8" fontSize={11}
+        textAnchor="middle" fill="#94a3b8" fontSize={17}
       >
         Predictor (x)
       </text>
       <text
         x={14} y={PAD.t + PLOT_H / 2}
-        textAnchor="middle" fill="#94a3b8" fontSize={11}
+        textAnchor="middle" fill="#94a3b8" fontSize={17}
         transform={`rotate(-90, 14, ${PAD.t + PLOT_H / 2})`}
       >
         Response (y)
@@ -453,7 +453,7 @@ function ScatterPlot({
       {points.length === 0 && (
         <text
           x={PAD.l + PLOT_W / 2} y={PAD.t + PLOT_H / 2}
-          textAnchor="middle" fill="#334155" fontSize={13}
+          textAnchor="middle" fill="#334155" fontSize={16}
         >
           Click to add points
         </text>
@@ -462,8 +462,8 @@ function ScatterPlot({
       {/* Equation in top-right */}
       {eqText && (
         <text
-          x={PAD.l + PLOT_W - 6} y={PAD.t + 16}
-          textAnchor="end" fill="var(--color-accent)" fontSize={11}
+          x={PAD.l + PLOT_W - 6} y={PAD.t + 18}
+          textAnchor="end" fill="var(--color-accent)" fontSize={16}
           fontFamily="monospace"
         >
           {eqText}
@@ -520,10 +520,10 @@ function ResidualPlot({ fit }: { fit: OLSFit }) {
       {/* Axes */}
       <line x1={P.l} y1={P.t + IH} x2={P.l + IW} y2={P.t + IH} stroke="#334155" />
       <line x1={P.l} y1={P.t} x2={P.l} y2={P.t + IH} stroke="#334155" />
-      <text x={P.l + IW / 2} y={H - 6} textAnchor="middle" fill="#94a3b8" fontSize={9}>
+      <text x={P.l + IW / 2} y={H - 6} textAnchor="middle" fill="#94a3b8" fontSize={12}>
         Fitted Values
       </text>
-      <text x={10} y={P.t + IH / 2} textAnchor="middle" fill="#94a3b8" fontSize={9}
+      <text x={10} y={P.t + IH / 2} textAnchor="middle" fill="#94a3b8" fontSize={12}
         transform={`rotate(-90, 10, ${P.t + IH / 2})`}>
         Residuals
       </text>
@@ -606,10 +606,10 @@ function QQPlot({ fit }: { fit: OLSFit }) {
       {/* Axes */}
       <line x1={P.l} y1={P.t + IH} x2={P.l + IW} y2={P.t + IH} stroke="#334155" />
       <line x1={P.l} y1={P.t} x2={P.l} y2={P.t + IH} stroke="#334155" />
-      <text x={P.l + IW / 2} y={H - 6} textAnchor="middle" fill="#94a3b8" fontSize={9}>
+      <text x={P.l + IW / 2} y={H - 6} textAnchor="middle" fill="#94a3b8" fontSize={12}>
         Theoretical Quantiles
       </text>
-      <text x={10} y={P.t + IH / 2} textAnchor="middle" fill="#94a3b8" fontSize={9}
+      <text x={10} y={P.t + IH / 2} textAnchor="middle" fill="#94a3b8" fontSize={12}
         transform={`rotate(-90, 10, ${P.t + IH / 2})`}>
         Sample Quantiles
       </text>
@@ -1066,7 +1066,7 @@ export default function SimpleRegressionClient() {
                   value={predXRaw}
                   onChange={(e) => handlePredXChange(e.target.value)}
                   step={0.1}
-                  className="flex-1 text-[12px] bg-[#1e293b] text-white border border-[#334155] rounded-lg px-3 py-1.5 focus:outline-none focus:border-[var(--color-accent)]"
+                  className="flex-1 min-w-0 text-[12px] bg-[#1e293b] text-white border border-[#334155] rounded-lg px-3 py-1.5 focus:outline-none focus:border-[var(--color-accent)]"
                   placeholder={fit ? fit.meanX.toFixed(2) : "x value"}
                 />
                 <input
@@ -1077,7 +1077,7 @@ export default function SimpleRegressionClient() {
                   step={((bounds.xMax - bounds.xMin) / 100).toFixed(3)}
                   value={predXRaw || (fit ? fit.meanX.toFixed(2) : "0")}
                   onChange={(e) => handlePredXChange(e.target.value)}
-                  className="flex-1 accent-[var(--color-accent)]"
+                  className="flex-1 min-w-0 accent-[var(--color-accent)]"
                 />
               </div>
               {predFit && predX !== null ? (

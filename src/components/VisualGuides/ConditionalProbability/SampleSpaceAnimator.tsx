@@ -257,9 +257,9 @@ function MarbleBagView({ selectedNodeId }: { selectedNodeId: string | null }) {
                 {/* "drawn" label */}
                 <text
                   x={drawnCX}
-                  y={drawnCY + R + 10}
+                  y={drawnCY + R + 12}
                   textAnchor="middle"
-                  fontSize={8}
+                  fontSize={10}
                   fill="#475569"
                   style={{ userSelect: "none" }}
                 >

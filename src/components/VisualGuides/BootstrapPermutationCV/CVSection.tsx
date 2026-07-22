@@ -375,12 +375,12 @@ export default function CVSection({ onCvDone }: CVSectionProps) {
               <line x1={SP.l} y1={SH - SP.b} x2={SW - SP.r} y2={SH - SP.b} stroke="#334155" strokeWidth="1" />
               <line x1={SP.l} y1={SP.t} x2={SP.l} y2={SH - SP.b} stroke="#334155" strokeWidth="1" />
               {[0, 1, 2, 3, 4, 5].map((v) => (
-                <text key={v} x={scx(v)} y={SH - 4} fill="#475569" fontSize="8" textAnchor="middle">
+                <text key={v} x={scx(v)} y={SH - 4} fill="#475569" fontSize="12" textAnchor="middle">
                   {v}
                 </text>
               ))}
               {[0, 5, 10].map((v) => (
-                <text key={v} x={SP.l - 4} y={scy(v)} fill="#475569" fontSize="8" textAnchor="end" dominantBaseline="middle">
+                <text key={v} x={SP.l - 4} y={scy(v)} fill="#475569" fontSize="12" textAnchor="end" dominantBaseline="middle">
                   {v}
                 </text>
               ))}

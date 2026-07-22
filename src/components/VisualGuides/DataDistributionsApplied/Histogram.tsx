@@ -25,7 +25,7 @@ interface Props {
 
 const W = 640;
 const H = 300;
-const PAD = { l: 44, r: 14, t: 30, b: 34 };
+const PAD = { l: 56, r: 14, t: 30, b: 34 };
 const IW = W - PAD.l - PAD.r;
 const IH = H - PAD.t - PAD.b;
 
@@ -129,9 +129,9 @@ export default function Histogram({
             />
             <text
               x={PAD.l - 6}
-              y={toY(c) + 3}
+              y={toY(c) + 6}
               textAnchor="end"
-              fontSize="10"
+              fontSize="20"
               fill="#475569"
             >
               {c}
@@ -197,8 +197,8 @@ export default function Histogram({
             />
             <text
               x={toX(meanPos) + 4}
-              y={PAD.t + 4}
-              fontSize="10"
+              y={PAD.t + 8}
+              fontSize="20"
               fontWeight="600"
               fill="var(--color-warning)"
             >
@@ -219,8 +219,8 @@ export default function Histogram({
             />
             <text
               x={toX(medianPos) + 4}
-              y={PAD.t + 16}
-              fontSize="10"
+              y={PAD.t + 30}
+              fontSize="20"
               fontWeight="600"
               fill="var(--color-success)"
             >
@@ -242,9 +242,9 @@ export default function Histogram({
           <text
             key={i}
             x={toX(t.pos)}
-            y={PAD.t + IH + 16}
+            y={PAD.t + IH + 18}
             textAnchor={i === 0 ? "start" : i === xTicks.length - 1 ? "end" : "middle"}
-            fontSize="10"
+            fontSize="20"
             fill="#475569"
           >
             {t.label}

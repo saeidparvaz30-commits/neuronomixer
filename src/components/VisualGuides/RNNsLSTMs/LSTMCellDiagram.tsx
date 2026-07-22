@@ -71,9 +71,9 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
           animate={{ opacity: 0.7 }}
           transition={{ duration: 0.4 }}
         />
-        <text x="20" y="48" fill="var(--color-accent)" fontSize="9" textAnchor="start">Cₜ₋₁</text>
-        <text x="508" y="50" fill="var(--color-accent)" fontSize="9" textAnchor="start">Cₜ</text>
-        <text x="256" y="42" fill="var(--color-accent)" fontSize="8" textAnchor="middle">Cell State (memory highway)</text>
+        <text x="20" y="46" fill="var(--color-accent)" fontSize="16" textAnchor="start">Cₜ₋₁</text>
+        <text x="518" y="46" fill="var(--color-accent)" fontSize="16" textAnchor="end">Cₜ</text>
+        <text x="256" y="34" fill="var(--color-accent)" fontSize="16" textAnchor="middle">Cell State (memory highway)</text>
 
         {/* ─── Forget Gate (f) ─── */}
         {/* Block at x=80, y=100, colored red-tinted */}
@@ -88,18 +88,18 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.35 }}
         />
-        <text x="85" y="120" fill="white" fontSize="11" textAnchor="middle" fontWeight="700">σ</text>
-        <text x="85" y="134" fill="#fca5a5" fontSize="9" textAnchor="middle">Forget</text>
+        <text x="85" y="120" fill="white" fontSize="17" textAnchor="middle" fontWeight="700">σ</text>
+        <text x="85" y="142" fill="#fca5a5" fontSize="16" textAnchor="middle">Forget</text>
         {/* Forget gate activation bar (under block) */}
-        <text x="85" y="165" fill="#fca5a5" fontSize="8" textAnchor="middle">
+        <text x="85" y="165" fill="#fca5a5" fontSize="16" textAnchor="middle">
           f={gates.forget[0].toFixed(2)}
         </text>
 
         {/* Line from forget gate up to ⊙ on highway */}
         <line x1="85" y1="100" x2="85" y2="73" stroke="#ef4444" strokeWidth="1.5" opacity="0.7" markerEnd="url(#lstmArrow)" />
         {/* ⊙ multiply symbol on highway */}
-        <circle cx="85" cy="55" r="9" fill="#1e293b" stroke="#ef4444" strokeWidth="1.5" />
-        <text x="85" y="59" fill="#ef4444" fontSize="10" textAnchor="middle" fontWeight="700">⊙</text>
+        <circle cx="85" cy="55" r="12" fill="#1e293b" stroke="#ef4444" strokeWidth="1.5" />
+        <text x="85" y="61" fill="#ef4444" fontSize="16" textAnchor="middle" fontWeight="700">⊙</text>
 
         {/* ─── Input Gate (i) ─── */}
         <motion.rect
@@ -113,9 +113,9 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.35, delay: 0.05 }}
         />
-        <text x="215" y="120" fill="white" fontSize="11" textAnchor="middle" fontWeight="700">σ</text>
-        <text x="215" y="134" fill="#86efac" fontSize="9" textAnchor="middle">Input</text>
-        <text x="215" y="165" fill="#86efac" fontSize="8" textAnchor="middle">
+        <text x="215" y="120" fill="white" fontSize="17" textAnchor="middle" fontWeight="700">σ</text>
+        <text x="215" y="142" fill="#86efac" fontSize="16" textAnchor="middle">Input</text>
+        <text x="215" y="165" fill="#86efac" fontSize="16" textAnchor="middle">
           i={gates.input[0].toFixed(2)}
         </text>
 
@@ -131,23 +131,23 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.35, delay: 0.1 }}
         />
-        <text x="285" y="120" fill="white" fontSize="11" textAnchor="middle" fontWeight="700">tanh</text>
-        <text x="285" y="134" fill="#3bb4a4" fontSize="9" textAnchor="middle">C̃ cand.</text>
-        <text x="285" y="165" fill="#3bb4a4" fontSize="8" textAnchor="middle">
+        <text x="285" y="120" fill="white" fontSize="17" textAnchor="middle" fontWeight="700">tanh</text>
+        <text x="285" y="142" fill="#3bb4a4" fontSize="16" textAnchor="middle">C̃ cand.</text>
+        <text x="285" y="165" fill="#3bb4a4" fontSize="16" textAnchor="middle">
           c̃={gates.cell[0].toFixed(2)}
         </text>
 
         {/* i ⊙ C̃ multiply node, below the highway */}
-        <circle cx="240" cy="84" r="9" fill="#1e293b" stroke="#22c55e" strokeWidth="1.5" />
-        <text x="240" y="88" fill="#22c55e" fontSize="10" textAnchor="middle" fontWeight="700">⊙</text>
+        <circle cx="240" cy="84" r="12" fill="#1e293b" stroke="#22c55e" strokeWidth="1.5" />
+        <text x="240" y="90" fill="#22c55e" fontSize="16" textAnchor="middle" fontWeight="700">⊙</text>
 
         {/* Lines from i and C̃ into ⊙ */}
         <line x1="215" y1="100" x2="233" y2="91" stroke="#22c55e" strokeWidth="1.5" opacity="0.7" markerEnd="url(#lstmArrow)" />
         <line x1="285" y1="100" x2="247" y2="91" stroke="#3bb4a4" strokeWidth="1.5" opacity="0.7" markerEnd="url(#lstmArrow)" />
 
         {/* ⊕ add node on the highway, directly above ⊙ */}
-        <circle cx="240" cy="55" r="9" fill="#1e293b" stroke="var(--color-accent)" strokeWidth="1.5" />
-        <text x="240" y="59" fill="var(--color-accent)" fontSize="10" textAnchor="middle" fontWeight="700">⊕</text>
+        <circle cx="240" cy="55" r="12" fill="#1e293b" stroke="var(--color-accent)" strokeWidth="1.5" />
+        <text x="240" y="61" fill="var(--color-accent)" fontSize="16" textAnchor="middle" fontWeight="700">⊕</text>
         {/* i·C̃ flows upward into ⊕, joining the left-to-right highway */}
         <line x1="240" y1="75" x2="240" y2="66" stroke="#22c55e" strokeWidth="1.5" markerEnd="url(#lstmArrow)" />
 
@@ -163,9 +163,9 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.35, delay: 0.15 }}
         />
-        <text x="395" y="120" fill="white" fontSize="11" textAnchor="middle" fontWeight="700">σ</text>
-        <text x="395" y="134" fill="#d8b4fe" fontSize="9" textAnchor="middle">Output</text>
-        <text x="395" y="165" fill="#d8b4fe" fontSize="8" textAnchor="middle">
+        <text x="395" y="120" fill="white" fontSize="17" textAnchor="middle" fontWeight="700">σ</text>
+        <text x="395" y="142" fill="#d8b4fe" fontSize="16" textAnchor="middle">Output</text>
+        <text x="395" y="165" fill="#d8b4fe" fontSize="16" textAnchor="middle">
           o={gates.output[0].toFixed(2)}
         </text>
 
@@ -181,12 +181,12 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.35, delay: 0.2 }}
         />
-        <text x="460" y="120" fill="white" fontSize="10" textAnchor="middle" fontWeight="700">tanh</text>
-        <text x="460" y="134" fill="#94a3b8" fontSize="8" textAnchor="middle">(Cₜ)</text>
+        <text x="460" y="120" fill="white" fontSize="17" textAnchor="middle" fontWeight="700">tanh</text>
+        <text x="460" y="142" fill="#94a3b8" fontSize="16" textAnchor="middle">(Cₜ)</text>
 
         {/* ⊙ for output gate */}
-        <circle cx="430" cy="55" r="9" fill="#1e293b" stroke="#a855f7" strokeWidth="1.5" />
-        <text x="430" y="59" fill="#a855f7" fontSize="10" textAnchor="middle" fontWeight="700">⊙</text>
+        <circle cx="430" cy="55" r="12" fill="#1e293b" stroke="#a855f7" strokeWidth="1.5" />
+        <text x="430" y="61" fill="#a855f7" fontSize="16" textAnchor="middle" fontWeight="700">⊙</text>
 
         {/* Lines from o and tanh(C) up to ⊙ */}
         <line x1="395" y1="100" x2="395" y2="75" stroke="#a855f7" strokeWidth="1.5" opacity="0.7" />
@@ -205,7 +205,7 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.25 }}
         />
-        <text x="430" y="16" fill="#a855f7" fontSize="10" textAnchor="middle" fontWeight="700">hₜ</text>
+        <text x="430" y="16" fill="#a855f7" fontSize="16" textAnchor="middle" fontWeight="700">hₜ</text>
 
         {/* Inputs [h, x] from bottom */}
         <motion.g
@@ -215,7 +215,7 @@ export default function LSTMCellDiagram({ step, sequence }: Props) {
           transition={{ duration: 0.4 }}
         >
           <line x1="200" y1="280" x2="200" y2="155" stroke="#3b82f6" strokeWidth="1.5" strokeDasharray="4 2" markerEnd="url(#lstmArrow)" />
-          <text x="200" y="292" fill="#3b82f6" fontSize="10" textAnchor="middle">[h, xₜ=&quot;{sequence.inputToken}&quot;]</text>
+          <text x="200" y="294" fill="#3b82f6" fontSize="16" textAnchor="middle">[h, xₜ=&quot;{sequence.inputToken}&quot;]</text>
         </motion.g>
 
         {/* Input fork lines to each gate */}

@@ -93,7 +93,7 @@ export default function MissingnessPanel({ sentinelOn, onToggleSentinel }: Props
                     y={10}
                     textAnchor="middle"
                     fill="#475569"
-                    fontSize={7}
+                    fontSize={10}
                     fontFamily="monospace"
                   >
                     {key.length > 8 ? key.slice(0, 8) : key}

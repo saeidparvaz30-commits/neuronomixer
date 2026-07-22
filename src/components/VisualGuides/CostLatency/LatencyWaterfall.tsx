@@ -77,7 +77,7 @@ export default function LatencyWaterfall({
           )} tokens taking ${formatMs(lat.genMs)}, total ${formatMs(lat.totalMs)}.`}
         >
           {/* TTFT row */}
-          <text x={PAD_X} y={20} fontSize={11} fill="#94a3b8">
+          <text x={PAD_X} y={20} fontSize={14} fill="#94a3b8">
             TTFT (network + queue + prefill): {formatMs(lat.ttftMs)}
           </text>
           <rect
@@ -90,7 +90,7 @@ export default function LatencyWaterfall({
           />
 
           {/* Generation row */}
-          <text x={PAD_X} y={72} fontSize={11} fill="#94a3b8">
+          <text x={PAD_X} y={72} fontSize={14} fill="#94a3b8">
             Generation: {formatInt(outputTokens)} tokens × {tpotMs} ms ={" "}
             {formatMs(lat.genMs)}
           </text>
@@ -131,19 +131,19 @@ export default function LatencyWaterfall({
               stroke="#334155"
             />
           ))}
-          <text x={PAD_X} y={140} fontSize={10} fill="#475569">
+          <text x={PAD_X} y={140} fontSize={14} fill="#475569">
             0
           </text>
           <text
             x={ttftX}
             y={140}
-            fontSize={10}
+            fontSize={14}
             fill="#94a3b8"
             textAnchor={ttftX > W - 80 ? "end" : "middle"}
           >
             first token
           </text>
-          <text x={W - PAD_X} y={140} fontSize={10} fill="#475569" textAnchor="end">
+          <text x={W - PAD_X} y={140} fontSize={14} fill="#475569" textAnchor="end">
             {formatMs(lat.totalMs)}
           </text>
         </svg>

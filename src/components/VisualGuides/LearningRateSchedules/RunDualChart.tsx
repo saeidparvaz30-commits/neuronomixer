@@ -15,13 +15,13 @@ import {
  */
 
 const W = 680;
-const L = 52;
+const L = 56;
 const R = 14;
-const LR_TOP = 12;
+const LR_TOP = 28;
 const LR_H = 96;
 const GAP = 34;
 const LOSS_H = 170;
-const BOTTOM = 26;
+const BOTTOM = 52;
 const H = LR_TOP + LR_H + GAP + LOSS_H + BOTTOM;
 const PLOT_W = W - L - R;
 const LOSS_TOP = LR_TOP + LR_H + GAP;
@@ -115,7 +115,7 @@ export default function RunDualChart({ plannedLrs, runs, live }: Props) {
       } Exact numbers appear in the run table below the chart.`}
     >
       {/* ── LR panel ── */}
-      <text x={L} y={LR_TOP - 2} fontSize="10" fill="#94a3b8" fontWeight="600">
+      <text x={L} y={LR_TOP - 8} fontSize="21" fill="#94a3b8" fontWeight="600">
         learning rate lr(t)
       </text>
       {lrTicks.map((v) => (
@@ -132,7 +132,7 @@ export default function RunDualChart({ plannedLrs, runs, live }: Props) {
             x={L - 6}
             y={(yLr(v, maxLr) + 3).toFixed(2)}
             textAnchor="end"
-            fontSize="9"
+            fontSize="21"
             fill="#475569"
           >
             {v.toFixed(2)}
@@ -167,7 +167,7 @@ export default function RunDualChart({ plannedLrs, runs, live }: Props) {
       )}
 
       {/* ── Loss panel ── */}
-      <text x={L} y={LOSS_TOP - 6} fontSize="10" fill="#94a3b8" fontWeight="600">
+      <text x={L} y={LOSS_TOP - 8} fontSize="21" fill="#94a3b8" fontWeight="600">
         full-grid MSE (log scale)
       </text>
       {lossDecades.map((d) => (
@@ -184,7 +184,7 @@ export default function RunDualChart({ plannedLrs, runs, live }: Props) {
             x={L - 6}
             y={(yLoss(Math.pow(10, d)) + 3).toFixed(2)}
             textAnchor="end"
-            fontSize="9"
+            fontSize="21"
             fill="#475569"
           >
             {d === 0 ? "1" : `1e${d}`}
@@ -205,7 +205,7 @@ export default function RunDualChart({ plannedLrs, runs, live }: Props) {
         x={W - R}
         y={(yLoss(BASELINE) - 3).toFixed(2)}
         textAnchor="end"
-        fontSize="8.5"
+        fontSize="21"
         fill="#94a3b8"
       >
         predict-the-mean baseline ({BASELINE.toFixed(3)})
@@ -223,7 +223,7 @@ export default function RunDualChart({ plannedLrs, runs, live }: Props) {
         x={W - R}
         y={(yLoss(CONVERGED_LOSS) - 3).toFixed(2)}
         textAnchor="end"
-        fontSize="8.5"
+        fontSize="21"
         fill="var(--color-success)"
       >
         converged threshold ({CONVERGED_LOSS})
@@ -243,7 +243,7 @@ export default function RunDualChart({ plannedLrs, runs, live }: Props) {
                 x={xPos(Math.min(r.summary.divergedAt, TOTAL_STEPS)).toFixed(2)}
                 y={(LOSS_TOP + 10).toFixed(2)}
                 textAnchor="middle"
-                fontSize="11"
+                fontSize="22"
                 fontWeight="700"
                 fill={r.color}
               >
@@ -252,7 +252,7 @@ export default function RunDualChart({ plannedLrs, runs, live }: Props) {
               <text
                 x={(xPos(Math.min(r.summary.divergedAt, TOTAL_STEPS)) + 5).toFixed(2)}
                 y={(LOSS_TOP + 10).toFixed(2)}
-                fontSize="8.5"
+                fontSize="21"
                 fill={r.color}
               >
                 diverged @ step {r.summary.divergedAt}
@@ -283,9 +283,9 @@ export default function RunDualChart({ plannedLrs, runs, live }: Props) {
           />
           <text
             x={xPos(t).toFixed(2)}
-            y={(LOSS_TOP + LOSS_H + 14).toFixed(2)}
+            y={(LOSS_TOP + LOSS_H + 24).toFixed(2)}
             textAnchor="middle"
-            fontSize="9"
+            fontSize="21"
             fill="#475569"
           >
             {t}
@@ -294,9 +294,9 @@ export default function RunDualChart({ plannedLrs, runs, live }: Props) {
       ))}
       <text
         x={W - R}
-        y={(H - 4).toFixed(2)}
+        y={(H - 6).toFixed(2)}
         textAnchor="end"
-        fontSize="9"
+        fontSize="21"
         fill="#334155"
       >
         training step (shared axis)

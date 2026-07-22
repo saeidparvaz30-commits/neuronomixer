@@ -12,10 +12,10 @@ import {
 
 const W = 640;
 const H = 250;
-const L = 42;
+const L = 54;
 const R = 12;
 const T = 14;
-const B = 30;
+const B = 48;
 const PLOT_W = W - L - R;
 const PLOT_H = H - T - B;
 
@@ -193,9 +193,9 @@ export default function ExperimentLab({
                 />
                 <text
                   x={L - 6}
-                  y={(yPos(g) + 3).toFixed(2)}
+                  y={(yPos(g) + 6).toFixed(2)}
                   textAnchor="end"
-                  fontSize="9"
+                  fontSize="20"
                   fill="#475569"
                 >
                   {Math.round(g * 100)}%
@@ -206,15 +206,15 @@ export default function ExperimentLab({
               <text
                 key={r.len}
                 x={xPos(r.len).toFixed(2)}
-                y={H - 12}
+                y={H - B + 22}
                 textAnchor="middle"
-                fontSize="10"
+                fontSize="20"
                 fill="#475569"
               >
                 {r.len}
               </text>
             ))}
-            <text x={W - R} y={H - 2} textAnchor="end" fontSize="9" fill="#334155">
+            <text x={W - R} y={H - 4} textAnchor="end" fontSize="20" fill="#334155">
               problem length (digits)
             </text>
 

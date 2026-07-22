@@ -20,10 +20,10 @@ interface Props {
 
 const SVG_W = 600;
 const ROW_H = 12;
-const X_AXIS_H = 24;
+const X_AXIS_H = 28;
 const PAD_L = 44;
 const PAD_R = 16;
-const PAD_T = 20;
+const PAD_T = 26;
 const INNER_W = SVG_W - PAD_L - PAD_R;
 
 const X_MIN = 75;
@@ -168,7 +168,7 @@ export default function IntervalVisualization({
             x={trueLine + 3}
             y={PAD_T - 6}
             fill="var(--color-accent)"
-            fontSize="8"
+            fontSize="19"
             fontWeight="600"
           >
             μ=100
@@ -255,10 +255,10 @@ export default function IntervalVisualization({
                 {idx % 10 === 0 && (
                   <text
                     x={PAD_L - 3}
-                    y={barY + barH / 2 + 3}
+                    y={barY + barH / 2 + 6}
                     textAnchor="end"
                     fill="#334155"
-                    fontSize="7"
+                    fontSize="19"
                   >
                     {ci.sampleId}
                   </text>
@@ -292,10 +292,10 @@ export default function IntervalVisualization({
                 />
                 <text
                   x={tx}
-                  y={PAD_T + intervals.length * ROW_H + 16}
+                  y={PAD_T + intervals.length * ROW_H + 18}
                   textAnchor="middle"
                   fill="#475569"
-                  fontSize="8"
+                  fontSize="19"
                 >
                   {tick}
                 </text>

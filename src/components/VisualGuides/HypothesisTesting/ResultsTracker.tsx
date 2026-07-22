@@ -89,7 +89,7 @@ export default function ResultsTracker({ state }: ResultsTrackerProps) {
       </div>
 
       {/* Observed rates */}
-      <div className="grid grid-cols-3 gap-2 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
         {[
           { label: "Obs. Type I", value: observedTypeI, color: "#ef4444" },
           { label: "Obs. Type II", value: observedTypeII, color: "var(--color-warning)" },

@@ -61,7 +61,7 @@ function Bullseye({
 
       {/* Ring score labels */}
       {rings.map((r, i) => (
-        <text key={r} x={C + r * R + 4} y={C + 8} fill="#475569" fontSize="8">{ringLabels[i]}</text>
+        <text key={r} x={C + r * R - 4} y={C + 10} textAnchor="end" fill="#94a3b8" fontSize="10">{ringLabels[i]}</text>
       ))}
 
       {/* Darts */}

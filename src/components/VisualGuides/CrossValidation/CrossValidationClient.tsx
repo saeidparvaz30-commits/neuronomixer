@@ -337,10 +337,10 @@ export default function CrossValidationClient() {
                           opacity={activeFold === null || activeFold === fi ? 0.8 : 0.3}
                           rx="3"
                         />
-                        <text x={bx + barW / 2} y={BH - BP + 12} fill="#94a3b8" fontSize="9" textAnchor="middle">
+                        <text x={bx + barW / 2} y={BH - BP + 14} fill="#94a3b8" fontSize="12" textAnchor="middle">
                           {fi + 1}
                         </text>
-                        <text x={bx + barW / 2} y={BH - BP - barH - 3} fill="white" fontSize="8" textAnchor="middle">
+                        <text x={bx + barW / 2} y={BH - BP - barH - 4} fill="white" fontSize="12" textAnchor="middle">
                           {r.valMSE.toFixed(3)}
                         </text>
                       </g>
@@ -352,7 +352,7 @@ export default function CrossValidationClient() {
                     return (
                       <>
                         <line x1={BP} y1={meanY} x2={BW - BP} y2={meanY} stroke="#3bb4a4" strokeWidth="1.5" strokeDasharray="4 3" />
-                        <text x={BW - BP - 2} y={meanY - 3} fill="#3bb4a4" fontSize="9" textAnchor="end">mean</text>
+                        <text x={BW - BP - 2} y={meanY - 3} fill="#3bb4a4" fontSize="12" textAnchor="end">mean</text>
                       </>
                     );
                   })()}

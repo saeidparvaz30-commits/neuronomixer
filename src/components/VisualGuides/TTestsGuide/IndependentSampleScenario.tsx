@@ -50,15 +50,15 @@ function JitterScatter({ a, b }: { a: number[]; b: number[] }) {
         stroke="#3bb4a4" strokeWidth="2.5" />
 
       {/* Labels */}
-      <text x={aX} y={H - 6} textAnchor="middle" fill="#1e5d8a" fontSize="9" fontWeight="600">
+      <text x={aX} y={H - 6} textAnchor="middle" fill="#1e5d8a" fontSize="10" fontWeight="600">
         Campaign A
       </text>
-      <text x={bX} y={H - 6} textAnchor="middle" fill="#3bb4a4" fontSize="9" fontWeight="600">
+      <text x={bX} y={H - 6} textAnchor="middle" fill="#3bb4a4" fontSize="10" fontWeight="600">
         Campaign B
       </text>
       {/* Y ticks */}
       {[mn + 0.5, (mn + mx) / 2, mx - 0.5].map((v, i) => (
-        <text key={i} x={PAD.l - 2} y={ty(v) + 3} textAnchor="end" fill="#475569" fontSize="7">
+        <text key={i} x={PAD.l - 2} y={ty(v) + 3} textAnchor="end" fill="#475569" fontSize="10">
           {v.toFixed(1)}
         </text>
       ))}

@@ -6,11 +6,11 @@ import type { OptimizerConfig, TrajectoryPoint } from "./types";
 
 // SVG dimensions
 const SVG_W = 500;
-const SVG_H = 380;
+const SVG_H = 392;
 const PAD_L = 36;
 const PAD_R = 16;
 const PAD_T = 16;
-const PAD_B = 32;
+const PAD_B = 44;
 
 const PLOT_W = SVG_W - PAD_L - PAD_R;
 const PLOT_H = SVG_H - PAD_T - PAD_B;
@@ -230,7 +230,7 @@ export default function LossLandscape({ currentStep, configs, trajectories }: Pr
           x={toSvgX(-3) + 8}
           y={toSvgY(2) + 4}
           fill="#94a3b8"
-          fontSize="9"
+          fontSize="16"
           fontFamily="monospace"
         >
           start
@@ -262,7 +262,7 @@ export default function LossLandscape({ currentStep, configs, trajectories }: Pr
                 x={toSvgX(0) + 10}
                 y={toSvgY(0) + 4}
                 fill="var(--color-accent)"
-                fontSize="9"
+                fontSize="16"
                 fontFamily="monospace"
               >
                 min
@@ -284,8 +284,8 @@ export default function LossLandscape({ currentStep, configs, trajectories }: Pr
               stroke="#475569" strokeWidth={1}
             />
             <text
-              x={toSvgX(v)} y={PAD_T + PLOT_H + 13}
-              fill="#475569" fontSize="8" textAnchor="middle"
+              x={toSvgX(v)} y={PAD_T + PLOT_H + 17}
+              fill="#475569" fontSize="16" textAnchor="middle"
             >
               {v}
             </text>
@@ -301,8 +301,8 @@ export default function LossLandscape({ currentStep, configs, trajectories }: Pr
               stroke="#475569" strokeWidth={1}
             />
             <text
-              x={PAD_L - 6} y={toSvgY(v) + 3}
-              fill="#475569" fontSize="8" textAnchor="end"
+              x={PAD_L - 6} y={toSvgY(v) + 5}
+              fill="#475569" fontSize="16" textAnchor="end"
             >
               {v}
             </text>
@@ -314,18 +314,18 @@ export default function LossLandscape({ currentStep, configs, trajectories }: Pr
           x={PAD_L + PLOT_W / 2}
           y={SVG_H - 4}
           fill="#475569"
-          fontSize="10"
+          fontSize="26"
           textAnchor="middle"
         >
           x
         </text>
         <text
-          x={9}
+          x={14}
           y={PAD_T + PLOT_H / 2}
           fill="#475569"
-          fontSize="10"
+          fontSize="26"
           textAnchor="middle"
-          transform={`rotate(-90, 9, ${PAD_T + PLOT_H / 2})`}
+          transform={`rotate(-90, 14, ${PAD_T + PLOT_H / 2})`}
         >
           y
         </text>

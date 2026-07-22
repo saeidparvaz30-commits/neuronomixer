@@ -92,6 +92,7 @@ export default function FanOutDemo({ copies, onCopiesChange, acked, onAck }: Pro
               {fanCustomers.length} rows
             </span>
           </div>
+          <div className="overflow-x-auto">
           <table className="w-full border-collapse text-[12px]">
             <tbody>
               <AnimatePresence initial={false}>
@@ -124,6 +125,7 @@ export default function FanOutDemo({ copies, onCopiesChange, acked, onAck }: Pro
               </AnimatePresence>
             </tbody>
           </table>
+          </div>
         </div>
 
         {/* Readouts */}

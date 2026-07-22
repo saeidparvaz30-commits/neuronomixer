@@ -4,7 +4,7 @@ import React from "react";
 import { fmt } from "./types";
 
 const W = 640;
-const PAD = { l: 56, r: 18, t: 14, b: 34 };
+const PAD = { l: 64, r: 18, t: 14, b: 54 };
 
 /** Opacity ramp: oldest run faintest, newest run fully opaque. */
 const RUN_OPACITY = [0.25, 0.35, 0.5, 0.7, 1];
@@ -169,10 +169,10 @@ export default function RunningMeanChart({
             />
             <text
               x={PAD.l - 6}
-              y={yPos(t) + 3.5}
+              y={yPos(t) + 7}
               textAnchor="end"
               fill="#475569"
-              fontSize={9}
+              fontSize={20}
             >
               {fmt(t, Math.abs(yMax - yMin) >= 20 ? 0 : 2)}
             </text>
@@ -191,10 +191,10 @@ export default function RunningMeanChart({
             />
             <text
               x={xPos(n)}
-              y={H - PAD.b + 14}
+              y={H - PAD.b + 22}
               textAnchor="middle"
               fill="#475569"
-              fontSize={9}
+              fontSize={20}
             >
               {n >= 1000 ? `${n / 1000}k` : n}
             </text>
@@ -202,10 +202,10 @@ export default function RunningMeanChart({
         ))}
         <text
           x={PAD.l + innerW / 2}
-          y={H - 4}
+          y={H - 6}
           textAnchor="middle"
           fill="#475569"
-          fontSize={9}
+          fontSize={20}
         >
           n = number of draws (log scale)
         </text>
@@ -225,7 +225,7 @@ export default function RunningMeanChart({
           y={refY - 5}
           textAnchor="end"
           fill={trueMean !== null ? "var(--color-success)" : "#94a3b8"}
-          fontSize={10}
+          fontSize={20}
           fontWeight={600}
         >
           {trueMean !== null

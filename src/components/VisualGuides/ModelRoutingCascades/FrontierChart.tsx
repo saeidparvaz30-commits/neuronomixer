@@ -12,8 +12,8 @@ type Props = {
 };
 
 const W = 680;
-const H = 380;
-const M = { left: 60, right: 20, top: 18, bottom: 48 };
+const H = 392;
+const M = { left: 60, right: 20, top: 18, bottom: 60 };
 
 export default function FrontierChart({
   frontier,
@@ -89,9 +89,9 @@ export default function FrontierChart({
               />
               <text
                 x={M.left - 8}
-                y={ys(t) + 3.5}
+                y={ys(t) + 6}
                 textAnchor="end"
-                fontSize={10}
+                fontSize={21}
                 fill="#475569"
               >
                 {(t * 100).toFixed(0)}%
@@ -110,9 +110,9 @@ export default function FrontierChart({
               />
               <text
                 x={xs(t)}
-                y={H - M.bottom + 16}
+                y={H - M.bottom + 22}
                 textAnchor="middle"
-                fontSize={10}
+                fontSize={21}
                 fill="#475569"
               >
                 {t.toFixed(0)}
@@ -164,8 +164,8 @@ export default function FrontierChart({
           />
           <text
             x={xs(small.avgCost) + 10}
-            y={ys(small.accuracy) + 4}
-            fontSize={10.5}
+            y={ys(small.accuracy) + 6}
+            fontSize={21}
             fill="#94a3b8"
           >
             always-small
@@ -182,9 +182,9 @@ export default function FrontierChart({
           />
           <text
             x={xs(big.avgCost) - 12}
-            y={ys(big.accuracy) - 10}
+            y={ys(big.accuracy) - 12}
             textAnchor="end"
-            fontSize={10.5}
+            fontSize={21}
             fill="var(--color-accent)"
           >
             always-big
@@ -201,8 +201,8 @@ export default function FrontierChart({
           />
           <text
             x={xs(current.avgCost) + 12}
-            y={ys(current.accuracy) + 4}
-            fontSize={11}
+            y={ys(current.accuracy) + 6}
+            fontSize={22}
             fontWeight={700}
             fill={CASCADE_PINK}
           >
@@ -214,18 +214,18 @@ export default function FrontierChart({
             x={M.left + (W - M.left - M.right) / 2}
             y={H - 10}
             textAnchor="middle"
-            fontSize={11}
+            fontSize={22}
             fill="#94a3b8"
           >
             cost per query (relative units)
           </text>
           <text
-            x={16}
+            x={19}
             y={M.top + (H - M.top - M.bottom) / 2}
             textAnchor="middle"
-            fontSize={11}
+            fontSize={22}
             fill="#94a3b8"
-            transform={`rotate(-90 16 ${M.top + (H - M.top - M.bottom) / 2})`}
+            transform={`rotate(-90 19 ${M.top + (H - M.top - M.bottom) / 2})`}
           >
             accuracy on the stream
           </text>

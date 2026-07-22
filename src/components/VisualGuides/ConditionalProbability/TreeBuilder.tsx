@@ -7,9 +7,9 @@ import TreeNode from "./TreeNode";
 
 // ── Layout constants ──────────────────────────────────────────────────────────
 
-const LEVEL_Y: Record<number, number> = { 0: 30, 1: 120, 2: 220 };
+const LEVEL_Y: Record<number, number> = { 0: 46, 1: 158, 2: 272 };
 const SVG_WIDTH = 540;
-const SVG_HEIGHT = 300;
+const SVG_HEIGHT = 352;
 const HORIZONTAL_PADDING = 60;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -89,7 +89,7 @@ export default function TreeBuilder({ tree, selectedNodeId, onNodeClick }: TreeB
         viewBox={`0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`}
         width="100%"
         className="block max-w-full"
-        style={{ minWidth: 300, maxHeight: 320 }}
+        style={{ minWidth: 300, maxHeight: 372 }}
         aria-label="Probability tree diagram"
       >
         {/* Branches */}
@@ -121,10 +121,10 @@ export default function TreeBuilder({ tree, selectedNodeId, onNodeClick }: TreeB
               {/* Probability label on branch */}
               <text
                 x={midX}
-                y={midY - 7}
+                y={midY - 9}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                fontSize={9}
+                fontSize={17}
                 fontWeight="600"
                 fill={isOnPath ? "var(--color-accent)" : "#94a3b8"}
                 style={{ userSelect: "none" }}

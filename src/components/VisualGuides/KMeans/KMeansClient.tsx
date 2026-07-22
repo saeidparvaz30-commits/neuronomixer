@@ -141,15 +141,15 @@ function Scatter({
 
       {/* Placement hint */}
       {placingMode && centroids.length < k && (
-        <text x={W / 2} y={H - 6} textAnchor="middle" fill="#475569" fontSize="11">
+        <text x={W / 2} y={H - 6} textAnchor="middle" fill="#475569" fontSize="16">
           Click to place centroid {centroids.length + 1} of {k}
         </text>
       )}
 
       {/* Axis labels */}
-      <text x={PAD + IW / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="10">Feature 1</text>
-      <text x={8} y={PAD + IH / 2} textAnchor="middle" fill="#475569" fontSize="10"
-        transform={`rotate(-90, 8, ${PAD + IH / 2})`}>Feature 2</text>
+      <text x={PAD + IW / 2} y={H - 4} textAnchor="middle" fill="#475569" fontSize="16">Feature 1</text>
+      <text x={10} y={PAD + IH / 2} textAnchor="middle" fill="#475569" fontSize="16"
+        transform={`rotate(-90, 10, ${PAD + IH / 2})`}>Feature 2</text>
     </svg>
   );
 }
@@ -175,7 +175,7 @@ function ElbowChart({ elbowData, currentK }: { elbowData: { k: number; inertia: 
       <line x1={PAD.l} y1={PAD.t + IH} x2={PAD.l + IW} y2={PAD.t + IH} stroke="#334155" strokeWidth="1" />
       <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={PAD.t + IH} stroke="#334155" strokeWidth="1" />
       {[2, 3, 4, 5, 6].map(k => (
-        <text key={k} x={tx(k)} y={PAD.t + IH + 14} textAnchor="middle" fill={k === currentK ? "var(--color-accent)" : "#475569"} fontSize="9">{k}</text>
+        <text key={k} x={tx(k)} y={PAD.t + IH + 14} textAnchor="middle" fill={k === currentK ? "var(--color-accent)" : "#475569"} fontSize="10">{k}</text>
       ))}
       {elbowData.length > 1 && <path d={path} fill="none" stroke="#3bb4a4" strokeWidth="2" />}
       {elbowData.map(d => (
@@ -184,7 +184,7 @@ function ElbowChart({ elbowData, currentK }: { elbowData: { k: number; inertia: 
           initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}
         />
       ))}
-      <text x={PAD.l + IW / 2} y={H - 2} textAnchor="middle" fill="#475569" fontSize="9">K</text>
+      <text x={PAD.l + IW / 2} y={H - 2} textAnchor="middle" fill="#475569" fontSize="10">K</text>
     </svg>
   );
 }

@@ -55,10 +55,10 @@ export default function NoiseSchedulePanel({ schedule, t }: Props) {
             {/* axes */}
             <line x1={PAD_L} y1={yPos(1)} x2={PAD_L} y2={yPos(0)} stroke="#334155" strokeWidth={1} />
             <line x1={PAD_L} y1={yPos(0)} x2={W - PAD_R} y2={yPos(0)} stroke="#334155" strokeWidth={1} />
-            <text x={PAD_L - 6} y={yPos(1) + 4} fill="#475569" fontSize={9} textAnchor="end">1</text>
-            <text x={PAD_L - 6} y={yPos(0) + 4} fill="#475569" fontSize={9} textAnchor="end">0</text>
-            <text x={xPos(0)} y={H - 8} fill="#475569" fontSize={9} textAnchor="middle">t = 0</text>
-            <text x={xPos(T)} y={H - 8} fill="#475569" fontSize={9} textAnchor="middle">t = {T}</text>
+            <text x={PAD_L - 6} y={yPos(1) + 4} fill="#475569" fontSize={10} textAnchor="end">1</text>
+            <text x={PAD_L - 6} y={yPos(0) + 4} fill="#475569" fontSize={10} textAnchor="end">0</text>
+            <text x={xPos(0)} y={H - 8} fill="#475569" fontSize={10} textAnchor="middle">t = 0</text>
+            <text x={xPos(T)} y={H - 8} fill="#475569" fontSize={10} textAnchor="middle">t = {T}</text>
 
             {/* curves */}
             {(Object.keys(SCHEDULE_META) as ScheduleId[]).map((s) => (

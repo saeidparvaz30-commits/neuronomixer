@@ -5,7 +5,7 @@ import { RNN_GRADIENT_FLOW, LSTM_GRADIENT_FLOW } from "./sequenceData";
 
 const W = 500;
 const H = 160;
-const PAD = { top: 20, right: 20, bottom: 38, left: 44 };
+const PAD = { top: 20, right: 20, bottom: 44, left: 60 };
 const INNER_W = W - PAD.left - PAD.right;
 const INNER_H = H - PAD.top - PAD.bottom;
 const N = 6;
@@ -77,7 +77,7 @@ export default function GradientFlowChart() {
             x={PAD.left + 4}
             y={vanishingY - 3}
             fill="#ef4444"
-            fontSize="8"
+            fontSize="16"
             opacity="0.7"
           >
             vanishing gradient zone
@@ -94,15 +94,17 @@ export default function GradientFlowChart() {
                 stroke="#1e293b"
                 strokeWidth="1"
               />
-              <text
-                x={PAD.left - 4}
-                y={yPos(v) + 3}
-                fill="#475569"
-                fontSize="8"
-                textAnchor="end"
-              >
-                {v.toFixed(2)}
-              </text>
+              {(v === 0 || v === 0.5 || v === 1.0) && (
+                <text
+                  x={PAD.left - 4}
+                  y={yPos(v) + 5}
+                  fill="#475569"
+                  fontSize="16"
+                  textAnchor="end"
+                >
+                  {v.toFixed(1)}
+                </text>
+              )}
             </g>
           ))}
 
@@ -120,9 +122,9 @@ export default function GradientFlowChart() {
             <text
               key={i}
               x={xPos(i)}
-              y={H - PAD.bottom + 12}
+              y={H - PAD.bottom + 18}
               fill="#475569"
-              fontSize="9"
+              fontSize="16"
               textAnchor="middle"
             >
               t={i + 1}
@@ -130,9 +132,9 @@ export default function GradientFlowChart() {
           ))}
           <text
             x={PAD.left + INNER_W / 2}
-            y={H - 4}
+            y={H - 2}
             fill="#334155"
-            fontSize="8"
+            fontSize="16"
             textAnchor="middle"
           >
             timestep (backprop flows ←)
@@ -140,12 +142,12 @@ export default function GradientFlowChart() {
 
           {/* Y axis label */}
           <text
-            x={8}
+            x={14}
             y={PAD.top + INNER_H / 2}
             fill="#475569"
-            fontSize="8"
+            fontSize="16"
             textAnchor="middle"
-            transform={`rotate(-90, 8, ${PAD.top + INNER_H / 2})`}
+            transform={`rotate(-90, 14, ${PAD.top + INNER_H / 2})`}
           >
             gradient magnitude
           </text>
@@ -205,7 +207,7 @@ export default function GradientFlowChart() {
             x={xPos(5)}
             y={yPos(1) - 6}
             fill="#94a3b8"
-            fontSize="8"
+            fontSize="16"
             textAnchor="end"
           >
             loss computed here
@@ -214,7 +216,7 @@ export default function GradientFlowChart() {
             x={xPos(0) + 6}
             y={yPos(RNN_GRADIENT_FLOW[0].magnitude) - 5}
             fill="#1e5d8a"
-            fontSize="8"
+            fontSize="16"
           >
             {RNN_GRADIENT_FLOW[0].magnitude.toFixed(3)}
           </text>

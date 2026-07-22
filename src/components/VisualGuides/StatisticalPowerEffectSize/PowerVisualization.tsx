@@ -13,8 +13,8 @@ interface Props {
 }
 
 const W = 500;
-const H = 200;
-const PAD = { l: 10, r: 10, t: 12, b: 40 };
+const H = 230;
+const PAD = { l: 10, r: 10, t: 12, b: 70 };
 const IW = W - PAD.l - PAD.r;
 const IH = H - PAD.t - PAD.b;
 
@@ -289,7 +289,7 @@ export default function PowerVisualization({
         {paths.ticks.map(({ x, label }) => (
           <g key={label}>
             <line x1={x} y1={PAD.t + IH} x2={x} y2={PAD.t + IH + 4} stroke="#334155" strokeWidth="1" />
-            <text x={x} y={PAD.t + IH + 13} textAnchor="middle" fill="#475569" fontSize="7">
+            <text x={x} y={PAD.t + IH + 18} textAnchor="middle" fill="#475569" fontSize="16">
               {label}
             </text>
           </g>
@@ -298,38 +298,38 @@ export default function PowerVisualization({
         {/* Curve labels */}
         <text
           x={xToSvg(0, paths.xMin, paths.xMax)}
-          y={PAD.t + 9}
+          y={PAD.t + 14}
           textAnchor="middle"
           fill="rgba(255,255,255,0.6)"
-          fontSize="7.5"
+          fontSize="16"
           fontWeight="600"
         >
           H₀ (μ=0)
         </text>
         <text
-          x={Math.min(xToSvg(paths.ncp, paths.xMin, paths.xMax), W - 56)}
-          y={PAD.t + 9}
+          x={Math.min(xToSvg(paths.ncp, paths.xMin, paths.xMax), W - 110)}
+          y={PAD.t + 34}
           textAnchor="middle"
           fill="var(--color-accent)"
-          fontSize="7.5"
+          fontSize="16"
           fontWeight="600"
         >
           H₁ (μ = d·√(n/2) = {paths.ncp.toFixed(2)})
         </text>
 
         {/* Axis caption: this is the test-statistic (z) scale */}
-        <text x={PAD.l + IW / 2} y={PAD.t + IH + 24} textAnchor="middle" fill="#334155" fontSize="7">
+        <text x={PAD.l + IW / 2} y={PAD.t + IH + 38} textAnchor="middle" fill="#334155" fontSize="16">
           z (test statistic scale)
         </text>
 
         {/* Numeric labels below axis */}
-        <text x={PAD.l + IW * 0.15} y={H - 4} fill="#ef4444" fontSize="7" textAnchor="middle">
+        <text x={PAD.l + IW * 0.15} y={H - 6} fill="#ef4444" fontSize="16" textAnchor="middle">
           α={alpha.toFixed(3)}
         </text>
-        <text x={PAD.l + IW * 0.5} y={H - 4} fill="#475569" fontSize="7" textAnchor="middle">
+        <text x={PAD.l + IW * 0.5} y={H - 6} fill="#475569" fontSize="16" textAnchor="middle">
           β={beta.toFixed(2)}
         </text>
-        <text x={PAD.l + IW * 0.85} y={H - 4} fill="#3bb4a4" fontSize="7" textAnchor="middle">
+        <text x={PAD.l + IW * 0.85} y={H - 6} fill="#3bb4a4" fontSize="16" textAnchor="middle">
           Power={computedPower.toFixed(2)}
         </text>
       </svg>

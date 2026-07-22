@@ -151,7 +151,7 @@ export default function EventBuilder({ event, onChange, onReset }: EventBuilderP
       </div>
 
       {/* Event 1 */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="block text-[11px] font-semibold uppercase tracking-[1.5px] text-[#94a3b8] mb-1.5">
             Event Type
@@ -206,7 +206,7 @@ export default function EventBuilder({ event, onChange, onReset }: EventBuilderP
 
       {/* Event 2 — shown only for AND / OR */}
       {showSecond && (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-[1.5px] text-[#94a3b8] mb-1.5">
               Second Event Type

@@ -69,10 +69,10 @@ export default function DistanceVisualization({
             {/* Dot at the dot position end */}
             {showLabel && (
               <text
-                x={dotX < meanX ? dotX - 3 : dotX + 3}
-                y={dotY - 6}
+                x={dotX < meanX ? dotX - 6 : dotX + 6}
+                y={dotY - 8}
                 textAnchor={dotX < meanX ? "end" : "start"}
-                fontSize={9}
+                fontSize={23}
                 fill="var(--color-accent)"
                 opacity={0.85}
                 fontFamily="monospace"
@@ -91,9 +91,9 @@ export default function DistanceVisualization({
         animate={{ opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.5 }}
         x={meanX}
-        y={axisY + 38}
+        y={axisY + 52}
         textAnchor="middle"
-        fontSize={9}
+        fontSize={23}
         fill="var(--color-accent)"
         opacity={0.7}
         fontFamily="sans-serif"

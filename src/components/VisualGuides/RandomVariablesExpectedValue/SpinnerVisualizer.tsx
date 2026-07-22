@@ -136,7 +136,7 @@ export default function SpinnerVisualizer({ rows }: SpinnerVisualizerProps) {
                         y={labelPos.y + 4}
                         textAnchor="middle"
                         fill="white"
-                        fontSize={spanDeg >= 40 ? 12 : 9}
+                        fontSize={spanDeg >= 40 ? 12 : 10}
                         fontWeight="700"
                       >
                         {seg.outcome >= 0 ? "+" : ""}

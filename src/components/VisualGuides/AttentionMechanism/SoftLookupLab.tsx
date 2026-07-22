@@ -263,7 +263,7 @@ export default function SoftLookupLab({
                   x={kx}
                   y={(ky - 14).toFixed(2)}
                   textAnchor="middle"
-                  fontSize="11"
+                  fontSize="14"
                   fontWeight="600"
                   fill={st.color}
                 >
@@ -319,9 +319,9 @@ export default function SoftLookupLab({
                 />
                 <text
                   x={qx}
-                  y={(qy + 4).toFixed(2)}
+                  y={(qy + 5).toFixed(2)}
                   textAnchor="middle"
-                  fontSize="11"
+                  fontSize="14"
                   fontWeight="800"
                   fill="#0a0e1a"
                 >

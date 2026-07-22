@@ -12,7 +12,7 @@ import {
 
 const W = 460;
 const H = 260;
-const PAD = { l: 44, r: 14, t: 14, b: 34 };
+const PAD = { l: 44, r: 14, t: 14, b: 44 };
 const IW = W - PAD.l - PAD.r;
 const IH = H - PAD.t - PAD.b;
 
@@ -72,7 +72,7 @@ export default function ShapeChart({ mode }: Props) {
         {yTicks.map((v) => (
           <g key={`yt-${v}`}>
             <line x1={PAD.l} y1={toY(v)} x2={PAD.l + IW} y2={toY(v)} stroke="#1e293b" strokeWidth="1" />
-            <text x={PAD.l - 6} y={toY(v) + 3} textAnchor="end" fontSize="9" fill="#475569">
+            <text x={PAD.l - 6} y={toY(v) + 5} textAnchor="end" fontSize="14" fill="#475569">
               {v.toFixed(0)}
             </text>
           </g>
@@ -81,22 +81,22 @@ export default function ShapeChart({ mode }: Props) {
           <text
             key={`xl-${label}`}
             x={toX(i)}
-            y={PAD.t + IH + 16}
+            y={PAD.t + IH + 18}
             textAnchor="middle"
-            fontSize="9"
+            fontSize="14"
             fill="#475569"
           >
             {label}
           </text>
         ))}
-        <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="9" fill="#94a3b8">
+        <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="15" fill="#94a3b8">
           {isTidy ? "year (a real column)" : "row position (city), because no year column exists"}
         </text>
         <text
           x={12}
           y={PAD.t + IH / 2}
           textAnchor="middle"
-          fontSize="9"
+          fontSize="15"
           fill="#94a3b8"
           transform={`rotate(-90 12 ${PAD.t + IH / 2})`}
         >

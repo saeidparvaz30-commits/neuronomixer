@@ -448,25 +448,35 @@ export default function CausalThinkingDAGsClient() {
           <ul className="space-y-2.5 text-sm text-[#94a3b8]">
             <li className="flex gap-2">
               <span className="text-[var(--color-accent)] font-bold shrink-0">1.</span>
+              <span>
               A <strong className="text-white">confounder</strong> causes both treatment and outcome; it must be controlled to remove spurious correlations.
+              </span>
             </li>
             <li className="flex gap-2">
               <span className="text-[var(--color-accent)] font-bold shrink-0">2.</span>
+              <span>
               A <strong className="text-white">mediator</strong> lies on the causal path; controlling it gives you the direct effect only (and blocks the indirect effect).
+              </span>
             </li>
             <li className="flex gap-2">
               <span className="text-[var(--color-accent)] font-bold shrink-0">3.</span>
+              <span>
               A <strong className="text-white">collider</strong> is caused by two variables; conditioning on it OPENS a spurious path between its causes.
+              </span>
             </li>
             <li className="flex gap-2">
               <span className="text-[var(--color-accent)] font-bold shrink-0">4.</span>
+              <span>
               Draw the DAG <em>before</em> choosing your adjustment set. Use the{" "}
               <strong className="text-white">back-door criterion</strong> to find the minimal sufficient set.
+              </span>
             </li>
             <li className="flex gap-2">
               <span className="text-[var(--color-accent)] font-bold shrink-0">5.</span>
+              <span>
               Selection bias, publication bias, and survivor bias are all examples of{" "}
               <strong className="text-white">collider conditioning</strong> in disguise.
+              </span>
             </li>
           </ul>
         </motion.section>

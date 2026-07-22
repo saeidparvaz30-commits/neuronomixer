@@ -158,13 +158,13 @@ export default function GapFillPanel({
                 stroke="#1e293b"
                 strokeWidth={1}
               />
-              <text x={M.left - 6} y={yOf(f * yMax) + 3} textAnchor="end" fontSize={9} fill="#475569">
+              <text x={M.left - 6} y={yOf(f * yMax) + 5} textAnchor="end" fontSize={15} fill="#475569">
                 {Math.round(f * yMax)}
               </text>
             </g>
           ))}
           {ticks.map((t) => (
-            <text key={t} x={xOf(t)} y={H - 8} textAnchor="middle" fontSize={9} fill="#475569">
+            <text key={t} x={xOf(t)} y={H - 6} textAnchor="middle" fontSize={15} fill="#475569">
               {fmtDate(partsFromMs(t))}
             </text>
           ))}

@@ -104,7 +104,7 @@ function LossChart({
               x={PAD.left - 5}
               y={yScale(v) + 3.5}
               fill="#475569"
-              fontSize="8"
+              fontSize="10"
               textAnchor="end"
             >
               {v.toFixed(2)}
@@ -119,7 +119,7 @@ function LossChart({
             x={xScale(e)}
             y={CH - PAD.bottom + 14}
             fill="#475569"
-            fontSize="8"
+            fontSize="10"
             textAnchor="middle"
           >
             {e}
@@ -149,7 +149,7 @@ function LossChart({
           x={CW / 2}
           y={CH - 2}
           fill="#64748b"
-          fontSize="8"
+          fontSize="10"
           textAnchor="middle"
         >
           Epoch
@@ -158,7 +158,7 @@ function LossChart({
           x={9}
           y={CH / 2}
           fill="#64748b"
-          fontSize="8"
+          fontSize="10"
           textAnchor="middle"
           transform={`rotate(-90, 9, ${CH / 2})`}
         >

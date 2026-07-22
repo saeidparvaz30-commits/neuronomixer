@@ -36,7 +36,7 @@ export default function RNNCellDiagram({ step }: Props) {
           transition={{ duration: 0.4 }}
         >
           <line x1="200" y1="210" x2="200" y2="150" stroke="#3b82f6" strokeWidth="2" markerEnd="url(#arrowBlue)" />
-          <text x="200" y="218" fill="#3b82f6" fontSize="11" textAnchor="middle" fontWeight="600">
+          <text x="200" y="218" fill="#3b82f6" fontSize="13" textAnchor="middle" fontWeight="600">
             xₜ = &quot;{seq.inputToken}&quot;
           </text>
         </motion.g>
@@ -50,7 +50,7 @@ export default function RNNCellDiagram({ step }: Props) {
           transition={{ duration: 0.4, delay: 0.1 }}
         >
           <line x1="30" y1="110" x2="108" y2="110" stroke="#3bb4a4" strokeWidth="2" markerEnd="url(#arrowTeal)" />
-          <text x="22" y="107" fill="#3bb4a4" fontSize="11" textAnchor="middle" fontWeight="500">hₜ₋₁</text>
+          <text x="22" y="104" fill="#3bb4a4" fontSize="13" textAnchor="middle" fontWeight="500">hₜ₋₁</text>
         </motion.g>
 
         {/* Tanh block (center) */}
@@ -66,7 +66,7 @@ export default function RNNCellDiagram({ step }: Props) {
           transition={{ duration: 0.35, delay: 0.05 }}
         />
         <text x="200" y="108" fill="white" fontSize="14" textAnchor="middle" fontWeight="700">tanh</text>
-        <text x="200" y="126" fill="#94a3b8" fontSize="9" textAnchor="middle">Wₓxₜ + Wₕhₜ₋₁ + b</text>
+        <text x="200" y="128" fill="#94a3b8" fontSize="13" textAnchor="middle">Wₓxₜ + Wₕhₜ₋₁ + b</text>
 
         {/* Output hidden state — arrow right */}
         {/* Arrow: (290, 110) → (370, 110) */}
@@ -77,7 +77,7 @@ export default function RNNCellDiagram({ step }: Props) {
           transition={{ duration: 0.4, delay: 0.2 }}
         >
           <line x1="290" y1="110" x2="368" y2="110" stroke={arrowColor} strokeWidth="2.5" markerEnd="url(#arrowPrimary)" />
-          <text x="378" y="114" fill="#1e5d8a" fontSize="11" textAnchor="start" fontWeight="600">hₜ</text>
+          <text x="378" y="114" fill="#1e5d8a" fontSize="13" textAnchor="start" fontWeight="600">hₜ</text>
         </motion.g>
 
         {/* Output y — arrow up from block */}
@@ -89,7 +89,7 @@ export default function RNNCellDiagram({ step }: Props) {
           transition={{ duration: 0.4, delay: 0.15 }}
         >
           <line x1="200" y1="80" x2="200" y2="22" stroke="var(--color-accent)" strokeWidth="2" markerEnd="url(#arrowGold)" />
-          <text x="200" y="14" fill="var(--color-accent)" fontSize="11" textAnchor="middle" fontWeight="600">yₜ = Wᵧhₜ</text>
+          <text x="200" y="14" fill="var(--color-accent)" fontSize="13" textAnchor="middle" fontWeight="600">yₜ = Wᵧhₜ</text>
         </motion.g>
 
         {/* Recurrent loop — curved arrow from right back to left */}
@@ -106,7 +106,7 @@ export default function RNNCellDiagram({ step }: Props) {
           animate={{ pathLength: 1, opacity: 0.8 }}
           transition={{ duration: 0.7, delay: 0.3 }}
         />
-        <text x="200" y="198" fill="#3bb4a4" fontSize="9" textAnchor="middle">recurrent connection</text>
+        <text x="200" y="200" fill="#3bb4a4" fontSize="13" textAnchor="middle">recurrent connection</text>
 
         {/* Arrow marker definitions */}
         <defs>

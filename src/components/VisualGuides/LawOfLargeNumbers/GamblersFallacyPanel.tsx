@@ -72,17 +72,17 @@ function MiniChart({
         {yTicks.map((t, i) => (
           <g key={i}>
             <line x1={MPAD.l} y1={y(t)} x2={MW - MPAD.r} y2={y(t)} stroke="#1e293b" strokeWidth={1} />
-            <text x={MPAD.l - 4} y={y(t) + 3} textAnchor="end" fill="#475569" fontSize={8}>
+            <text x={MPAD.l - 4} y={y(t) + 3} textAnchor="end" fill="#475569" fontSize={10}>
               {fmt(t, Math.abs(yMax - yMin) >= 5 ? 0 : 2)}
             </text>
           </g>
         ))}
         {[0, Math.floor((n - 1) / 2), n - 1].map((i) => (
-          <text key={i} x={x(i)} y={MH - MPAD.b + 12} textAnchor="middle" fill="#475569" fontSize={8}>
+          <text key={i} x={x(i)} y={MH - MPAD.b + 12} textAnchor="middle" fill="#475569" fontSize={10}>
             {i + 1}
           </text>
         ))}
-        <text x={MPAD.l + innerW / 2} y={MH - 2} textAnchor="middle" fill="#475569" fontSize={8}>
+        <text x={MPAD.l + innerW / 2} y={MH - 2} textAnchor="middle" fill="#475569" fontSize={10}>
           flip number
         </text>
         {refValue !== undefined && (

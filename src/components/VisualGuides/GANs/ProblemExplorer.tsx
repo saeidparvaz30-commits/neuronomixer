@@ -68,8 +68,8 @@ function InstabilityVisual() {
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-[220px]">
         <path d={dPath} fill="none" stroke="#3b82f6" strokeWidth={2} />
         <path d={gPath} fill="none" stroke="#ef4444" strokeWidth={2} />
-        <text x={10} y={H - 2} fill="#3b82f6" fontSize={7}>D loss → 0 (D wins)</text>
-        <text x={10} y={14} fill="#ef4444" fontSize={7}>G loss explodes ↑</text>
+        <text x={10} y={H - 2} fill="#3b82f6" fontSize={10}>D loss → 0 (D wins)</text>
+        <text x={10} y={14} fill="#ef4444" fontSize={10}>G loss explodes ↑</text>
       </svg>
       <p className="text-[8px] text-[#475569] mt-1">G can&apos;t learn: a near-perfect D gives no useful feedback</p>
     </div>

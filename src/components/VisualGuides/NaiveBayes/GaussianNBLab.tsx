@@ -17,11 +17,11 @@ interface Props {
 }
 
 const W = 560;
-const H = 420;
+const H = 436;
 const ML = 42;
 const MR = 18;
 const MT = 18;
-const MB = 38;
+const MB = 54;
 const PW = W - ML - MR;
 const PH = H - MT - MB;
 
@@ -172,19 +172,19 @@ export default function GaussianNBLab({ hamPts, spamPts, fit, onMovePoint }: Pro
                 />
                 <text
                   x={sx(t).toFixed(2)}
-                  y={MT + PH + 14}
+                  y={MT + PH + 18}
                   textAnchor="middle"
                   fill="#475569"
-                  fontSize={9}
+                  fontSize={17}
                 >
                   {t}
                 </text>
                 <text
                   x={ML - 6}
-                  y={(sy(t) + 3).toFixed(2)}
+                  y={(sy(t) + 6).toFixed(2)}
                   textAnchor="end"
                   fill="#475569"
-                  fontSize={9}
+                  fontSize={17}
                 >
                   {t}
                 </text>
@@ -192,20 +192,20 @@ export default function GaussianNBLab({ hamPts, spamPts, fit, onMovePoint }: Pro
             ))}
             <text
               x={(ML + PW / 2).toFixed(2)}
-              y={H - 6}
+              y={H - 8}
               textAnchor="middle"
               fill="#94a3b8"
-              fontSize={10}
+              fontSize={18}
             >
               feature x1: exclamations per 100 words
             </text>
             <text
-              x={12}
+              x={15}
               y={(MT + PH / 2).toFixed(2)}
               textAnchor="middle"
               fill="#94a3b8"
-              fontSize={10}
-              transform={`rotate(-90 12 ${(MT + PH / 2).toFixed(2)})`}
+              fontSize={18}
+              transform={`rotate(-90 15 ${(MT + PH / 2).toFixed(2)})`}
             >
               feature x2: links per message
             </text>
@@ -248,7 +248,7 @@ export default function GaussianNBLab({ hamPts, spamPts, fit, onMovePoint }: Pro
                   x={(sx(cls.mean[0]) + 8).toFixed(2)}
                   y={(sy(cls.mean[1]) - 8).toFixed(2)}
                   fill={color}
-                  fontSize={10}
+                  fontSize={18}
                   fontWeight={700}
                 >
                   {label} mean
@@ -359,6 +359,7 @@ export default function GaussianNBLab({ hamPts, spamPts, fit, onMovePoint }: Pro
             <p className="text-[11px] font-semibold text-white mb-2">
               Fit from the current points
             </p>
+            <div className="overflow-x-auto">
             <table className="w-full border-collapse text-[10px] font-mono">
               <thead>
                 <tr className="text-[#475569] text-left">
@@ -383,6 +384,7 @@ export default function GaussianNBLab({ hamPts, spamPts, fit, onMovePoint }: Pro
                 ))}
               </tbody>
             </table>
+            </div>
             <p className="text-[10px] text-[#475569] mt-2">
               Priors: ham {fit.ham.n}/{fit.ham.n + fit.spam.n} ={" "}
               {fit.ham.prior.toFixed(2)}, spam {fit.spam.n}/{fit.ham.n + fit.spam.n} ={" "}

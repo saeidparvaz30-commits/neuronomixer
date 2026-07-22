@@ -17,7 +17,7 @@ interface Props {
 
 // Chart geometry (viewBox units)
 const W = 640;
-const H = 270;
+const H = 286;
 const L = 46;
 const R = 624;
 const T = 14;
@@ -108,20 +108,20 @@ export default function CrossEntropyExplorer({ onProbe }: Props) {
         {[0, 1, 2, 3, 4, 5].map((t) => (
           <g key={`y${t}`}>
             <line x1={L} y1={py(t)} x2={R} y2={py(t)} stroke="#1e293b" strokeWidth={1} />
-            <text x={L - 8} y={py(t) + 3} textAnchor="end" fontSize={9} fill="#475569">
+            <text x={L - 8} y={py(t) + 6} textAnchor="end" fontSize={20} fill="#475569">
               {t}
             </text>
           </g>
         ))}
         {[0, 0.25, 0.5, 0.75, 1].map((t) => (
-          <text key={`x${t}`} x={px(t)} y={B + 16} textAnchor="middle" fontSize={9} fill="#475569">
+          <text key={`x${t}`} x={px(t)} y={B + 22} textAnchor="middle" fontSize={20} fill="#475569">
             {t}
           </text>
         ))}
-        <text x={(L + R) / 2} y={H - 4} textAnchor="middle" fontSize={10} fill="#94a3b8">
+        <text x={(L + R) / 2} y={H - 6} textAnchor="middle" fontSize={21} fill="#94a3b8">
           p (probability of the true class)
         </text>
-        <text x={14} y={(T + B) / 2} textAnchor="middle" fontSize={10} fill="#94a3b8" transform={`rotate(-90 14 ${(T + B) / 2})`}>
+        <text x={18} y={(T + B) / 2} textAnchor="middle" fontSize={21} fill="#94a3b8" transform={`rotate(-90 18 ${(T + B) / 2})`}>
           loss
         </text>
 

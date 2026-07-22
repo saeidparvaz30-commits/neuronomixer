@@ -31,12 +31,12 @@ function NoiseChart({
   trueRate: number | null;
   realized: number | null;
 }) {
-  const x = (p: number) => 52 + p * 520;
+  const x = (p: number) => 64 + p * 508;
   const y = (m: number) => 208 - m * 176;
   const ceiling = noiseCeiling(flipRate);
   return (
     <svg
-      viewBox="0 0 640 248"
+      viewBox="0 0 640 262"
       className="w-full h-auto"
       role="img"
       aria-label={`Chart of measured pass rate against true pass rate at a label error rate of ${pct(
@@ -54,40 +54,40 @@ function NoiseChart({
       }`}
     >
       {/* axes */}
-      <line x1={52} y1={32} x2={52} y2={208} stroke="#334155" strokeWidth={1.5} />
-      <line x1={52} y1={208} x2={572} y2={208} stroke="#334155" strokeWidth={1.5} />
+      <line x1={64} y1={32} x2={64} y2={208} stroke="#334155" strokeWidth={1.5} />
+      <line x1={64} y1={208} x2={572} y2={208} stroke="#334155" strokeWidth={1.5} />
       {[0, 0.5, 1].map((t) => (
         <g key={`yt-${t}`}>
           <text
-            x={44}
-            y={y(t) + 4}
+            x={56}
+            y={y(t) + 6}
             textAnchor="end"
             fill="#475569"
-            fontSize={10}
+            fontSize={20}
             fontFamily="monospace"
           >
             {Math.round(t * 100)}%
           </text>
-          <line x1={48} y1={y(t)} x2={52} y2={y(t)} stroke="#334155" strokeWidth={1.5} />
+          <line x1={60} y1={y(t)} x2={64} y2={y(t)} stroke="#334155" strokeWidth={1.5} />
         </g>
       ))}
       {[0, 0.5, 1].map((t) => (
         <text
           key={`xt-${t}`}
           x={x(t)}
-          y={226}
+          y={230}
           textAnchor="middle"
           fill="#475569"
-          fontSize={10}
+          fontSize={20}
           fontFamily="monospace"
         >
           {Math.round(t * 100)}%
         </text>
       ))}
-      <text x={56} y={24} fill="#94a3b8" fontSize={11}>
+      <text x={68} y={24} fill="#94a3b8" fontSize={21}>
         Measured pass rate vs true pass rate
       </text>
-      <text x={312} y={244} textAnchor="middle" fill="#475569" fontSize={10}>
+      <text x={318} y={256} textAnchor="middle" fill="#475569" fontSize={20}>
         true pass rate
       </text>
 
@@ -101,7 +101,7 @@ function NoiseChart({
         strokeWidth={1.5}
         strokeDasharray="5 4"
       />
-      <text x={x(0.78)} y={y(0.78) - 8} fill="#475569" fontSize={10}>
+      <text x={x(0.72)} y={y(0.72) - 10} fill="#475569" fontSize={20}>
         perfect labels
       </text>
 
@@ -125,9 +125,9 @@ function NoiseChart({
       />
       <text
         x={x(1) + 12}
-        y={y(ceiling) + 4}
+        y={y(ceiling) + 6}
         fill="var(--cat-accent)"
-        fontSize={10}
+        fontSize={20}
         fontFamily="monospace"
       >
         {pct(ceiling, 0)}

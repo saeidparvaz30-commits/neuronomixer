@@ -17,10 +17,10 @@ export type TrainPhase = "idle" | "training" | "done";
 // Loss curve geometry
 const W = 620;
 const H = 200;
-const L = 46;
+const L = 60;
 const R = 12;
 const T = 12;
-const B = 28;
+const B = 52;
 const PLOT_W = W - L - R;
 const PLOT_H = H - T - B;
 /** Log-scale y domain for the loss curve. */
@@ -220,9 +220,9 @@ export default function TrainAttentionPanel({
                   />
                   <text
                     x={L - 5}
-                    y={(yPos(g) + 3).toFixed(2)}
+                    y={(yPos(g) + 6).toFixed(2)}
                     textAnchor="end"
-                    fontSize="9"
+                    fontSize="19"
                     fill="#475569"
                   >
                     {g}
@@ -233,15 +233,15 @@ export default function TrainAttentionPanel({
                 <text
                   key={e}
                   x={xPos(e).toFixed(2)}
-                  y={H - 10}
+                  y={H - B + 16}
                   textAnchor="middle"
-                  fontSize="9"
+                  fontSize="19"
                   fill="#475569"
                 >
                   {e}
                 </text>
               ))}
-              <text x={W - R} y={H - 1} textAnchor="end" fontSize="8" fill="#334155">
+              <text x={W - R} y={H - 2} textAnchor="end" fontSize="19" fill="#334155">
                 episodes
               </text>
               <path

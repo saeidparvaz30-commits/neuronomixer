@@ -161,7 +161,7 @@ export default function ConfusionMatrix({ matrix, total }: ConfusionMatrixProps)
       </div>
 
       {/* Summary rates */}
-      <div className="grid grid-cols-3 gap-2 pt-4 border-t border-white/[0.06]">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-4 border-t border-white/[0.06]">
         {[
           { label: "Type I Rate", value: typeIRate, color: "#ef4444", desc: "FP / (FP+TN)" },
           { label: "Type II Rate", value: typeIIRate, color: "var(--color-warning)", desc: "FN / (FN+TP)" },

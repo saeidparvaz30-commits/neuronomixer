@@ -10,14 +10,14 @@ function IncorrectDiagram() {
   return (
     <svg viewBox="0 0 280 80" width="100%" className="block">
       <rect x="8" y="26" width="95" height="28" rx="5" fill="#1e293b" stroke="#475569" strokeWidth="1" />
-      <text x="56" y="44" textAnchor="middle" fontSize="8.5" fill="#f1f5f9" fontFamily="Inter,sans-serif">Ice Cream Sales</text>
+      <text x="56" y="44" textAnchor="middle" fontSize="10" fill="#f1f5f9" fontFamily="Inter,sans-serif">Ice Cream Sales</text>
       <line x1="106" y1="40" x2="168" y2="40" stroke="#ef4444" strokeWidth="2" />
       <polygon points="175,40 166,35 166,45" fill="#ef4444" />
       <rect x="178" y="26" width="94" height="28" rx="5" fill="#1e293b" stroke="#475569" strokeWidth="1" />
-      <text x="225" y="44" textAnchor="middle" fontSize="8.5" fill="#f1f5f9" fontFamily="Inter,sans-serif">Shark Attacks</text>
+      <text x="225" y="44" textAnchor="middle" fontSize="10" fill="#f1f5f9" fontFamily="Inter,sans-serif">Shark Attacks</text>
       <circle cx="141" cy="14" r="10" fill="#ef444420" stroke="#ef4444" strokeWidth="1.5" />
       <text x="141" y="19" textAnchor="middle" fontSize="11" fill="#ef4444" fontFamily="Inter,sans-serif">✗</text>
-      <text x="141" y="70" textAnchor="middle" fontSize="8" fill="#ef4444" fontFamily="Inter,sans-serif">No mechanism</text>
+      <text x="141" y="70" textAnchor="middle" fontSize="10" fill="#ef4444" fontFamily="Inter,sans-serif">No mechanism</text>
     </svg>
   );
 }
@@ -26,17 +26,17 @@ function CorrectDiagram() {
   return (
     <svg viewBox="0 0 280 120" width="100%" className="block">
       <rect x="90" y="4" width="100" height="28" rx="5" fill="#1e293b" stroke="#3bb4a4" strokeWidth="1.5" />
-      <text x="140" y="22" textAnchor="middle" fontSize="9" fill="#3bb4a4" fontFamily="Inter,sans-serif">Temperature</text>
+      <text x="140" y="22" textAnchor="middle" fontSize="10" fill="#3bb4a4" fontFamily="Inter,sans-serif">Temperature</text>
       <line x1="112" y1="33" x2="60" y2="78" stroke="#3bb4a4" strokeWidth="1.5" />
       <polygon points="54,80 62,72 67,82" fill="#3bb4a4" />
       <line x1="168" y1="33" x2="220" y2="78" stroke="#3bb4a4" strokeWidth="1.5" />
       <polygon points="226,80 218,72 213,82" fill="#3bb4a4" />
       <rect x="4" y="80" width="95" height="28" rx="5" fill="#1e293b" stroke="#475569" strokeWidth="1" />
-      <text x="52" y="98" textAnchor="middle" fontSize="8.5" fill="#f1f5f9" fontFamily="Inter,sans-serif">Ice Cream Sales</text>
+      <text x="52" y="98" textAnchor="middle" fontSize="10" fill="#f1f5f9" fontFamily="Inter,sans-serif">Ice Cream Sales</text>
       <rect x="181" y="80" width="95" height="28" rx="5" fill="#1e293b" stroke="#475569" strokeWidth="1" />
-      <text x="229" y="98" textAnchor="middle" fontSize="8.5" fill="#f1f5f9" fontFamily="Inter,sans-serif">Shark Attacks</text>
+      <text x="229" y="98" textAnchor="middle" fontSize="10" fill="#f1f5f9" fontFamily="Inter,sans-serif">Shark Attacks</text>
       <line x1="102" y1="94" x2="178" y2="94" stroke="#475569" strokeWidth="1" strokeDasharray="4 3" />
-      <text x="140" y="114" textAnchor="middle" fontSize="8" fill="#475569" fontFamily="Inter,sans-serif">correlated, not causal</text>
+      <text x="140" y="114" textAnchor="middle" fontSize="10" fill="#475569" fontFamily="Inter,sans-serif">correlated, not causal</text>
     </svg>
   );
 }
@@ -45,18 +45,18 @@ function ChainDiagram() {
   return (
     <svg viewBox="0 0 320 90" width="100%" className="block">
       <rect x="4" y="30" width="76" height="28" rx="5" fill="#1e293b" stroke="var(--color-accent)" strokeWidth="1.5" />
-      <text x="42" y="48" textAnchor="middle" fontSize="8.5" fill="var(--color-accent)" fontFamily="Inter,sans-serif">Temperature</text>
+      <text x="42" y="48" textAnchor="middle" fontSize="10" fill="var(--color-accent)" fontFamily="Inter,sans-serif">Temperature</text>
       <line x1="82" y1="44" x2="110" y2="44" stroke="var(--color-accent)" strokeWidth="1.5" />
       <polygon points="117,44 108,39 108,49" fill="var(--color-accent)" />
       <rect x="119" y="30" width="82" height="28" rx="5" fill="#1e293b" stroke="var(--color-accent)" strokeWidth="1.5" />
-      <text x="160" y="48" textAnchor="middle" fontSize="8.5" fill="var(--color-accent)" fontFamily="Inter,sans-serif">Beach Visitors</text>
+      <text x="160" y="48" textAnchor="middle" fontSize="10" fill="var(--color-accent)" fontFamily="Inter,sans-serif">Beach Visitors</text>
       <line x1="203" y1="44" x2="231" y2="44" stroke="var(--color-accent)" strokeWidth="1.5" />
       <polygon points="238,44 229,39 229,49" fill="var(--color-accent)" />
       <rect x="240" y="30" width="76" height="28" rx="5" fill="#1e293b" stroke="#475569" strokeWidth="1" />
-      <text x="278" y="44" textAnchor="middle" fontSize="8.5" fill="#f1f5f9" fontFamily="Inter,sans-serif">Shark</text>
-      <text x="278" y="55" textAnchor="middle" fontSize="8.5" fill="#f1f5f9" fontFamily="Inter,sans-serif">Attacks</text>
+      <text x="278" y="44" textAnchor="middle" fontSize="10" fill="#f1f5f9" fontFamily="Inter,sans-serif">Shark</text>
+      <text x="278" y="55" textAnchor="middle" fontSize="10" fill="#f1f5f9" fontFamily="Inter,sans-serif">Attacks</text>
       <line x1="160" y1="58" x2="160" y2="72" stroke="var(--color-accent)" strokeWidth="1" strokeDasharray="3 2" />
-      <text x="160" y="82" textAnchor="middle" fontSize="8" fill="#94a3b8" fontFamily="Inter,sans-serif">Ice Cream Sales also via Beach Visitors</text>
+      <text x="160" y="82" textAnchor="middle" fontSize="10" fill="#94a3b8" fontFamily="Inter,sans-serif">Ice Cream Sales also via Beach Visitors</text>
     </svg>
   );
 }

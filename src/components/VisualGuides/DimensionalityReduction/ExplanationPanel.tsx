@@ -32,7 +32,7 @@ export default function ExplanationPanel({ method }: Props) {
         </div>
 
         {/* Pros / Cons */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <p className="text-[10px] font-semibold text-[#3bb4a4] uppercase tracking-[1px] mb-2">Strengths</p>
             <ul className="space-y-1">

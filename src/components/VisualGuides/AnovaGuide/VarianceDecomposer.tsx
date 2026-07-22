@@ -85,7 +85,7 @@ export default function VarianceDecomposer({
             </g>
           );
         })}
-        <text x={SVG_W - PAD_R} y={yScale(grandMean) - 4} textAnchor="end" fill="var(--color-accent)" fontSize={9}>x̄</text>
+        <text x={SVG_W - PAD_R} y={yScale(grandMean) - 4} textAnchor="end" fill="var(--color-accent)" fontSize={14}>x̄</text>
       </svg>
     );
   }
@@ -108,13 +108,13 @@ export default function VarianceDecomposer({
               <line x1={cx} y1={yGrand} x2={cx} y2={yGM} stroke={g.color} strokeWidth={3} markerEnd="url(#arrow)" />
               {/* Group mean dot */}
               <circle cx={cx} cy={yGM} r={5} fill={g.color} />
-              <text x={cx} y={yGM - 8} textAnchor="middle" fill={g.color} fontSize={8} fontFamily="monospace">
+              <text x={cx} y={yGM - 8} textAnchor="middle" fill={g.color} fontSize={14} fontFamily="monospace">
                 {gMean.toFixed(1)}
               </text>
             </g>
           );
         })}
-        <text x={SVG_W - PAD_R} y={yScale(grandMean) - 4} textAnchor="end" fill="var(--color-accent)" fontSize={9}>x̄</text>
+        <text x={SVG_W - PAD_R} y={yScale(grandMean) - 4} textAnchor="end" fill="var(--color-accent)" fontSize={14}>x̄</text>
       </svg>
     );
   }
@@ -325,7 +325,7 @@ export default function VarianceDecomposer({
               </div>
 
               {/* F stat highlight */}
-              <div className="grid grid-cols-3 gap-3 mb-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
                 <div className="rounded-xl bg-[#1e293b] p-3 text-center">
                   <div className="text-[10px] text-[#94a3b8] mb-1">MS_Between</div>
                   <div className="text-[18px] font-black text-white font-mono">{fmt(stats.msBetween)}</div>

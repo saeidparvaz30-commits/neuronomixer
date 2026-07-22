@@ -140,28 +140,28 @@ export default function LatentCanvas({
             />
             <text
               x={toPx(g).toFixed(2)}
-              y={SIZE - M + 16}
+              y={SIZE - M + 18}
               textAnchor="middle"
-              fontSize="10"
+              fontSize="14"
               fill="#475569"
             >
               {g}
             </text>
             <text
               x={M - 8}
-              y={(toPy(g) + 3).toFixed(2)}
+              y={(toPy(g) + 5).toFixed(2)}
               textAnchor="end"
-              fontSize="10"
+              fontSize="14"
               fill="#475569"
             >
               {g}
             </text>
           </g>
         ))}
-        <text x={SIZE - M} y={SIZE - 6} textAnchor="end" fontSize="10" fill="#334155">
+        <text x={SIZE - M} y={SIZE - 6} textAnchor="end" fontSize="14" fill="#334155">
           z1
         </text>
-        <text x={10} y={M - 8} fontSize="10" fill="#334155">
+        <text x={10} y={M - 8} fontSize="14" fill="#334155">
           z2
         </text>
 
@@ -227,16 +227,16 @@ export default function LatentCanvas({
                 <circle
                   cx={toPx(p[0]).toFixed(2)}
                   cy={toPy(p[1]).toFixed(2)}
-                  r="9"
+                  r="11"
                   fill="#1e293b"
                   stroke="#94a3b8"
                   strokeWidth="1.5"
                 />
                 <text
                   x={toPx(p[0]).toFixed(2)}
-                  y={(toPy(p[1]) + 3.5).toFixed(2)}
+                  y={(toPy(p[1]) + 5).toFixed(2)}
                   textAnchor="middle"
-                  fontSize="10"
+                  fontSize="14"
                   fontWeight="700"
                   fill="#f1f5f9"
                 >
@@ -294,7 +294,7 @@ export default function LatentCanvas({
             x={SIZE / 2}
             y={SIZE / 2}
             textAnchor="middle"
-            fontSize="13"
+            fontSize="14"
             fill="#475569"
           >
             Train the models to unlock the latent map

@@ -19,10 +19,10 @@ interface Props {
 
 const W = 640;
 const H = 380;
-const ML = 48;
+const ML = 70;
 const MR = 14;
 const MT = 14;
-const MB = 34;
+const MB = 48;
 const PW = W - ML - MR;
 const PH = H - MT - MB;
 
@@ -37,14 +37,14 @@ const py = (logD: number) => MT + ((Y_MAX - logD) / (Y_MAX - Y_MIN)) * PH;
 // Per-model label placement to avoid collisions (Chinchilla and LLaMA 65B
 // nearly coincide on the plane).
 const LABEL_POS: Record<string, { dx: number; dy: number; anchor: "start" | "end" | "middle" }> = {
-  gpt3: { dx: 0, dy: -9, anchor: "middle" },
-  gopher: { dx: 0, dy: 16, anchor: "middle" },
-  mtnlg: { dx: 8, dy: 4, anchor: "start" },
-  chinchilla: { dx: 8, dy: 4, anchor: "start" },
-  palm: { dx: 8, dy: 4, anchor: "start" },
-  llama65b: { dx: -8, dy: 4, anchor: "end" },
-  llama2_70b: { dx: 8, dy: -6, anchor: "start" },
-  llama3_405b: { dx: 8, dy: 4, anchor: "start" },
+  gpt3: { dx: 0, dy: -12, anchor: "middle" },
+  gopher: { dx: 0, dy: 24, anchor: "middle" },
+  mtnlg: { dx: 9, dy: 7, anchor: "start" },
+  chinchilla: { dx: 9, dy: 7, anchor: "start" },
+  palm: { dx: 9, dy: 7, anchor: "start" },
+  llama65b: { dx: -9, dy: 7, anchor: "end" },
+  llama2_70b: { dx: 9, dy: -10, anchor: "start" },
+  llama3_405b: { dx: 9, dy: 7, anchor: "start" },
 };
 
 export default function FrontierMap({ user, selectedId, onSelect }: Props) {
@@ -119,7 +119,7 @@ export default function FrontierMap({ user, selectedId, onSelect }: Props) {
         {yTicks.map((t) => (
           <g key={`gy${t}`}>
             <line x1={ML} y1={py(t)} x2={ML + PW} y2={py(t)} stroke="#1e293b" strokeWidth={1} />
-            <text x={ML - 6} y={py(t) + 3} textAnchor="end" fontSize={10} fill="#475569">
+            <text x={ML - 6} y={py(t) + 6} textAnchor="end" fontSize={20} fill="#475569">
               {formatCount(Math.pow(10, t))}
             </text>
           </g>
@@ -127,21 +127,21 @@ export default function FrontierMap({ user, selectedId, onSelect }: Props) {
         {xTicks.map((t) => (
           <g key={`gx${t}`}>
             <line x1={px(t)} y1={MT} x2={px(t)} y2={MT + PH} stroke="#1e293b" strokeWidth={1} />
-            <text x={px(t)} y={MT + PH + 16} textAnchor="middle" fontSize={10} fill="#475569">
+            <text x={px(t)} y={MT + PH + 22} textAnchor="middle" fontSize={20} fill="#475569">
               {formatCount(Math.pow(10, t))}
             </text>
           </g>
         ))}
         <line x1={ML} y1={MT} x2={ML} y2={MT + PH} stroke="#334155" strokeWidth={1} />
         <line x1={ML} y1={MT + PH} x2={ML + PW} y2={MT + PH} stroke="#334155" strokeWidth={1} />
-        <text x={ML + PW / 2} y={H - 4} textAnchor="middle" fontSize={10} fill="#475569">
+        <text x={ML + PW / 2} y={H - 4} textAnchor="middle" fontSize={20} fill="#475569">
           Parameters N (log scale)
         </text>
         <text
           x={12}
           y={MT + PH / 2}
           textAnchor="middle"
-          fontSize={10}
+          fontSize={20}
           fill="#475569"
           transform={`rotate(-90 12 ${MT + PH / 2})`}
         >
@@ -156,7 +156,7 @@ export default function FrontierMap({ user, selectedId, onSelect }: Props) {
               x={parseFloat(l.x2) - 4}
               y={parseFloat(l.y2) - 5}
               textAnchor="end"
-              fontSize={9}
+              fontSize={20}
               fill="#1e5d8a"
             >
               1e{l.logC} FLOPs
@@ -166,7 +166,7 @@ export default function FrontierMap({ user, selectedId, onSelect }: Props) {
 
         {/* Compute-optimal frontier */}
         <path d={frontierPath} fill="none" stroke="var(--color-accent)" strokeWidth={2} />
-        <text x={px(9.1)} y={py(10.6) - 8} fontSize={10} fill="var(--color-accent)" fontWeight={600}>
+        <text x={px(9.1)} y={py(10.6) - 8} fontSize={20} fill="var(--color-accent)" fontWeight={600}>
           compute-optimal frontier
         </text>
 
@@ -186,7 +186,7 @@ export default function FrontierMap({ user, selectedId, onSelect }: Props) {
                 x={(X + pos.dx).toFixed(2)}
                 y={(Y + pos.dy).toFixed(2)}
                 textAnchor={pos.anchor}
-                fontSize={9}
+                fontSize={20}
                 fill={isSel ? "#f1f5f9" : "#94a3b8"}
                 fontWeight={isSel ? 700 : 400}
               >
@@ -198,7 +198,7 @@ export default function FrontierMap({ user, selectedId, onSelect }: Props) {
 
         {/* User point */}
         <circle cx={userX} cy={userY} r={5} fill="#3bb4a4" stroke="#0f172a" strokeWidth={1.5} />
-        <text x={parseFloat(userX) + 8} y={parseFloat(userY) - 6} fontSize={10} fill="#3bb4a4" fontWeight={700}>
+        <text x={parseFloat(userX) + 9} y={parseFloat(userY) - 8} fontSize={20} fill="#3bb4a4" fontWeight={700}>
           you{userClamped ? " (off chart)" : ""}
         </text>
       </svg>

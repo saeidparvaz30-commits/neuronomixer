@@ -15,7 +15,7 @@ interface Props {
 
 const W = 640;
 const H = 260;
-const M = { top: 18, right: 14, bottom: 36, left: 46 };
+const M = { top: 18, right: 14, bottom: 52, left: 64 };
 const PLOT_W = W - M.left - M.right;
 const PLOT_H = H - M.top - M.bottom;
 
@@ -78,9 +78,9 @@ function DerivativePanelInner({ activation }: Props) {
             />
             <text
               x={M.left - 7}
-              y={py(d) + 3}
+              y={py(d) + 6}
               textAnchor="end"
-              fontSize={10}
+              fontSize={20}
               fill="#475569"
               fontFamily="monospace"
             >
@@ -102,9 +102,9 @@ function DerivativePanelInner({ activation }: Props) {
             />
             <text
               x={px(z)}
-              y={M.top + PLOT_H + 16}
+              y={M.top + PLOT_H + 22}
               textAnchor="middle"
-              fontSize={10}
+              fontSize={20}
               fill="#475569"
               fontFamily="monospace"
             >
@@ -116,7 +116,7 @@ function DerivativePanelInner({ activation }: Props) {
           x={M.left + PLOT_W / 2}
           y={H - 4}
           textAnchor="middle"
-          fontSize={10.5}
+          fontSize={21}
           fill="#94a3b8"
         >
           pre-activation z
@@ -144,9 +144,9 @@ function DerivativePanelInner({ activation }: Props) {
           strokeWidth={1.5}
         />
         <text
-          x={Math.min(px(selected.maxZ) + 8, M.left + PLOT_W - 150)}
-          y={Math.max(py(selected.maxD) - 8, M.top + 10)}
-          fontSize={10.5}
+          x={Math.min(px(selected.maxZ) + 8, M.left + PLOT_W - 380)}
+          y={Math.max(py(selected.maxD) - 8, M.top + 20)}
+          fontSize={21}
           fill={selectedMeta.color}
           fontFamily="monospace"
         >

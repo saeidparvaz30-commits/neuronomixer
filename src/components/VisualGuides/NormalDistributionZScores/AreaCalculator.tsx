@@ -7,7 +7,7 @@ import { normalCDF, areaUnderCurve, normalPDF } from "./types";
 // ── SVG dimensions ─────────────────────────────────────────────────────────────
 const VW = 480;
 const VH = 110;
-const PAD = { l: 16, r: 16, t: 14, b: 28 };
+const PAD = { l: 16, r: 16, t: 20, b: 28 };
 const IW = VW - PAD.l - PAD.r;
 const IH = VH - PAD.t - PAD.b;
 const CURVE_POINTS = 200;
@@ -157,7 +157,7 @@ export default function AreaCalculator() {
           return (
             <g>
               <line x1={sx} y1={PAD.t} x2={sx} y2={baselineY} stroke="var(--color-accent)" strokeWidth="1.5" strokeDasharray="3 2" />
-              <text x={sx} y={PAD.t - 2} textAnchor="middle" fill="var(--color-accent)" fontSize="8" fontWeight="bold">
+              <text x={sx} y={PAD.t - 4} textAnchor="middle" fill="var(--color-accent)" fontSize="16" fontWeight="bold">
                 {z1.toFixed(1)}
               </text>
             </g>
@@ -170,7 +170,7 @@ export default function AreaCalculator() {
           return (
             <g>
               <line x1={sx} y1={PAD.t} x2={sx} y2={baselineY} stroke="var(--color-warning)" strokeWidth="1.5" strokeDasharray="3 2" />
-              <text x={sx} y={PAD.t - 2} textAnchor="middle" fill="var(--color-warning)" fontSize="8" fontWeight="bold">
+              <text x={sx} y={PAD.t - 4} textAnchor="middle" fill="var(--color-warning)" fontSize="16" fontWeight="bold">
                 {z2.toFixed(1)}
               </text>
             </g>
@@ -182,10 +182,10 @@ export default function AreaCalculator() {
           <text
             key={v}
             x={zToSvgX(v)}
-            y={baselineY + 11}
+            y={baselineY + 16}
             textAnchor="middle"
             fill="#334155"
-            fontSize="7.5"
+            fontSize="15"
           >
             {v}
           </text>

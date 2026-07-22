@@ -123,7 +123,7 @@ export default function DatetimeExpander({
             v <= yMax ? (
               <g key={v}>
                 <line x1={PAD_L} x2={W - PAD_R} y1={sy(v)} y2={sy(v)} stroke="#1e293b" strokeWidth={1} />
-                <text x={PAD_L - 5} y={sy(v) + 3} textAnchor="end" fontSize={10} fill="#475569">
+                <text x={PAD_L - 5} y={sy(v) + 7} textAnchor="end" fontSize={22} fill="#475569">
                   {v}
                 </text>
               </g>
@@ -133,9 +133,9 @@ export default function DatetimeExpander({
             <text
               key={d}
               x={sx(d * 24 + 12)}
-              y={H - PAD_B + 15}
+              y={H - PAD_B + 24}
               textAnchor="middle"
-              fontSize={9}
+              fontSize={22}
               fill="#475569"
             >
               {["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"][d % 7]}

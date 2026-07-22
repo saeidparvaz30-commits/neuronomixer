@@ -82,7 +82,7 @@ export default function TrainingChart({ currentEpoch }: Props) {
                   x1={PAD_L} y1={y} x2={W - PAD_R} y2={y}
                   stroke="#1e293b" strokeWidth={1}
                 />
-                <text x={PAD_L - 4} y={y + 3} textAnchor="end" fill="#475569" fontSize={8}>
+                <text x={PAD_L - 4} y={y + 5} textAnchor="end" fill="#475569" fontSize={15}>
                   {tick.toFixed(1)}
                 </text>
               </g>
@@ -94,7 +94,7 @@ export default function TrainingChart({ currentEpoch }: Props) {
             x1={PAD_L} y1={nashY} x2={W - PAD_R} y2={nashY}
             stroke="var(--color-accent)" strokeWidth={1} strokeDasharray="5 4" opacity={0.6}
           />
-          <text x={W - PAD_R + 2} y={nashY + 3} fill="var(--color-accent)" fontSize={7} fontWeight={600}>
+          <text x={W - PAD_R - 4} y={nashY - 5} textAnchor="end" fill="var(--color-accent)" fontSize={15} fontWeight={600}>
             log(2)
           </text>
 
@@ -114,10 +114,10 @@ export default function TrainingChart({ currentEpoch }: Props) {
             <text
               key={tick}
               x={toX(tick)}
-              y={PAD_T + CHART_H + 12}
+              y={PAD_T + CHART_H + 17}
               textAnchor="middle"
               fill="#475569"
-              fontSize={8}
+              fontSize={15}
             >
               {tick}
             </text>
@@ -127,7 +127,7 @@ export default function TrainingChart({ currentEpoch }: Props) {
             y={H - 2}
             textAnchor="middle"
             fill="#475569"
-            fontSize={8}
+            fontSize={15}
           >
             Epoch
           </text>

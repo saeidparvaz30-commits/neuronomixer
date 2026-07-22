@@ -275,7 +275,7 @@ export default function SelfAttentionClient() {
         <section className="mb-8">
           <h2 className="text-lg font-semibold text-white mb-1">2. Attention Heatmap</h2>
           <p className="text-xs text-[#94a3b8] mb-4">
-            Click a row to highlight that token&apos;s attention pattern. Hover a cell to inspect the weight.
+            Click a row to highlight that token&apos;s attention pattern. Tap or hover a cell to inspect the weight.
           </p>
           <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-2xl p-5 overflow-x-auto">
 
@@ -326,7 +326,9 @@ export default function SelfAttentionClient() {
                       }}
                       onMouseEnter={() => setHoveredCell({ row: ri, col: ci })}
                       onMouseLeave={() => setHoveredCell(null)}
+                      onClick={() => setHoveredCell({ row: ri, col: ci })}
                       whileHover={{ scale: 1.08 }}
+                      whileTap={{ scale: 0.95 }}
                     >
                       {(w * 100).toFixed(0)}%
                     </motion.div>

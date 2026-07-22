@@ -3,7 +3,7 @@
 import React from "react";
 
 const W = 700;
-const PAD = { l: 56, r: 20, t: 20, b: 44 };
+const PAD = { l: 68, r: 20, t: 20, b: 48 };
 const H = 280;
 
 interface ForecastData {
@@ -90,10 +90,11 @@ export default function ForecastPlot({ data }: Props) {
 
   // X ticks: every 6 months in historical, every 3 in forecast
   const xTicks: Array<{ idx: number; label: string }> = [];
-  for (let i = 0; i < histLen; i += 6) {
+  // Sparser ticks so the larger labels never collide
+  for (let i = 0; i < histLen; i += 12) {
     xTicks.push({ idx: i, label: historicalLabels[i] });
   }
-  for (let i = 0; i < fcLen; i += 3) {
+  for (let i = 0; i < fcLen; i += 6) {
     xTicks.push({ idx: histLen + i, label: forecastLabels[i] });
   }
 
@@ -124,7 +125,7 @@ export default function ForecastPlot({ data }: Props) {
           return (
             <g key={`y-${t}`}>
               <line x1={PAD.l} y1={sy} x2={W - PAD.r} y2={sy} stroke="#1e293b" strokeWidth={1} />
-              <text x={PAD.l - 6} y={sy + 3.5} textAnchor="end" fill="#475569" fontSize={9}>
+              <text x={PAD.l - 6} y={sy + 7} textAnchor="end" fill="#475569" fontSize={22}>
                 {Math.abs(t) >= 1000 ? (t / 1000).toFixed(1) + "k" : t % 1 === 0 ? t.toFixed(0) : t.toFixed(1)}
               </text>
             </g>
@@ -136,10 +137,10 @@ export default function ForecastPlot({ data }: Props) {
           <text
             key={`x-${idx}`}
             x={toX(idx, totalPoints)}
-            y={H - PAD.b + 14}
+            y={H - PAD.b + 24}
             textAnchor="middle"
             fill="#475569"
-            fontSize={9}
+            fontSize={22}
           >
             {label}
           </text>
@@ -226,7 +227,7 @@ export default function ForecastPlot({ data }: Props) {
         <line x1={PAD.l} y1={H - PAD.b} x2={W - PAD.r} y2={H - PAD.b} stroke="#334155" strokeWidth={1.5} />
 
         {/* "Forecast starts" label */}
-        <text x={splitX + 4} y={PAD.t + 12} fill="#94a3b8" fontSize={9} opacity={0.7}>
+        <text x={splitX + 4} y={PAD.t + 20} fill="#94a3b8" fontSize={22} opacity={0.7}>
           Forecast →
         </text>
       </svg>

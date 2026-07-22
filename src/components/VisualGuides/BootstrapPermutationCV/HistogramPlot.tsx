@@ -44,7 +44,7 @@ export default function HistogramPlot({
           x={width / 2}
           y={height / 2}
           fill="#475569"
-          fontSize="12"
+          fontSize="17"
           textAnchor="middle"
           dominantBaseline="middle"
         >
@@ -91,7 +91,7 @@ export default function HistogramPlot({
     <svg viewBox={`0 0 ${width} ${height}`} className="w-full">
       {/* Title */}
       {title && (
-        <text x={width / 2} y={14} fill="#94a3b8" fontSize="11" textAnchor="middle" fontWeight="600">
+        <text x={width / 2} y={14} fill="#94a3b8" fontSize="18" textAnchor="middle" fontWeight="600">
           {title}
         </text>
       )}
@@ -169,7 +169,7 @@ export default function HistogramPlot({
               x={vx}
               y={PAD.t - 4}
               fill={vl.color}
-              fontSize="9"
+              fontSize="17"
               textAnchor="middle"
               fontWeight="600"
             >
@@ -202,7 +202,7 @@ export default function HistogramPlot({
             x={xScale(t)}
             y={PAD.t + chartH + 14}
             fill="#475569"
-            fontSize="9"
+            fontSize="17"
             textAnchor="middle"
           >
             {t.toFixed(1)}
@@ -223,7 +223,7 @@ export default function HistogramPlot({
         x={14}
         y={PAD.t + chartH / 2}
         fill="#475569"
-        fontSize="9"
+        fontSize="17"
         textAnchor="middle"
         transform={`rotate(-90, 14, ${PAD.t + chartH / 2})`}
       >

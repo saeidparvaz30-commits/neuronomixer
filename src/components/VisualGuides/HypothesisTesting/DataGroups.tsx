@@ -116,10 +116,10 @@ export default function DataGroups({
         />
 
         {/* Group labels */}
-        <text x={groupACenter} y={PAD.t - 6} textAnchor="middle" fill="#3bb4a4" fontSize="10" fontWeight="600">
+        <text x={groupACenter} y={PAD.t - 6} textAnchor="middle" fill="#3bb4a4" fontSize="15" fontWeight="600">
           Group A (Control)
         </text>
-        <text x={groupBCenter} y={PAD.t - 6} textAnchor="middle" fill="#1e5d8a" fontSize="10" fontWeight="600">
+        <text x={groupBCenter} y={PAD.t - 6} textAnchor="middle" fill="#1e5d8a" fontSize="15" fontWeight="600">
           Group B (Treatment)
         </text>
 
@@ -130,7 +130,7 @@ export default function DataGroups({
           return (
             <g key={t}>
               <line x1={PAD.l - 4} y1={y} x2={PAD.l} y2={y} stroke="#334155" strokeWidth="1" />
-              <text x={PAD.l - 6} y={y + 3} textAnchor="end" fill="#475569" fontSize="7">
+              <text x={PAD.l - 6} y={y + 5} textAnchor="end" fill="#475569" fontSize="15">
                 {val.toFixed(1)}
               </text>
             </g>
@@ -171,7 +171,7 @@ export default function DataGroups({
           x2={groupACenter + 22} y2={meanAY}
           stroke="#3bb4a4" strokeWidth="2.5"
         />
-        <text x={groupACenter + 26} y={meanAY + 4} fill="#3bb4a4" fontSize="8" fontWeight="600">
+        <text x={groupACenter + 26} y={meanAY + 4} fill="#3bb4a4" fontSize="15" fontWeight="600">
           x̄={meanA.toFixed(2)}
         </text>
 
@@ -181,7 +181,7 @@ export default function DataGroups({
           x2={groupBCenter + 22} y2={meanBY}
           stroke="var(--color-accent)" strokeWidth="2.5"
         />
-        <text x={groupBCenter + 26} y={meanBY + 4} fill="var(--color-accent)" fontSize="8" fontWeight="600">
+        <text x={groupBCenter + 26} y={meanBY + 4} fill="var(--color-accent)" fontSize="15" fontWeight="600">
           x̄={meanB.toFixed(2)}
         </text>
 
@@ -198,7 +198,7 @@ export default function DataGroups({
               y={(meanAY + meanBY) / 2 + 4}
               textAnchor="end"
               fill="#3bb4a4"
-              fontSize="8"
+              fontSize="15"
             >
               Δ={diff.toFixed(2)}
             </text>
@@ -210,17 +210,17 @@ export default function DataGroups({
             y={(meanAY + meanBY) / 2 + 4}
             textAnchor="end"
             fill="#475569"
-            fontSize="8"
+            fontSize="15"
           >
             Δ≈0
           </text>
         )}
 
         {/* n label */}
-        <text x={groupACenter} y={PAD.t + IH + 16} textAnchor="middle" fill="#475569" fontSize="8">
+        <text x={groupACenter} y={PAD.t + IH + 18} textAnchor="middle" fill="#475569" fontSize="15">
           n={sampleSize}
         </text>
-        <text x={groupBCenter} y={PAD.t + IH + 16} textAnchor="middle" fill="#475569" fontSize="8">
+        <text x={groupBCenter} y={PAD.t + IH + 18} textAnchor="middle" fill="#475569" fontSize="15">
           n={sampleSize}
         </text>
       </svg>

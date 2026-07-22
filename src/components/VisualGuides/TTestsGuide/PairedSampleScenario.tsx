@@ -53,13 +53,13 @@ function PairedScatter({ before, after }: { before: number[]; after: number[] })
         </g>
       ))}
       {/* Labels */}
-      <text x={PAD.l + IW / 2} y={H - 6} textAnchor="middle" fill="#475569" fontSize="8">Before score</text>
+      <text x={PAD.l + IW / 2} y={H - 6} textAnchor="middle" fill="#475569" fontSize="10">Before score</text>
       <text x={PAD.l - 10} y={PAD.t + IH / 2}
-        fill="#475569" fontSize="8" textAnchor="middle"
+        fill="#475569" fontSize="10" textAnchor="middle"
         transform={`rotate(-90, ${PAD.l - 14}, ${PAD.t + IH / 2})`}>
         After score
       </text>
-      <text x={tx(mx) - 10} y={ty(mx) - 4} fill="var(--color-accent)" fontSize="7">y=x</text>
+      <text x={tx(mx) - 10} y={ty(mx) - 4} fill="var(--color-accent)" fontSize="10">y=x</text>
     </svg>
   );
 }
@@ -105,7 +105,7 @@ function DiffHistogram({ diffs }: { diffs: number[] }) {
         }
         return null;
       })()}
-      <text x={PAD.l + IW / 2} y={H - 2} textAnchor="middle" fill="#475569" fontSize="7">
+      <text x={PAD.l + IW / 2} y={H - 2} textAnchor="middle" fill="#475569" fontSize="10">
         Difference (After − Before)
       </text>
     </svg>

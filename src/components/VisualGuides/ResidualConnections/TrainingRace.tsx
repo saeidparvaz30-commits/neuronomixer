@@ -35,10 +35,10 @@ interface Props {
 
 const LW = 640;
 const LH = 250;
-const LL = 50;
+const LL = 56;
 const LR = 14;
 const LT = 14;
-const LB = 32;
+const LB = 44;
 const LPW = LW - LL - LR;
 const LPH = LH - LT - LB;
 const LOSS_LOG_MIN = -4.6;
@@ -88,7 +88,7 @@ function LossChart({ result }: { result: RaceResult }) {
               stroke="#1e293b"
               strokeWidth="1"
             />
-            <text x={LL - 6} y={(y + 3).toFixed(2)} textAnchor="end" fill="#475569" fontSize="10">
+            <text x={LL - 6} y={(y + 6).toFixed(2)} textAnchor="end" fill="#475569" fontSize="20">
               {g >= 0 ? Math.pow(10, g).toString() : `1e${g}`}
             </text>
           </g>
@@ -98,15 +98,15 @@ function LossChart({ result }: { result: RaceResult }) {
         <text
           key={s}
           x={lossX(Math.min(s, TRAIN_STEPS - 1)).toFixed(2)}
-          y={LH - 16}
+          y={LH - 28}
           textAnchor="middle"
           fill="#475569"
-          fontSize="10"
+          fontSize="20"
         >
           {s}
         </text>
       ))}
-      <text x={LL + LPW / 2} y={LH - 2} textAnchor="middle" fill="#475569" fontSize="10">
+      <text x={LL + LPW / 2} y={LH - 2} textAnchor="middle" fill="#475569" fontSize="20">
         training step
       </text>
       <path d={pPath} fill="none" stroke="var(--color-warning)" strokeWidth="2" strokeDasharray="6 4" />
@@ -122,7 +122,7 @@ const FH = 240;
 const FL = 40;
 const FR = 14;
 const FT = 12;
-const FB = 30;
+const FB = 42;
 const FPW = FW - FL - FR;
 const FPH = FH - FT - FB;
 const FY_MAX = 1.4;
@@ -163,7 +163,7 @@ function FitChart({ result }: { result: RaceResult }) {
             stroke="#1e293b"
             strokeWidth="1"
           />
-          <text x={FL - 6} y={(fitY(v) + 3).toFixed(2)} textAnchor="end" fill="#475569" fontSize="10">
+          <text x={FL - 6} y={(fitY(v) + 6).toFixed(2)} textAnchor="end" fill="#475569" fontSize="20">
             {v}
           </text>
         </g>
@@ -172,15 +172,15 @@ function FitChart({ result }: { result: RaceResult }) {
         <text
           key={v}
           x={fitX(v).toFixed(2)}
-          y={FH - 14}
+          y={FH - 26}
           textAnchor="middle"
           fill="#475569"
-          fontSize="10"
+          fontSize="20"
         >
           {v}
         </text>
       ))}
-      <text x={FL + FPW / 2} y={FH - 2} textAnchor="middle" fill="#475569" fontSize="10">
+      <text x={FL + FPW / 2} y={FH - 2} textAnchor="middle" fill="#475569" fontSize="20">
         x
       </text>
       {target.xs.map((x, i) => (

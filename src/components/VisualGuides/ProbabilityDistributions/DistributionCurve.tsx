@@ -17,7 +17,7 @@ export default function DistributionCurve({ type, params, height = 300 }: Props)
 
   const W = 480;
   const H = height;
-  const PAD = { l: 40, r: 12, t: 14, b: 36 };
+  const PAD = { l: 56, r: 12, t: 14, b: 36 };
   const IW = W - PAD.l - PAD.r;
   const IH = H - PAD.t - PAD.b;
 
@@ -83,19 +83,19 @@ export default function DistributionCurve({ type, params, height = 300 }: Props)
 
         {/* Y-axis label */}
         <text
-          x={10}
+          x={14}
           y={PAD.t + IH / 2}
           textAnchor="middle"
           fill="#475569"
-          fontSize="9"
-          transform={`rotate(-90, 10, ${PAD.t + IH / 2})`}
+          fontSize="16"
+          transform={`rotate(-90, 14, ${PAD.t + IH / 2})`}
         >
           {isContinuous ? "PDF" : "PMF"}
         </text>
 
         {/* Y-axis ticks */}
         {yTicks.map(yt => (
-          <text key={yt} x={PAD.l - 4} y={ty(yt) + 3} textAnchor="end" fill="#475569" fontSize="7.5">
+          <text key={yt} x={PAD.l - 4} y={ty(yt) + 5} textAnchor="end" fill="#475569" fontSize="15">
             {yt.toFixed(yt < 0.01 ? 3 : yt < 0.1 ? 2 : 1)}
           </text>
         ))}
@@ -104,7 +104,7 @@ export default function DistributionCurve({ type, params, height = 300 }: Props)
         {xTicks.map(v => (
           <g key={v}>
             <line x1={tx(v)} y1={PAD.t + IH} x2={tx(v)} y2={PAD.t + IH + 4} stroke="#334155" strokeWidth="1" />
-            <text x={tx(v)} y={PAD.t + IH + 14} textAnchor="middle" fill="#475569" fontSize="8">
+            <text x={tx(v)} y={PAD.t + IH + 20} textAnchor="middle" fill="#475569" fontSize="15">
               {Math.abs(v) < 0.005 ? "0" : v.toFixed(1)}
             </text>
           </g>

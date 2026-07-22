@@ -29,6 +29,9 @@ function ScoreDistributionPlotInner({ pos, neg, threshold }: Props) {
 
   return (
     <div>
+      <p className="text-[11px] font-semibold mb-1" style={{ color: "var(--color-accent)" }}>
+        threshold = {threshold.toFixed(2)} (predict + to the right)
+      </p>
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="w-full h-auto"
@@ -46,10 +49,10 @@ function ScoreDistributionPlotInner({ pos, neg, threshold }: Props) {
         />
 
         {/* Band labels */}
-        <text x={PAD_X} y={POS_BAND.top - 10} fill={POS_COLOR} fontSize={11} fontWeight={600}>
+        <text x={PAD_X} y={POS_BAND.top - 10} fill={POS_COLOR} fontSize={20} fontWeight={600}>
           Positive class (n = {pos.length})
         </text>
-        <text x={PAD_X} y={NEG_BAND.top - 10} fill={NEG_COLOR} fontSize={11} fontWeight={600}>
+        <text x={PAD_X} y={NEG_BAND.top - 10} fill={NEG_COLOR} fontSize={20} fontWeight={600}>
           Negative class (n = {neg.length})
         </text>
 
@@ -87,27 +90,17 @@ function ScoreDistributionPlotInner({ pos, neg, threshold }: Props) {
           strokeWidth={1.5}
           strokeDasharray="4 3"
         />
-        <text
-          x={Math.min(xT + 5, W - 130)}
-          y={22}
-          fill="var(--color-accent)"
-          fontSize={10.5}
-          fontWeight={600}
-        >
-          threshold = {threshold.toFixed(2)} (predict + to the right)
-        </text>
-
         {/* Axis */}
         <line x1={PAD_X} y1={H - 22} x2={W - PAD_X} y2={H - 22} stroke="#334155" strokeWidth={1} />
         {[0, 0.25, 0.5, 0.75, 1].map((v) => (
           <g key={v}>
             <line x1={xFor(v)} y1={H - 22} x2={xFor(v)} y2={H - 17} stroke="#334155" strokeWidth={1} />
-            <text x={xFor(v)} y={H - 6} fill="#475569" fontSize={10} textAnchor="middle">
+            <text x={xFor(v)} y={H - 6} fill="#475569" fontSize={20} textAnchor="middle">
               {v.toFixed(2)}
             </text>
           </g>
         ))}
-        <text x={W - PAD_X} y={H - 34} fill="#475569" fontSize={10} textAnchor="end">
+        <text x={W - PAD_X} y={H - 34} fill="#475569" fontSize={20} textAnchor="end">
           model score
         </text>
       </svg>

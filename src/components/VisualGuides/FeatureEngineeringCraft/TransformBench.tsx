@@ -25,8 +25,8 @@ const W = 600;
 const H = 340;
 const PAD_L = 44;
 const PAD_R = 14;
-const PAD_T = 16;
-const PAD_B = 32;
+const PAD_T = 28;
+const PAD_B = 52;
 
 export default function TransformBench({
   data,
@@ -120,7 +120,7 @@ export default function TransformBench({
                 stroke="#1e293b"
                 strokeWidth={1}
               />
-              <text x={PAD_L - 6} y={sy(v) + 3} textAnchor="end" fontSize={10} fill="#475569">
+              <text x={PAD_L - 6} y={sy(v) + 6} textAnchor="end" fontSize={19} fill="#475569">
                 {v}
               </text>
             </g>
@@ -129,18 +129,18 @@ export default function TransformBench({
             <text
               key={`x${v}`}
               x={sx(v)}
-              y={H - PAD_B + 16}
+              y={H - PAD_B + 20}
               textAnchor="middle"
-              fontSize={10}
+              fontSize={19}
               fill="#475569"
             >
               ${v}
             </text>
           ))}
-          <text x={W - PAD_R} y={H - 4} textAnchor="end" fontSize={10} fill="#475569">
+          <text x={W - PAD_R} y={H - 6} textAnchor="end" fontSize={19} fill="#475569">
             spend per day
           </text>
-          <text x={PAD_L} y={PAD_T - 4} fontSize={10} fill="#475569">
+          <text x={PAD_L} y={PAD_T - 6} fontSize={19} fill="#475569">
             signups
           </text>
           {data.map((p, i) => (

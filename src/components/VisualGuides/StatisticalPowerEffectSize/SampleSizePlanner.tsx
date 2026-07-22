@@ -176,6 +176,7 @@ export default function SampleSizePlanner({
           Power at varying n (d = {plannedD.toFixed(2)}, α = {plannedAlpha})
         </p>
         <div className="overflow-hidden rounded-xl border border-[#1e293b]">
+          <div className="overflow-x-auto">
           <table className="w-full text-[10px]">
             <thead>
               <tr className="bg-[#1e293b]">
@@ -202,6 +203,7 @@ export default function SampleSizePlanner({
               })}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </div>

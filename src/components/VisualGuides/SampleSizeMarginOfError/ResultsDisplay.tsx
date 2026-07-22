@@ -65,7 +65,7 @@ export default function ResultsDisplay({
       </div>
 
       {/* Secondary stats grid */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         <div className="rounded-xl bg-[#1e293b]/40 p-3 text-center">
           <p className="text-[10px] text-[#94a3b8] mb-1">Standard Error</p>
           <p className="text-[14px] font-bold text-white">

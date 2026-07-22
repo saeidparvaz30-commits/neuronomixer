@@ -14,8 +14,8 @@ interface TreeNodeProps {
   onClick: (id: string) => void;
 }
 
-const NODE_RADIUS = 22;
-const LEAF_RADIUS = 26;
+const NODE_RADIUS = 40;
+const LEAF_RADIUS = 36;
 
 export default function TreeNode({
   node,
@@ -81,10 +81,10 @@ export default function TreeNode({
       {/* Main label */}
       <text
         x={cx}
-        y={cy + (node.sublabel ? -4 : 4)}
+        y={cy + (node.sublabel ? -8 : 2)}
         textAnchor="middle"
         dominantBaseline="middle"
-        fontSize={node.level === 0 ? 10 : 9}
+        fontSize={node.level === 0 ? 18 : 17}
         fontWeight="700"
         fill={node.level === 0 ? "#f1f5f9" : "#0f172a"}
         style={{ userSelect: "none", pointerEvents: "none" }}
@@ -96,10 +96,10 @@ export default function TreeNode({
       {node.sublabel && (
         <text
           x={cx}
-          y={cy + 8}
+          y={cy + 12}
           textAnchor="middle"
           dominantBaseline="middle"
-          fontSize={7.5}
+          fontSize={17}
           fontWeight="600"
           fill={node.level === 0 ? "#94a3b8" : "#0f172a"}
           opacity={0.85}
@@ -113,10 +113,10 @@ export default function TreeNode({
       {node.isLeaf && node.jointProbability && (
         <text
           x={cx}
-          y={cy + r + 12}
+          y={cy + r + 14}
           textAnchor="middle"
           dominantBaseline="middle"
-          fontSize={8}
+          fontSize={17}
           fontWeight="600"
           fill={node.color}
           style={{ userSelect: "none", pointerEvents: "none" }}

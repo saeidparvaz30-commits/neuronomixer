@@ -29,7 +29,7 @@ const COL_MUTED  = "#94a3b8";
 
 // ── SVG canvas helpers ────────────────────────────────────────────────────────
 const W = 520, H = 300;
-const PAD = { l: 52, r: 16, t: 16, b: 44 };
+const PAD = { l: 60, r: 16, t: 16, b: 44 };
 const IW = W - PAD.l - PAD.r;
 const IH = H - PAD.t - PAD.b;
 
@@ -133,7 +133,7 @@ function ScatterWithModels({ scenarioId, showModel }: { scenarioId: ScenarioId; 
       {yTicks.map(v => (
         <g key={v}>
           <line x1={PAD.l - 4} x2={PAD.l} y1={py(v)} y2={py(v)} stroke="#475569" strokeWidth={1} />
-          <text x={PAD.l - 6} y={py(v) + 4} textAnchor="end" fontSize="9" fill={COL_MUTED}>{v}</text>
+          <text x={PAD.l - 6} y={py(v) + 6} textAnchor="end" fontSize="16" fill={COL_MUTED}>{v}</text>
         </g>
       ))}
 
@@ -142,13 +142,13 @@ function ScatterWithModels({ scenarioId, showModel }: { scenarioId: ScenarioId; 
       {xTicks.map(v => (
         <g key={v}>
           <line x1={px(v)} x2={px(v)} y1={H - PAD.b} y2={H - PAD.b + 4} stroke="#475569" strokeWidth={1} />
-          <text x={px(v)} y={H - PAD.b + 14} textAnchor="middle" fontSize="9" fill={COL_MUTED}>{v}</text>
+          <text x={px(v)} y={H - PAD.b + 14} textAnchor="middle" fontSize="16" fill={COL_MUTED}>{v}</text>
         </g>
       ))}
 
       {/* Axis labels */}
-      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="10" fill={COL_MUTED}>{scenario.xLabel}</text>
-      <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fontSize="10" fill={COL_MUTED} transform={`rotate(-90, 12, ${PAD.t + IH / 2})`}>{scenario.countLabel}</text>
+      <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="17" fill={COL_MUTED}>{scenario.xLabel}</text>
+      <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fontSize="17" fill={COL_MUTED} transform={`rotate(-90, 12, ${PAD.t + IH / 2})`}>{scenario.countLabel}</text>
     </svg>
   );
 }
@@ -160,15 +160,16 @@ function PoissonPMFChart({ lambda }: { lambda: number }) {
   const maxP = Math.max(...probs.map(d => d.p), 0.01);
 
   const bW = 560;
-  const bH = 180;
+  const bH = 204;
   const barW = Math.max(6, Math.floor((bW - 40) / probs.length) - 2);
+  const labelStep = Math.max(1, Math.ceil(22 / (barW + 2)));
 
   return (
     <svg viewBox={`0 0 ${bW} ${bH}`} className="w-full max-w-[560px]">
       {probs.map(({ k, p }) => {
-        const barH = Math.max(1, (p / maxP) * (bH - 48));
+        const barH = Math.max(1, (p / maxP) * (bH - 72));
         const x = 24 + k * (barW + 2);
-        const y = bH - 28 - barH;
+        const y = bH - 52 - barH;
         const isMode = p === maxP;
         return (
           <g key={k}>
@@ -180,19 +181,19 @@ function PoissonPMFChart({ lambda }: { lambda: number }) {
               rx={2}
               fill={isMode ? COL_GOLD : COL_BLUE}
               fillOpacity={isMode ? 1 : 0.75}
-              initial={{ height: 0, y: bH - 28 }}
+              initial={{ height: 0, y: bH - 52 }}
               animate={{ height: barH, y }}
               transition={{ duration: 0.4, delay: k * 0.015 }}
             />
-            {barW >= 10 && (
-              <text x={x + barW / 2} y={bH - 14} textAnchor="middle" fontSize="8" fill={COL_MUTED}>{k}</text>
+            {k % labelStep === 0 && (
+              <text x={x + barW / 2} y={bH - 32} textAnchor="middle" fontSize="17" fill={COL_MUTED}>{k}</text>
             )}
           </g>
         );
       })}
-      <line x1={24} x2={bW - 16} y1={bH - 28} y2={bH - 28} stroke="#334155" strokeWidth={1} />
-      <text x={bW / 2} y={bH - 2} textAnchor="middle" fontSize="10" fill={COL_MUTED}>k (count)</text>
-      <text x={10} y={bH / 2} textAnchor="middle" fontSize="10" fill={COL_MUTED} transform={`rotate(-90, 10, ${bH / 2})`}>P(Y=k)</text>
+      <line x1={24} x2={bW - 16} y1={bH - 52} y2={bH - 52} stroke="#334155" strokeWidth={1} />
+      <text x={bW / 2} y={bH - 6} textAnchor="middle" fontSize="17" fill={COL_MUTED}>k (count)</text>
+      <text x={10} y={bH / 2} textAnchor="middle" fontSize="17" fill={COL_MUTED} transform={`rotate(-90, 10, ${bH / 2})`}>P(Y=k)</text>
     </svg>
   );
 }

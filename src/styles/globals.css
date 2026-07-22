@@ -124,3 +124,13 @@ hr {
   }
 }
 
+
+/* SPEC v3 §15: touch-friendly range inputs (range inputs exist only in visual guides).
+   min-height beats the guides' h-1/h-1.5 utility heights; padding + content-box clip
+   keeps custom appearance-none tracks visually thin while expanding the hit area. */
+input[type="range"] {
+  min-height: 24px;
+  padding-block: 9px;
+  background-clip: content-box;
+  cursor: pointer;
+}
