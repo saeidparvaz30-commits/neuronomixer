@@ -26,7 +26,7 @@ import RecordsTable from "./RecordsTable";
 import RuleBuilder, { ActiveRule } from "./RuleBuilder";
 
 const GUIDE_TITLE = "The Six Faces of Bad Data";
-const NEXT_GUIDE_SLUG = "eda-workflow";
+const NEXT_GUIDE_SLUG = "cleaning-messy-data";
 
 const DEFECT_GATE_TARGET = 3;
 const RULE_GATE_TARGET = 2;

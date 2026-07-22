@@ -28,7 +28,7 @@ import ResamplePanel from "./ResamplePanel";
 import GapFillPanel from "./GapFillPanel";
 
 const GUIDE_TITLE = "Time Is a Dirty Data Type";
-const NEXT_GUIDE_SLUG = "data-pipeline";
+const NEXT_GUIDE_SLUG = "text-as-data";
 
 export default function DatetimeDataClient() {
   const { data: session } = useSession();
