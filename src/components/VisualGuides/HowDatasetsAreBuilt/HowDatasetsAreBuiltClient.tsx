@@ -151,7 +151,13 @@ export default function HowDatasetsAreBuiltClient() {
 
           {/* Summary card */}
           <AnimatePresence>
-            {showSummary && <SummaryCard onReset={reset} />}
+            {showSummary && (
+              <SummaryCard
+                stagesCompleted={completedCount}
+                challengesPassed={stages.filter((s) => s.challengePassed).length}
+                onReset={reset}
+              />
+            )}
           </AnimatePresence>
         </div>
       </div>

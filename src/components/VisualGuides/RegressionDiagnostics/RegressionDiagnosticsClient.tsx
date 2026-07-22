@@ -4,12 +4,15 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   DiagPoint, ModelState, DatasetSpec,
   DATASETS, fitOLS, computeDiagnostics, computeRSquared,
   normalQuantile, VIF_HEALTHY, VIF_COLLINEAR, VIFResult,
 } from "./types";
+
+const NEXT_GUIDE_SLUG = "logistic-regression";
 
 // ── SVG helpers ────────────────────────────────────────────────────────────────
 
@@ -473,6 +476,7 @@ function AssumptionSummary({ modelState }: { modelState: ModelState }) {
 
 export default function RegressionDiagnosticsClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
 
   // ─ State ────────────────────────────────────────────────────────────────────
@@ -533,6 +537,17 @@ export default function RegressionDiagnosticsClient() {
   const handleVifSwitch = useCallback((mode: "healthy" | "collinear") => {
     setVifMode(mode);
     setVifChecked(true);
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setModelState("healthy");
+    setRemovedIds(new Set());
+    setVifMode("healthy");
+    setViewedHealthy(true); // mirrors the on-mount effect: healthy is visible again
+    setViewedProblematic(false);
+    setRemovedAnyOutlier(false);
+    setVifChecked(false);
+    setPlotsViewed(new Set());
   }, []);
 
   // Mark healthy on mount
@@ -905,17 +920,123 @@ export default function RegressionDiagnosticsClient() {
           </div>
         </section>
 
-        {/* Footer nav */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link href="/visual-guides/multiple-regression-confounding"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
-            ← Multiple Regression
-          </Link>
-          <Link href="/visual-guides/logistic-regression"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            Logistic Regression →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Can Spot a Broken Model
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You compared healthy and violated fits, read all four
+                  diagnostic plots, removed influential points, and checked VIF
+                  for hidden collinearity.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Diagnostic plots examined
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {plotsViewed.size} of 4
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      residuals, Q-Q, scale, leverage
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Current dataset R²
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      {r2Original.toFixed(3)}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      {removedIds.size > 0
+                        ? `${r2Clean.toFixed(3)} with ${removedIds.size} removed`
+                        : `RMSE ${fit.rmse.toFixed(3)}`}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Model scenarios explored
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-warning)]">
+                      {(viewedHealthy ? 1 : 0) + (viewedProblematic ? 1 : 0)} of 2
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      healthy and assumption-violating
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;A regression will happily fit data that violates every
+                    assumption behind it; the four diagnostic plots are how you
+                    catch the lie before you trust the coefficients.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!allComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link href="/visual-guides/multiple-regression-confounding"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
+              ← Multiple Regression
+            </Link>
+            <Link href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+              Logistic Regression →
+            </Link>
+          </div>
+        )}
 
         <GuideCompletion isComplete={allComplete} guideSlug="regression-diagnostics" score={100} />
       </div>

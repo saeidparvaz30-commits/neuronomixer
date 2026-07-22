@@ -10,26 +10,47 @@ export interface SimulationState {
 
 // ── Math helpers ──────────────────────────────────────────────────────────────
 
-export function gaussianRandom(mean = 0, sd = 1): number {
+export function gaussianRandom(mean = 0, sd = 1, rnd: () => number = Math.random): number {
   let u = 0, v = 0;
-  while (u === 0) u = Math.random();
-  while (v === 0) v = Math.random();
+  while (u === 0) u = rnd();
+  while (v === 0) v = rnd();
   return mean + sd * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
 }
 
+// Seeded PRNG: the population must be identical between the prerendered HTML
+// and the client render, or React reports a hydration text mismatch (#418).
+function mulberry32(seed: number): () => number {
+  let a = seed;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const POPULATION_SEEDS: Record<DistributionType, number> = {
+  normal: 0x51a7,
+  uniform: 0xb01d,
+  skewed: 0x5eed,
+  bimodal: 0xcafe,
+};
+
 export function generatePopulation(type: DistributionType, n = 500): number[] {
+  const rnd = mulberry32(POPULATION_SEEDS[type]);
   switch (type) {
     case "normal":
-      return Array.from({ length: n }, () => gaussianRandom(50, 15));
+      return Array.from({ length: n }, () => gaussianRandom(50, 15, rnd));
     case "uniform":
-      return Array.from({ length: n }, () => Math.random() * 100);
+      return Array.from({ length: n }, () => rnd() * 100);
     case "skewed":
       return Array.from({ length: n }, () =>
-        Math.min(100, -Math.log(Math.random() + 1e-10) * 20 + 5)
+        Math.min(100, -Math.log(rnd() + 1e-10) * 20 + 5)
       );
     case "bimodal":
       return Array.from({ length: n }, (_, i) =>
-        i < n / 2 ? gaussianRandom(30, 8) : gaussianRandom(70, 8)
+        i < n / 2 ? gaussianRandom(30, 8, rnd) : gaussianRandom(70, 8, rnd)
       );
   }
 }

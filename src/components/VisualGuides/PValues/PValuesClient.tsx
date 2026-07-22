@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import {
   SimulationState, INITIAL_STATE, TestType,
   generateGroups, computeTStatistic, computePValue,
@@ -16,8 +17,11 @@ import PermutationCounter from "./PermutationCounter";
 import MetricsPanel from "./MetricsPanel";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
+const NEXT_GUIDE_SLUG = "statistical-power-effect-size";
+
 export default function PValuesClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
 
   const [state, setState] = useState<SimulationState>(INITIAL_STATE);
   const [isRunning, setIsRunning] = useState(false);
@@ -77,6 +81,11 @@ export default function PValuesClient() {
       significantPermutations: sigCount,
       permutationCount: prev.permutationCount + newResults.length,
     }));
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setState({ ...INITIAL_STATE });
+    setIsRunning(false);
   }, []);
 
   const df = 2 * state.sampleSize - 2;
@@ -280,7 +289,113 @@ export default function PValuesClient() {
           ))}
         </div>
 
-        {/* Footer navigation */}
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Demystified the P-Value
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You ran experiments until the pattern showed itself, then
+                  rebuilt the null distribution by hand with permutation
+                  shuffles.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Experiments run
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {state.experimentsRun}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      effect size {state.effectSize}, n = {state.sampleSize} per group
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Permutation shuffles
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      {state.permutationCount}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      {state.significantPermutations} beat your observed t
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Last result
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-warning)]">
+                      {state.pValue !== null ? `p = ${state.pValue.toFixed(4)}` : "cleared"}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      {state.tStatistic !== null
+                        ? `t = ${state.tStatistic.toFixed(2)}, α = ${state.alpha}`
+                        : `α = ${state.alpha}, awaiting a re-run`}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;A p-value answers one narrow question, how often pure
+                    chance would produce a result at least this extreme if
+                    nothing were going on; it says nothing about how likely
+                    your hypothesis is or how much the difference matters.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer navigation (pre-completion) */}
+        {!allComplete && (
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/hypothesis-testing"
@@ -289,12 +404,13 @@ export default function PValuesClient() {
             ← Hypothesis Testing
           </Link>
           <Link
-            href="/visual-guides/statistical-power-effect-size"
+            href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Statistical Power &amp; Effect Size →
           </Link>
         </div>
+        )}
       </div>
     </div>
   );

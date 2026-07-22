@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -191,6 +192,7 @@ function ElbowChart({ elbowData, currentK }: { elbowData: { k: number; inertia: 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function KMeansClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const [k, setK] = useState(3);
   // Seeded so server render and client hydration produce the same points;
   // resetAll (post-hydration) keeps true randomness.
@@ -236,6 +238,21 @@ export default function KMeansClient() {
     setIteration(0);
     setIsPlaying(false);
     setInertia(0);
+    if (playRef.current) clearInterval(playRef.current);
+  }
+
+  function handleReset() {
+    setK(3);
+    setPoints(generatePoints(mulberry32(0x5eed0002)));
+    setCentroids([]);
+    setPhase("setup");
+    setStepPhase("assign");
+    setIteration(0);
+    setIsPlaying(false);
+    setInertia(0);
+    setElbowData([]);
+    setIterationsRun(0);
+    setViewedBadInit(false);
     if (playRef.current) clearInterval(playRef.current);
   }
 
@@ -519,16 +536,115 @@ export default function KMeansClient() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link href="/visual-guides/decision-trees"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
-            ← Previous Guide
-          </Link>
-          <Link href="/visual-guides/knn"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            Next Guide →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Ran K-Means to Convergence
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You placed centroids by hand, stepped through assign and update
+                  until they stopped moving, and watched a bad start trap the
+                  algorithm in a local optimum.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Iterations run</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {iterationsRun}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      assign + update cycles
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Current inertia</p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">
+                      {inertia.toFixed(0)}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      sum of squared distances at K = {k}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Elbow points collected</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {elbowData.length}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      of 5 possible (K = 2 to 6)
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;K-means is two moves repeated until nothing changes:
+                    color each point by its nearest centroid, then move each
+                    centroid to the mean of its colors; where you start decides
+                    which valley it settles in.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href="/visual-guides/knn"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {!allComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link href="/visual-guides/decision-trees"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
+              ← Previous Guide
+            </Link>
+            <Link href="/visual-guides/knn"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+              Next Guide →
+            </Link>
+          </div>
+        )}
 
         <GuideCompletion isComplete={allComplete} guideSlug="k-means" score={100} />
       </div>

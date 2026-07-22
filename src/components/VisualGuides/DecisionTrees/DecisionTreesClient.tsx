@@ -4,6 +4,7 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 import {
   DataPoint, TreeNode, Split,
@@ -206,6 +207,7 @@ function TreeDiagram({ root }: { root: TreeNode | null }) {
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function DecisionTreesClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const [datasetKey, setDatasetKey] = useState<keyof typeof DATASETS>("linearlySeparable");
   // Seeded so server render and client hydration produce the same points;
   // loadDataset (post-hydration) keeps true randomness.
@@ -286,6 +288,16 @@ export default function DecisionTreesClient() {
     nodeMap.current = new Map([["root", root]]);
     setSelectedNode("root");
     setSplitValue(null);
+  }
+
+  function handleReset() {
+    setDatasetKey("linearlySeparable");
+    // New points array retriggers the init effect, which rebuilds the tree,
+    // node map, selected node, and pending split.
+    setPoints(generateDataset("linearlySeparable", 40, mulberry32(0x5eed0001)));
+    setSplitAxis("x");
+    setSplitsAdded(0);
+    setDatasetsLoaded(0);
   }
 
   // Compute overall accuracy
@@ -501,17 +513,110 @@ export default function DecisionTreesClient() {
           </div>
         </div>
 
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Built the Tree by Hand
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You placed the splits yourself, watched the regions carve up the
+                  feature space, and saw accuracy respond to every cut.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Splits placed</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {splitsAdded}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">this session</p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Datasets explored</p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">
+                      {datasetsLoaded}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">different point patterns</p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Current tree accuracy</p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">
+                      {(accuracy * 100).toFixed(1)}%
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      root Gini {tree ? tree.gini.toFixed(3) : "0.000"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;A decision tree is just a stack of simple threshold
+                    questions; each good split buys purity, but splits past the
+                    real pattern buy memorization instead.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href="/visual-guides/k-means"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Nav */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link href="/visual-guides/linear-regression"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
-            ← Previous Guide
-          </Link>
-          <Link href="/visual-guides/k-means"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
-            Next: K-Means Clustering Step by Step →
-          </Link>
-        </div>
+        {!allComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link href="/visual-guides/linear-regression"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors">
+              ← Previous Guide
+            </Link>
+            <Link href="/visual-guides/k-means"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
+              Next: K-Means Clustering Step by Step →
+            </Link>
+          </div>
+        )}
 
         <GuideCompletion isComplete={allComplete} guideSlug="decision-trees" score={100} />
       </div>

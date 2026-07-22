@@ -20,6 +20,9 @@ import ResultsComparison from "./ResultsComparison";
 import RepeatDrawsVisualization from "./RepeatDrawsVisualization";
 import BiasGallery from "./BiasGallery";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
+import { useGuideMotion } from "@/lib/guideMotion";
+
+const NEXT_GUIDE_SLUG = "confidence-intervals";
 
 // ── Initial state ─────────────────────────────────────────────────────────────
 
@@ -46,6 +49,7 @@ function buildInitialState(): SamplingState {
 
 export default function SamplingMethodsBiasClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
 
   const [state, setState] = useState<SamplingState>(() => buildInitialState());
@@ -152,6 +156,10 @@ export default function SamplingMethodsBiasClient() {
 
   function handleGalleryExpand() {
     setState(prev => ({ ...prev, galleryViewed: true }));
+  }
+
+  function handleReset() {
+    setState(buildInitialState());
   }
 
   // ── Progress items ──────────────────────────────────────────────────────────
@@ -403,21 +411,130 @@ export default function SamplingMethodsBiasClient() {
           <BiasGallery onExpand={handleGalleryExpand} />
         </motion.div>
 
-        {/* Footer nav */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link
-            href="/visual-guides/sources-of-bias"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
-          >
-            ← Sources of Bias
-          </Link>
-          <Link
-            href="/visual-guides/confidence-intervals"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
-          >
-            Confidence Intervals →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Out-Sampled the Bias
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You drew samples several different ways, watched their means
+                  cluster or drift from the truth, and connected each failure
+                  mode to a famous real-world polling disaster.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Sampling methods tried
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {state.methodsUsed.size} of 5
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      random to convenience
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Samples drawn
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      {state.repeatedMeans.length}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      n = {state.sampleSize} from 1,000 units
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Last sample vs true mean
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-warning)]">
+                      {state.currentSample.length > 0
+                        ? `${state.sampleMean - state.populationMean >= 0 ? "+" : ""}${(
+                            state.sampleMean - state.populationMean
+                          ).toFixed(2)}`
+                        : "n/a"}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      true mean {state.populationMean.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;How you pick the sample decides what the numbers can
+                    ever tell you: a small random sample beats a huge
+                    convenient one, because bias does not average out with
+                    volume.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!allComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides/sources-of-bias"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← Sources of Bias
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Confidence Intervals →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

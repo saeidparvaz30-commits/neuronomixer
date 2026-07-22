@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import {
   DistributionType,
   DataDistributionsState,
@@ -45,14 +46,18 @@ const OVERLAY_COLOR = "var(--color-accent)";
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
+const NEXT_GUIDE_SLUG = "visualizing-data-charts";
+
 export default function DataDistributionsClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
 
   const [state, setState] = useState<DataDistributionsState>(() => ({
     ...INITIAL_STATE,
     exploredDistributions: new Set<DistributionType>(["normal"]),
   }));
+  const [resetKey, setResetKey] = useState(0);
 
   // ── Derived ────────────────────────────────────────────────────────────────
 
@@ -126,6 +131,15 @@ export default function DataDistributionsClient() {
 
   function handleSampleSizeChange(n: number) {
     setState(prev => ({ ...prev, sampleSize: n, sampleData: [], empiricalVisible: false }));
+  }
+
+  // SampleSimulator keeps a local status message; bumping resetKey remounts it.
+  function handleReset() {
+    setState({
+      ...INITIAL_STATE,
+      exploredDistributions: new Set<DistributionType>(["normal"]),
+    });
+    setResetKey(k => k + 1);
   }
 
   // ── Progress ───────────────────────────────────────────────────────────────
@@ -272,6 +286,7 @@ export default function DataDistributionsClient() {
 
             {/* Sample simulator */}
             <SampleSimulator
+              key={resetKey}
               dist={dist}
               params={params}
               currentSampleSize={state.sampleSize}
@@ -354,21 +369,127 @@ export default function DataDistributionsClient() {
           </div>
         </div>
 
-        {/* Footer nav */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link
-            href="/visual-guides/percentiles-quartiles-box-plots"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
-          >
-            ← Percentiles &amp; Box Plots
-          </Link>
-          <Link
-            href="/visual-guides/visualizing-data-charts"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
-          >
-            Visualizing Data →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Learned the Shapes of Data
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You explored all four distributions, bent their shapes with the
+                  parameter sliders, and drew random samples to watch the histogram
+                  settle onto the theoretical curve.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Distributions explored
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {state.exploredDistributions.size} of 4
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      normal, uniform, exponential, Poisson
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Final distribution</p>
+                    <p
+                      className="text-[14px] font-mono font-bold"
+                      style={{ color }}
+                    >
+                      {DIST_LABELS[dist]}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      mean {distStats.mean.toFixed(2)}, SD {distStats.stdDev.toFixed(2)}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Samples on the histogram
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      {state.sampleData.length.toLocaleString()}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      empirical vs theoretical
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;A distribution is a claim about how the world generates data:
+                    bell-shaped noise, flat randomness, waiting times, or rare counts.
+                    Name the shape before you compute a statistic, because every formula
+                    downstream assumes one.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!allComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides/percentiles-quartiles-box-plots"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
+            >
+              ← Percentiles &amp; Box Plots
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Visualizing Data →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

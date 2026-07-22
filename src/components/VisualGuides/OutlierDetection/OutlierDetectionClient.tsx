@@ -4,14 +4,18 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import { Point, DetectionMethod, INITIAL_POINTS, detectZScore, detectIQR } from "./types";
 import InteractiveScatter  from "./InteractiveScatter";
 import DetectionMethodPanel from "./DetectionMethodPanel";
 import ComparisonStats      from "./ComparisonStats";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
+const NEXT_GUIDE_SLUG = "correlation-causation";
+
 export default function OutlierDetectionClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const nextIdRef         = useRef(INITIAL_POINTS.length);
   const completionFired   = useRef(false);
 
@@ -47,6 +51,15 @@ export default function OutlierDetectionClient() {
     setPoints([...INITIAL_POINTS]);
     setHasDragged(false);
     completionFired.current = false;
+  }
+
+  // Full restart for the completion card: also returns method, threshold, and
+  // explored tracking to their initial values.
+  function handleReset() {
+    reset();
+    setMethod("zscore");
+    setThreshold(3);
+    setExplored(new Set(["zscore"]));
   }
 
   const allComplete = explored.size === 2 && hasDragged;
@@ -243,17 +256,123 @@ export default function OutlierDetectionClient() {
           </div>
         </div>
 
-        {/* Footer nav */}
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Spotted the Odd Ones Out
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You moved the data yourself and compared what Z-Score and IQR
+                  each flag, and where they disagree.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Detection methods explored
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {explored.size} of 2
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      Z-Score and IQR
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Points on your canvas
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-white">
+                      {points.length}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      dragged, added, or removed by you
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Flagged by {method === "zscore" ? "Z-Score" : "IQR"} right now
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-warning)]">
+                      {outlierIds.size}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      {method === "zscore"
+                        ? `beyond ${threshold}σ on either axis`
+                        : "outside the 1.5×IQR fences"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;An outlier is only outlying relative to a method:
+                    Z-Score trusts the mean that extreme points distort, IQR
+                    holds its fences steady, and when the two disagree it is the
+                    shape of your distribution talking.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!allComplete && (
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link href="/visual-guides/feature-scaling"
             className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors">
             ← Previous Guide
           </Link>
-          <Link href="/visual-guides/correlation-causation"
+          <Link href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity">
             Next: Correlation vs Causation →
           </Link>
         </div>
+        )}
       </div>
     </div>
   );

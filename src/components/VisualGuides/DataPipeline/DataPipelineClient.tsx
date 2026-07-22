@@ -4,18 +4,30 @@ import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
-import { StageId, PIPELINE_STAGES } from "./types";
+import { useGuideMotion } from "@/lib/guideMotion";
+import { StageId, PIPELINE_STAGES, RAW_DATA } from "./types";
 import PipelineFlow from "./PipelineFlow";
 import DataTable from "./DataTable";
 import GuideCompletion from "@/components/VisualGuides/GuideCompletion";
 
+const NEXT_GUIDE_SLUG = "what-is-ml";
+
 export default function DataPipelineClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const [activeStage, setActiveStage] = useState<StageId>("ingest");
   const [completedStages, setCompletedStages] = useState<Set<StageId>>(new Set(["ingest"]));
   const completionFired = useRef(false);
 
   const allStagesSeen = completedStages.size >= 6;
+
+  const flaggedRows = RAW_DATA.filter(r => r.issues.length > 0).length;
+  const cleanRows = RAW_DATA.filter(r => !r.issues.includes("duplicate")).length;
+
+  function handleReset() {
+    setActiveStage("ingest");
+    setCompletedStages(new Set(["ingest"]));
+  }
 
   useEffect(() => {
     if (allStagesSeen && !completionFired.current && session?.user) {
@@ -198,21 +210,119 @@ export default function DataPipelineClient() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Footer nav */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link
-            href="/visual-guides/data-distributions"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
-          >
-            ← Previous Guide
-          </Link>
-          <Link
-            href="/visual-guides/what-is-ml"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
-          >
-            Next: What Is Machine Learning? The Big Picture →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allStagesSeen && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Followed the Data Home
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You walked all six stages and watched 12 messy employee records become
+                  warehouse-ready summaries, with every fix visible along the way.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Stages explored</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {completedStages.size} of {PIPELINE_STAGES.length}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      ingest through load
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Records in vs out</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      {RAW_DATA.length} → {cleanRows}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      one exact duplicate dropped
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Rows flagged</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-warning)]">
+                      {flaggedRows} of {RAW_DATA.length}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      nulls, outlier, typo, type error
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Most of data work happens before the first chart: validating,
+                    cleaning, transforming, and aggregating. A model or dashboard built
+                    on an unexamined pipeline inherits every flaw the pipeline let
+                    through.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!allStagesSeen && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides/data-distributions"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
+            >
+              ← Previous Guide
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next: What Is Machine Learning? The Big Picture →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

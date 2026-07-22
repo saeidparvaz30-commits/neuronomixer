@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 import { INITIAL_STATE, StudentTChiSquareFState, ActiveDistribution } from "./types";
 import DistributionComparison from "./DistributionComparison";
 import TConvergenceVisualizer from "./TConvergenceVisualizer";
@@ -40,13 +41,17 @@ const TABS: TabDef[] = [
   },
 ];
 
+const NEXT_GUIDE_SLUG = "probability-fundamentals";
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function StudentTChiSquareFClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
 
   const [state, setState] = useState<StudentTChiSquareFState>(INITIAL_STATE);
+  const [resetKey, setResetKey] = useState(0);
 
   // ── Completion tracking ────────────────────────────────────────────────────
 
@@ -149,6 +154,16 @@ export default function StudentTChiSquareFClient() {
     checkCompletion();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.user]);
+
+  function handleReset() {
+    setState(INITIAL_STATE);
+    tSliderMoved.current = false;
+    otherSliderMoved.current = false;
+    convergenceViewed.current = false;
+    cardsViewed.current = new Set<number>();
+    refreshProgress();
+    setResetKey((k) => k + 1);
+  }
 
   // ── Progress items ──────────────────────────────────────────────────────────
 
@@ -317,23 +332,129 @@ export default function StudentTChiSquareFClient() {
         </div>
 
         {/* Use case explainer */}
-        <UseCaseExplainer onCardViewed={handleCardViewed} />
+        <UseCaseExplainer key={resetKey} onCardViewed={handleCardViewed} />
 
-        {/* Footer nav */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link
-            href="/visual-guides/data-distributions"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
-          >
-            ← Data Distributions
-          </Link>
-          <Link
-            href="/visual-guides/probability-fundamentals"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
-          >
-            Probability Fundamentals →
-          </Link>
-        </div>
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Met the Three Test Distributions
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You reshaped each curve with degrees of freedom, watched the
+                  t-distribution converge to the normal, and matched t,
+                  chi-square, and F to the tests they power.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      t-distribution df
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">
+                      {state.tDF}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      heavier tails at low df
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Chi-square df
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {state.chiSquareDF}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      skew fades as df grows
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      F-distribution df pair
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[#93c5fd]">
+                      ({state.fDF1}, {state.fDF2})
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      a ratio of two chi-squares
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;All three curves are children of the normal: t is a
+                    mean with estimated spread, chi-square is a sum of squared
+                    normals, and F is a ratio of chi-squares, so degrees of
+                    freedom decide the shape of every classic test
+                    statistic.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!allComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides/data-distributions"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+            >
+              ← Data Distributions
+            </Link>
+            <Link
+              href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Probability Fundamentals →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

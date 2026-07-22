@@ -4,6 +4,7 @@ import React, { useState, useMemo, useRef, useCallback, useEffect } from "react"
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 
 import DataPointDragZone from "./DataPointDragZone";
 import StatisticsPanel from "./StatisticsPanel";
@@ -20,6 +21,7 @@ function clonePoints(pts: DataPoint[]): DataPoint[] {
 // ── Main component ────────────────────────────────────────────────────────────
 export default function DescriptiveStatisticsClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
 
   // ── Data state ──────────────────────────────────────────────────────────────
@@ -86,6 +88,20 @@ export default function DescriptiveStatisticsClient() {
   // ── Reset ───────────────────────────────────────────────────────────────────
   const handleReset = useCallback(() => {
     setDataPoints(clonePoints(DEFAULT_DATA_POINTS));
+  }, []);
+
+  // Full reset for the completion card: data plus every tracked interaction.
+  const handleTryAgain = useCallback(() => {
+    setDataPoints(clonePoints(DEFAULT_DATA_POINTS));
+    setShowRobustStats(false);
+    setShowDistanceViz(false);
+    draggedPointIds.current = new Set();
+    robustToggled.current = false;
+    distanceVizSeen.current = false;
+    setDraggedCountDisplay(0);
+    setRobustDisplay(false);
+    setDistDisplay(false);
+    setCompletionVisible(false);
   }, []);
 
   // ── Progress display (reactive) ─────────────────────────────────────────────
@@ -282,21 +298,118 @@ export default function DescriptiveStatisticsClient() {
           />
         </motion.div>
 
+        {/* Completion card */}
+        <AnimatePresence>
+          {allComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Made the Numbers Move
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You dragged salaries along the number line, watched center and
+                  spread react live, and saw which statistics flinch at outliers
+                  and which hold steady.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Points dragged</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      {draggedCountDisplay}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">of 20 salaries</p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Final center</p>
+                    <p className="text-[14px] font-mono font-bold text-[#3bb4a4]">
+                      ${stats.mean.toFixed(1)}k
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      mean, vs median ${stats.median.toFixed(1)}k
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">Final spread (σ)</p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      ${stats.stdDev.toFixed(1)}k
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      IQR ${stats.iqr.toFixed(1)}k
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;No single number tells the story: pair a measure of
+                    center with a measure of spread, and reach for the robust
+                    versions when an outlier drags the mean away from the
+                    middle.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleTryAgain}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href="/visual-guides/percentiles-quartiles-box-plots"
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Footer nav */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
-          <Link
-            href="/visual-guides/math-for-statistics"
-            className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
-          >
-            ← Math for Statistics
-          </Link>
-          <Link
-            href="/visual-guides/percentiles-quartiles-box-plots"
-            className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
-          >
-            Next: Percentiles &amp; Box Plots →
-          </Link>
-        </div>
+        {!allComplete && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
+            <Link
+              href="/visual-guides/math-for-statistics"
+              className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
+            >
+              ← Math for Statistics
+            </Link>
+            <Link
+              href="/visual-guides/percentiles-quartiles-box-plots"
+              className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+            >
+              Next: Percentiles &amp; Box Plots →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

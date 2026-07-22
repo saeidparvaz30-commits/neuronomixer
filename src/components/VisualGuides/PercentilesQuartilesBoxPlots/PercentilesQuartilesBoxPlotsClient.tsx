@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useGuideMotion } from "@/lib/guideMotion";
 
 import type { DatasetType, StepType, State } from "./types";
 import { DATASETS, calcStats, STEP_LABELS } from "./types";
@@ -35,8 +36,11 @@ const initialState: State = {
   toggledZScores: false,
 };
 
+const NEXT_GUIDE_SLUG = "data-distributions";
+
 export default function PercentilesQuartilesBoxPlotsClient() {
   const { data: session } = useSession();
+  const { card } = useGuideMotion();
   const completionFired = useRef(false);
   const [state, setState] = useState<State>(initialState);
 
@@ -120,6 +124,14 @@ export default function PercentilesQuartilesBoxPlotsClient() {
       showZScores: v,
       toggledZScores: prev.toggledZScores || v,
     }));
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setState({
+      ...initialState,
+      selectedPointIds: new Set(),
+      percentilePointsClicked: new Set(),
+    });
   }, []);
 
   // ── Progress indicators ───────────────────────────────────────────────────
@@ -324,7 +336,112 @@ export default function PercentilesQuartilesBoxPlotsClient() {
           </aside>
         </div>
 
-        {/* Footer nav */}
+        {/* Completion card */}
+        <AnimatePresence>
+          {isComplete && (
+            <motion.div
+              variants={card}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              className="mt-8 rounded-2xl border border-white/[0.08] bg-[#0f172a] overflow-hidden"
+            >
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-5 h-px bg-[var(--color-accent)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[2px] text-[var(--color-accent)]">
+                    Guide Complete
+                  </span>
+                </div>
+                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                  You Built the Box Plot
+                </h2>
+                <p className="text-sm text-[#94a3b8] mt-1">
+                  You walked raw data through all five construction steps,
+                  inspected individual points for their percentiles, and layered
+                  z-scores on top.
+                </p>
+              </div>
+
+              <div className="px-6 py-5">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Build steps reached
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-accent)]">
+                      5 of 5
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      raw data to z-score overlay
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Points you inspected
+                    </p>
+                    <p className="text-[14px] font-mono font-bold text-[var(--color-success)]">
+                      {state.percentilePointsClicked.size}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      in {datasetInfo.label}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[#1e293b] p-3">
+                    <p className="text-[10px] text-[#475569] mb-1">
+                      Five-number summary
+                    </p>
+                    <p className="text-[13px] font-mono font-bold text-white">
+                      {stats.min} · {stats.q1} · {stats.median} · {stats.q3} · {stats.max}
+                    </p>
+                    <p className="text-[10px] text-[#475569] mt-0.5">
+                      IQR = {stats.iqr} {datasetInfo.unit}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl border-l-4 border-[var(--color-accent)] bg-[#d4af37]/5 border border-[#d4af37]/20 p-4 mb-2">
+                  <p className="text-[12px] font-semibold text-[var(--color-accent)] mb-1.5 uppercase tracking-wide">
+                    Key Takeaway
+                  </p>
+                  <p className="text-[13px] text-[#94a3b8] leading-relaxed italic">
+                    &quot;Five numbers, the minimum, Q1, median, Q3, and
+                    maximum, compress an entire dataset into a picture you can
+                    read at a glance: where the middle half lives, how skewed
+                    the data is, and which points sit far enough out to
+                    question.&quot;
+                  </p>
+                </div>
+              </div>
+
+              <div className="px-6 py-4 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-3">
+                <Link
+                  href="/visual-guides"
+                  className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                >
+                  ← All Guides
+                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold border border-[#1e293b] text-white hover:border-[#d4af37] hover:text-[#d4af37] transition-colors"
+                  >
+                    Try Again
+                  </button>
+                  <Link
+                    href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
+                    className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
+                  >
+                    Next Guide →
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer nav (pre-completion) */}
+        {!isComplete && (
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-white/[0.06]">
           <Link
             href="/visual-guides/descriptive-statistics"
@@ -333,12 +450,13 @@ export default function PercentilesQuartilesBoxPlotsClient() {
             ← Descriptive Statistics
           </Link>
           <Link
-            href="/visual-guides/data-distributions"
+            href={`/visual-guides/${NEXT_GUIDE_SLUG}`}
             className="px-5 py-2 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-[#0a0e1a] hover:opacity-90 transition-opacity"
           >
             Next: Data Distributions →
           </Link>
         </div>
+        )}
       </div>
     </div>
   );
