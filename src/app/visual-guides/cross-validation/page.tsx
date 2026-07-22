@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "See how K-fold cross-validation rotates the validation role across k folds so every point is held out exactly once. Compare fold-by-fold errors and the mean ± std.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/cross-validation" },
   openGraph: {
-    title: "Cross-Validation: Why One Split Isn't Enough — NeuroNomixer",
+    title: "Cross-Validation: Why One Split Isn't Enough | NeuroNomixer",
     description: "Interactive K-fold cross-validation: click folds, see per-fold errors, understand why CV beats a single split.",
     url: "https://www.neuronomixer.com/visual-guides/cross-validation",
     type: "article",

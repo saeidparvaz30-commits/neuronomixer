@@ -37,7 +37,7 @@ function ProductLaunchViz() {
           <span className="text-[11px] font-bold w-8 text-right" style={{ color }}>{pct}%</span>
         </div>
       ))}
-      <p className="text-[11px] text-[#94a3b8] mt-2">Mobile users drive adoption. Headline "45%" hides device composition.</p>
+      <p className="text-[11px] text-[#94a3b8] mt-2">Mobile users drive adoption. Headline &quot;45%&quot; hides device composition.</p>
     </div>
   );
 }

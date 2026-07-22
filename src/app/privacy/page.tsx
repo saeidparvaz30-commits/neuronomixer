@@ -18,7 +18,7 @@ export default function PrivacyPage() {
 
       <section className="space-y-6 leading-relaxed">
         <p>
-          NeuroNomixer ("we", "our", or "us") values your privacy. This Privacy
+          NeuroNomixer (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) values your privacy. This Privacy
           Policy explains how we collect, use, and protect your personal
           information when you visit{" "}
           <span className="text-[var(--color-primary)] font-semibold">

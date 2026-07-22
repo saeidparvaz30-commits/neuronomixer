@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "See how combining many imperfect decision trees creates a powerful ensemble. Adjust tree count and depth, compare a single tree to the full forest, and watch accuracy improve.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/random-forests" },
   openGraph: {
-    title: "Random Forests: Wisdom of the Crowd — NeuroNomixer",
+    title: "Random Forests: Wisdom of the Crowd | NeuroNomixer",
     description: "Interactive Random Forest visualizer: add trees, watch decision boundaries smooth out, compare ensemble vs single tree.",
     url: "https://www.neuronomixer.com/visual-guides/random-forests",
     type: "article",

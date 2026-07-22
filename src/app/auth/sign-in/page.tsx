@@ -51,8 +51,8 @@ export default function SignInPage() {
       setError("Invalid email or password.");
     } else {
       const session = await getSession();
-      const role = (session?.user as any)?.role;
-      const onboarded = (session?.user as any)?.onboarded;
+      const role = session?.user?.role;
+      const onboarded = session?.user?.onboarded;
       if (!onboarded) {
         router.push("/auth/complete-signup");
       } else if (role === "ADMIN") {

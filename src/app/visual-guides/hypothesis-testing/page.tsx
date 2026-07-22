@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/hypothesis-testing",
   },
   openGraph: {
-    title: "Hypothesis Testing: A Visual Experiment — NeuroNomixer",
+    title: "Hypothesis Testing: A Visual Experiment | NeuroNomixer",
     description:
       "Interactive hypothesis testing simulator. Tune effect size, sample size, and α. Watch power and Type I error emerge from 1000 Monte Carlo experiments.",
     url: "https://www.neuronomixer.com/visual-guides/hypothesis-testing",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Hypothesis Testing: A Visual Experiment — NeuroNomixer",
+    title: "Hypothesis Testing: A Visual Experiment | NeuroNomixer",
     description:
       "Design A/B tests. Run 1000 experiments. Watch the confusion matrix tally true/false positives in real time.",
   },

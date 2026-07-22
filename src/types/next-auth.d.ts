@@ -8,6 +8,7 @@ declare module "next-auth" {
       role: "ADMIN" | "AUTHOR" | "SUBSCRIBER";
       vip: boolean;
       onboarded: boolean;
+      suspended: boolean;
     } & DefaultSession["user"];
   }
 }

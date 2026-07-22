@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   const adminId = session?.user?.id;
 
-  if ((session?.user as any)?.role !== "ADMIN") {
+  if (session?.user?.role !== "ADMIN") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
   if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
   if (userId === adminId) return NextResponse.json({ error: "Cannot suspend your own account" }, { status: 400 });
 
-  const user = await (prisma as any).user.update({
+  const user = await prisma.user.update({
     where: { id: userId },
     data: { suspended: true, tokenVersion: { increment: 1 } },
     select: { name: true, email: true },

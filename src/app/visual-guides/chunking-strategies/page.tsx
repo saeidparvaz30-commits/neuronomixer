@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/chunking-strategies",
   },
   openGraph: {
-    title: "Chunking Strategies for RAG — NeuroNomixer",
+    title: "Chunking Strategies for RAG | NeuroNomixer",
     description:
       "See fixed-size, recursive, and document-structure chunking applied side by side on real text. Understand how chunk size and overlap affect retrieval quality.",
     url: "https://www.neuronomixer.com/visual-guides/chunking-strategies",

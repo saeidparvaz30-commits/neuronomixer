@@ -4,19 +4,19 @@ import ContactClient from "./ContactClient";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with the NeuroNomixer team. Whether you have a question, project idea, or collaboration request — we'd love to hear from you.",
+    "Get in touch with the NeuroNomixer team. Whether you have a question, project idea, or collaboration request, we'd love to hear from you.",
   alternates: { canonical: "https://www.neuronomixer.com/contact" },
   openGraph: {
-    title: "Contact — NeuroNomixer",
+    title: "Contact | NeuroNomixer",
     description: "Get in touch with the NeuroNomixer team.",
     url: "https://www.neuronomixer.com/contact",
     siteName: "NeuroNomixer",
     type: "website",
-    images: [{ url: "https://www.neuronomixer.com/pictures/Logo.png", alt: "NeuroNomixer" }],
+    images: [{ url: "https://www.neuronomixer.com/og/og-default.png", width: 1200, height: 630, alt: "NeuroNomixer" }],
   },
   twitter: {
     card: "summary",
-    title: "Contact — NeuroNomixer",
+    title: "Contact | NeuroNomixer",
     description: "Get in touch with the NeuroNomixer team.",
   },
 };

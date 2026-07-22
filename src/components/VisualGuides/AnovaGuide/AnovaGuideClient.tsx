@@ -263,7 +263,7 @@ export default function AnovaGuideClient() {
                 Post-hoc comparisons appear when ANOVA is significant (p &lt; 0.05).
                 {statistics && statistics.pValue >= 0.05 && (
                   <span className="block mt-1 text-[#94a3b8]">
-                    Current p = {statistics.pValue.toFixed(3)}. Try the "Strong Differences" preset.
+                    Current p = {statistics.pValue.toFixed(3)}. Try the &quot;Strong Differences&quot; preset.
                   </span>
                 )}
               </p>

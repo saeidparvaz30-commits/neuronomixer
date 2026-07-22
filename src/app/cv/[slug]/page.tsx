@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import CVPublicView from "./CVPublicView";
+import CVPublicView, { type CV } from "./CVPublicView";
 import type { Metadata } from "next";
 
 export async function generateStaticParams() {
@@ -20,10 +20,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cv = await prisma.authorCV.findUnique({ where: { slug } });
   if (!cv || !cv.isPublic) return { title: "CV Not Found" };
   return {
-    title: `${cv.name ?? "CV"} — NeuroNomixer`,
+    title: `${cv.name ?? "CV"} | NeuroNomixer`,
     description: cv.tagline ?? `Professional CV of ${cv.name}`,
     openGraph: {
-      title: `${cv.name ?? "CV"} — NeuroNomixer`,
+      title: `${cv.name ?? "CV"} | NeuroNomixer`,
       description: cv.tagline ?? undefined,
       type: "profile",
     },
@@ -36,5 +36,5 @@ export default async function CVPublicPage({ params }: Props) {
 
   if (!cv || !cv.isPublic) notFound();
 
-  return <CVPublicView cv={cv as any} />;
+  return <CVPublicView cv={cv as unknown as CV} />;
 }

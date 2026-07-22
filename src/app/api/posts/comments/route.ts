@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rateLimit";
 
-const db = prisma as any;
+const db = prisma;
 
 export async function GET(req: NextRequest) {
   if (!db.comment) return NextResponse.json([]);
@@ -63,7 +63,7 @@ export async function DELETE(req: NextRequest) {
   const comment = await db.comment.findUnique({ where: { id: commentId } });
   if (!comment) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const role = (session.user as any).role;
+  const role = session.user.role;
   if (comment.userId !== session.user.id && role !== "ADMIN")
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 

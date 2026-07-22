@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/probability-distributions",
   },
   openGraph: {
-    title: "Probability Distributions Gallery — NeuroNomixer",
+    title: "Probability Distributions Gallery | NeuroNomixer",
     description:
       "Interactive gallery of distributions with adjustable parameters.",
     url: "https://www.neuronomixer.com/visual-guides/probability-distributions",

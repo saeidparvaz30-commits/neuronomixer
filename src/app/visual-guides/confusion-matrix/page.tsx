@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Go beyond accuracy. Explore the confusion matrix for medical, spam, and fraud scenarios. Adjust the classification threshold and watch precision, recall, and F1 update in real time.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/confusion-matrix" },
   openGraph: {
-    title: "The Confusion Matrix Decoded — NeuroNomixer",
+    title: "The Confusion Matrix Decoded | NeuroNomixer",
     description: "Interactive confusion matrix: change threshold, explore TP/FP/TN/FN, and see why accuracy alone is misleading.",
     url: "https://www.neuronomixer.com/visual-guides/confusion-matrix",
     type: "article",

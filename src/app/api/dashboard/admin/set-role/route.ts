@@ -8,7 +8,7 @@ type Role = (typeof VALID_ROLES)[number];
 
 export async function POST(req: NextRequest) {
   const session = await auth();
-  if ((session?.user as any)?.role !== "ADMIN") {
+  if (session?.user?.role !== "ADMIN") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
   if (role === "AUTHOR") data.authorStatus = "APPROVED";
   if (role === "SUBSCRIBER") data.authorStatus = null;
 
-  const user = await (prisma as any).user.update({ where: { id: userId }, data, select: { sanityAuthorId: true } });
+  const user = await prisma.user.update({ where: { id: userId }, data, select: { sanityAuthorId: true } });
 
   // Keep Sanity author document in sync with role changes.
   // We try sanityAuthorId first; if missing, fall back to querying Sanity by userId.
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
     await client.patch(sanityDocId).set({ applicationStatus: sanityStatus }).commit().catch(() => {});
     // Also save the id back to Prisma so future calls skip the GROQ lookup
     if (!user?.sanityAuthorId && sanityDocId) {
-      await (prisma as any).user.update({ where: { id: userId }, data: { sanityAuthorId: sanityDocId } }).catch(() => {});
+      await prisma.user.update({ where: { id: userId }, data: { sanityAuthorId: sanityDocId } }).catch(() => {});
     }
   }
 

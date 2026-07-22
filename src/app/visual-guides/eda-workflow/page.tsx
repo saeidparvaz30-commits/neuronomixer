@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/eda-workflow",
   },
   openGraph: {
-    title: "Interrogating a Dataset — NeuroNomixer",
+    title: "Interrogating a Dataset | NeuroNomixer",
     description:
       "A hands-on EDA workflow: five interrogation panels, four planted data issues, one findings board. Every number computed live.",
     url: "https://www.neuronomixer.com/visual-guides/eda-workflow",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Interrogating a Dataset — NeuroNomixer",
+    title: "Interrogating a Dataset | NeuroNomixer",
     description:
       "A hands-on EDA workflow: five interrogation panels, four planted data issues, one findings board. Every number computed live.",
   },

@@ -716,7 +716,7 @@ export default function CVDesignerClient({ generationsUsed: initialUsed, avatarU
           </div>
           <div className="text-center">
             <p className="font-semibold text-white text-lg">Designing your CVs…</p>
-            <p className="text-sm text-gray-400 mt-1">This may take a moment. Please don't close this page.</p>
+            <p className="text-sm text-gray-400 mt-1">This may take a moment. Please don&apos;t close this page.</p>
           </div>
           <div className="flex gap-1.5 mt-2">
             {[0, 1, 2].map((i) => (

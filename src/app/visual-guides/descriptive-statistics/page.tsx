@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/descriptive-statistics",
   },
   openGraph: {
-    title: "Descriptive Statistics: Center, Spread & Shape — NeuroNomixer Visual Guides",
+    title: "Descriptive Statistics: Center, Spread & Shape | NeuroNomixer Visual Guides",
     description:
       "Interactive visual guide: drag data points and watch descriptive statistics update in real time.",
     url: "https://www.neuronomixer.com/visual-guides/descriptive-statistics",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Descriptive Statistics: Center, Spread & Shape — NeuroNomixer",
+    title: "Descriptive Statistics: Center, Spread & Shape | NeuroNomixer",
     description:
       "Drag salary data points and watch mean, median, variance, and IQR update live.",
   },

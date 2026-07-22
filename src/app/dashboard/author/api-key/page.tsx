@@ -7,7 +7,7 @@ export default async function ApiKeyPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/auth/sign-in");
 
-  const role = (session.user as any).role;
+  const role = session.user.role;
   if (role !== "AUTHOR" && role !== "ADMIN") redirect("/dashboard/subscriber");
 
   const existing = await prisma.authorApiKey.findUnique({

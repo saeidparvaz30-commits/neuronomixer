@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      "Student's t, Chi-Square & F Distributions — NeuroNomixer Visual Guides",
+      "Student's t, Chi-Square & F Distributions | NeuroNomixer Visual Guides",
     description:
       "Interactive comparison of three key sampling distributions.",
     url: "https://www.neuronomixer.com/visual-guides/student-t-chi-square-f",

@@ -10,6 +10,30 @@ const CORS = {
   "Access-Control-Allow-Headers": "Authorization, Content-Type",
 };
 
+interface SanityPostBodyBlock {
+  _type: string;
+  alt?: string;
+  caption?: string;
+  source?: string;
+  url?: string;
+  fileUrl?: string;
+  asset?: { url?: string };
+}
+
+interface SanityPostListItem {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  status: string;
+  publishedAt?: string;
+  _createdAt: string;
+  mainImage?: string | null;
+  category?: { title: string; slug: string } | null;
+  url: string | null;
+  body: SanityPostBodyBlock[];
+}
+
 export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: CORS });
 }
@@ -25,7 +49,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ posts: [] }, { headers: CORS });
   }
 
-  const raw = await client.fetch(
+  const raw = await client.fetch<SanityPostListItem[]>(
     `*[_type == "post" && author._ref == $authorId] | order(coalesce(publishedAt, _createdAt) desc) {
       "id": _id,
       title,
@@ -49,12 +73,12 @@ export async function GET(req: NextRequest) {
     { authorId: user.sanityAuthorId, siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "" }
   );
 
-  const posts = raw.map((p: any) => {
+  const posts = raw.map((p) => {
     const { body, ...meta } = p;
 
     // Flat manifest of all images and videos in the body
     const media = (body ?? [])
-      .map((b: any) => {
+      .map((b) => {
         if (b._type === "image") {
           const url = b.asset?.url ?? null;
           return url ? { type: "image" as const, url, alt: b.alt ?? null } : null;

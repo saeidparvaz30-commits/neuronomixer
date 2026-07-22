@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/transfer-learning",
   },
   openGraph: {
-    title: "Transfer Learning: Stand on Giants' Shoulders — NeuroNomixer",
+    title: "Transfer Learning: Stand on Giants' Shoulders | NeuroNomixer",
     description:
       "Click to freeze and unfreeze CNN layers. See how pretrained features transfer across tasks with dramatically less training data.",
     url: "https://www.neuronomixer.com/visual-guides/transfer-learning",

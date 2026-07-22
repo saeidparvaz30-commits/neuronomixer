@@ -13,7 +13,7 @@ export default async function SubscriberLayout({
   const session = await auth();
   if (!session?.user?.id) redirect("/auth/sign-in");
 
-  const role = (session.user as any)?.role as string | undefined;
+  const role = session.user?.role as string | undefined;
 
   const dbUser = await prisma.user.findUnique({
     where: { id: session.user.id },

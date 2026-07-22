@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Interactive guide exploring missing data strategies: Drop Rows, Mean Imputation, and KNN Imputation. See how each method affects your dataset distribution and model accuracy in real time.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/missing-data" },
   openGraph: {
-    title: "Missing Data: Why It Matters — NeuroNomixer Visual Guides",
+    title: "Missing Data: Why It Matters | NeuroNomixer Visual Guides",
     description:
       "Compare three missing data strategies side-by-side. Interactive before/after visualization showing data loss vs bias tradeoffs.",
     url: "https://www.neuronomixer.com/visual-guides/missing-data",
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Missing Data: Why It Matters — NeuroNomixer Visual Guides",
+    title: "Missing Data: Why It Matters | NeuroNomixer Visual Guides",
     description: "Interactive comparison of missing data handling strategies.",
   },
 };

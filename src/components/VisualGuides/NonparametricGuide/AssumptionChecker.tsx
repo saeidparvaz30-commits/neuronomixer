@@ -282,7 +282,7 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
 
       {!hasRun && (
         <p className="mt-3 text-[10px] text-[#475569]">
-          Click "Run Assumption Check" to test for normality using the Q-Q plot correlation
+          Click &quot;Run Assumption Check&quot; to test for normality using the Q-Q plot correlation
           (how closely the sorted data track normal quantiles).
         </p>
       )}

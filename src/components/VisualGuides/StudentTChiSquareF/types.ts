@@ -39,7 +39,7 @@ export function logGamma(z: number): number {
   if (z < 0.5) {
     return Math.log(Math.PI / Math.sin(Math.PI * z)) - logGamma(1 - z);
   }
-  let zz = z - 1;
+  const zz = z - 1;
   let x = c[0];
   for (let i = 1; i < g + 2; i++) x += c[i] / (zz + i);
   const t = zz + g + 0.5;

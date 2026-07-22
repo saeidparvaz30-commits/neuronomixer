@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Explore a hand-built word embedding space with live-computed similarities. Try word arithmetic like king - man + woman ≈ queen and see how similar words cluster together.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/embeddings" },
   openGraph: {
-    title: "Embeddings: Words as Numbers in Space — NeuroNomixer",
+    title: "Embeddings: Words as Numbers in Space | NeuroNomixer",
     description:
       "Explore a hand-built word embedding space with live-computed similarities. Try word arithmetic like king - man + woman ≈ queen and see how similar words cluster together.",
     url: "https://www.neuronomixer.com/visual-guides/embeddings",

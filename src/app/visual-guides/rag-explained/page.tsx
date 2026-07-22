@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/rag-explained",
   },
   openGraph: {
-    title: "RAG: Retrieval Augmented Generation — NeuroNomixer",
+    title: "RAG: Retrieval Augmented Generation | NeuroNomixer",
     description:
       "Step through the RAG pipeline: ingestion, retrieval, augmentation, and generation. See how RAG reduces hallucination by grounding LLMs in real documents.",
     url: "https://www.neuronomixer.com/visual-guides/rag-explained",

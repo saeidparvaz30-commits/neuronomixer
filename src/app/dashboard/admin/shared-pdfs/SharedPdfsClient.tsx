@@ -22,6 +22,8 @@ export default function SharedPdfsClient() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
@@ -93,14 +95,19 @@ export default function SharedPdfsClient() {
   };
 
   const remove = async (row: ShareRow) => {
-    if (!window.confirm(`Delete "${row.title}"? The file and its stats are removed permanently.`)) return;
-    const res = await fetch(`/api/dashboard/admin/shared-pdfs/${row.id}`, { method: "DELETE" });
-    if (!res.ok) {
-      setError((await res.json().catch(() => null))?.error ?? "Action failed");
-      return;
+    setDeletingId(row.id);
+    try {
+      const res = await fetch(`/api/dashboard/admin/shared-pdfs/${row.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        setError((await res.json().catch(() => null))?.error ?? "Action failed");
+        return;
+      }
+      setError(null);
+      await load();
+    } finally {
+      setDeletingId(null);
+      setConfirmingId(null);
     }
-    setError(null);
-    await load();
   };
 
   return (
@@ -170,9 +177,34 @@ export default function SharedPdfsClient() {
                     <button onClick={() => void toggleActive(row)} className="rounded-md border border-white/10 px-2.5 py-1 text-xs hover:bg-white/10">
                       {row.active ? "Disable" : "Enable"}
                     </button>
-                    <button onClick={() => void remove(row)} className="rounded-md border border-red-500/30 px-2.5 py-1 text-xs text-red-400 hover:bg-red-500/10">
-                      Delete
-                    </button>
+                    {confirmingId === row.id ? (
+                      <>
+                        <button
+                          autoFocus
+                          onClick={() => void remove(row)}
+                          disabled={deletingId === row.id}
+                          className="rounded-md bg-red-700 px-2.5 py-1 text-xs font-medium text-white hover:bg-red-600 disabled:opacity-50"
+                          aria-label={`Confirm delete of ${row.title}`}
+                        >
+                          {deletingId === row.id ? "Deleting..." : "Confirm delete"}
+                        </button>
+                        <button
+                          onClick={() => setConfirmingId(null)}
+                          disabled={deletingId === row.id}
+                          className="rounded-md border border-white/10 px-2.5 py-1 text-xs hover:bg-white/10 disabled:opacity-50"
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmingId(row.id)}
+                        className="rounded-md border border-red-500/30 px-2.5 py-1 text-xs text-red-400 hover:bg-red-500/10"
+                        aria-label={`Delete ${row.title}`}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}

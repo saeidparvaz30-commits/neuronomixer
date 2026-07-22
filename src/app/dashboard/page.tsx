@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 
 export default async function DashboardRootPage() {
   const session = await auth();
-  const role = (session?.user as any)?.role;
+  const role = session?.user?.role;
 
   if (role === "ADMIN") redirect("/dashboard/admin");
   if (role === "AUTHOR") redirect("/dashboard/author");

@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 // Admin permanently deletes a post (any status, including deletion_requested).
 export async function POST(req: NextRequest) {
   const session = await auth();
-  if ((session?.user as any)?.role !== "ADMIN") {
+  if (session?.user?.role !== "ADMIN") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

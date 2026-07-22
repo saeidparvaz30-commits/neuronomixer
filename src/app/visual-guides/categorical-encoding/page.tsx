@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/categorical-encoding",
   },
   openGraph: {
-    title: "Turning Categories into Numbers — NeuroNomixer",
+    title: "Turning Categories into Numbers | NeuroNomixer",
     description:
       "Interactive categorical encoding lab: four live encodings of one dataset, a cardinality explosion slider, and an exact least-squares showdown between ordinal and one-hot.",
     url: "https://www.neuronomixer.com/visual-guides/categorical-encoding",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Turning Categories into Numbers — NeuroNomixer",
+    title: "Turning Categories into Numbers | NeuroNomixer",
     description:
       "One-hot, ordinal, frequency, and target encoding on live data, plus a leakage preview where target encoding memorizes noise.",
   },

@@ -3,12 +3,12 @@ import { client } from "@/sanity/lib/client";
 import HomePageClient from "@/components/HomePage/HomePageClient";
 
 export const metadata: Metadata = {
-  title: { absolute: "NeuroNomixer — AI, Data & Risk Analytics" },
+  title: { absolute: "NeuroNomixer | AI, Data & Risk Analytics" },
   description:
     "NeuroNomixer explores the intersection of AI, data science, and risk analytics through in-depth articles and insights.",
   alternates: { canonical: "https://www.neuronomixer.com" },
   openGraph: {
-    title: "NeuroNomixer — AI, Data & Risk Analytics",
+    title: "NeuroNomixer | AI, Data & Risk Analytics",
     description: "Exploring the intersection of AI, data science, and risk analytics.",
     url: "https://www.neuronomixer.com",
     siteName: "NeuroNomixer",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "NeuroNomixer — AI, Data & Risk Analytics",
+    title: "NeuroNomixer | AI, Data & Risk Analytics",
     description: "Exploring the intersection of AI, data science, and risk analytics.",
   },
 };
@@ -51,7 +51,7 @@ const jsonLd = [
     "@type": "Organization",
     name: "NeuroNomixer",
     url: siteUrl,
-    logo: { "@type": "ImageObject", url: `${siteUrl}/pictures/Logo.png` },
+    logo: { "@type": "ImageObject", url: `${siteUrl}/og/logo-512.png` },
     sameAs: [
       "https://www.linkedin.com/company/neuronomixer",
       "https://x.com/neuronomixer",

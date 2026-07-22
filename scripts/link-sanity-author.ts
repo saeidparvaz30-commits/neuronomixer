@@ -20,7 +20,7 @@ const sanity = createClient({
 
 // ── Prisma client ─────────────────────────────────────────────────────────────
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
-const prisma  = new PrismaClient({ adapter } as any);
+const prisma  = new PrismaClient({ adapter });
 
 async function main() {
   // 1. List all Sanity authors
@@ -45,7 +45,7 @@ async function main() {
   console.log(`\n✓ Matched Sanity author: "${author.name}" (_id: ${author._id})`);
 
   // 3. Find Prisma user
-  const user = await (prisma as any).user.findUnique({ where: { email: TARGET_EMAIL } });
+  const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
   if (!user) {
     console.error(`\n✗ No Prisma user found for ${TARGET_EMAIL}`);
     process.exit(1);
@@ -54,7 +54,7 @@ async function main() {
   console.log(`  Current role: ${user.role} | sanityAuthorId: ${user.sanityAuthorId ?? "not set"}`);
 
   // 4. Update Prisma user
-  await (prisma as any).user.update({
+  await prisma.user.update({
     where: { id: user.id },
     data: {
       sanityAuthorId: author._id,

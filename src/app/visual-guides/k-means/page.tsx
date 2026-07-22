@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Watch the K-Means algorithm in action. Place initial centroids, step through iterations, and explore how clusters converge. Includes elbow curve analysis.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/k-means" },
   openGraph: {
-    title: "K-Means Clustering Step by Step — NeuroNomixer",
+    title: "K-Means Clustering Step by Step | NeuroNomixer",
     description: "Interactive K-Means simulator: place centroids, step through iterations, watch clusters form.",
     url: "https://www.neuronomixer.com/visual-guides/k-means",
     type: "article",

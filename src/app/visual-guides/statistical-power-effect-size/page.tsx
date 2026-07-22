@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/statistical-power-effect-size",
   },
   openGraph: {
-    title: "Statistical Power & Effect Size — NeuroNomixer Visual Guides",
+    title: "Statistical Power & Effect Size | NeuroNomixer Visual Guides",
     description:
       "Interactive visualization of statistical power. Tune Cohen's d, sample size, and α to see how power changes in real time.",
     url: "https://www.neuronomixer.com/visual-guides/statistical-power-effect-size",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Statistical Power & Effect Size — NeuroNomixer Visual Guides",
+    title: "Statistical Power & Effect Size | NeuroNomixer Visual Guides",
     description:
       "See how overlapping null and alternative distributions determine statistical power. Interactive sliders for d, n, and α.",
   },

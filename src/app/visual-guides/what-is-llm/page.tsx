@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Animated journey from text input through billions of parameters to next-token prediction. Understand how LLMs are trained and why scale matters.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/what-is-llm" },
   openGraph: {
-    title: "What Is a Large Language Model? — NeuroNomixer",
+    title: "What Is a Large Language Model? | NeuroNomixer",
     description:
       "Animated journey from text input through billions of parameters to next-token prediction. Understand how LLMs are trained and why scale matters.",
     url: "https://www.neuronomixer.com/visual-guides/what-is-llm",

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/conditional-probability",
   },
   openGraph: {
-    title: "Conditional Probability & Independence — NeuroNomixer Visual Guides",
+    title: "Conditional Probability & Independence | NeuroNomixer Visual Guides",
     description:
       "When you know Event B happened, how does that change the probability of Event A? Interactive tree diagrams and sample space animations.",
     url: "https://www.neuronomixer.com/visual-guides/conditional-probability",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Conditional Probability & Independence — NeuroNomixer Visual Guides",
+    title: "Conditional Probability & Independence | NeuroNomixer Visual Guides",
     description:
       "Interactive probability trees, sample space animations, and an independence checker.",
   },

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/groupby-aggregation",
   },
   openGraph: {
-    title: "Split, Apply, Combine — NeuroNomixer Visual Guides",
+    title: "Split, Apply, Combine | NeuroNomixer Visual Guides",
     description:
       "Split a transactions table into groups, apply an aggregate, and combine into a summary table. Includes a live pivot table and a question-to-recipe translator exercise.",
     url: "https://www.neuronomixer.com/visual-guides/groupby-aggregation",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Split, Apply, Combine — NeuroNomixer",
+    title: "Split, Apply, Combine | NeuroNomixer",
     description:
       "Interactive guide to group-by aggregation: live regrouping, computed pivot tables, and a question translator with instant feedback.",
   },

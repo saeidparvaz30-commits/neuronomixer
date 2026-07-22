@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Compare rule-based programming vs machine learning side by side across three real scenarios: spam detection, image recognition, and house price prediction.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/what-is-ml" },
   openGraph: {
-    title: "What Is Machine Learning? The Big Picture — NeuroNomixer",
+    title: "What Is Machine Learning? The Big Picture | NeuroNomixer",
     description:
       "Animated side-by-side comparison of rule-based programming vs ML. Explore supervised, unsupervised, and reinforcement learning.",
     url: "https://www.neuronomixer.com/visual-guides/what-is-ml",

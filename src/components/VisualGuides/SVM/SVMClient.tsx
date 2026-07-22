@@ -22,7 +22,7 @@ interface SVMResult {
 }
 
 function trainSVM(pts: DataPt[], C: number, iterations = 2000): SVMResult {
-  let w: [number, number] = [0, 0];
+  const w: [number, number] = [0, 0];
   let b = 0;
   const lr = 0.01;
   const n = pts.length;
@@ -527,7 +527,7 @@ export default function SVMClient() {
               <h3 className="text-xs font-semibold text-[var(--color-accent)] uppercase tracking-wide mb-2">Key Insight</h3>
               <p className="text-xs text-[#94a3b8] leading-relaxed">
                 The <span className="text-white">support vectors</span> are the only points that matter
-                for defining the boundary: all others could be removed and the hyperplane wouldn't change.
+                for defining the boundary: all others could be removed and the hyperplane wouldn&apos;t change.
                 This makes SVMs robust to outliers far from the boundary.
               </p>
             </div>

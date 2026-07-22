@@ -125,21 +125,21 @@ function JsonVisual({ transformed }: { transformed: boolean }) {
       >
         <div className="text-white/40">{"{"}</div>
         <div className="pl-2">
-          <span className="text-[var(--color-accent)]">"user"</span>
+          <span className="text-[var(--color-accent)]">&quot;user&quot;</span>
           <span className="text-white/40">: {"{"}</span>
         </div>
         <div className="pl-4">
-          <span className="text-[var(--color-accent)]">"name"</span>
+          <span className="text-[var(--color-accent)]">&quot;name&quot;</span>
           <span className="text-white/40">: </span>
-          <span className="text-[#3bb4a4]">"Alex"</span>
+          <span className="text-[#3bb4a4]">&quot;Alex&quot;</span>
         </div>
         <div className="pl-4">
-          <span className="text-[var(--color-accent)]">"age"</span>
+          <span className="text-[var(--color-accent)]">&quot;age&quot;</span>
           <span className="text-white/40">: </span>
           <span className="text-[#a855f7]">28</span>
         </div>
         <div className="pl-4">
-          <span className="text-[var(--color-accent)]">"tags"</span>
+          <span className="text-[var(--color-accent)]">&quot;tags&quot;</span>
           <span className="text-white/40">: [...]</span>
         </div>
         <div className="pl-2 text-white/40">{"}"}</div>
@@ -151,17 +151,17 @@ function JsonVisual({ transformed }: { transformed: boolean }) {
     <div className="text-[8px] leading-relaxed font-mono w-full">
       <div className="text-white/40">{"{"}</div>
       <div className="pl-2">
-        <span className="text-[var(--color-accent)]">"user"</span>
+        <span className="text-[var(--color-accent)]">&quot;user&quot;</span>
         <span className="text-white/40">: {"{"}</span>
-        <span className="text-[var(--color-accent)]">"name"</span>
+        <span className="text-[var(--color-accent)]">&quot;name&quot;</span>
         <span className="text-white/40">: </span>
-        <span className="text-[#3bb4a4]">"Alex"</span>
+        <span className="text-[#3bb4a4]">&quot;Alex&quot;</span>
         <span className="text-white/40">, </span>
-        <span className="text-[var(--color-accent)]">"age"</span>
+        <span className="text-[var(--color-accent)]">&quot;age&quot;</span>
         <span className="text-white/40">: </span>
         <span className="text-[#a855f7]">28</span>
         <span className="text-white/40">, </span>
-        <span className="text-[var(--color-accent)]">"tags"</span>
+        <span className="text-[var(--color-accent)]">&quot;tags&quot;</span>
         <span className="text-white/40">: [...]{"}"}</span>
       </div>
       <div className="text-white/40">{"}"}</div>

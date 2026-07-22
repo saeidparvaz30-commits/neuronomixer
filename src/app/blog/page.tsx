@@ -9,17 +9,17 @@ export const metadata: Metadata = {
     "Explore in-depth articles on AI, machine learning, data science, and risk analytics from the NeuroNomixer team.",
   alternates: { canonical: "https://www.neuronomixer.com/blog" },
   openGraph: {
-    title: "Blog — NeuroNomixer",
+    title: "Blog | NeuroNomixer",
     description:
       "Explore in-depth articles on AI, machine learning, data science, and risk analytics.",
     url: "https://www.neuronomixer.com/blog",
     siteName: "NeuroNomixer",
     type: "website",
-    images: [{ url: "https://www.neuronomixer.com/pictures/Logo.png", alt: "NeuroNomixer" }],
+    images: [{ url: "https://www.neuronomixer.com/og/og-default.png", width: 1200, height: 630, alt: "NeuroNomixer" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Blog — NeuroNomixer",
+    title: "Blog | NeuroNomixer",
     description:
       "Explore in-depth articles on AI, machine learning, data science, and risk analytics.",
   },

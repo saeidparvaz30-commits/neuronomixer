@@ -8,8 +8,8 @@ const { auth } = NextAuth(authConfig);
 export default auth((req) => {
   const { pathname } = req.nextUrl;
   const session = req.auth;
-  const role = (session?.user as any)?.role;
-  const suspended = (session?.user as any)?.suspended;
+  const role = session?.user?.role;
+  const suspended = session?.user?.suspended;
 
   // Redirect suspended users (who are still signed in) to the suspended page
   if (suspended && pathname.startsWith("/dashboard") && pathname !== "/auth/suspended") {

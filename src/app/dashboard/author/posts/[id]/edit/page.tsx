@@ -50,7 +50,7 @@ export default async function EditPostPage({
   if (!session?.user) redirect("/auth/sign-in");
 
   const userId = session.user.id;
-  const role = (session.user as any).role;
+  const role = session.user.role;
 
   const [post, categories] = await Promise.all([
     getPost(id),

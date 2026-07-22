@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Browse a gallery of 6 prompt engineering patterns with live demos and editable prompts. Learn zero-shot, few-shot, chain-of-thought, and more.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/prompt-engineering" },
   openGraph: {
-    title: "Prompt Engineering Patterns — NeuroNomixer",
+    title: "Prompt Engineering Patterns | NeuroNomixer",
     description:
       "Browse a gallery of 6 prompt engineering patterns with live demos and editable prompts. Learn zero-shot, few-shot, chain-of-thought, and more.",
     url: "https://www.neuronomixer.com/visual-guides/prompt-engineering",

@@ -49,7 +49,7 @@ export default async function AdminEditPostPage({
   const session = await auth();
   if (!session?.user) redirect("/auth/sign-in");
 
-  const role = (session.user as any).role;
+  const role = session.user.role;
   if (role !== "ADMIN") redirect("/dashboard/admin");
 
   const [post, categories] = await Promise.all([getPost(id), getCategories()]);

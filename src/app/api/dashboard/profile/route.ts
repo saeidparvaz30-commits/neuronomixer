@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
   if (imageUrl) prismaData.image = imageUrl;
   if (shortBio !== undefined) prismaData.bio = shortBio?.trim() ?? "";
 
-  const updated = await (prisma as any).user.update({
+  const updated = await prisma.user.update({
     where: { id: session.user.id },
     data: prismaData,
     select: { sanityAuthorId: true },
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
   // Keep CV avatarUrl in sync with the profile photo
   if (imageUrl) {
-    await (prisma as any).authorCV.updateMany({
+    await prisma.authorCV.updateMany({
       where: { userId: session.user.id },
       data: { avatarUrl: imageUrl },
     });

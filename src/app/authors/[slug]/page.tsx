@@ -55,11 +55,11 @@ export async function generateMetadata({
 
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com").replace(/\/$/, "");
   const canonicalUrl = `${siteUrl}/authors/${slug}`;
-  const title = `${author.name} — NeuroNomixer`;
+  const title = `${author.name} | NeuroNomixer`;
   const description = author.shortBio ?? `Articles and insights by ${author.name} on NeuroNomixer.`;
   const ogImage = author.image?.asset?.url
     ? [{ url: author.image.asset.url, width: 400, height: 400, alt: author.name }]
-    : [{ url: `${siteUrl}/pictures/Logo.png`, alt: "NeuroNomixer" }];
+    : [{ url: `${siteUrl}/og/og-default.png`, width: 1200, height: 630, alt: "NeuroNomixer" }];
 
   return {
     title,

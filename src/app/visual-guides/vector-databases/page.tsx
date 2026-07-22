@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/vector-databases",
   },
   openGraph: {
-    title: "Vector Databases: Semantic Search — NeuroNomixer",
+    title: "Vector Databases: Semantic Search | NeuroNomixer",
     description:
       "Watch documents become vectors in 2D space. Run semantic queries and see nearest neighbors retrieved by cosine similarity.",
     url: "https://www.neuronomixer.com/visual-guides/vector-databases",

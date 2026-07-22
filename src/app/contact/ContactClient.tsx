@@ -76,7 +76,7 @@ export default function ContactClient() {
           </h1>
           <p className="text-gray-600 mb-6">
             Whether you have a question, a project idea, or just want to say
-            hello — I'd love to hear from you.
+            hello — I&apos;d love to hear from you.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">

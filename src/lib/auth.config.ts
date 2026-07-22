@@ -22,9 +22,9 @@ export const authConfig = {
     session({ session, token }) {
       if (session.user && token) {
         session.user.id = token.id as string;
-        (session.user as any).role = token.role;
-        (session.user as any).onboarded = token.onboarded;
-        (session.user as any).suspended = token.suspended;
+        session.user.role = token.role as "ADMIN" | "AUTHOR" | "SUBSCRIBER";
+        session.user.onboarded = token.onboarded as boolean;
+        session.user.suspended = token.suspended as boolean;
       }
       return session;
     },

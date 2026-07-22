@@ -19,7 +19,7 @@ interface ProjectEntry { title: string; description: string; year: string; hidde
 interface CertificationEntry { title: string; issuer: string; year: string; hidden?: boolean; }
 interface HonorEntry { title: string; description: string; hidden?: boolean; }
 
-interface CV {
+export interface CV {
   name?: string; tagline?: string; bio?: string; location?: string;
   email?: string; phone?: string; website?: string;
   linkedin?: string; github?: string; twitter?: string; avatarUrl?: string;

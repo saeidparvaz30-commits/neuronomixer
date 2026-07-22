@@ -6,6 +6,28 @@ import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
+interface SanityPostBodyBlock {
+  _type: string;
+  alt?: string;
+  caption?: string;
+  url?: string;
+  fileUrl?: string;
+  asset?: { url?: string };
+}
+
+interface SanityPostListItem {
+  id: string;
+  title: string;
+  slug: string;
+  description?: string;
+  status: string;
+  publishedAt?: string;
+  _createdAt: string;
+  mainImage?: string | null;
+  category?: { title: string; slug: string } | null;
+  body: SanityPostBodyBlock[];
+}
+
 // Validate key directly (mirrors apiKeyAuth incl. the S7 suspended/role gate)
 async function validateKey(key: string | null) {
   if (!key?.startsWith("nnx_")) return null;
@@ -46,7 +68,7 @@ export default async function ReviewPage({
 
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com").replace(/\/$/, "");
 
-  const raw: any[] = await client.fetch(
+  const raw = await client.fetch<SanityPostListItem[]>(
     `*[_type == "post" && author._ref == $authorId] | order(coalesce(publishedAt, _createdAt) desc) {
       "id": _id,
       title,
@@ -72,7 +94,7 @@ export default async function ReviewPage({
       ? `${siteUrl}/blog/${meta.category.slug}/${meta.slug}`
       : null;
     const media: { type: string; url: string; alt?: string; caption?: string }[] = (body ?? [])
-      .map((b: any) => {
+      .map((b) => {
         if (b._type === "image") {
           const u = b.asset?.url ?? null;
           return u ? { type: "image", url: u, alt: b.alt ?? "" } : null;
@@ -83,7 +105,7 @@ export default async function ReviewPage({
         }
         return null;
       })
-      .filter(Boolean);
+      .filter((m): m is NonNullable<typeof m> => m !== null);
     return { ...meta, url, bodyMarkdown: portableTextToMarkdown(body ?? []), media };
   });
 
@@ -91,7 +113,7 @@ export default async function ReviewPage({
     <html>
       <head>
         <meta charSet="utf-8" />
-        <title>NeuroNomixer — Author Content Review</title>
+        <title>NeuroNomixer | Author Content Review</title>
       </head>
       <body style={{ fontFamily: "monospace", whiteSpace: "pre-wrap", padding: "2rem", maxWidth: "900px", margin: "0 auto", lineHeight: "1.6" }}>
         {`NEURONOMIXER — AUTHOR CONTENT REVIEW
@@ -114,7 +136,7 @@ DESCRIPTION: ${post.description ?? "(none)"}
 MEDIA (${post.media.length} item${post.media.length !== 1 ? "s" : ""}):
 ${post.media.length === 0
   ? "  (none)"
-  : post.media.map((m: any) =>
+  : post.media.map((m) =>
       `  [${m.type.toUpperCase()}] ${m.url}${m.alt ? ` — alt: ${m.alt}` : ""}${m.caption ? ` — caption: ${m.caption}` : ""}`
     ).join("\n")}
 

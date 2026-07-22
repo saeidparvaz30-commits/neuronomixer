@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Adjust temperature and top-K parameters and watch token probability distributions reshape in real time. Understand how LLMs balance creativity vs. coherence.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/temperature-topk" },
   openGraph: {
-    title: "Temperature & Top-K: Controlling Creativity — NeuroNomixer",
+    title: "Temperature & Top-K: Controlling Creativity | NeuroNomixer",
     description:
       "Adjust temperature and top-K parameters and watch token probability distributions reshape in real time. Understand how LLMs balance creativity vs. coherence.",
     url: "https://www.neuronomixer.com/visual-guides/temperature-topk",

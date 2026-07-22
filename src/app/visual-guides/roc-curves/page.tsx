@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Explore ROC curves and AUC for multiple classifiers. Drag the threshold to trace the curve, compare models, and see how the score distribution determines model quality.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/roc-curves" },
   openGraph: {
-    title: "ROC Curves & AUC: Threshold Tuning Visualized — NeuroNomixer",
+    title: "ROC Curves & AUC: Threshold Tuning Visualized | NeuroNomixer",
     description: "Interactive ROC curve explorer: compare classifiers, tune threshold, understand AUC.",
     url: "https://www.neuronomixer.com/visual-guides/roc-curves",
     type: "article",

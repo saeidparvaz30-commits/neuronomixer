@@ -18,13 +18,13 @@ export const metadata = {
   metadataBase: new URL("https://www.neuronomixer.com"),
   title: {
     default: "NeuroNomixer",
-    template: "%s — NeuroNomixer",
+    template: "%s | NeuroNomixer",
   },
   description: "Exploring the intersection of AI, data & risk analytics.",
   openGraph: {
     siteName: "NeuroNomixer",
     type: "website" as const,
-    images: [{ url: "/pictures/Logo.png", alt: "NeuroNomixer" }],
+    images: [{ url: "/og/og-default.png", width: 1200, height: 630, alt: "NeuroNomixer" }],
   },
   twitter: {
     card: "summary_large_image" as const,

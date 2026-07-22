@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Throw darts at a bullseye target while adjusting bias and variance sliders. Understand the bias-variance tradeoff through interactive play.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/bias-variance" },
   openGraph: {
-    title: "Bias vs Variance: The Bullseye — NeuroNomixer",
+    title: "Bias vs Variance: The Bullseye | NeuroNomixer",
     description:
       "Interactive bullseye game illustrating the bias-variance tradeoff. Adjust sliders and watch MSE decompose into its components.",
     url: "https://www.neuronomixer.com/visual-guides/bias-variance",

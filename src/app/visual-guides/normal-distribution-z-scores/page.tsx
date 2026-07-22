@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/normal-distribution-z-scores",
   },
   openGraph: {
-    title: "The Normal Distribution & Z-Scores — NeuroNomixer Visual Guides",
+    title: "The Normal Distribution & Z-Scores | NeuroNomixer Visual Guides",
     description:
       "Interactive normal curve explorer with z-score calculator and score comparison tool.",
     url: "https://www.neuronomixer.com/visual-guides/normal-distribution-z-scores",

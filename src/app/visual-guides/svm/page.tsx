@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Add data points and watch a Support Vector Machine find the widest possible decision boundary. Adjust regularization C and observe how the margin trades off against misclassification.",
   alternates: { canonical: "https://www.neuronomixer.com/visual-guides/svm" },
   openGraph: {
-    title: "SVM: Finding the Maximum Margin — NeuroNomixer",
+    title: "SVM: Finding the Maximum Margin | NeuroNomixer",
     description: "Interactive SVM: place points, tune C, and watch the maximum-margin hyperplane update live.",
     url: "https://www.neuronomixer.com/visual-guides/svm",
     type: "article",

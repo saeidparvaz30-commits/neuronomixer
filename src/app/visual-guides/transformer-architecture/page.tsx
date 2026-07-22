@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "https://www.neuronomixer.com/visual-guides/transformer-architecture",
   },
   openGraph: {
-    title: "The Transformer Architecture — NeuroNomixer",
+    title: "The Transformer Architecture | NeuroNomixer",
     description:
       "Click through every block of a transformer with animated explainers. Understand embeddings, attention, residual connections, and how it all fits together.",
     url: "https://www.neuronomixer.com/visual-guides/transformer-architecture",

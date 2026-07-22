@@ -242,7 +242,7 @@ export default function AssumptionChecker({ data, title, onChecked }: Props) {
 
       {!checked && (
         <p className="text-[12px] text-[#475569] text-center py-4">
-          Click "Run Assumption Check" to verify normality before running the test.
+          Click &quot;Run Assumption Check&quot; to verify normality before running the test.
         </p>
       )}
     </div>

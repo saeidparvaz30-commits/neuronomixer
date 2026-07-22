@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     canonical: "https://www.neuronomixer.com/visual-guides/datetime-data",
   },
   openGraph: {
-    title: "Time Is a Dirty Data Type — NeuroNomixer Visual Guides",
+    title: "Time Is a Dirty Data Type | NeuroNomixer Visual Guides",
     description:
       "Timezones, DST cliffs, irregular intervals, and gaps: an interactive tour of the most error-prone column in real data, with every number computed live.",
     url: "https://www.neuronomixer.com/visual-guides/datetime-data",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Time Is a Dirty Data Type — NeuroNomixer",
+    title: "Time Is a Dirty Data Type | NeuroNomixer",
     description:
       "Timezones, DST cliffs, irregular intervals, and gaps: an interactive tour of the most error-prone column in real data, with every number computed live.",
   },

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title:
-      "The Central Limit Theorem in Action — NeuroNomixer Visual Guides",
+      "The Central Limit Theorem in Action | NeuroNomixer Visual Guides",
     description:
       "Watch the sampling distribution become normal as sample size grows, no matter the population shape.",
     url: "https://www.neuronomixer.com/visual-guides/central-limit-theorem",
