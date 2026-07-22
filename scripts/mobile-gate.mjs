@@ -1,4 +1,6 @@
 // SPEC v3 §15 mobile gate: asserts guide pages are usable at 360px client width.
+// Decorative icons (svg[aria-hidden="true"]) are exempt from the tiny-text
+// assertion: per SPEC 15.3 it applies to informative text only.
 // Usage: node scripts/mobile-gate.mjs [slug ...]        (no args = all built guides)
 //        node scripts/mobile-gate.mjs --list-only       (print slugs and exit)
 // Requires a dev server on localhost:3000 (npx next dev). Uses puppeteer-core +
@@ -28,7 +30,7 @@ if (args.includes("--list-only")) {
 
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: true });
 const page = await browser.newPage();
-await page.setViewport({ width: 375, height: 812 });
+await page.setViewport({ width: 360, height: 800 });
 
 const failures = [];
 for (const slug of targets) {
@@ -40,6 +42,7 @@ for (const slug of targets) {
       const doc = document.documentElement;
       const overflow = doc.scrollWidth - doc.clientWidth;
       const tinyTexts = [...document.querySelectorAll("svg text")]
+        .filter((t) => !t.closest('svg[aria-hidden="true"]'))
         .map((t) => t.getBoundingClientRect().height)
         .filter((h) => h > 0 && h < 9);
       const thinSliders = [...document.querySelectorAll('input[type="range"]')]

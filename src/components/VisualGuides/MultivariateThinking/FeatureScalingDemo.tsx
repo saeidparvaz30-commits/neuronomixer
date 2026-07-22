@@ -124,13 +124,13 @@ export default function FeatureScalingDemo({ onScalingExplored }: Props) {
             {[0, 250, 500, 750, 1000].map((v) => (
               <g key={v}>
                 <line x1={sx(v, rawXMin, rawXMax)} y1={PAD.t} x2={sx(v, rawXMin, rawXMax)} y2={H - PAD.b} stroke="#1e293b" strokeWidth={0.8} />
-                <text x={sx(v, rawXMin, rawXMax)} y={H - PAD.b + 14} textAnchor="middle" fill="#475569" fontSize={10}>{v}</text>
+                <text x={sx(v, rawXMin, rawXMax)} y={H - PAD.b + 14} textAnchor="middle" fill="#475569" fontSize={15}>{v}</text>
               </g>
             ))}
             {[0, 2.5, 5, 7.5, 10].map((v) => (
               <g key={v}>
                 <line x1={PAD.l} y1={sy(v, rawYMin, rawYMax)} x2={W - PAD.r} y2={sy(v, rawYMin, rawYMax)} stroke="#1e293b" strokeWidth={0.8} />
-                <text x={PAD.l - 4} y={sy(v, rawYMin, rawYMax) + 3} textAnchor="end" fill="#475569" fontSize={10}>{v}</text>
+                <text x={PAD.l - 4} y={sy(v, rawYMin, rawYMax) + 3} textAnchor="end" fill="#475569" fontSize={15}>{v}</text>
               </g>
             ))}
             {/* Axes */}
@@ -208,7 +208,7 @@ export default function FeatureScalingDemo({ onScalingExplored }: Props) {
               return (
                 <g key={v}>
                   <line x1={sx(v, scXMin, scXMax)} y1={PAD.t} x2={sx(v, scXMin, scXMax)} y2={H - PAD.b} stroke="#1e293b" strokeWidth={0.8} />
-                  <text x={sx(v, scXMin, scXMax)} y={H - PAD.b + 14} textAnchor="middle" fill="#475569" fontSize={10}>{v}σ</text>
+                  <text x={sx(v, scXMin, scXMax)} y={H - PAD.b + 14} textAnchor="middle" fill="#475569" fontSize={15}>{v}σ</text>
                 </g>
               );
             })}
@@ -217,7 +217,7 @@ export default function FeatureScalingDemo({ onScalingExplored }: Props) {
               return (
                 <g key={v}>
                   <line x1={PAD.l} y1={sy(v, scYMin, scYMax)} x2={W - PAD.r} y2={sy(v, scYMin, scYMax)} stroke="#1e293b" strokeWidth={0.8} />
-                  <text x={PAD.l - 4} y={sy(v, scYMin, scYMax) + 3} textAnchor="end" fill="#475569" fontSize={10}>{v}</text>
+                  <text x={PAD.l - 4} y={sy(v, scYMin, scYMax) + 3} textAnchor="end" fill="#475569" fontSize={15}>{v}</text>
                 </g>
               );
             })}

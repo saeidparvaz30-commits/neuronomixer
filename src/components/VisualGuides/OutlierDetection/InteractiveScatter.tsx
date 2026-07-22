@@ -238,18 +238,21 @@ export default function InteractiveScatter({
                 <title>{`(${pt.x}, ${pt.y})${isOutlier ? " (outlier)" : ""}`}</title>
               </motion.circle>
 
-              {/* Hover tooltip */}
-              {isHov && (
-                <g style={{ pointerEvents: "none" }}>
-                  <rect x={px - 120} y={py - 60} width="240" height="46" rx="5" fill="#0f172a" stroke="#334155" strokeWidth="1" />
-                  <text x={px} y={py - 42} textAnchor="middle" fontSize="15" fill="#f1f5f9" fontFamily="Inter,sans-serif">
-                    ({pt.x}, {pt.y}) {isOutlier ? "⚠" : ""}
-                  </text>
-                  <text x={px} y={py - 22} textAnchor="middle" fontSize="15" fill="#94a3b8" fontFamily="Inter,sans-serif">
-                    drag · double-click to remove
-                  </text>
-                </g>
-              )}
+              {/* Hover tooltip (x clamped so the box stays inside the viewBox) */}
+              {isHov && (() => {
+                const tcx = Math.min(Math.max(px, 122), W - 122);
+                return (
+                  <g style={{ pointerEvents: "none" }}>
+                    <rect x={tcx - 120} y={py - 60} width="240" height="46" rx="5" fill="#0f172a" stroke="#334155" strokeWidth="1" />
+                    <text x={tcx} y={py - 42} textAnchor="middle" fontSize="15" fill="#f1f5f9" fontFamily="Inter,sans-serif">
+                      ({pt.x}, {pt.y}) {isOutlier ? "⚠" : ""}
+                    </text>
+                    <text x={tcx} y={py - 22} textAnchor="middle" fontSize="15" fill="#94a3b8" fontFamily="Inter,sans-serif">
+                      drag · double-click to remove
+                    </text>
+                  </g>
+                );
+              })()}
             </g>
           );
         })}

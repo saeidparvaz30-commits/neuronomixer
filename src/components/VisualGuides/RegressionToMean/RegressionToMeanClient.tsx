@@ -133,7 +133,7 @@ function ScatterPlot({
       {hoveredId !== null && (() => {
         const s = students.find(st => st.id === hoveredId);
         if (!s) return null;
-        const lx = tx(s.test1) + 10, ly = ty(s.test2) - 10;
+        const lx = Math.min(tx(s.test1) + 10, W - 118), ly = ty(s.test2) - 10;
         return (
           <g>
             <rect x={lx - 2} y={ly - 14} width={116} height={42} rx="4" fill="#0f172a" stroke="#334155" />

@@ -211,13 +211,13 @@ export default function PCAVisualizer({ onPcaViewed }: Props) {
 
             {/* Legend */}
             <line x1={PAD.l + 4} y1={14} x2={PAD.l + 22} y2={14} stroke="var(--color-accent)" strokeWidth={2.5} />
-            <text x={PAD.l + 26} y={18} fill="var(--color-accent)" fontSize={10}>PC1 (max var)</text>
-            <line x1={PAD.l + 4} y1={26} x2={PAD.l + 22} y2={26} stroke="#ef4444" strokeWidth={1.5} strokeDasharray="4,3" />
-            <text x={PAD.l + 26} y={30} fill="#ef4444" fontSize={10}>PC2 (min var)</text>
+            <text x={PAD.l + 26} y={19} fill="var(--color-accent)" fontSize={17}>PC1 (max var)</text>
+            <line x1={PAD.l + 4} y1={32} x2={PAD.l + 22} y2={32} stroke="#ef4444" strokeWidth={1.5} strokeDasharray="4,3" />
+            <text x={PAD.l + 26} y={37} fill="#ef4444" fontSize={17}>PC2 (min var)</text>
 
             {/* Axis labels */}
-            <text x={scaleX(0.5 * (xMin + xMax), xMin, xMax)} y={H - 4} textAnchor="middle" fill="#475569" fontSize={10}>X</text>
-            <text x={10} y={scaleY(0.5 * (yMin + yMax), yMin, yMax)} textAnchor="middle" fill="#475569" fontSize={10} transform={`rotate(-90, 10, ${scaleY(0.5 * (yMin + yMax), yMin, yMax)})`}>Y</text>
+            <text x={scaleX(0.5 * (xMin + xMax), xMin, xMax)} y={H - 4} textAnchor="middle" fill="#475569" fontSize={17}>X</text>
+            <text x={14} y={scaleY(0.5 * (yMin + yMax), yMin, yMax)} textAnchor="middle" fill="#475569" fontSize={17} transform={`rotate(-90, 14, ${scaleY(0.5 * (yMin + yMax), yMin, yMax)})`}>Y</text>
           </svg>
         </div>
 
@@ -272,11 +272,11 @@ export default function PCAVisualizer({ onPcaViewed }: Props) {
 
             {/* Variance bar */}
             <rect x={PAD.l} y={PAD.t + 4} width={(pca.varianceExplained / 100) * (W - PAD.l - PAD.r)} height={5} fill="var(--color-accent)" fillOpacity={0.3} rx={2} />
-            <text x={PAD.l + 2} y={PAD.t + 17} fill="var(--color-accent)" fontSize={10}>{pca.varianceExplained.toFixed(1)}% of variance in PC1</text>
+            <text x={PAD.l + 2} y={PAD.t + 22} fill="var(--color-accent)" fontSize={17}>{pca.varianceExplained.toFixed(1)}% of variance in PC1</text>
 
             {/* Axis labels */}
-            <text x={scaleX((pc1Min + pc1Max) / 2, pc1Min, pc1Max)} y={H - 4} textAnchor="middle" fill="var(--color-accent)" fontSize={10}>PC1</text>
-            <text x={10} y={scaleY((pc2Min + pc2Max) / 2, pc2Min, pc2Max)} textAnchor="middle" fill="#475569" fontSize={10} transform={`rotate(-90, 10, ${scaleY((pc2Min + pc2Max) / 2, pc2Min, pc2Max)})`}>PC2</text>
+            <text x={scaleX((pc1Min + pc1Max) / 2, pc1Min, pc1Max)} y={H - 4} textAnchor="middle" fill="var(--color-accent)" fontSize={17}>PC1</text>
+            <text x={14} y={scaleY((pc2Min + pc2Max) / 2, pc2Min, pc2Max)} textAnchor="middle" fill="#475569" fontSize={17} transform={`rotate(-90, 14, ${scaleY((pc2Min + pc2Max) / 2, pc2Min, pc2Max)})`}>PC2</text>
           </svg>
         </div>
       </div>

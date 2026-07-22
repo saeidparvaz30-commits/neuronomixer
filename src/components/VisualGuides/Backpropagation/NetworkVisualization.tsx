@@ -577,7 +577,7 @@ export default function NetworkVisualization({ step }: Props) {
           {/* ── Weight update legend on step 8 ── */}
           {step === 8 && (
             <g>
-              <rect x={8} y={8} width={266} height={84} rx={6} fill="#0f172a" stroke="#4ade80" strokeWidth="1" opacity={0.9} />
+              <rect x={8} y={8} width={305} height={84} rx={6} fill="#0f172a" stroke="#4ade80" strokeWidth="1" opacity={0.9} />
               <text x={16} y={30} fill="#4ade80" fontSize="17" fontWeight="700">Weight Update Preview</text>
               <text x={16} y={54} fill="#94a3b8" fontSize="17">
                 W_IH[0][0]: {FIXED_WEIGHTS_IH[0][0].toFixed(4)} → {FORWARD_DATA.newW_IH[0][0].toFixed(4)}

@@ -228,7 +228,7 @@ export default function PermutationTestSection({ onPermutationDone }: Permutatio
         {/* Left: charts */}
         <div className="flex flex-col gap-4">
           {/* Group histograms */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="rounded-xl border border-[#1e293b] bg-[#0a0e1a] p-3">
               {renderGroupHistogram(GROUP1, "#1e5d8a", "Control (Group 1)", group1Mean)}
             </div>

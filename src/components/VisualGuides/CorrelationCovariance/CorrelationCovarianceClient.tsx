@@ -1002,8 +1002,8 @@ function InteractiveScatterLifted({
           ))}
 
           {/* Axis labels */}
-          <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="16" fill="#94a3b8" fontFamily="Inter,sans-serif">X</text>
-          <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fontSize="16" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,12,${PAD.t + IH / 2})`}>Y</text>
+          <text x={PAD.l + IW / 2} y={H - 4} textAnchor="middle" fontSize="22" fill="#94a3b8" fontFamily="Inter,sans-serif">X</text>
+          <text x={12} y={PAD.t + IH / 2} textAnchor="middle" fontSize="22" fill="#94a3b8" fontFamily="Inter,sans-serif" transform={`rotate(-90,12,${PAD.t + IH / 2})`}>Y</text>
 
           {/* OLS line */}
           {points.length >= 2 && (
