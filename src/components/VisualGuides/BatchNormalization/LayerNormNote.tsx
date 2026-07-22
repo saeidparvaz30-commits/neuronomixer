@@ -19,7 +19,7 @@ export default function LayerNormNote() {
             <span className="font-semibold text-white">FEATURE dimension</span> instead: it works for
             single samples and variable-length sequences.
           </p>
-          <div className="mt-3 grid grid-cols-2 gap-3">
+          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="p-3 rounded-xl bg-[#1e293b]/60 border border-white/[0.07]">
               <div className="text-[10px] font-bold text-[#3bb4a4] uppercase tracking-wider mb-1">
                 BatchNorm

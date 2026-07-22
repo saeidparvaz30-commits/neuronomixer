@@ -55,7 +55,7 @@ function MethodExplainerInner({ method }: Props) {
           <p className="text-[11px] font-bold mb-1" style={{ color }}>{c.heading}</p>
           <p className="text-[12px] text-[#94a3b8] leading-relaxed mb-3">{c.body}</p>
 
-          <div className="grid grid-cols-2 gap-3 mb-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-wide text-[#3bb4a4] mb-1.5">Pros</p>
               <ul className="space-y-1">

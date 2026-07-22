@@ -107,7 +107,7 @@ export default function FeatureMapDisplay({ outputGrid, rawGrid, filter }: Featu
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {[
           { label: "Max response", value: maxVal, color: filter.color },
           { label: "Min response", value: minVal, color: "#94a3b8" },

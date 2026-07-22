@@ -108,7 +108,7 @@ export default function ThresholdPanel({
         </table>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         <div className="rounded-xl border border-[#1e293b] p-3">
           <p className="text-[10px] text-[#475569] uppercase tracking-wide mb-1">
             Accuracy

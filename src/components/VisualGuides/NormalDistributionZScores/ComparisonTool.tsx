@@ -43,7 +43,7 @@ function ScoreInput({ label, color, value, mean, stdDev, onValueChange, onMeanCh
   return (
     <div className="flex-1 min-w-[140px] rounded-xl border p-3" style={{ borderColor: color + "40" }}>
       <p className="text-[11px] font-bold mb-3" style={{ color }}>{label}</p>
-      <div className="grid grid-cols-3 gap-2 mb-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
         <div>
           <label className={labelClass}>Score</label>
           <input type="number" value={value} onChange={handleChange(onValueChange)} className={inputClass} step="1" />

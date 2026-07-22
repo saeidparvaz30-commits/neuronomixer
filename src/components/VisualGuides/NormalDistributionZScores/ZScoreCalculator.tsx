@@ -66,7 +66,7 @@ export default function ZScoreCalculator({
       <h3 className="text-[13px] font-bold text-white mb-1">Z-Score Calculator</h3>
       <p className="text-[11px] text-[#475569] mb-4">Convert a raw score to a z-score</p>
 
-      <div className="grid grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
         <div>
           <label className={labelClass}>Raw Value</label>
           <input

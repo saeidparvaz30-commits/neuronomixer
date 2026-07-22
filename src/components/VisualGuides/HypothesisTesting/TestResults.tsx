@@ -52,7 +52,7 @@ export default function TestResults({ result, tStat, pValue, alpha }: TestResult
           </div>
 
           {/* Stats row */}
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
             <div className="rounded-lg border border-[#1e293b] p-2.5 text-center">
               <p className="text-[9px] text-[#475569] mb-1">t-statistic</p>
               <p className="text-[14px] font-bold font-mono text-white">{tStat.toFixed(4)}</p>

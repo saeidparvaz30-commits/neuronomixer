@@ -278,7 +278,7 @@ export default function BayesianAnimation({
               <p className="text-[11px] font-semibold text-white">
                 Step 2: Apply the Test
               </p>
-              <div className="grid grid-cols-2 gap-2 text-[10px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px]">
                 <div>
                   <span className="text-[var(--color-accent)] font-semibold">TP (gold):</span>
                   <span className="text-[#94a3b8] ml-1">{fmt(tp)} {w.testPositive} AND truly {w.hasCondition}</span>

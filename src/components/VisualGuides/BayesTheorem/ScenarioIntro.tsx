@@ -67,7 +67,7 @@ export default function ScenarioIntro({
       </p>
 
       {/* Three big numbers */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {bigNumbers.map(({ label, value }) => (
           <div
             key={label}
