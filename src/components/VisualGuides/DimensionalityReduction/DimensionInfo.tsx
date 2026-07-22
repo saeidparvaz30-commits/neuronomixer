@@ -72,7 +72,7 @@ export default function DimensionInfo({ method, explainedRatio, pairIndex }: Pro
             </div>
           ))}
         </div>
-        <p className="text-[9px] text-[#334155] mt-2">Hover points to highlight a digit class</p>
+        <p className="text-[9px] text-[#334155] mt-2">Tap or hover points to highlight a digit class</p>
       </div>
     </div>
   );

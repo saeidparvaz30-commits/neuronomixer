@@ -93,6 +93,21 @@ export default function Scatter2D({
                 onHoverDigit(null);
                 setTooltip(null);
               }}
+              onClick={() => {
+                if (hoveredDigit === pt.digit && tooltip?.cx === xs[i] && tooltip?.cy === ys[i]) {
+                  onHoverDigit(null);
+                  setTooltip(null);
+                } else {
+                  onHoverDigit(pt.digit);
+                  setTooltip({
+                    digit: pt.digit,
+                    x: pt.x,
+                    y: pt.y,
+                    cx: xs[i],
+                    cy: ys[i],
+                  });
+                }
+              }}
             />
           );
         })}

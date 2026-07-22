@@ -57,6 +57,7 @@ export default function InteractiveScatter({
 
     dragIdRef.current = id;
     setDraggingId(id);
+    setHoverId(id);
     const pt = points.find(p => p.id === id);
     if (pt) setLocalPos({ x: pt.x, y: pt.y });
 

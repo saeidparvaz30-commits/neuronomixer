@@ -332,6 +332,7 @@ export default function NetworkVisualization({ step }: Props) {
                 key={`in-${i}`}
                 className="cursor-pointer"
                 onMouseEnter={() => handleNeuronEnter("input", i, LAYER_X[0], cy)}
+                onClick={() => handleNeuronEnter("input", i, LAYER_X[0], cy)}
               >
                 {isHov && <circle cx={LAYER_X[0]} cy={cy} r={R + 6} fill={fill} opacity={0.2} />}
                 <circle
@@ -374,6 +375,7 @@ export default function NetworkVisualization({ step }: Props) {
                 key={`h-${i}`}
                 className="cursor-pointer"
                 onMouseEnter={() => step >= 2 ? handleNeuronEnter("hidden", i, LAYER_X[1], cy) : undefined}
+                onClick={() => step >= 2 ? handleNeuronEnter("hidden", i, LAYER_X[1], cy) : undefined}
               >
                 {isHov && <circle cx={LAYER_X[1]} cy={cy} r={R + 6} fill={fill} opacity={0.2} />}
                 <circle
@@ -422,6 +424,7 @@ export default function NetworkVisualization({ step }: Props) {
                 key={`out-${i}`}
                 className="cursor-pointer"
                 onMouseEnter={() => step >= 3 ? handleNeuronEnter("output", i, LAYER_X[2], cy) : undefined}
+                onClick={() => step >= 3 ? handleNeuronEnter("output", i, LAYER_X[2], cy) : undefined}
               >
                 {isHov && <circle cx={LAYER_X[2]} cy={cy} r={R + 6} fill={fill} opacity={0.2} />}
                 <circle
@@ -621,7 +624,7 @@ export default function NetworkVisualization({ step }: Props) {
           <span className="w-4 h-px border-t border-dashed border-[#64748b] inline-block" />
           Dead neuron (ReLU=0)
         </span>
-        <span className="ml-auto text-[10px] text-[#475569]">Hover neurons to inspect values</span>
+        <span className="ml-auto text-[10px] text-[#475569]">Tap or hover neurons to inspect values</span>
       </div>
     </div>
   );

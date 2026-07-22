@@ -321,6 +321,7 @@ function AnscombeQuartet({ onViewed }: { onViewed: () => void }) {
               }}
               onClick={() => handleSelect(ds.id)}
               whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
               transition={{ duration: 0.15 }}
             >
               <div className="flex items-center justify-between mb-2">

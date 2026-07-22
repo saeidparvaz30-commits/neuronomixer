@@ -261,12 +261,14 @@ export default function ConfusionMatrixClient() {
                           key={colIdx}
                           onMouseEnter={() => setHoveredCell(cell.key)}
                           onMouseLeave={() => setHoveredCell(null)}
+                          onClick={() => setHoveredCell(cell.key)}
                           className="rounded-xl p-4 cursor-pointer flex flex-col items-center justify-center min-h-[100px] border transition-all"
                           style={{
                             backgroundColor: `${cfg.color}${isHovered ? "25" : "15"}`,
                             borderColor: `${cfg.color}${isHovered ? "80" : "30"}`,
                           }}
                           whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
                         >
                           <motion.div
                             className="text-3xl font-bold mb-1"

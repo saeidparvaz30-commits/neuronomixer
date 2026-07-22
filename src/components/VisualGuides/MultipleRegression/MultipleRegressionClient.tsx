@@ -229,6 +229,13 @@ function ScatterPlot({ data, mode, simple, multiple, interaction }: ScatterProps
               });
             }}
             onMouseLeave={() => setTooltip(null)}
+            onClick={() => {
+              setTooltip({
+                x: tx(p.temperature),
+                y: ty(p.sales),
+                point: p,
+              });
+            }}
           />
         ))}
 
@@ -717,7 +724,7 @@ export default function MultipleRegressionClient() {
                 interaction={interaction}
               />
               <p className="text-[10px] text-[#334155] mt-3 text-center">
-                Hover over any point to see its values.
+                Tap or hover any point to see its values.
               </p>
             </motion.div>
 

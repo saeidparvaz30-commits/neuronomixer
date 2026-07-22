@@ -137,6 +137,7 @@ export default function DataPointsVisualization({
                 strokeWidth={isSelected ? 2 : 0}
                 style={{ cursor: "pointer" }}
                 whileHover={{ scale: 1.6, fillOpacity: 1 }}
+                whileTap={{ scale: 1.5, fillOpacity: 1 }}
                 animate={{ fill, r: isSelected ? 5 : 3.5 }}
                 transition={{ duration: 0.15 }}
                 onClick={() => onPointClick(pt.id, pt.value)}

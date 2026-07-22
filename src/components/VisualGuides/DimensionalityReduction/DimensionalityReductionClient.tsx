@@ -184,7 +184,7 @@ export default function DimensionalityReductionClient() {
             <div className="rounded-2xl border border-[#1e293b] bg-[#0f172a] p-5">
               <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                 <MethodSelector method={method} onChange={handleMethodChange} />
-                <span className="text-[11px] text-[#475569]">Hover points to highlight a digit class</span>
+                <span className="text-[11px] text-[#475569]">Tap or hover points to highlight a digit class</span>
               </div>
               <Scatter2D
                 points={points}

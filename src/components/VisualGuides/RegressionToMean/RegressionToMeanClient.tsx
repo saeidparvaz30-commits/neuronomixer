@@ -123,6 +123,7 @@ function ScatterPlot({
             fill={getColor(s)}
             opacity={getOpacity(s)}
             onMouseEnter={() => onHover(s.id)}
+            onClick={() => onHover(s.id)}
             style={{ cursor: "pointer" }}
           />
         </motion.g>

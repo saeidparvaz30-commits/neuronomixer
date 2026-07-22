@@ -269,7 +269,7 @@ export default function TypesOfDataClient() {
             <div className="flex items-center justify-between mb-5">
               <div>
                 <h2 className="text-[18px] font-bold text-white">Phase 2: Valid Operations</h2>
-                <p className="text-[12px] text-[#94a3b8] mt-0.5">Hover over each operation to see why it is valid or invalid.</p>
+                <p className="text-[12px] text-[#94a3b8] mt-0.5">Tap or hover over each operation to see why it is valid or invalid.</p>
               </div>
               <button
                 onClick={handleReset}

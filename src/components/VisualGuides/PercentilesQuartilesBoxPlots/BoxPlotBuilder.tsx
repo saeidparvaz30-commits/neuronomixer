@@ -257,6 +257,7 @@ export default function BoxPlotBuilder({
                 strokeWidth={isSelected ? 1.5 : 0}
                 style={{ cursor: "pointer" }}
                 whileHover={{ scale: 1.5, fillOpacity: 1 }}
+                whileTap={{ scale: 1.4, fillOpacity: 1 }}
                 animate={{ r, fill }}
                 transition={{ duration: 0.15 }}
                 onClick={() => onPointClick(pt.id, pt.value)}

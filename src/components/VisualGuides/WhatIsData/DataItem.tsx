@@ -385,8 +385,10 @@ function DataItemInner({
         }
         transition={{ duration: 0.4 }}
         whileHover={!isDragging && !sorted ? { scale: 1.03 } : undefined}
+        whileTap={!isDragging && !sorted ? { scale: 0.97 } : undefined}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
+        onClick={() => setShowTooltip(true)}
         onPointerDown={(e) => {
           if (!sorted) onPointerDown(e, item.id);
         }}

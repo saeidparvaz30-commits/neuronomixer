@@ -125,8 +125,9 @@ export default function FunctionPlotter({
         ref={svgRef}
         viewBox={`0 0 ${W} ${H}`}
         className="w-full cursor-crosshair select-none"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+        onPointerMove={handleMouseMove}
+        onPointerDown={handleMouseMove}
+        onPointerLeave={handleMouseLeave}
       >
         <defs>
           <clipPath id="fn-plot-area">

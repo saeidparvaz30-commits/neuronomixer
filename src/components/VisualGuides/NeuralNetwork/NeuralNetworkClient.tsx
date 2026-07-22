@@ -202,7 +202,7 @@ export default function NeuralNetworkClient() {
           </h1>
           <p className="text-[15px] text-[#94a3b8] leading-relaxed max-w-[580px]">
             Build a neural network layer by layer. Change the architecture, swap activation functions,
-            and watch how signals flow from input to output. Hover over neurons to inspect their activation values.
+            and watch how signals flow from input to output. Tap or hover neurons to inspect their activation values.
           </p>
         </section>
 
@@ -239,7 +239,7 @@ export default function NeuralNetworkClient() {
             <div className="bg-[#1e293b]/60 border border-[#1e293b] rounded-2xl overflow-hidden">
               <div className="p-3 border-b border-[#1e293b] flex items-center gap-3 text-xs text-[#94a3b8] flex-wrap">
                 <span className="text-white font-semibold">Network Diagram</span>
-                <span>hover neurons to inspect values</span>
+                <span>tap or hover neurons to inspect values</span>
                 {highlightedNeuron && highlightedActivation !== null && (
                   <span className="ml-auto text-[var(--color-accent)] font-semibold">
                     activation = {highlightedActivation.toFixed(4)}
@@ -284,6 +284,7 @@ export default function NeuralNetworkClient() {
                           key={`${li}-${n.actual}`}
                           onMouseEnter={() => setHighlightedNeuron({ layer: li, neuron: n.actual })}
                           onMouseLeave={() => setHighlightedNeuron(null)}
+                          onClick={() => setHighlightedNeuron({ layer: li, neuron: n.actual })}
                           className="cursor-pointer"
                         >
                           {isHovered && (

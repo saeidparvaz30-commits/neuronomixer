@@ -248,7 +248,7 @@ export default function VectorDatabasesClient() {
           </h2>
           <p className="text-sm text-[#475569] mb-4 ml-8">
             Each document is embedded as a point in vector space. Similar topics cluster together.
-            Hover a dot to read its text.
+            Tap or hover a dot to read its text.
           </p>
 
           <div className="bg-[#1e293b]/50 border border-[#1e293b] rounded-2xl p-5">
@@ -310,6 +310,7 @@ export default function VectorDatabasesClient() {
                       key={doc.id}
                       onMouseEnter={() => setHoveredDoc(doc.id)}
                       onMouseLeave={() => setHoveredDoc(null)}
+                      onClick={() => setHoveredDoc(doc.id)}
                       style={{ cursor: "pointer" }}
                     >
                       {isTop3 && (
