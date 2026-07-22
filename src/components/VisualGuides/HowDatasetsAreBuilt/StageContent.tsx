@@ -196,7 +196,7 @@ function CleaningVisual() {
 
         {/* Drag handle */}
         <div
-          className="absolute top-0 bottom-0 z-10 flex items-center"
+          className="absolute top-0 bottom-0 z-10 flex items-center touch-none"
           style={{ left: `${pct}%`, transform: "translateX(-50%)" }}
           onPointerDown={(e) => { dragging.current = true; (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); }}
           role="slider" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(pct)}

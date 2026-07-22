@@ -137,7 +137,7 @@ export default function CostPrecisionCurve({
         <svg
           ref={svgRef}
           viewBox={`0 0 ${SVG_W} ${SVG_H}`}
-          className="w-full max-w-full cursor-crosshair select-none"
+          className="w-full max-w-full cursor-crosshair select-none touch-none"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
