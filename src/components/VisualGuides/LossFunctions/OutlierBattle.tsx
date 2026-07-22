@@ -155,7 +155,7 @@ export default function OutlierBattle({ onOutlierOn }: Props) {
         <text x={(L + R) / 2} y={H - 6} textAnchor="middle" fontSize={32} fill="#94a3b8">
           x
         </text>
-        <text x={18} y={(T + B) / 2} textAnchor="middle" fontSize={32} fill="#94a3b8" transform={`rotate(-90 18 ${(T + B) / 2})`}>
+        <text x={18} y={(T + B) / 2} textAnchor="middle" fontSize={32} fill="#94a3b8">
           y
         </text>
 
