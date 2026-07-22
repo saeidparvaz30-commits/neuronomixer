@@ -1066,7 +1066,7 @@ export default function SimpleRegressionClient() {
                   value={predXRaw}
                   onChange={(e) => handlePredXChange(e.target.value)}
                   step={0.1}
-                  className="flex-1 text-[12px] bg-[#1e293b] text-white border border-[#334155] rounded-lg px-3 py-1.5 focus:outline-none focus:border-[var(--color-accent)]"
+                  className="flex-1 min-w-0 text-[12px] bg-[#1e293b] text-white border border-[#334155] rounded-lg px-3 py-1.5 focus:outline-none focus:border-[var(--color-accent)]"
                   placeholder={fit ? fit.meanX.toFixed(2) : "x value"}
                 />
                 <input
@@ -1077,7 +1077,7 @@ export default function SimpleRegressionClient() {
                   step={((bounds.xMax - bounds.xMin) / 100).toFixed(3)}
                   value={predXRaw || (fit ? fit.meanX.toFixed(2) : "0")}
                   onChange={(e) => handlePredXChange(e.target.value)}
-                  className="flex-1 accent-[var(--color-accent)]"
+                  className="flex-1 min-w-0 accent-[var(--color-accent)]"
                 />
               </div>
               {predFit && predX !== null ? (

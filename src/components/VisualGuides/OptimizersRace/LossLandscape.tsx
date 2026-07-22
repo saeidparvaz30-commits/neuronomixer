@@ -314,7 +314,7 @@ export default function LossLandscape({ currentStep, configs, trajectories }: Pr
           x={PAD_L + PLOT_W / 2}
           y={SVG_H - 4}
           fill="#475569"
-          fontSize="17"
+          fontSize="26"
           textAnchor="middle"
         >
           x
@@ -323,7 +323,7 @@ export default function LossLandscape({ currentStep, configs, trajectories }: Pr
           x={14}
           y={PAD_T + PLOT_H / 2}
           fill="#475569"
-          fontSize="17"
+          fontSize="26"
           textAnchor="middle"
           transform={`rotate(-90, 14, ${PAD_T + PLOT_H / 2})`}
         >

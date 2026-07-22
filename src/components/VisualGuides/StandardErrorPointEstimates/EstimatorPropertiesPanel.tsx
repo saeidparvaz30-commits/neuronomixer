@@ -139,7 +139,7 @@ function BiasTab() {
         <span className="text-[var(--color-accent)] font-mono">E[x̄] = μ</span>
       </p>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <div>
           <MiniDotPlot
             data={unbiasedData}
@@ -300,7 +300,7 @@ function EfficiencyTab({
         For normal data, the sample mean beats the median.
       </p>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <div>
           <MiniDotPlot
             data={sampleMeans}

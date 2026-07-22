@@ -192,7 +192,7 @@ export default function ClusteringPreview() {
               x={sx(c.x) + 12}
               y={sy(c.y) + 4}
               fill={CLUSTER_COLORS[j]}
-              fontSize={10}
+              fontSize={16}
               fontWeight="bold"
               animate={{ x: sx(c.x) + 12, y: sy(c.y) + 4 }}
               transition={{ type: "spring", stiffness: 200, damping: 20 }}
