@@ -20,6 +20,7 @@ Publish a Farsi edition of the NeuroNomixer blog at `neuronomixer.com/fa`. The j
 ## Phases
 
 **Phase Numbering:**
+
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
@@ -32,25 +33,35 @@ Publish a Farsi edition of the NeuroNomixer blog at `neuronomixer.com/fa`. The j
 ## Phase Details
 
 ### Phase 1: Route Groups
+
 **Goal**: The app has two root layouts via route groups: every existing route lives in `src/app/(en)/` with URLs and behavior byte-for-byte unchanged, and `src/app/(fa)/fa/` exists with a root layout emitting `<html lang="fa" dir="rtl">` and one placeholder Farsi route.
 **Depends on**: Nothing (first phase)
 **Requirements**: ROUTE-02
 **Success Criteria** (what must be TRUE):
+
   1. Every existing English URL resolves exactly as before: route smoke list passes covering one guide per category, `/blog`, one blog post, `/visual-guides`, `/cv`, `/share/[token]`, and the dashboard.
   2. The `(en)` move landed as its own solo commit, gated on `npx tsc --noEmit` at 0 and `npx next build` at 0 before anything else.
   3. Visiting the placeholder Farsi route serves a document whose root element is `<html lang="fa" dir="rtl">`, while English pages still serve `lang="en"` LTR.
   4. `ConditionalChrome.tsx` and its `/cv/` special case are untouched, and `src/middleware.ts` is untouched (still matches only `/dashboard/:path*`).
+
 **Plans**: 2 plans
 
 Plans:
+**Wave 1**
+
 - [ ] 01-01-PLAN.md — The `(en)` move ONLY: 11 directories + 4 files into `src/app/(en)/` (243 renames), 13 path-encoding fixes, solo commit gated on cold tsc 0 + `npx next build` 0 + an empty 284-URL manifest diff + the route smoke baseline
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 01-02-PLAN.md — Add `src/app/(fa)/layout.tsx` emitting `<html lang="fa" dir="rtl">` plus the `src/app/(fa)/fa/` placeholder route, then re-run the entire 01-01 gate with a blocking branded-404 check
 
 ### Phase 2: Content Model
+
 **Goal**: Sanity models Farsi posts as sibling documents linked to their English source, and all blog reads flow through one shared, language-filtered query module.
 **Depends on**: Phase 1
 **Requirements**: CONTENT-01, CONTENT-02
 **Success Criteria** (what must be TRUE):
+
   1. All three blog page files render from queries imported from `src/sanity/lib/queries.ts`; no inline GROQ duplication remains.
   2. English blog listings and post pages return only `language == "en"` documents, with the filter expressed in exactly one place (the shared module).
   3. Every pre-existing post carries `language: "en"` after the one-off `npx tsx` migration.
@@ -61,10 +72,12 @@ Plans:
 **Plans**: TBD
 
 ### Phase 3: Translation Pipeline
+
 **Goal**: A repeatable script translates approved English posts into structurally intact Farsi drafts in Sanity, with automated drift verification, so nothing machine-generated reaches Saeid unreviewed or reaches readers at all.
 **Depends on**: Phase 2
 **Requirements**: PIPE-01, PIPE-02
 **Success Criteria** (what must be TRUE):
+
   1. Running `scripts/translate-posts.ts` (via `npx tsx`) against one real approved English post produces a Sanity DRAFT with `language: "fa"` and `translationOf` set, whose Portable Text is structurally intact: only `span.text` translated; `_key`, `_type`, `marks`, `markDefs`, and code blocks pass through untouched, links working.
   2. The second-pass structured-output verify (numbers, dates, URLs, entity names, code content, glossary adherence, untranslated leftovers) writes its findings to `translationNotes` on the draft, visible where the draft is reviewed.
   3. `content/fa-glossary.json` exists — Simorgh-drafted first pass from the catalog's recurring AI/data/finance terms, corrected by Saeid — and is injected in the system prompt with prompt caching, so glossary terms render consistently.
@@ -75,28 +88,34 @@ Plans:
 **Plans**: TBD
 
 ### Phase 4: Farsi Routes and Chrome
+
 **Goal**: A Farsi speaker can read translated posts at `/fa` in a correctly right-to-left page with Persian typography, Persian digits, and Jalali dates, with fully localized chrome.
 **Depends on**: Phase 3
 **Requirements**: ROUTE-01, CHROME-01
 **Success Criteria** (what must be TRUE):
+
   1. `/fa`, `/fa/[categorySlug]`, and `/fa/[categorySlug]/[postSlug]` render translated posts, mirroring the English blog routes with the same ISR (`revalidate = 3600`) and reusing English slugs verbatim.
   2. Farsi pages render in Vazirmatn (via `next/font/google`, subsets arabic+latin, variable `--font-fa`, display swap) with dates from `Intl.DateTimeFormat('fa-IR')`: Jalali calendar and Persian digits.
   3. The Farsi navbar and footer, composed directly in the `(fa)` root layout, render Farsi strings from the `src/i18n/fa.ts` dictionary (~50-80 strings, no i18n library) and link out to the English visual-guides catalog.
   4. A language switcher appears in both navbars and preserves the current post when a translation exists.
   5. RTL is achieved with Tailwind v4 logical utilities on blog and chrome components only; guides are untouched and English pages are visually and behaviorally unchanged.
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 5: SEO and Ship
+
 **Goal**: Search engines see the two language trees correctly paired, the full backlog exists as reviewed-ready Farsi drafts, and everything that goes live does so only by Saeid's hand.
 **Depends on**: Phase 4
 **Requirements**: SEO-01, PIPE-03
 **Success Criteria** (what must be TRUE):
+
   1. Every translated post pair carries reciprocal hreflang alternates plus `x-default` pointing at the English original in `generateMetadata` on both trees, and hreflang pairs resolve both ways; `sitemap.ts` includes the Farsi URLs; `robots.ts` is unchanged.
   2. Farsi pages emit Farsi `og:title` / `og:description` on the existing default OG image.
   3. The Farsi smoke checklist passes on a preview deploy in Saeid's Chrome (previews are behind SSO; Playwright cannot reach them): `dir`/`lang` correct on `/fa` pages, Persian digits, no LTR bleed, hreflang resolves both ways, `/fa` in the sitemap, English tree unchanged.
   4. All ~30 backlog posts exist as Farsi drafts (approved decision: full backlog), and Saeid has read two full posts end to end before any bulk publish.
   5. Nothing is published (draft → approved is Saeid's manual act) and nothing is deployed to prod except on Saeid's explicit gate.
+
 **Plans**: TBD
 
 ## Traceability
