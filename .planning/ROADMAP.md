@@ -43,8 +43,8 @@ Publish a Farsi edition of the NeuroNomixer blog at `neuronomixer.com/fa`. The j
 **Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: The `(en)` move ONLY — every existing route directory into `src/app/(en)/`, solo commit, gated on tsc 0 + `npx next build` 0 + the route smoke list
-- [ ] 01-02: Add `src/app/(fa)/fa/` with a root layout emitting `<html lang="fa" dir="rtl">` and one placeholder Farsi route
+- [ ] 01-01-PLAN.md — The `(en)` move ONLY: 11 directories + 4 files into `src/app/(en)/` (243 renames), 13 path-encoding fixes, solo commit gated on cold tsc 0 + `npx next build` 0 + an empty 284-URL manifest diff + the route smoke baseline
+- [ ] 01-02-PLAN.md — Add `src/app/(fa)/layout.tsx` emitting `<html lang="fa" dir="rtl">` plus the `src/app/(fa)/fa/` placeholder route, then re-run the entire 01-01 gate with a blocking branded-404 check
 
 ### Phase 2: Content Model
 **Goal**: Sanity models Farsi posts as sibling documents linked to their English source, and all blog reads flow through one shared, language-filtered query module.
