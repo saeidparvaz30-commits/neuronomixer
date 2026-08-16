@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 01
-current_phase_name: route-groups
-status: executing
-stopped_at: Phase 01 plans all complete (01-01 and 01-02); next is /gsd-verify-work for phase 01
-last_updated: "2026-08-16T23:10:00.000Z"
+current_phase: 2
+current_phase_name: Content Model
+status: Two root layouts coexist. All 243 English route files live in `src/app/(en)/` and the Farsi shell lives in `src/app/(fa)/`. The manifest emits 285 URLs, exactly the pre-phase 284 plus `/fa`. Route smoke 28/28 `ALL PASS`, `--fa-check` `ALL PASS`, mobile gate 151 slugs, `next.config.ts` fingerprint clean.
+stopped_at: Plan 01-02 complete (evidence commit 5726207); both phase-01 plans are done, next is `/gsd-verify-work` for phase 01
+last_updated: "2026-08-16T21:04:15.699Z"
 last_activity: 2026-08-16
-last_activity_desc: "Plan 01-02 complete: (fa) root layout live, /fa is the only added URL"
+last_activity_desc: Phase 01 complete, transitioned to Phase 2
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
   completed_plans: 2
-  percent: 100
+  percent: 20
 ---
 
 # Project State
@@ -28,10 +28,10 @@ See: .planning/PROJECT.md (updated 2026-08-11)
 
 ## Current Position
 
-Phase: 01 (route-groups) - EXECUTING (both plans complete, verification pending)
-Plan: 2 of 2 complete. Plans 01-01 and 01-02 both landed; next is `/gsd-verify-work` for phase 01.
+Phase: 2 — Content Model
+Plan: Not started
 Status: Two root layouts coexist. All 243 English route files live in `src/app/(en)/` and the Farsi shell lives in `src/app/(fa)/`. The manifest emits 285 URLs, exactly the pre-phase 284 plus `/fa`. Route smoke 28/28 `ALL PASS`, `--fa-check` `ALL PASS`, mobile gate 151 slugs, `next.config.ts` fingerprint clean.
-Last activity: 2026-08-16 - scaffold commit 680c40a, smoke-mode commit 06c5d6d, evidence commit 5726207
+Last activity: 2026-08-16 — Phase 01 complete, transitioned to Phase 2
 
 Progress: [##########] 100%
 
@@ -48,6 +48,7 @@ Progress: [##########] 100%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01 route-groups | 2/2 | ~2h05m active | ~1h03m |
+| 01 | 2 | - | - |
 
 *Updated after each plan completion*
 

@@ -24,7 +24,7 @@ Publish a Farsi edition of the NeuroNomixer blog at `neuronomixer.com/fa`. The j
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Route Groups** - Move all existing routes into `(en)` untouched, add the `(fa)` root layout with a placeholder route
+- [x] **Phase 1: Route Groups** - Move all existing routes into `(en)` untouched, add the `(fa)` root layout with a placeholder route (completed 2026-08-16)
 - [ ] **Phase 2: Content Model** - Shared GROQ module with a single language filter, Sanity language fields, `en` migration, Studio split
 - [ ] **Phase 3: Translation Pipeline** - Batch API translation script with glossary, structure passthrough, verify pass, and draft-only output
 - [ ] **Phase 4: Farsi Routes and Chrome** - `/fa` blog tree, Farsi dictionary, Vazirmatn, Jalali dates, RTL chrome, language switcher
@@ -49,11 +49,11 @@ Publish a Farsi edition of the NeuroNomixer blog at `neuronomixer.com/fa`. The j
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — The `(en)` move ONLY: 11 directories + 4 files into `src/app/(en)/` (243 renames), 13 path-encoding fixes, solo commit gated on cold tsc 0 + `npx next build` 0 + an empty 284-URL manifest diff + the route smoke baseline
+- [x] 01-01-PLAN.md — The `(en)` move ONLY: 11 directories + 4 files into `src/app/(en)/` (243 renames), 13 path-encoding fixes, solo commit gated on cold tsc 0 + `npx next build` 0 + an empty 284-URL manifest diff + the route smoke baseline
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — Add `src/app/(fa)/layout.tsx` emitting `<html lang="fa" dir="rtl">` plus the `src/app/(fa)/fa/` placeholder route, then re-run the entire 01-01 gate with a blocking branded-404 check
+- [x] 01-02-PLAN.md — Add `src/app/(fa)/layout.tsx` emitting `<html lang="fa" dir="rtl">` plus the `src/app/(fa)/fa/` placeholder route, then re-run the entire 01-01 gate with a blocking branded-404 check
 
 ### Phase 2: Content Model
 
@@ -145,7 +145,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Route Groups | 2/2 | Plans complete, verification pending | - |
+| 1. Route Groups | 2/2 | Complete    | 2026-08-16 |
 | 2. Content Model | 0/TBD | Not started | - |
 | 3. Translation Pipeline | 0/TBD | Not started | - |
 | 4. Farsi Routes and Chrome | 0/TBD | Not started | - |
