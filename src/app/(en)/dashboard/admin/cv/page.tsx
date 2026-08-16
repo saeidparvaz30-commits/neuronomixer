@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import CVBuilderClient from "@/app/dashboard/author/cv/CVBuilderClient";
+import CVBuilderClient from "@/app/(en)/dashboard/author/cv/CVBuilderClient";
 
 export const metadata = { title: "CV Builder" };
 

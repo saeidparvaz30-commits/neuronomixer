@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
 import { client } from "@/sanity/lib/client";
 import { portableTextToTiptap } from "@/lib/portableTextToTiptap";
-import EditPostFormLoader from "@/app/dashboard/author/posts/[id]/edit/EditPostFormLoader";
+import EditPostFormLoader from "@/app/(en)/dashboard/author/posts/[id]/edit/EditPostFormLoader";
 
 interface Category {
   _id: string;

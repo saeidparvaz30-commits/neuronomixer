@@ -1,4 +1,4 @@
-import "../styles/globals.css";
+import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 import ConditionalChrome from "@/components/appSkeleton/ConditionalChrome";
 import { GeneralSignupPrompt } from "@/components/prompts";

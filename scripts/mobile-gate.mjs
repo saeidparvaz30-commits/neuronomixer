@@ -13,7 +13,7 @@ const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 const BASE = process.env.GATE_BASE_URL ?? "http://localhost:3000";
 
 function allSlugs() {
-  const dir = path.join(process.cwd(), "src", "app", "visual-guides");
+  const dir = path.join(process.cwd(), "src", "app", "(en)", "visual-guides");
   return readdirSync(dir, { withFileTypes: true })
     .filter((e) => e.isDirectory() && existsSync(path.join(dir, e.name, "page.tsx")))
     .map((e) => e.name)

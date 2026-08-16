@@ -1,5 +1,5 @@
 import { client } from "@/sanity/lib/client";
-import SubmitPostForm from "@/app/dashboard/author/submit/SubmitPostForm";
+import SubmitPostForm from "@/app/(en)/dashboard/author/submit/SubmitPostForm";
 
 interface Category {
   _id: string;

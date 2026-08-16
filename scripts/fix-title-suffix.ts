@@ -26,7 +26,7 @@ const TITLE_RE = /^(\s*title:\s*")(.*?)(\s*(?:—|\|)\s*NeuroNomixer)(",?)\s*$/;
 
 let changed = 0;
 for (const file of files) {
-  if (file.replace(/\\/g, "/") === "src/app/page.tsx") continue; // handled manually (absolute)
+  if (file.replace(/\\/g, "/") === "src/app/(en)/page.tsx") continue; // handled manually (absolute)
   const lines = readFileSync(file, "utf8").split("\n");
   let depthSinceNested = 0;
   let inNested = false;

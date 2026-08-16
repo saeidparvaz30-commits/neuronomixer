@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { client } from "@/sanity/lib/client";
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { PostActionButtons } from "@/app/dashboard/author/posts/PostActionButtons";
+import { PostActionButtons } from "@/app/(en)/dashboard/author/posts/PostActionButtons";
 
 interface Post {
   _id: string;
