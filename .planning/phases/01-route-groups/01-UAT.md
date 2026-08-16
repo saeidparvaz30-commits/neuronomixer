@@ -24,14 +24,14 @@ result: [pending]
 
 ### 2. Visual /fa and 404 confirmation
 expected: /fa renders styled and right-to-left with Farsi text; / unchanged with nav and footer; a nonsense URL shows the branded 404 (known: no nav/footer on the global 404 by design).
-result: [pending]
+result: passed - verified 2026-08-16 in Saeid's Chrome against npx next start -p 3100: /fa dark-themed, gold Farsi title, RTL text, Farsi tab title; / unchanged (nav, logo, hero); /this-page-does-not-exist-xyz shows branded gold 404 with CTAs and "Page not found | NeuroNomixer" title. Bonus: /dashboard/author/posts correctly auth-redirects to /auth/sign-in post-move.
 
 ## Summary
 
 total: 2
-passed: 0
+passed: 1
 issues: 0
-pending: 2
+pending: 1
 skipped: 0
 blocked: 0
 
