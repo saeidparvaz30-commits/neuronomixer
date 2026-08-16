@@ -73,16 +73,23 @@ async function discoverRoutes() {
   const blogHtml = await (await fetch(BASE + "/blog")).text();
   const blogHrefs = collectHrefs(blogHtml, /href="(\/blog\/[^"?#]+)"/g);
   const post = blogHrefs.find((h) => h.slice("/blog/".length).split("/").length === 2);
-  const category = blogHrefs.find((h) => h.slice("/blog/".length).split("/").length === 1);
-  if (!post || !category) {
+  if (!post) {
     console.error(
-      `route-smoke: discovery failed on /blog — ${!post ? "no two-segment post href" : ""}${!post && !category ? " and " : ""}${!category ? "no one-segment category href" : ""} found among ${blogHrefs.length} hrefs`,
+      `route-smoke: discovery failed on /blog — no two-segment post href found among ${blogHrefs.length} hrefs`,
     );
     process.exit(1);
   }
+  // The blog index links posts only, never category pages, so derive the category
+  // from the post's own first segment rather than hunting for a one-segment href.
+  const category =
+    blogHrefs.find((h) => h.slice("/blog/".length).split("/").length === 1) ??
+    "/blog/" + post.slice("/blog/".length).split("/")[0];
 
-  const guidesHtml = await (await fetch(BASE + "/visual-guides")).text();
-  const guideHrefs = collectHrefs(guidesHtml, /href="(\/visual-guides\/[^"?#]+)"/g);
+  // The /visual-guides index builds its catalog client-side, so the served HTML
+  // carries no guide links. The sitemap is server-rendered and lists every
+  // published guide, which makes it the only fetch-based source that works here.
+  const sitemapXml = await (await fetch(BASE + "/sitemap.xml")).text();
+  const guideHrefs = collectHrefs(sitemapXml, /<loc>[^<]*(\/visual-guides\/[^<]+)<\/loc>/g);
   const step = Math.max(1, Math.floor(guideHrefs.length / 7));
   const guides = [];
   for (let i = 0; i < guideHrefs.length && guides.length < 8; i += step) {
@@ -90,7 +97,7 @@ async function discoverRoutes() {
   }
   if (guides.length < 5) {
     console.error(
-      `route-smoke: discovery failed on /visual-guides — only ${guides.length} guide URLs collected from ${guideHrefs.length} hrefs; expected at least 5`,
+      `route-smoke: discovery failed on /sitemap.xml — only ${guides.length} guide URLs collected from ${guideHrefs.length} sitemap entries; expected at least 5`,
     );
     process.exit(1);
   }
