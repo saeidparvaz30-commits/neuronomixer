@@ -145,7 +145,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Route Groups | 0/2 | Not started | - |
+| 1. Route Groups | 1/2 | In progress | - |
 | 2. Content Model | 0/TBD | Not started | - |
 | 3. Translation Pipeline | 0/TBD | Not started | - |
 | 4. Farsi Routes and Chrome | 0/TBD | Not started | - |
