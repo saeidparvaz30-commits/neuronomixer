@@ -5,16 +5,16 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: route-groups
 status: executing
-stopped_at: Plan 01-01 complete; next is plan 01-02 (the (fa) scaffold)
-last_updated: "2026-08-16T20:24:00.000Z"
+stopped_at: Phase 01 plans all complete (01-01 and 01-02); next is /gsd-verify-work for phase 01
+last_updated: "2026-08-16T23:10:00.000Z"
 last_activity: 2026-08-16
-last_activity_desc: Plan 01-01 complete: (en) route group move, 284 URLs unchanged
+last_activity_desc: "Plan 01-02 complete: (fa) root layout live, /fa is the only added URL"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 2
-  completed_plans: 1
-  percent: 50
+  completed_plans: 2
+  percent: 100
 ---
 
 # Project State
@@ -28,26 +28,26 @@ See: .planning/PROJECT.md (updated 2026-08-11)
 
 ## Current Position
 
-Phase: 01 (route-groups) - EXECUTING
-Plan: 1 of 2 complete. Plan 01-01 landed; next is plan 01-02, the (fa) scaffold.
-Status: Plan 01-01 complete. All 243 English route files live in `src/app/(en)/`, all 284 emitted URLs are byte-identical, route smoke 28/28, mobile gate 151 slugs.
-Last activity: 2026-08-16 - move commit 411eebc, evidence commit 0e10bfc
+Phase: 01 (route-groups) - EXECUTING (both plans complete, verification pending)
+Plan: 2 of 2 complete. Plans 01-01 and 01-02 both landed; next is `/gsd-verify-work` for phase 01.
+Status: Two root layouts coexist. All 243 English route files live in `src/app/(en)/` and the Farsi shell lives in `src/app/(fa)/`. The manifest emits 285 URLs, exactly the pre-phase 284 plus `/fa`. Route smoke 28/28 `ALL PASS`, `--fa-check` `ALL PASS`, mobile gate 151 slugs, `next.config.ts` fingerprint clean.
+Last activity: 2026-08-16 - scaffold commit 680c40a, smoke-mode commit 06c5d6d, evidence commit 5726207
 
-Progress: [#####-----] 50%
+Progress: [##########] 100%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 1
-- Average duration: ~1h30m active execution per plan
-- Total execution time: ~1.5 hours active (~9h15m wall clock including three human checkpoints)
+- Total plans completed: 2
+- Average duration: ~1h active execution per plan
+- Total execution time: ~2h05m active (~9h50m wall clock including three human checkpoints)
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01 route-groups | 1/2 | ~1h30m active | ~1h30m |
+| 01 route-groups | 2/2 | ~2h05m active | ~1h03m |
 
 *Updated after each plan completion*
 
@@ -66,6 +66,9 @@ Decisions are logged in PROJECT.md Key Decisions table. Recent decisions affecti
 - npm is the authoritative package manager; `pnpm-lock.yaml` and `pnpm-workspace.yaml` deleted (Saeid, 2026-08-16)
 - OQ-1 resolved: enable `experimental.globalNotFound` plus `src/app/global-not-found.tsx` to keep the branded 404 once the sole root layout moved into `(en)` (Saeid, 2026-08-16)
 - Accepted that the global 404 no longer carries nav and footer, since `global-not-found.tsx` renders outside every layout (Saeid, 2026-08-16)
+- The `(fa)` root layout stays subtractive for Phase 1: one import, `metadataBase` plus a plain title, and the two colour tokens. No fonts, auth, analytics or chrome, all of which Phase 4 owns (plan 01-02, 2026-08-16)
+- OQ-1 needed no action in 01-02. The 01-01 `globalNotFound` fix held under two root layouts, so `next.config.ts` was not touched and no contingency was applied (2026-08-16)
+- The frozen-files fingerprint is five paths, not six. `pnpm-lock.yaml` was deleted in 01-01, so every later check runs over the five surviving paths (2026-08-16)
 
 ### Pending Todos
 
@@ -94,5 +97,7 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-08-16
-Stopped at: Plan 01-01 complete (move commit 411eebc); next is plan 01-02, the (fa) scaffold
+Stopped at: Plan 01-02 complete (evidence commit 5726207); both phase-01 plans are done, next is `/gsd-verify-work` for phase 01
 Resume file: None
+
+Outstanding human check (needs Saeid's Chrome against `npx next start`): `/fa` styled and right to left, `/` unchanged with nav and footer, a nonsense URL showing the branded 404. All four items are already green under automated assertion.
