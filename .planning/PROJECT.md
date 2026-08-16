@@ -31,8 +31,8 @@ Shipped, live, and relied upon. Inferred from the codebase map and production hi
 
 The Farsi edition milestone. Design approved 2026-08-11.
 
-- [ ] Farsi blog reachable at `neuronomixer.com/fa` with correct `lang="fa"` and `dir="rtl"` at the document level
-- [ ] Existing English routes keep their exact URLs and rendering behavior
+- [ ] Farsi blog reachable at `neuronomixer.com/fa` with correct `lang="fa"` and `dir="rtl"` at the document level (document-level scaffold validated in Phase 1: `(fa)` root layout + `/fa` placeholder live locally; full blog tree lands in Phase 4)
+- [x] Existing English routes keep their exact URLs and rendering behavior — Validated in Phase 1: Route Groups (284 URLs byte-identical after the `(en)` move; branded 404 preserved via approved `globalNotFound` contingency)
 - [ ] Sanity models Farsi posts as sibling documents linked to their English source
 - [ ] Blog queries read from a single shared module and filter by language in exactly one place
 - [ ] A script translates approved English posts to Farsi drafts, preserving Portable Text structure, links, and code
@@ -106,4 +106,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-11 after initialization*
+*Last updated: 2026-08-16 after Phase 1 (Route Groups) completion*
