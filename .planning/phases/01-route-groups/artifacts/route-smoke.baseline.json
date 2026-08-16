@@ -196,8 +196,8 @@
       "finalPath": "/__unmatched-url-smoke-check",
       "contentType": "text/html; charset=utf-8",
       "htmlTag": "<html lang=\"en\">",
-      "hasNav": true,
-      "hasFooter": true,
+      "hasNav": false,
+      "hasFooter": false,
       "hasBrandedNotFound": true
     },
     {
@@ -309,6 +309,24 @@
       "hasNav": true,
       "hasFooter": true,
       "hasBrandedNotFound": true
+    }
+  ],
+  "approvedDeviations": [
+    {
+      "url": "/__unmatched-url-smoke-check",
+      "fields": [
+        "hasNav",
+        "hasFooter"
+      ],
+      "recordedPreMove": {
+        "hasNav": true,
+        "hasFooter": true
+      },
+      "expectedPostMove": {
+        "hasNav": false,
+        "hasFooter": false
+      },
+      "reason": "OQ-1 contingency approved by Saeid 2026-08-16. Moving the sole root layout into (en) stopped a grouped not-found.tsx from serving fully unmatched URLs, so experimental.globalNotFound plus src/app/global-not-found.tsx was adopted. global-not-found renders outside every layout by design, so it cannot carry ConditionalChrome nav and footer. Status 404, html lang=en and the branded \"Page not found\" marker are all preserved and still asserted absolutely. Pre-move ground truth for this entry is preserved in git at commit 413929a."
     }
   ]
 }
