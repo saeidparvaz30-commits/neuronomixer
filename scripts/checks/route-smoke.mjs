@@ -10,6 +10,11 @@
  *
  * Run: node scripts/checks/route-smoke.mjs --record
  *      node scripts/checks/route-smoke.mjs --verify
+ *      node scripts/checks/route-smoke.mjs --fa-check
+ *
+ * --fa-check is the phase-01 plan-02 gate: it proves /fa serves a Farsi RTL
+ * document, that the English tree did not pick up document-level RTL once a
+ * second root layout exists, and that the branded 404 survived that change.
  *
  * No new dependencies: Node 20+ global fetch, node:assert, node:fs.
  */
@@ -147,6 +152,58 @@ function assertAbsolutes(results) {
   );
 }
 
+const EN_HTML_TAG = '<html lang="en">';
+const FA_HTML_TAG = '<html lang="fa" dir="rtl">';
+
+async function faCheck() {
+  const fa = await probe("/fa");
+  assert.strictEqual(fa.status, 200, `/fa must return 200, got ${fa.status}`);
+  assert.strictEqual(
+    fa.htmlTag,
+    FA_HTML_TAG,
+    `/fa <html> tag must be exactly '${FA_HTML_TAG}', got ${fa.htmlTag}`,
+  );
+  process.stdout.write(`ok   /fa ${fa.htmlTag}\n`);
+
+  for (const url of ["/", "/blog"]) {
+    const r = await probe(url);
+    assert.strictEqual(
+      r.htmlTag,
+      EN_HTML_TAG,
+      `${url} <html> tag must be exactly '${EN_HTML_TAG}' (no direction attribute may leak from the (fa) root layout), got ${r.htmlTag}`,
+    );
+    process.stdout.write(`ok   ${url} ${r.htmlTag}\n`);
+  }
+
+  // Deliberately repeats an assertion --verify already makes: the global 404 is
+  // the single highest-risk unknown once a second root layout exists, and it is
+  // cheap to assert twice.
+  const notFound = await probe("/__unmatched-url-smoke-check");
+  assert.strictEqual(
+    notFound.status,
+    404,
+    `/__unmatched-url-smoke-check must return 404, got ${notFound.status}`,
+  );
+  assert.strictEqual(
+    notFound.hasBrandedNotFound,
+    true,
+    "/__unmatched-url-smoke-check must render the branded 404 body marker 'Page not found'",
+  );
+  assert.ok(
+    notFound.htmlTag && notFound.htmlTag.includes('lang="en"'),
+    `/__unmatched-url-smoke-check <html> must carry lang="en", got ${notFound.htmlTag}`,
+  );
+  assert.ok(
+    notFound.htmlTag && !notFound.htmlTag.includes("dir="),
+    `/__unmatched-url-smoke-check <html> must carry no dir attribute, got ${notFound.htmlTag}`,
+  );
+  process.stdout.write(
+    `ok   /__unmatched-url-smoke-check ${notFound.status} ${notFound.htmlTag}\n`,
+  );
+
+  console.log("route-smoke.mjs: FA CHECK ALL PASS");
+}
+
 const args = process.argv.slice(2);
 
 if (args.includes("--record")) {
@@ -187,9 +244,12 @@ if (args.includes("--record")) {
     process.exit(1);
   }
   console.log("route-smoke.mjs: ALL PASS");
+} else if (args.includes("--fa-check")) {
+  await faCheck();
 } else {
   console.log("Usage: node scripts/checks/route-smoke.mjs --record");
   console.log("       node scripts/checks/route-smoke.mjs --verify");
+  console.log("       node scripts/checks/route-smoke.mjs --fa-check");
   console.log(`Requires a server on ${BASE} (override with GATE_BASE_URL).`);
   process.exit(1);
 }
