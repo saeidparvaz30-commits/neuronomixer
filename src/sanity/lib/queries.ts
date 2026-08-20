@@ -105,3 +105,67 @@ export const postsByAuthorSlugQuery = `
     "category": category->{ title, slug }
   }
 `;
+
+// No status predicate today. The missing filter is a real pre-existing SEO bug,
+// logged separately and explicitly out of scope here: adding one would make this
+// relocation behaviour-changing rather than inert.
+export const sitemapQuery = `{
+      "posts": *[
+        _type == "post" &&
+        defined(slug.current) &&
+        defined(category->slug.current) &&
+        category->active == true
+      ]{
+        "slug": slug.current,
+        "categorySlug": category->slug.current,
+        _updatedAt,
+        _createdAt
+      },
+      "authors": *[_type == "author" && applicationStatus == "approved" && defined(slug.current)]{
+        "slug": slug.current,
+        _updatedAt
+      }
+    }`;
+
+// No status predicate today (the caller renders every status to its own author).
+// Deliberately NOT merged with authorReviewPostsQuery: this one projects "url"
+// and takes $siteUrl. Merging would change a caller's output shape.
+export const postsByAuthorIdQuery = `*[_type == "post" && author._ref == $authorId] | order(coalesce(publishedAt, _createdAt) desc) {
+      "id": _id,
+      title,
+      "slug": slug.current,
+      description,
+      status,
+      publishedAt,
+      _createdAt,
+      "mainImage": mainImage.asset->url,
+      "category": category->{ title, "slug": slug.current },
+      "url": select(
+        defined(category) => $siteUrl + "/blog/" + category->slug.current + "/" + slug.current,
+        null
+      ),
+      body[]{
+        ...,
+        _type == "image" => { ..., "asset": asset->{ "url": url } },
+        _type == "video" => { ..., "fileUrl": file.asset->url }
+      }
+    }`;
+
+// No status predicate today. Duplicated projection text with postsByAuthorIdQuery
+// is intended: this one has no "url" projection and takes only $authorId.
+export const authorReviewPostsQuery = `*[_type == "post" && author._ref == $authorId] | order(coalesce(publishedAt, _createdAt) desc) {
+      "id": _id,
+      title,
+      "slug": slug.current,
+      description,
+      status,
+      publishedAt,
+      _createdAt,
+      "mainImage": mainImage.asset->url,
+      "category": category->{ title, "slug": slug.current },
+      body[]{
+        ...,
+        _type == "image" => { ..., "asset": asset->{ "url": url } },
+        _type == "video" => { ..., "fileUrl": file.asset->url }
+      }
+    }`;

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { client } from "@/sanity/lib/client";
+import { authorReviewPostsQuery } from "@/sanity/lib/queries";
 import { portableTextToMarkdown } from "@/lib/portableTextToMarkdown";
 import { hashApiKey } from "@/lib/apiKeyHash";
 import { notFound } from "next/navigation";
@@ -68,25 +69,9 @@ export default async function ReviewPage({
 
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.neuronomixer.com").replace(/\/$/, "");
 
-  const raw = await client.fetch<SanityPostListItem[]>(
-    `*[_type == "post" && author._ref == $authorId] | order(coalesce(publishedAt, _createdAt) desc) {
-      "id": _id,
-      title,
-      "slug": slug.current,
-      description,
-      status,
-      publishedAt,
-      _createdAt,
-      "mainImage": mainImage.asset->url,
-      "category": category->{ title, "slug": slug.current },
-      body[]{
-        ...,
-        _type == "image" => { ..., "asset": asset->{ "url": url } },
-        _type == "video" => { ..., "fileUrl": file.asset->url }
-      }
-    }`,
-    { authorId: sanityAuthorId }
-  );
+  const raw = await client.fetch<SanityPostListItem[]>(authorReviewPostsQuery, {
+    authorId: sanityAuthorId,
+  });
 
   const posts = raw.map((p) => {
     const { body, ...meta } = p;

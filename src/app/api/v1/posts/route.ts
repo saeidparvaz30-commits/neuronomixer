@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateApiKey } from "@/lib/apiKeyAuth";
 import { client } from "@/sanity/lib/client";
+import { postsByAuthorIdQuery } from "@/sanity/lib/queries";
 import { markdownToPortableText } from "@/lib/markdownToPortableText";
 import { portableTextToMarkdown } from "@/lib/portableTextToMarkdown";
 
@@ -50,26 +51,7 @@ export async function GET(req: NextRequest) {
   }
 
   const raw = await client.fetch<SanityPostListItem[]>(
-    `*[_type == "post" && author._ref == $authorId] | order(coalesce(publishedAt, _createdAt) desc) {
-      "id": _id,
-      title,
-      "slug": slug.current,
-      description,
-      status,
-      publishedAt,
-      _createdAt,
-      "mainImage": mainImage.asset->url,
-      "category": category->{ title, "slug": slug.current },
-      "url": select(
-        defined(category) => $siteUrl + "/blog/" + category->slug.current + "/" + slug.current,
-        null
-      ),
-      body[]{
-        ...,
-        _type == "image" => { ..., "asset": asset->{ "url": url } },
-        _type == "video" => { ..., "fileUrl": file.asset->url }
-      }
-    }`,
+    postsByAuthorIdQuery,
     { authorId: user.sanityAuthorId, siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "" }
   );
 

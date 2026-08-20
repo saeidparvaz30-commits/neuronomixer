@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { client } from "@/sanity/lib/client";
+import { sitemapQuery } from "@/sanity/lib/queries";
 import { prisma } from "@/lib/prisma";
 
 type PostItem = {
@@ -23,25 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const data = await client.fetch<{
     posts: PostItem[];
     authors: AuthorItem[];
-  }>(
-    `{
-      "posts": *[
-        _type == "post" &&
-        defined(slug.current) &&
-        defined(category->slug.current) &&
-        category->active == true
-      ]{
-        "slug": slug.current,
-        "categorySlug": category->slug.current,
-        _updatedAt,
-        _createdAt
-      },
-      "authors": *[_type == "author" && applicationStatus == "approved" && defined(slug.current)]{
-        "slug": slug.current,
-        _updatedAt
-      }
-    }`
-  );
+  }>(sitemapQuery);
 
   // Published, implemented visual guides (DRAFT/HIDDEN must not leak)
   let guides: { slug: string; updatedAt: Date }[] = [];
