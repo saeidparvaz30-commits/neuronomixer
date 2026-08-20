@@ -4,15 +4,15 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 2
 current_phase_name: Content Model
-status: Two root layouts coexist. All 243 English route files live in `src/app/(en)/` and the Farsi shell lives in `src/app/(fa)/`. The manifest emits 285 URLs, exactly the pre-phase 284 plus `/fa`. Route smoke 28/28 `ALL PASS`, `--fa-check` `ALL PASS`, mobile gate 151 slugs, `next.config.ts` fingerprint clean.
-stopped_at: Phase 2 context gathered
-last_updated: "2026-08-20T15:11:31.358Z"
+status: verifying
+stopped_at: Phase 2 planned and verified (5 plans); next /gsd-execute-phase 2
+last_updated: "2026-08-20T16:25:10.097Z"
 last_activity: 2026-08-16
 last_activity_desc: Phase 01 complete, transitioned to Phase 2
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 2
+  total_plans: 7
   completed_plans: 2
   percent: 20
 ---
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-08-11)
 
 Phase: 2 — Content Model
 Plan: Not started
-Status: Two root layouts coexist. All 243 English route files live in `src/app/(en)/` and the Farsi shell lives in `src/app/(fa)/`. The manifest emits 285 URLs, exactly the pre-phase 284 plus `/fa`. Route smoke 28/28 `ALL PASS`, `--fa-check` `ALL PASS`, mobile gate 151 slugs, `next.config.ts` fingerprint clean.
+Status: Phase 2 planned and verified: 5 plans in 5 sequential waves (extract queries, language filter, schema fields + writer stamps, migration behind Saeid gate, Studio split). Ready to execute.
 Last activity: 2026-08-16 — Phase 01 complete, transitioned to Phase 2
 
 Progress: [##########] 100%
@@ -97,8 +97,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-20T15:11:31.352Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-content-model/02-CONTEXT.md
+Last session: 2026-08-20T16:25:04.955Z
+Stopped at: Phase 2 planned and verified (5 plans); next /gsd-execute-phase 2
+Resume file: .planning/phases/02-content-model/02-01-PLAN.md
 
 Outstanding human check (needs Saeid's Chrome against `npx next start`): `/fa` styled and right to left, `/` unchanged with nav and footer, a nonsense URL showing the branded 404. All four items are already green under automated assertion.

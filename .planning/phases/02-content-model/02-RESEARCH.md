@@ -674,7 +674,7 @@ Note the current field count is **14**, not the 13 recorded in CONTEXT.md. After
 | A5 | Duplicate entries from `generateStaticParams` would be a build problem rather than silently deduplicated by Next.js 15. Not empirically tested, because it cannot be tested before a Farsi document exists. | Pitfall 1 | If Next silently dedupes, the failure mode is a wrong page rather than a failed build, which is worse, not better. Either way the fix is the same. |
 | A6 | `/review` should follow D-01 and be filtered. See Open Questions for the evidence both ways. | Query inventory #11 | Low. The filter is inert today and flipping it later is a one-line change. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should `/review?key=` be filtered or grouped with internal surfaces?**
    - What we know: it is gated by an `nnx_` API key with a suspended/role check, returns `notFound()` without a valid key, is `force-dynamic`, lists an author's posts across **all** statuses (draft, pending, rejected, hidden), and renders its own `<html>` document with English headings. It is functionally an internal author/agent review dump that happens to live on a public URL. Because the client's perspective is `published`, Farsi *drafts* can never appear there regardless of the filter; only an approved Farsi post could.
