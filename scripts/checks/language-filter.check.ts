@@ -532,9 +532,36 @@ async function runLive(): Promise<void> {
   console.log(`  slug uniqueness: ${bySlug.size} distinct slug(s), max 1 English match each, ${zeroEnglish} with zero English matches`);
 
   if (wantsPostMigration) {
-    // EXTENSION POINT for plan 02-04: assert count(*[_type == "post" && !defined(language)]) == 0
-    // once the migration has stamped language: "en" on every existing post.
-    console.log("  post-migration: no assertions yet, plan 02-04 adds them");
+    // Independent completeness verification of plan 02-04's migration. It re-counts
+    // through its OWN client rather than trusting the migration's success line.
+    //
+    // A second client, configured raw, is deliberate. The parity assertions above
+    // must keep using the default published perspective, because that is what the
+    // app sees. The completeness count must see drafts too, because an unstamped
+    // draft is still an unstamped document.
+    const rawClient = createClient({
+      projectId,
+      dataset,
+      apiVersion,
+      token: process.env.SANITY_API_TOKEN,
+      useCdn: false,
+      perspective: "raw",
+    });
+
+    const [unstamped, enCount, faCount] = await Promise.all([
+      rawClient.fetch<number>(`count(*[_type == "post" && !defined(language)])`),
+      rawClient.fetch<number>(`count(*[_type == "post" && language == "en"])`),
+      rawClient.fetch<number>(`count(*[_type == "post" && language == "fa"])`),
+    ]);
+
+    console.log(
+      `  post-migration: dataset=${dataset} (raw perspective) language distribution en=${enCount} fa=${faCount} none=${unstamped}`,
+    );
+    assert.strictEqual(
+      unstamped,
+      0,
+      `${unstamped} post document(s) in dataset ${dataset} still have no language field. The migration has not completed against this dataset: run npx tsx --env-file <env> scripts/migrate-post-language.ts --execute`,
+    );
   }
 
   console.log("language-filter.check.ts: ALL PASS");
