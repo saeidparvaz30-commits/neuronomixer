@@ -280,7 +280,184 @@ console.log(
 
 const argv = process.argv.slice(2);
 const wantsLive = argv.includes("--live") || argv.includes("--post-migration");
+const wantsPostMigration = argv.includes("--post-migration");
 
 if (!wantsLive) {
   console.log("language-filter.check.ts: ALL PASS");
+}
+
+// ── Live section: read-only, runs only under --live / --post-migration ────────
+
+/**
+ * Remove the language clause from a raw query, reconstructing the pre-filter text.
+ * Same rule as assertion E, made whitespace-tolerant so the multi-line sitemap
+ * formatting is handled without normalising the query the app actually runs.
+ */
+function stripLanguageClause(raw: string): string {
+  const escaped = EN_LANGUAGE.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return raw.replace(new RegExp(`${escaped}\\s*&&\\s*`, "g"), "");
+}
+
+/** Rows a query returned, so a silently emptied listing is visible, not merely asserted. */
+const ROW_COUNTERS: Readonly<Record<string, (r: unknown) => number>> = {
+  blogIndexQuery: (r) => branchLength(r, "posts"),
+  homePageQuery: (r) => branchLength(r, "heroPosts") + branchLength(r, "latestPosts"),
+  postBySlugQuery: (r) => (r ? 1 : 0),
+  postStaticParamsQuery: (r) => (Array.isArray(r) ? r.length : 0),
+  postMetadataBySlugQuery: (r) => (r ? 1 : 0),
+  postsByAuthorSlugQuery: (r) => (Array.isArray(r) ? r.length : 0),
+  sitemapQuery: (r) => branchLength(r, "posts"),
+  postsByAuthorIdQuery: (r) => (Array.isArray(r) ? r.length : 0),
+  authorReviewPostsQuery: (r) => (Array.isArray(r) ? r.length : 0),
+};
+
+/** Listing queries that must return at least one row for the parity run to mean anything. */
+const MUST_BE_NON_EMPTY: readonly string[] = [
+  "blogIndexQuery",
+  "homePageQuery",
+  "postsByAuthorSlugQuery",
+  "sitemapQuery",
+  "postsByAuthorIdQuery",
+  "authorReviewPostsQuery",
+];
+
+function branchLength(result: unknown, branch: string): number {
+  if (result === null || typeof result !== "object") return 0;
+  const value = (result as Record<string, unknown>)[branch];
+  return Array.isArray(value) ? value.length : 0;
+}
+
+async function runLive(): Promise<void> {
+  const { createClient } = await import("@sanity/client");
+
+  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!;
+  // No fallback dataset string on purpose: a silent default is how a check ends up
+  // confidently validating the wrong dataset (research Pitfall 6).
+  const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET!;
+  const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION ?? "2025-10-07";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+
+  assert.ok(projectId, "NEXT_PUBLIC_SANITY_PROJECT_ID is required for a live run (use --env-file .env.local)");
+  assert.ok(dataset, "NEXT_PUBLIC_SANITY_DATASET is required for a live run and has no default");
+
+  const client = createClient({
+    projectId,
+    dataset,
+    apiVersion,
+    token: process.env.SANITY_API_TOKEN,
+    useCdn: false,
+  });
+
+  const totalPosts = await client.fetch<number>(`count(*[_type == "post"])`);
+
+  // Operator-visible header BEFORE any assertion. Never logs the token or the env.
+  console.log(`live: projectId=${projectId} dataset=${dataset} apiVersion=${apiVersion} posts=${totalPosts}`);
+
+  // ── Live 1. D-03 fragment behaviour against the real GROQ engine ───────────
+  // Filters a literal array, so this is read-only and independent of dataset contents.
+  const kept = await client.fetch<string[]>(
+    `[{"id":"fa","language":"fa"},{"id":"en","language":"en"},{"id":"none"}][ ${EN_LANGUAGE} ].id`,
+  );
+  assert.deepStrictEqual(
+    kept,
+    ["en", "none"],
+    `the D-03 fragment must keep the explicit English item and the item with no language field, and drop the Farsi one. Got: ${JSON.stringify(kept)}`,
+  );
+  console.log(`  fragment behaviour: kept ${JSON.stringify(kept)}, dropped "fa"`);
+
+  // ── Live 2. Result-set parity, with and without the language clause ────────
+  const postSlug = await client.fetch<string | null>(
+    `*[_type == "post" && ${STATUS_APPROVED} && defined(slug.current)][0].slug.current`,
+  );
+  const authorSlug = await client.fetch<string | null>(
+    `*[_type == "post" && defined(author->slug.current)][0].author->slug.current`,
+  );
+  const authorId = await client.fetch<string | null>(
+    `*[_type == "post" && defined(author._ref)][0].author._ref`,
+  );
+  assert.ok(postSlug, "no approved post with a slug found: the parity run would be vacuous");
+  assert.ok(authorSlug, "no post with an author slug found: the parity run would be vacuous");
+  assert.ok(authorId, "no post with an author reference found: the parity run would be vacuous");
+
+  const PARAMS: Readonly<Record<string, Record<string, string>>> = {
+    blogIndexQuery: {},
+    homePageQuery: {},
+    postBySlugQuery: { slug: postSlug },
+    postStaticParamsQuery: {},
+    postMetadataBySlugQuery: { slug: postSlug },
+    postsByAuthorSlugQuery: { slug: authorSlug },
+    sitemapQuery: {},
+    postsByAuthorIdQuery: { authorId, siteUrl },
+    authorReviewPostsQuery: { authorId },
+  };
+
+  for (const [name, text] of QUERIES) {
+    const stripped = stripLanguageClause(text);
+    assert.strictEqual(
+      countOf(stripped, EN_LANGUAGE),
+      0,
+      `${name}: the stripped variant still carries the language clause, so parity would be vacuous`,
+    );
+    assert.notStrictEqual(
+      stripped,
+      text,
+      `${name}: stripping the language clause changed nothing, so the clause is missing`,
+    );
+
+    const params = PARAMS[name]!;
+    const withFilter = await client.fetch<unknown>(text, params);
+    const withoutFilter = await client.fetch<unknown>(stripped, params);
+    assert.strictEqual(
+      JSON.stringify(withFilter),
+      JSON.stringify(withoutFilter),
+      `${name} is NOT inert: its result set differs with and without the language clause. No document in this dataset carries a language field yet, so something other than the language clause changed.`,
+    );
+
+    const rows = ROW_COUNTERS[name]!(withFilter);
+    if (MUST_BE_NON_EMPTY.includes(name)) {
+      assert.ok(rows > 0, `${name} returned 0 rows: a silently emptied listing cannot pass`);
+    }
+    console.log(`  parity ${name}: identical, ${rows} row(s)`);
+  }
+
+  // ── Live 3. Slug uniqueness, which protects the post page's [0] read ───────
+  // One round trip: each post row carries the English match count for its own slug.
+  const slugRows = await client.fetch<{ slug: string; enCount: number }[]>(
+    `*[_type == "post" && defined(slug.current)]{
+      "slug": slug.current,
+      "enCount": count(*[_type == "post" && slug.current == ^.slug.current && ${EN_LANGUAGE}])
+    }`,
+  );
+  const bySlug = new Map<string, number>();
+  for (const row of slugRows) bySlug.set(row.slug, row.enCount);
+
+  let zeroEnglish = 0;
+  for (const [slug, enCount] of bySlug) {
+    assert.ok(
+      enCount <= 1,
+      `slug "${slug}" matches ${enCount} English posts. The post page's trailing [0] would pick between them by GROQ default ordering, not by intent.`,
+    );
+    if (enCount === 0) zeroEnglish += 1;
+  }
+  assert.strictEqual(
+    zeroEnglish,
+    0,
+    `${zeroEnglish} distinct slug(s) have no English post. That means an English source was removed while a sibling survived.`,
+  );
+  console.log(`  slug uniqueness: ${bySlug.size} distinct slug(s), max 1 English match each, ${zeroEnglish} with zero English matches`);
+
+  if (wantsPostMigration) {
+    // EXTENSION POINT for plan 02-04: assert count(*[_type == "post" && !defined(language)]) == 0
+    // once the migration has stamped language: "en" on every existing post.
+    console.log("  post-migration: no assertions yet, plan 02-04 adds them");
+  }
+
+  console.log("language-filter.check.ts: ALL PASS");
+}
+
+if (wantsLive) {
+  runLive().catch((err: unknown) => {
+    console.error(err);
+    process.exit(1);
+  });
 }
