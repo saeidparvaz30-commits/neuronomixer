@@ -74,6 +74,7 @@ export async function POST(req: NextRequest) {
     title: title.trim(),
     slug: { _type: "slug", current: slug },
     status: action === "draft" ? "draft" : "pending",
+    language: "en",
     submittedBy: userId,
     description: excerpt?.trim() || undefined,
     ...(metaDescription?.trim() ? { metaDescription: metaDescription.trim().slice(0, 160) } : {}),

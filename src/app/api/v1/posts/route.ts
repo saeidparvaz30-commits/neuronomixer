@@ -172,6 +172,7 @@ export async function POST(req: NextRequest) {
     ...(mainImageAsset ? { mainImage: mainImageAsset } : {}),
     body: portableBody,
     status: "pending",
+    language: "en",
     submittedBy: user.userId,
     publishedAt: publishedAt || new Date().toISOString(),
   });
