@@ -118,16 +118,66 @@ export const postType = defineType({
       name: "body",
       type: "blockContent",
     }),
+    defineField({
+      name: "language",
+      title: "Language",
+      type: "string",
+      options: {
+        list: [
+          { title: "English", value: "en" },
+          { title: "Farsi", value: "fa" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "en",
+      description:
+        "English posts are the source. Farsi posts are created by the translation pipeline.",
+    }),
+    defineField({
+      name: "translationOf",
+      title: "Translation of",
+      type: "reference",
+      to: [{ type: "post" }],
+      description: "Set on Farsi documents only. Points at the English source post.",
+      options: {
+        // Resolver form, because the predicate depends on the current document
+        // (self-exclusion). filterParams is typed `never` in this form, so the
+        // params come back from the resolver instead.
+        filter: ({ document }) => {
+          const publishedId = document._id.replace(/^drafts\./, "");
+          return {
+            filter:
+              '(!defined(language) || language == "en") && !(_id in [$self, $selfDraft])',
+            params: { self: publishedId, selfDraft: `drafts.${publishedId}` },
+          };
+        },
+        disableNew: true,
+      },
+    }),
+    defineField({
+      name: "translationNotes",
+      title: "Translation Notes",
+      type: "text",
+      rows: 6,
+      readOnly: true,
+      description:
+        "Findings from the pipeline's verify pass. Written by the translation script, not by hand.",
+    }),
   ],
   preview: {
     select: {
       title: "title",
       author: "author.name",
+      language: "language",
+      sourceTitle: "translationOf.title",
       media: "mainImage",
     },
-    prepare(selection) {
-      const { author } = selection;
-      return { ...selection, subtitle: author && `by ${author}` };
+    prepare({ title, author, language, sourceTitle, media }) {
+      const subtitle =
+        language === "fa" && sourceTitle
+          ? `fa of: ${sourceTitle}`
+          : author && `by ${author}`;
+      return { title, subtitle, media };
     },
   },
 });
