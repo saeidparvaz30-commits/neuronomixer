@@ -4,16 +4,16 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 2
 current_phase_name: Content Model
-status: verifying
+status: executing
 stopped_at: Phase 2 planned and verified (5 plans); next /gsd-execute-phase 2
-last_updated: "2026-08-20T16:25:10.097Z"
-last_activity: 2026-08-16
-last_activity_desc: Phase 01 complete, transitioned to Phase 2
+last_updated: "2026-08-20T19:58:10.844Z"
+last_activity: 2026-08-20
+last_activity_desc: Phase 2 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 7
-  completed_plans: 2
+  completed_plans: 3
   percent: 20
 ---
 
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-11)
 
 **Core value:** Every published claim is correct and checkable; anything that puts unverified content under Saeid's byline is a failure regardless of reach.
-**Current focus:** Phase 01 — route-groups
+**Current focus:** Phase 2 — Content Model
 
 ## Current Position
 
-Phase: 2 — Content Model
-Plan: Not started
-Status: Phase 2 planned and verified: 5 plans in 5 sequential waves (extract queries, language filter, schema fields + writer stamps, migration behind Saeid gate, Studio split). Ready to execute.
-Last activity: 2026-08-16 — Phase 01 complete, transitioned to Phase 2
+Phase: 2 (Content Model) — EXECUTING
+Plan: 2 of 5
+Status: Ready to execute
+Last activity: 2026-08-20 — Phase 2 execution started
 
 Progress: [##########] 100%
 
@@ -51,6 +51,7 @@ Progress: [##########] 100%
 | 01 | 2 | - | - |
 
 *Updated after each plan completion*
+| Phase 02 P01 | 42 min | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,9 @@ Decisions are logged in PROJECT.md Key Decisions table. Recent decisions affecti
 - The `(fa)` root layout stays subtractive for Phase 1: one import, `metadataBase` plus a plain title, and the two colour tokens. No fonts, auth, analytics or chrome, all of which Phase 4 owns (plan 01-02, 2026-08-16)
 - OQ-1 needed no action in 01-02. The 01-01 `globalNotFound` fix held under two root layouts, so `next.config.ts` was not touched and no contingency was applied (2026-08-16)
 - The frozen-files fingerprint is five paths, not six. `pnpm-lock.yaml` was deleted in 01-01, so every later check runs over the five surviving paths (2026-08-16)
+- [Phase 02]: Status predicates are exported constants, not module-private, so plan 02-02's check script can assert per query which of the four variants is present (plan 02-01, 2026-08-20)
+- [Phase 02]: blogIndexQuery and homePageQuery stay single compound constants; splitting them would turn one network round trip into three, a behaviour change (plan 02-01, 2026-08-20)
+- [Phase 02]: postsByAuthorIdQuery and authorReviewPostsQuery stay separate despite identical filters; their projections differ and merging would change a caller's output shape (plan 02-01, 2026-08-20)
 
 ### Pending Todos
 
@@ -86,6 +90,8 @@ None yet.
 - Phase 3 first run must be a dry-run to a scratch dataset.
 - Vercel previews sit behind SSO with no bypass secret — browser smoke rides Saeid's authenticated Chrome, not Playwright.
 - `content/fa-glossary.json` needs Saeid's correction pass after the drafted first pass (Phase 3 input).
+- OPEN (low priority, pre-existing): package-lock.json carries an uncommitted working-tree change (@sanity/client 7.23.0 to 7.24.0, @sanity/eventsource 5.0.2 to 5.0.4) unrelated to phase 2. Plan 02-01 left it alone per its scope boundary and proved manifest byte-stability via blob hash instead. Adjacent to the OPEN npm ci blocker.
+- Handoff for plan 02-02: this repo checks out CRLF on Windows, so any git-fidelity check must normalise line endings (.replace(/\r\n/g, chr(10))) on both sides before diffing git show output against the working copy. Plan 02-01 pre-verified 9/9 byte fidelity against ref 293616f with that normalisation.
 
 ## Deferred Items
 
@@ -97,7 +103,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-20T16:25:04.955Z
+Last session: 2026-08-20T19:57:55.675Z
 Stopped at: Phase 2 planned and verified (5 plans); next /gsd-execute-phase 2
 Resume file: .planning/phases/02-content-model/02-01-PLAN.md
 
