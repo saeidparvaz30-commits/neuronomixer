@@ -1,4 +1,5 @@
 import { client } from "@/sanity/lib/client";
+import { postsByAuthorSlugQuery } from "@/sanity/lib/queries";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,19 +22,6 @@ const authorQuery = `
     twitter,
     personalWebsite,
     email
-  }
-`;
-
-const postsQuery = `
-  *[_type == "post" && (status == "approved" || !defined(status) || (status == "scheduled" && publishedAt <= now())) && author->slug.current == $slug]
-  | order(publishedAt desc) [0...20] {
-    _id,
-    title,
-    slug,
-    publishedAt,
-    description,
-    mainImage { asset->{ url } },
-    "category": category->{ title, slug }
   }
 `;
 
@@ -93,7 +81,7 @@ export default async function AuthorProfilePage({
 
   const [author, posts] = await Promise.all([
     client.fetch(authorQuery, { slug }),
-    client.fetch(postsQuery, { slug }),
+    client.fetch(postsByAuthorSlugQuery, { slug }),
   ]);
 
   if (!author) notFound();

@@ -51,3 +51,57 @@ export const homePageQuery = `{
     "postCount": count(*[_type == "post" && ${STATUS_STRICT} && references(^._id)])
   }
 }`;
+
+export const postBySlugQuery = `
+  *[_type == "post" && slug.current == $slug && ${STATUS_APPROVED}][0]{
+    _id,
+    title,
+    mainImage{asset->{url, altText}},
+    body[]{
+      ...,
+      _type == "image" => {
+        ...,
+        asset->{ _id, url },
+        alt
+      },
+      _type == "video" => {
+        ...,
+        file { asset->{ url } }
+      }
+    },
+    _createdAt,
+    "category": category->{title, slug},
+    "author": author->{_id, name, slug, image{asset->{url}}, shortBio, jobTitle, employer, education}
+  }
+`;
+
+export const postStaticParamsQuery = `*[_type == "post" && ${STATUS_APPROVED} && defined(slug.current) && defined(category->slug.current)]{
+      "categorySlug": category->slug.current,
+      "slug": slug.current
+    }`;
+
+// No status predicate today. That asymmetry with postBySlugQuery is pre-existing
+// and deliberately carried over unchanged.
+export const postMetadataBySlugQuery = `*[_type == "post" && slug.current == $slug][0]{
+        title,
+        metaDescription,
+        description,
+        "bodyDesc": pt::text(body[0..1]),
+        "mainImageUrl": mainImage.asset->url,
+        "authorName": author->name,
+        publishedAt,
+        _updatedAt
+      }`;
+
+export const postsByAuthorSlugQuery = `
+  *[_type == "post" && ${STATUS_TOLERANT} && author->slug.current == $slug]
+  | order(publishedAt desc) [0...20] {
+    _id,
+    title,
+    slug,
+    publishedAt,
+    description,
+    mainImage { asset->{ url } },
+    "category": category->{ title, slug }
+  }
+`;

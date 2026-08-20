@@ -1,4 +1,9 @@
 import { client } from "@/sanity/lib/client";
+import {
+  postBySlugQuery,
+  postStaticParamsQuery,
+  postMetadataBySlugQuery,
+} from "@/sanity/lib/queries";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,34 +16,9 @@ import AuthorFollowButton from "@/components/author/AuthorFollowButton";
 
 export const revalidate = 3600;
 
-const postQuery = `
-  *[_type == "post" && slug.current == $slug && status == "approved"][0]{
-    _id,
-    title,
-    mainImage{asset->{url, altText}},
-    body[]{
-      ...,
-      _type == "image" => {
-        ...,
-        asset->{ _id, url },
-        alt
-      },
-      _type == "video" => {
-        ...,
-        file { asset->{ url } }
-      }
-    },
-    _createdAt,
-    "category": category->{title, slug},
-    "author": author->{_id, name, slug, image{asset->{url}}, shortBio, jobTitle, employer, education}
-  }
-`;
 export async function generateStaticParams() {
   const posts = await client.fetch<{ categorySlug: string; slug: string }[]>(
-    `*[_type == "post" && status == "approved" && defined(slug.current) && defined(category->slug.current)]{
-      "categorySlug": category->slug.current,
-      "slug": slug.current
-    }`
+    postStaticParamsQuery
   );
   return posts.map((p) => ({ categorySlug: p.categorySlug, postSlug: p.slug }));
 }
@@ -50,19 +30,7 @@ export async function generateMetadata({
 }) {
   const { postSlug, categorySlug } = await params;
 
-  const post = await client.fetch(
-    `*[_type == "post" && slug.current == $slug][0]{
-        title,
-        metaDescription,
-        description,
-        "bodyDesc": pt::text(body[0..1]),
-        "mainImageUrl": mainImage.asset->url,
-        "authorName": author->name,
-        publishedAt,
-        _updatedAt
-      }`,
-    { slug: postSlug }
-  );
+  const post = await client.fetch(postMetadataBySlugQuery, { slug: postSlug });
 
   const title = post?.title || "NeuroNomixer Blog Post";
   const description =
@@ -110,7 +78,7 @@ export default async function PostPage({
 }) {
   const { postSlug, categorySlug } = await params;
 
-  const post = await client.fetch(postQuery, { slug: postSlug });
+  const post = await client.fetch(postBySlugQuery, { slug: postSlug });
 
   if (!post) notFound();
 
