@@ -10,6 +10,18 @@
  * them would silently change what the public site publishes.
  */
 
+// The ONE place the English-language predicate is expressed (CONTENT-02).
+// Nothing else under src/ may carry this text. Plan 02-05 adds a second,
+// deliberate occurrence in src/sanity/structure.ts for Studio chrome only.
+//
+// Tolerant by decision D-03: a post with no language field IS English. Farsi is
+// always explicit (language == "fa", stamped only by the Phase 3 pipeline), so
+// tolerance carries no leak risk.
+//
+// The Farsi counterpart is deliberately NOT defined here yet. Phase 4 adds it as
+// a sibling one-liner; declaring it now would be dead code.
+export const EN_LANGUAGE = `(!defined(language) || language == "en")`;
+
 export const STATUS_TOLERANT = `(status == "approved" || !defined(status) || (status == "scheduled" && publishedAt <= now()))`;
 
 export const STATUS_STRICT = `(status == "approved" || (status == "scheduled" && publishedAt <= now()))`;
@@ -20,7 +32,7 @@ export const blogIndexQuery = `{
   "categories": *[_type == "category" && active == true] | order(order asc) {
     _id, title, slug, description, intuitive
   },
-  "posts": *[_type == "post" && ${STATUS_TOLERANT}] | order(featured desc, publishedAt desc) {
+  "posts": *[_type == "post" && ${EN_LANGUAGE} && ${STATUS_TOLERANT}] | order(featured desc, publishedAt desc) {
     _id, title, slug, description, publishedAt, featured,
     "bodyExcerpt": pt::text(body)[0...300],
     "mainImage": mainImage.asset->url,
@@ -33,27 +45,27 @@ export const blogIndexQuery = `{
 }`;
 
 export const homePageQuery = `{
-  "heroPosts": *[_type == "post" && ${STATUS_STRICT} && defined(heroOrder)] | order(heroOrder asc) {
+  "heroPosts": *[_type == "post" && ${EN_LANGUAGE} && ${STATUS_STRICT} && defined(heroOrder)] | order(heroOrder asc) {
     _id, title, slug, description, publishedAt, featured, heroOrder,
     "mainImage": mainImage.asset->url,
     "category": category->{ _id, title, slug },
     "author": author->{ _id, name, slug, "image": image.asset->url, jobTitle }
   },
-  "latestPosts": *[_type == "post" && ${STATUS_STRICT} && !defined(heroOrder)] | order(publishedAt desc) [0...6] {
+  "latestPosts": *[_type == "post" && ${EN_LANGUAGE} && ${STATUS_STRICT} && !defined(heroOrder)] | order(publishedAt desc) [0...6] {
     _id, title, slug, description, publishedAt, featured, heroOrder,
     "mainImage": mainImage.asset->url,
     "category": category->{ _id, title, slug },
     "author": author->{ _id, name, slug, "image": image.asset->url, jobTitle }
   },
-  "categories": *[_type == "category" && active == true && count(*[_type == "post" && ${STATUS_STRICT} && references(^._id)]) > 0] | order(order asc) [0...3] {
+  "categories": *[_type == "category" && active == true && count(*[_type == "post" && ${EN_LANGUAGE} && ${STATUS_STRICT} && references(^._id)]) > 0] | order(order asc) [0...3] {
     _id, title, slug, description,
     "image": image.asset->url,
-    "postCount": count(*[_type == "post" && ${STATUS_STRICT} && references(^._id)])
+    "postCount": count(*[_type == "post" && ${EN_LANGUAGE} && ${STATUS_STRICT} && references(^._id)])
   }
 }`;
 
 export const postBySlugQuery = `
-  *[_type == "post" && slug.current == $slug && ${STATUS_APPROVED}][0]{
+  *[_type == "post" && ${EN_LANGUAGE} && slug.current == $slug && ${STATUS_APPROVED}][0]{
     _id,
     title,
     mainImage{asset->{url, altText}},
@@ -75,14 +87,14 @@ export const postBySlugQuery = `
   }
 `;
 
-export const postStaticParamsQuery = `*[_type == "post" && ${STATUS_APPROVED} && defined(slug.current) && defined(category->slug.current)]{
+export const postStaticParamsQuery = `*[_type == "post" && ${EN_LANGUAGE} && ${STATUS_APPROVED} && defined(slug.current) && defined(category->slug.current)]{
       "categorySlug": category->slug.current,
       "slug": slug.current
     }`;
 
 // No status predicate today. That asymmetry with postBySlugQuery is pre-existing
 // and deliberately carried over unchanged.
-export const postMetadataBySlugQuery = `*[_type == "post" && slug.current == $slug][0]{
+export const postMetadataBySlugQuery = `*[_type == "post" && ${EN_LANGUAGE} && slug.current == $slug][0]{
         title,
         metaDescription,
         description,
@@ -94,7 +106,7 @@ export const postMetadataBySlugQuery = `*[_type == "post" && slug.current == $sl
       }`;
 
 export const postsByAuthorSlugQuery = `
-  *[_type == "post" && ${STATUS_TOLERANT} && author->slug.current == $slug]
+  *[_type == "post" && ${EN_LANGUAGE} && ${STATUS_TOLERANT} && author->slug.current == $slug]
   | order(publishedAt desc) [0...20] {
     _id,
     title,
@@ -112,6 +124,7 @@ export const postsByAuthorSlugQuery = `
 export const sitemapQuery = `{
       "posts": *[
         _type == "post" &&
+        ${EN_LANGUAGE} &&
         defined(slug.current) &&
         defined(category->slug.current) &&
         category->active == true
@@ -130,7 +143,7 @@ export const sitemapQuery = `{
 // No status predicate today (the caller renders every status to its own author).
 // Deliberately NOT merged with authorReviewPostsQuery: this one projects "url"
 // and takes $siteUrl. Merging would change a caller's output shape.
-export const postsByAuthorIdQuery = `*[_type == "post" && author._ref == $authorId] | order(coalesce(publishedAt, _createdAt) desc) {
+export const postsByAuthorIdQuery = `*[_type == "post" && ${EN_LANGUAGE} && author._ref == $authorId] | order(coalesce(publishedAt, _createdAt) desc) {
       "id": _id,
       title,
       "slug": slug.current,
@@ -153,7 +166,7 @@ export const postsByAuthorIdQuery = `*[_type == "post" && author._ref == $author
 
 // No status predicate today. Duplicated projection text with postsByAuthorIdQuery
 // is intended: this one has no "url" projection and takes only $authorId.
-export const authorReviewPostsQuery = `*[_type == "post" && author._ref == $authorId] | order(coalesce(publishedAt, _createdAt) desc) {
+export const authorReviewPostsQuery = `*[_type == "post" && ${EN_LANGUAGE} && author._ref == $authorId] | order(coalesce(publishedAt, _createdAt) desc) {
       "id": _id,
       title,
       "slug": slug.current,
