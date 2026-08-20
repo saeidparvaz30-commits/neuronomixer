@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 2
 current_phase_name: Content Model
 status: executing
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-08-20T20:09:21.243Z"
+stopped_at: Completed 02-03-PLAN.md
+last_updated: "2026-08-20T20:19:03.692Z"
 last_activity: 2026-08-20
 last_activity_desc: Phase 2 execution started
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 7
-  completed_plans: 4
+  completed_plans: 5
   percent: 20
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-08-11)
 ## Current Position
 
 Phase: 2 (Content Model) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 Status: Ready to execute
 Last activity: 2026-08-20 — Phase 2 execution started
 
@@ -53,6 +53,7 @@ Progress: [##########] 100%
 *Updated after each plan completion*
 | Phase 02 P01 | 42 min | 3 tasks | 9 files |
 | Phase 02 P02 | 9 min | 3 tasks | 2 files |
+| Phase 02 P03 | 6 min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,8 @@ Decisions are logged in PROJECT.md Key Decisions table. Recent decisions affecti
 - [Phase 02]: Status predicates are exported constants, not module-private, so plan 02-02's check script can assert per query which of the four variants is present (plan 02-01, 2026-08-20)
 - [Phase 02]: blogIndexQuery and homePageQuery stay single compound constants; splitting them would turn one network round trip into three, a behaviour change (plan 02-01, 2026-08-20)
 - [Phase 02]: postsByAuthorIdQuery and authorReviewPostsQuery stay separate despite identical filters; their projections differ and merging would change a caller's output shape (plan 02-01, 2026-08-20)
+- [Phase 02]: Studio chrome is a separate surface from the public read path: assertion H's allowlist names postType.ts (D-07 picker resolver) and will name structure.ts (02-05), rather than the GROQ being reworded to dodge a text check. CONTENT-02 governs the public read predicate; a picker resolver constrains an editor's search, never a read (plan 02-03, 2026-08-20)
+- [Phase 02]: postType's field count is asserted at 17 as a deliberate tripwire, so a later schema addition fails at the check rather than drifting silently (plan 02-03, 2026-08-20)
 
 ### Pending Todos
 
@@ -93,6 +96,7 @@ None yet.
 - `content/fa-glossary.json` needs Saeid's correction pass after the drafted first pass (Phase 3 input).
 - OPEN (low priority, pre-existing): package-lock.json carries an uncommitted working-tree change (@sanity/client 7.23.0 to 7.24.0, @sanity/eventsource 5.0.2 to 5.0.4) unrelated to phase 2. Plan 02-01 left it alone per its scope boundary and proved manifest byte-stability via blob hash instead. Adjacent to the OPEN npm ci blocker.
 - Handoff for plan 02-02: this repo checks out CRLF on Windows, so any git-fidelity check must normalise line endings (.replace(/\r\n/g, chr(10))) on both sides before diffing git show output against the working copy. Plan 02-01 pre-verified 9/9 byte fidelity against ref 293616f with that normalisation.
+- Phase 3 invariant: Farsi documents must never carry status scheduled. api/cron/publish-scheduled is unfiltered by D-02, patches scheduled posts to approved and mails every subscriber with an English subject. Nothing in the schema enforces it; the pipeline must.
 
 ## Deferred Items
 
@@ -104,8 +108,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-20T20:09:21.235Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-08-20T20:18:55.176Z
+Stopped at: Completed 02-03-PLAN.md
 Resume file: None
 
 Outstanding human check (needs Saeid's Chrome against `npx next start`): `/fa` styled and right to left, `/` unchanged with nav and footer, a nonsense URL showing the branded 404. All four items are already green under automated assertion.
