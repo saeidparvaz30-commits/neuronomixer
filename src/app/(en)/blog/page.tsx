@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { client } from "@/sanity/lib/client";
+import { blogIndexQuery } from "@/sanity/lib/queries";
 import { prisma } from "@/lib/prisma";
 import BlogClient from "@/components/Blog/BlogClient";
 
@@ -25,22 +26,6 @@ export const metadata: Metadata = {
   },
 };
 
-const query = `{
-  "categories": *[_type == "category" && active == true] | order(order asc) {
-    _id, title, slug, description, intuitive
-  },
-  "posts": *[_type == "post" && (status == "approved" || !defined(status) || (status == "scheduled" && publishedAt <= now()))] | order(featured desc, publishedAt desc) {
-    _id, title, slug, description, publishedAt, featured,
-    "bodyExcerpt": pt::text(body)[0...300],
-    "mainImage": mainImage.asset->url,
-    "category": category->{ _id, title, slug },
-    "author": author->{ _id, name, slug, "image": image.asset->url, jobTitle }
-  },
-  "authors": *[_type == "author" && applicationStatus == "approved"] | order(order asc) [0...6] {
-    _id, name, slug, "image": image.asset->url, jobTitle
-  }
-}`;
-
 export default async function BlogPage({
   searchParams,
 }: {
@@ -50,7 +35,7 @@ export default async function BlogPage({
   const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   const [data, viewCounts] = await Promise.all([
-    client.fetch(query),
+    client.fetch(blogIndexQuery),
     prisma.postView.groupBy({
       by: ["postSlug"],
       where: { viewedAt: { gte: oneWeekAgo } },
