@@ -22,8 +22,16 @@ import {
   postsByAuthorIdQuery,
   authorReviewPostsQuery,
 } from "../../src/sanity/lib/queries";
+import { postType } from "../../src/sanity/schemaTypes/postType";
 
 const QUERIES_PATH = "src/sanity/lib/queries.ts";
+const POST_TYPE_PATH = "src/sanity/schemaTypes/postType.ts";
+
+/** The only two code paths that create a post document (D-04). */
+const POST_WRITERS: readonly string[] = [
+  "src/app/api/v1/posts/route.ts",
+  "src/app/api/dashboard/author/submit-post/route.ts",
+];
 const REF_PATH = ".planning/phases/02-content-model/artifacts/pre-extraction-ref.txt";
 
 /** The nine exported post queries, in declaration order. */
@@ -260,9 +268,13 @@ for (const file of srcFiles) {
 }
 
 // ── H. Single source of truth for the language-equality text ─────────────────
-// Plan 02-05 adds a second, deliberate occurrence in src/sanity/structure.ts for
-// Studio chrome. When it lands, extend ALLOWED_LANGUAGE_TEXT_FILES to two entries.
-const ALLOWED_LANGUAGE_TEXT_FILES: readonly string[] = [QUERIES_PATH];
+// CONTENT-02 is about the PUBLIC READ predicate. Studio chrome is a separate
+// surface and its duplication is deliberate:
+//   - postType.ts carries the predicate inside the translationOf reference-picker
+//     resolver (D-07). It constrains an editor's picker, never a public read.
+//   - Plan 02-05 adds the third entry, src/sanity/structure.ts, for the two
+//     filtered document lists (D-05).
+const ALLOWED_LANGUAGE_TEXT_FILES: readonly string[] = [QUERIES_PATH, POST_TYPE_PATH];
 const LANGUAGE_EQUALITY_TEXT = "language ==";
 const carriers = srcFiles
   .filter((f) => fs.readFileSync(f, "utf8").includes(LANGUAGE_EQUALITY_TEXT))
@@ -274,8 +286,81 @@ assert.deepStrictEqual(
   `the language predicate must be expressed in exactly one place under src/ (CONTENT-02).\n  found: ${carriers.join(", ")}`,
 );
 
+// ── I. Schema shape of the three sibling-document fields (CONTENT-01) ─────────
+const schemaFields = (postType as unknown as { fields: Array<Record<string, unknown>> }).fields;
+const byName: Record<string, Record<string, unknown>> = Object.fromEntries(
+  schemaFields.map((f) => [f.name as string, f]),
+);
+
+function optionsOf(field: Record<string, unknown>): Record<string, unknown> {
+  return (field.options ?? {}) as Record<string, unknown>;
+}
+
+// Deliberate tripwire. If a later phase adds a field to postType without updating
+// this number, the failure points at the check rather than at silent model drift.
+const EXPECTED_FIELD_COUNT = 17;
+assert.strictEqual(
+  schemaFields.length,
+  EXPECTED_FIELD_COUNT,
+  `${POST_TYPE_PATH} has ${schemaFields.length} fields, expected ${EXPECTED_FIELD_COUNT}. If a field was added on purpose, update this count and say why in the plan.\n  found: ${schemaFields.map((f) => f.name as string).join(", ")}`,
+);
+
+const languageField = byName.language;
+assert.ok(languageField, "postType must define the `language` field (roadmap criterion 4)");
+assert.strictEqual(languageField.type, "string", "`language` must be a string field");
+assert.strictEqual(
+  languageField.initialValue,
+  "en",
+  "`language` must carry initialValue \"en\" (roadmap criterion 4). Note this is the Studio-form backup; the API stamps are the primary control (D-04).",
+);
+const languageValues = ((optionsOf(languageField).list ?? []) as Array<Record<string, unknown>>).map(
+  (entry) => entry.value,
+);
+assert.deepStrictEqual(
+  languageValues,
+  ["en", "fa"],
+  `\`language\` must offer exactly the values en and fa, because plan 02-05's Studio split filters on exactly those. Got: ${JSON.stringify(languageValues)}`,
+);
+
+const translationOfField = byName.translationOf;
+assert.ok(translationOfField, "postType must define the `translationOf` field");
+assert.strictEqual(translationOfField.type, "reference", "`translationOf` must be a reference field");
+assert.strictEqual(
+  optionsOf(translationOfField).disableNew,
+  true,
+  "`translationOf` must set options.disableNew, so no new post can be minted from inside the picker (D-07)",
+);
+assert.strictEqual(
+  typeof optionsOf(translationOfField).filter,
+  "function",
+  "`translationOf` must use the resolver form of options.filter, since the predicate needs the current document id to exclude itself (D-07)",
+);
+
+const translationNotesField = byName.translationNotes;
+assert.ok(translationNotesField, "postType must define the `translationNotes` field");
+assert.strictEqual(translationNotesField.type, "text", "`translationNotes` must be a text field");
+assert.strictEqual(
+  translationNotesField.readOnly,
+  true,
+  "`translationNotes` must be read-only: it is written by the pipeline's verify pass, not by hand (D-08)",
+);
+
+// ── J. Write-path stamps (D-04, threat T-02-10) ──────────────────────────────
+// initialValue is a Studio form affordance and never runs for client.create, so
+// every post-creating route must stamp the language itself.
+const LANGUAGE_STAMP = /language:\s*"en"/g;
+for (const writer of POST_WRITERS) {
+  const source = fs.readFileSync(writer, "utf8");
+  const stamps = (source.match(LANGUAGE_STAMP) ?? []).length;
+  assert.strictEqual(
+    stamps,
+    1,
+    `${writer} must stamp \`language: "en"\` on the document it creates exactly once (D-04), found ${stamps}`,
+  );
+}
+
 console.log(
-  `offline: fragment identity OK, ${totalEn} interpolations across ${QUERIES.length} queries, status predicates intact, ${interpolations.length} interpolations all allowlisted, 9/9 faithful to ${preExtractionRef.slice(0, 7)}, ${CALL_SITES.length} call sites free of inline GROQ, ${srcFiles.length} src files scanned, sole carrier ${carriers.join(", ")}`,
+  `offline: fragment identity OK, ${totalEn} interpolations across ${QUERIES.length} queries, status predicates intact, ${interpolations.length} interpolations all allowlisted, 9/9 faithful to ${preExtractionRef.slice(0, 7)}, ${CALL_SITES.length} call sites free of inline GROQ, ${srcFiles.length} src files scanned, sole carrier ${carriers.join(", ")}, ${schemaFields.length} schema fields with language/translationOf/translationNotes intact, ${POST_WRITERS.length}/${POST_WRITERS.length} post writers stamping language`,
 );
 
 const argv = process.argv.slice(2);
