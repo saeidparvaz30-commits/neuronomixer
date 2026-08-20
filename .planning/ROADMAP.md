@@ -72,7 +72,7 @@ Plans:
 
 **Scope note (Saeid-approved 2026-08-20, CONTEXT.md D-01):** the shared module covers ALL public English surfaces, not just the three blog page files: the blog index, the post page, the homepage, `authors/[slug]`, `sitemap.ts`, `api/v1/posts` GET, and `/review`. `blog/[categorySlug]/page.tsx` is a ten-line redirect with no GROQ, so success criterion 1 is satisfied by vacuity for that file.
 
-**Plans**: 1/5 plans executed
+**Plans**: 2/5 plans executed
 
 Plans:
 **Wave 1**
@@ -81,7 +81,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 02-02-PLAN.md — Add `EN_LANGUAGE` and interpolate it at all 12 post-reading positions, then author `scripts/checks/language-filter.check.ts` (offline fidelity and structure assertions plus a `--live` parity and slug-uniqueness run)
+- [x] 02-02-PLAN.md — Add `EN_LANGUAGE` and interpolate it at all 12 post-reading positions, then author `scripts/checks/language-filter.check.ts` (offline fidelity and structure assertions plus a `--live` parity and slug-uniqueness run)
 
 **Wave 3** *(blocked on Wave 2)*
 
@@ -170,7 +170,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Route Groups | 2/2 | Complete    | 2026-08-16 |
-| 2. Content Model | 1/5 | In Progress|  |
+| 2. Content Model | 2/5 | In Progress|  |
 | 3. Translation Pipeline | 0/TBD | Not started | - |
 | 4. Farsi Routes and Chrome | 0/TBD | Not started | - |
 | 5. SEO and Ship | 0/TBD | Not started | - |
