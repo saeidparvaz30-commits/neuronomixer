@@ -5,8 +5,8 @@ milestone_name: milestone
 current_phase: 2
 current_phase_name: Content Model
 status: Two root layouts coexist. All 243 English route files live in `src/app/(en)/` and the Farsi shell lives in `src/app/(fa)/`. The manifest emits 285 URLs, exactly the pre-phase 284 plus `/fa`. Route smoke 28/28 `ALL PASS`, `--fa-check` `ALL PASS`, mobile gate 151 slugs, `next.config.ts` fingerprint clean.
-stopped_at: Plan 01-02 complete (evidence commit 5726207); both phase-01 plans are done, next is `/gsd-verify-work` for phase 01
-last_updated: "2026-08-16T21:04:15.699Z"
+stopped_at: Phase 2 context gathered
+last_updated: "2026-08-20T15:11:31.358Z"
 last_activity: 2026-08-16
 last_activity_desc: Phase 01 complete, transitioned to Phase 2
 progress:
@@ -97,8 +97,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-16
-Stopped at: Plan 01-02 complete (evidence commit 5726207); both phase-01 plans are done, next is `/gsd-verify-work` for phase 01
-Resume file: None
+Last session: 2026-08-20T15:11:31.352Z
+Stopped at: Phase 2 context gathered
+Resume file: .planning/phases/02-content-model/02-CONTEXT.md
 
 Outstanding human check (needs Saeid's Chrome against `npx next start`): `/fa` styled and right to left, `/` unchanged with nav and footer, a nonsense URL showing the branded 404. All four items are already green under automated assertion.
