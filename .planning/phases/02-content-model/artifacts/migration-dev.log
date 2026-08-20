@@ -1,0 +1,49 @@
+migrate-post-language: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 mode=DRY RUN
+17 post document(s) in blog_posts_dev with no language field:
+  5f84b594-cbcc-4018-bbc6-a465a00ccad8  data-the-red-cells-of-our-digital-world-veins  Data, the Red Cells of Our Digital World’s Veins
+  b2708764-5411-4678-aa88-0c4b59652482  a-practical-guide-to-data-driven-decisions  A Practical Guide to Data-Driven Decisions
+  801d1d2c-34aa-4977-ad23-a294d1025ff3  inside-the-data-ecosystem  The Data Ecosystem
+  06328150-884b-4c2c-bccb-be209af6d96c  the-modern-data-career-map  The Modern Data Career Map
+  8311afc2-ffe0-46ed-81f3-c58de50b7aa5  exploring-how-machine-learning-and-analytics-shape-the-future  Exploring How Machine Learning and Analytics Shape the Future?
+  8456f262-eb1e-44b7-9ad1-7f60e1f4c615  foundational-tools-for-data-related-careers  Foundational Tools for Data-Related Careers
+  23e130bc-d702-4168-82b5-acba5d039152  learning-excel-for-free-in-2025  Learning Excel for Free in 2025
+  10c83b39-b709-4543-93a2-3ef464386809  learning-sql-for-free-in-2025  Learning SQL for Free in 2025 
+  bnKHE8NFvD5dhRfAAzQ0Mx  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  What NeuroNomixer Stands For: AI, Data, and the Future of Systems
+  S9mF1lBwsv6MdFz668s22Z  what-is-data-a-complete-beginners-guide-for-the-curious-mind  What Is Data? A Complete Beginner's Guide for the Curious Mind
+  bnKHE8NFvD5dhRfAB0dtGt  why-explainable-ai-matters-more-than-you-think  Why Explainable AI Matters More Than You Think
+  S9mF1lBwsv6MdFz6693aV9  the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation  The EU AI Act in 2026: What It Actually Means for Business and Innovation
+  ESi6o53PQdAxfwmpqtIDvk  the-data-lifecycle-how-information-flows-through-modern-organisations  The Data Lifecycle: How Information Flows Through Modern Organisations
+  ESi6o53PQdAxfwmpqtLm8A  data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you  Data Analyst vs Data Scientist vs Analytics Engineer: Which Role Fits You?
+  ESi6o53PQdAxfwmpqtSyOd  interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai  Interpretable vs Black-Box Models: The Trade-Off That Defines Modern AI
+  c4IT5nuPTbFPIL46OdcsN0  test  test
+  c4IT5nuPTbFPIL46Odd0UQ  draft  draft
+DRY RUN: mutation validated server-side, nothing written.
+Re-run with --execute to apply: npx tsx --env-file <env> scripts/migrate-post-language.ts --execute
+
+===== EXECUTE PASS =====
+migrate-post-language: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 mode=EXECUTE
+17 post document(s) in blog_posts_dev with no language field:
+  5f84b594-cbcc-4018-bbc6-a465a00ccad8  data-the-red-cells-of-our-digital-world-veins  Data, the Red Cells of Our Digital World’s Veins
+  b2708764-5411-4678-aa88-0c4b59652482  a-practical-guide-to-data-driven-decisions  A Practical Guide to Data-Driven Decisions
+  801d1d2c-34aa-4977-ad23-a294d1025ff3  inside-the-data-ecosystem  The Data Ecosystem
+  06328150-884b-4c2c-bccb-be209af6d96c  the-modern-data-career-map  The Modern Data Career Map
+  8311afc2-ffe0-46ed-81f3-c58de50b7aa5  exploring-how-machine-learning-and-analytics-shape-the-future  Exploring How Machine Learning and Analytics Shape the Future?
+  8456f262-eb1e-44b7-9ad1-7f60e1f4c615  foundational-tools-for-data-related-careers  Foundational Tools for Data-Related Careers
+  23e130bc-d702-4168-82b5-acba5d039152  learning-excel-for-free-in-2025  Learning Excel for Free in 2025
+  10c83b39-b709-4543-93a2-3ef464386809  learning-sql-for-free-in-2025  Learning SQL for Free in 2025 
+  bnKHE8NFvD5dhRfAAzQ0Mx  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  What NeuroNomixer Stands For: AI, Data, and the Future of Systems
+  S9mF1lBwsv6MdFz668s22Z  what-is-data-a-complete-beginners-guide-for-the-curious-mind  What Is Data? A Complete Beginner's Guide for the Curious Mind
+  bnKHE8NFvD5dhRfAB0dtGt  why-explainable-ai-matters-more-than-you-think  Why Explainable AI Matters More Than You Think
+  S9mF1lBwsv6MdFz6693aV9  the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation  The EU AI Act in 2026: What It Actually Means for Business and Innovation
+  ESi6o53PQdAxfwmpqtIDvk  the-data-lifecycle-how-information-flows-through-modern-organisations  The Data Lifecycle: How Information Flows Through Modern Organisations
+  ESi6o53PQdAxfwmpqtLm8A  data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you  Data Analyst vs Data Scientist vs Analytics Engineer: Which Role Fits You?
+  ESi6o53PQdAxfwmpqtSyOd  interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai  Interpretable vs Black-Box Models: The Trade-Off That Defines Modern AI
+  c4IT5nuPTbFPIL46OdcsN0  test  test
+  c4IT5nuPTbFPIL46Odd0UQ  draft  draft
+EXECUTE: stamped 17 post document(s) with language "en" in blog_posts_dev.
+Remaining without a language field in blog_posts_dev: 0
+
+===== IDEMPOTENCE RE-RUN (second --execute) =====
+migrate-post-language: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 mode=EXECUTE
+0 post document(s) in blog_posts_dev with no language field:
+Nothing to do: every post in blog_posts_dev already carries a language field.
