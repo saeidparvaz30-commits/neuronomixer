@@ -4,9 +4,9 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 2
 current_phase_name: Content Model
-status: executing
-stopped_at: Completed 02-03-PLAN.md
-last_updated: "2026-08-20T20:19:03.692Z"
+status: paused
+stopped_at: "Day ended 2026-08-20 mid-phase-2: plan 02-04 at production-migration checkpoint (execute-now/defer pending), plan 02-05 not started"
+last_updated: "2026-08-20T21:49:26.115Z"
 last_activity: 2026-08-20
 last_activity_desc: Phase 2 execution started
 progress:
@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-08-11)
 
 Phase: 2 (Content Model) — EXECUTING
 Plan: 4 of 5
-Status: Ready to execute
+Status: Phase 2 mid-execution: waves 1-3 complete (queries extracted, EN_LANGUAGE filter live at 12 positions, schema fields + writer stamps in). Plan 02-04 PAUSED at Task 3 checkpoint: production migration awaiting Saeid's execute-now/defer decision. Prod dry-run verified this session: dataset blog_posts, 26 docs, setIfMissing, token write scope proven, nothing written. Resume: spawn continuation for plan 02-04 with the decision, then wave 5 (Studio split). Re-run command if executing manually: npx tsx --env-file=.env.vercel-prod scripts/migrate-post-language.ts --execute (then scripts/checks/language-filter.check.ts --post-migration --live against prod). Wave 5 (02-05) not started.
 Last activity: 2026-08-20 — Phase 2 execution started
 
 Progress: [##########] 100%
@@ -108,8 +108,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-20T20:18:55.176Z
-Stopped at: Completed 02-03-PLAN.md
-Resume file: None
+Last session: 2026-08-20T21:49:26.108Z
+Stopped at: Day ended 2026-08-20 mid-phase-2: plan 02-04 at production-migration checkpoint (execute-now/defer pending), plan 02-05 not started
+Resume file: .planning/phases/02-content-model/02-04-PLAN.md
 
 Outstanding human check (needs Saeid's Chrome against `npx next start`): `/fa` styled and right to left, `/` unchanged with nav and footer, a nonsense URL showing the branded 404. All four items are already green under automated assertion.
