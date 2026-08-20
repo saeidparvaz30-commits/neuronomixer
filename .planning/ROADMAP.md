@@ -69,7 +69,31 @@ Plans:
   5. The ordering invariant held: the English-language filter was live BEFORE the first Farsi document existed, so no Farsi draft can ever have surfaced in an English listing.
 
 **Strict internal order (hard invariant, not optional):** (1) extract the blog GROQ queries — currently duplicated inline across three page files — into `src/sanity/lib/queries.ts` and repoint the three pages; (2) add the `language == "en"` filter in that single module; (3) add the three schema fields to `src/sanity/schemaTypes/postType.ts`; (4) one-off `npx tsx` migration stamping `language: "en"` on every existing post; (5) Studio structure split filtered by language.
-**Plans**: TBD
+
+**Scope note (Saeid-approved 2026-08-20, CONTEXT.md D-01):** the shared module covers ALL public English surfaces, not just the three blog page files: the blog index, the post page, the homepage, `authors/[slug]`, `sitemap.ts`, `api/v1/posts` GET, and `/review`. `blog/[categorySlug]/page.tsx` is a ten-line redirect with no GROQ, so success criterion 1 is satisfied by vacuity for that file.
+
+**Plans**: 5 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — Extract all 11 public post queries into `src/sanity/lib/queries.ts` as 9 exported constants plus 3 status-predicate constants, repoint 7 call sites, record the pre-extraction git ref. No language filter yet.
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 02-02-PLAN.md — Add `EN_LANGUAGE` and interpolate it at all 12 post-reading positions, then author `scripts/checks/language-filter.check.ts` (offline fidelity and structure assertions plus a `--live` parity and slug-uniqueness run)
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 02-03-PLAN.md — Add `language`, `translationOf` and `translationNotes` to `postType.ts`, extend the preview for language pairs, stamp `language: "en"` in both post-creating API routes
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [ ] 02-04-PLAN.md — Author `scripts/migrate-post-language.ts` (dry run by default, `--execute` to mutate), stamp `blog_posts_dev`, then run production `blog_posts` behind a blocking Saeid gate
+
+**Wave 5** *(blocked on Wave 4)*
+
+- [ ] 02-05-PLAN.md — Split the Studio structure into two language-filtered post lists, pin the structure shape in the check script, run the full phase gate and the Studio browser check
 
 ### Phase 3: Translation Pipeline
 
@@ -146,7 +170,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Route Groups | 2/2 | Complete    | 2026-08-16 |
-| 2. Content Model | 0/TBD | Not started | - |
+| 2. Content Model | 0/5 | Planned | - |
 | 3. Translation Pipeline | 0/TBD | Not started | - |
 | 4. Farsi Routes and Chrome | 0/TBD | Not started | - |
 | 5. SEO and Ship | 0/TBD | Not started | - |
