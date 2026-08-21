@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 2
-current_phase_name: Content Model
+current_phase: 3
+current_phase_name: Translation Pipeline
 status: paused
 stopped_at: "Day ended 2026-08-20 mid-phase-2: plan 02-04 at production-migration checkpoint (execute-now/defer pending), plan 02-05 not started"
-last_updated: "2026-08-20T21:49:26.115Z"
-last_activity: 2026-08-20
-last_activity_desc: Phase 2 execution started
+last_updated: "2026-08-21T18:22:24.529Z"
+last_activity: 2026-08-21
+last_activity_desc: Phase 02 complete, transitioned to Phase 3
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 7
-  completed_plans: 5
-  percent: 20
+  completed_plans: 7
+  percent: 40
 ---
 
 # Project State
@@ -28,10 +28,10 @@ See: .planning/PROJECT.md (updated 2026-08-11)
 
 ## Current Position
 
-Phase: 2 (Content Model) — EXECUTING
-Plan: 4 of 5
+Phase: 3 — Translation Pipeline
+Plan: Not started
 Status: Phase 2 mid-execution: waves 1-3 complete (queries extracted, EN_LANGUAGE filter live at 12 positions, schema fields + writer stamps in). Plan 02-04 PAUSED at Task 3 checkpoint: production migration awaiting Saeid's execute-now/defer decision. Prod dry-run verified this session: dataset blog_posts, 26 docs, setIfMissing, token write scope proven, nothing written. Resume: spawn continuation for plan 02-04 with the decision, then wave 5 (Studio split). Re-run command if executing manually: npx tsx --env-file=.env.vercel-prod scripts/migrate-post-language.ts --execute (then scripts/checks/language-filter.check.ts --post-migration --live against prod). Wave 5 (02-05) not started.
-Last activity: 2026-08-20 — Phase 2 execution started
+Last activity: 2026-08-21 — Phase 02 complete, transitioned to Phase 3
 
 Progress: [##########] 100%
 
@@ -39,7 +39,7 @@ Progress: [##########] 100%
 
 **Velocity:**
 
-- Total plans completed: 2
+- Total plans completed: 7
 - Average duration: ~1h active execution per plan
 - Total execution time: ~2h05m active (~9h50m wall clock including three human checkpoints)
 
@@ -49,6 +49,7 @@ Progress: [##########] 100%
 |-------|-------|-------|----------|
 | 01 route-groups | 2/2 | ~2h05m active | ~1h03m |
 | 01 | 2 | - | - |
+| 02 | 5 | - | - |
 
 *Updated after each plan completion*
 | Phase 02 P01 | 42 min | 3 tasks | 9 files |

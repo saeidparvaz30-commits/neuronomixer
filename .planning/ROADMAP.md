@@ -25,7 +25,7 @@ Publish a Farsi edition of the NeuroNomixer blog at `neuronomixer.com/fa`. The j
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Route Groups** - Move all existing routes into `(en)` untouched, add the `(fa)` root layout with a placeholder route (completed 2026-08-16)
-- [ ] **Phase 2: Content Model** - Shared GROQ module with a single language filter, Sanity language fields, `en` migration, Studio split
+- [x] **Phase 2: Content Model** - Shared GROQ module with a single language filter, Sanity language fields, `en` migration, Studio split (completed 2026-08-21)
 - [ ] **Phase 3: Translation Pipeline** - Batch API translation script with glossary, structure passthrough, verify pass, and draft-only output
 - [ ] **Phase 4: Farsi Routes and Chrome** - `/fa` blog tree, Farsi dictionary, Vazirmatn, Jalali dates, RTL chrome, language switcher
 - [ ] **Phase 5: SEO and Ship** - hreflang + sitemap, preview browser smoke, backlog translation run, Saeid review and manual publish
@@ -72,7 +72,7 @@ Plans:
 
 **Scope note (Saeid-approved 2026-08-20, CONTEXT.md D-01):** the shared module covers ALL public English surfaces, not just the three blog page files: the blog index, the post page, the homepage, `authors/[slug]`, `sitemap.ts`, `api/v1/posts` GET, and `/review`. `blog/[categorySlug]/page.tsx` is a ten-line redirect with no GROQ, so success criterion 1 is satisfied by vacuity for that file.
 
-**Plans**: 3/5 plans executed
+**Plans**: 5/5 plans complete
 
 Plans:
 **Wave 1**
@@ -89,11 +89,11 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3)*
 
-- [ ] 02-04-PLAN.md — Author `scripts/migrate-post-language.ts` (dry run by default, `--execute` to mutate), stamp `blog_posts_dev`, then run production `blog_posts` behind a blocking Saeid gate
+- [x] 02-04-PLAN.md — Author `scripts/migrate-post-language.ts` (dry run by default, `--execute` to mutate), stamp `blog_posts_dev`, then run production `blog_posts` behind a blocking Saeid gate
 
 **Wave 5** *(blocked on Wave 4)*
 
-- [ ] 02-05-PLAN.md — Split the Studio structure into two language-filtered post lists, pin the structure shape in the check script, run the full phase gate and the Studio browser check
+- [x] 02-05-PLAN.md — Split the Studio structure into two language-filtered post lists, pin the structure shape in the check script, run the full phase gate and the Studio browser check
 
 ### Phase 3: Translation Pipeline
 
@@ -170,7 +170,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Route Groups | 2/2 | Complete    | 2026-08-16 |
-| 2. Content Model | 3/5 | In Progress|  |
+| 2. Content Model | 5/5 | Complete    | 2026-08-21 |
 | 3. Translation Pipeline | 0/TBD | Not started | - |
 | 4. Farsi Routes and Chrome | 0/TBD | Not started | - |
 | 5. SEO and Ship | 0/TBD | Not started | - |
