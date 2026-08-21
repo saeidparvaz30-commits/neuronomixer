@@ -1,5 +1,6 @@
 /**
- * Logic + fidelity checks for the English-language filter in src/sanity/lib/queries.ts (CONTENT-02).
+ * Logic + fidelity checks for the English-language filter in src/sanity/lib/queries.ts (CONTENT-02),
+ * the three sibling-document schema fields, and the Studio structure split (CONTENT-01).
  * Run: npx tsx scripts/checks/language-filter.check.ts | live: npx tsx --env-file .env.local scripts/checks/language-filter.check.ts --live | post-migration: npx tsx --env-file .env.local scripts/checks/language-filter.check.ts --post-migration
  * The offline section needs no env and no network. Only --live / --post-migration touch the Content Lake, read-only.
  */
@@ -26,6 +27,7 @@ import { postType } from "../../src/sanity/schemaTypes/postType";
 
 const QUERIES_PATH = "src/sanity/lib/queries.ts";
 const POST_TYPE_PATH = "src/sanity/schemaTypes/postType.ts";
+const STRUCTURE_PATH = "src/sanity/structure.ts";
 
 /** The only two code paths that create a post document (D-04). */
 const POST_WRITERS: readonly string[] = [
@@ -268,13 +270,23 @@ for (const file of srcFiles) {
 }
 
 // ── H. Single source of truth for the language-equality text ─────────────────
-// CONTENT-02 is about the PUBLIC READ predicate. Studio chrome is a separate
-// surface and its duplication is deliberate:
+// CONTENT-02 is about the PUBLIC READ predicate, and that predicate has exactly
+// one home: EN_LANGUAGE in queries.ts. The other two carriers are Studio chrome,
+// which is a separate surface an authenticated editor sees and no visitor can
+// reach, so their duplication is deliberate and permanent:
 //   - postType.ts carries the predicate inside the translationOf reference-picker
 //     resolver (D-07). It constrains an editor's picker, never a public read.
-//   - Plan 02-05 adds the third entry, src/sanity/structure.ts, for the two
-//     filtered document lists (D-05).
-const ALLOWED_LANGUAGE_TEXT_FILES: readonly string[] = [QUERIES_PATH, POST_TYPE_PATH];
+//   - structure.ts carries it twice, once per language-filtered document list
+//     (D-05). The structure builder cannot import a GROQ fragment meant for the
+//     content client without dragging server-read concerns into Studio config.
+// This list is closed. A fourth file failing this assertion is not a bookkeeping
+// nuisance to be waved through by appending a path: it means the predicate has
+// started to spread, and the new carrier should import EN_LANGUAGE instead.
+const ALLOWED_LANGUAGE_TEXT_FILES: readonly string[] = [
+  QUERIES_PATH,
+  POST_TYPE_PATH,
+  STRUCTURE_PATH,
+];
 const LANGUAGE_EQUALITY_TEXT = "language ==";
 const carriers = srcFiles
   .filter((f) => fs.readFileSync(f, "utf8").includes(LANGUAGE_EQUALITY_TEXT))
@@ -345,7 +357,108 @@ assert.strictEqual(
   "`translationNotes` must be read-only: it is written by the pipeline's verify pass, not by hand (D-08)",
 );
 
-// ── J. Write-path stamps (D-04, threat T-02-10) ──────────────────────────────
+// ── J. Studio structure split (CONTENT-01, D-05, threats T-02-21/22/23/24) ───
+// Source-text assertions, so this belongs in the offline section: the Studio is a
+// client application behind auth and cannot be driven from a script. What CAN be
+// pinned mechanically is the shape of its config, and every assertion below maps
+// to a failure mode that is silent in the browser.
+const structureSource = fs.readFileSync(STRUCTURE_PATH, "utf8");
+
+/** The Farsi side is a plain equality: Farsi is always stamped explicitly (D-05). */
+const FA_LANGUAGE_EQUALITY = 'language == "fa"';
+
+/** Each id is set twice on purpose: once on the list item, once on its child list. */
+const STRUCTURE_LIST_IDS: ReadonlyArray<readonly [string, string]> = [
+  ["posts-en", "English"],
+  ["posts-fa", "Farsi"],
+];
+
+for (const [listId, languageWord] of STRUCTURE_LIST_IDS) {
+  const idCount = countOf(structureSource, `"${listId}"`);
+  assert.strictEqual(
+    idCount,
+    2,
+    `${STRUCTURE_PATH} must set the id "${listId}" exactly twice, on the list item and on its child list, found ${idCount}. The default id of a document type list is the type name, so without both ids the two post lists collide in Studio pane state and in the URL (T-02-22).`,
+  );
+  // Deliberately not the full literal: D-05's separator is Studio wording Saeid
+  // may want to change ("Posts — English" vs "Posts (English)"), and that is not
+  // a defect. What must not drift is which language each list is labelled with.
+  const titles = structureSource.match(new RegExp(`\\.title\\("Posts[^"]*${languageWord}"\\)`, "g")) ?? [];
+  assert.strictEqual(
+    titles.length,
+    2,
+    `${STRUCTURE_PATH} must title both the "${listId}" list item and its child list with a Posts title containing "${languageWord}", found ${titles.length}`,
+  );
+}
+
+// A custom .filter() REPLACES the preset `_type == $type` filter rather than
+// appending to it. Dropping the clause from either filter would list every
+// document type in the dataset to any editor (T-02-21).
+const structureTypeClauses = countOf(structureSource, POST_TYPE_PREDICATE);
+assert.strictEqual(
+  structureTypeClauses,
+  2,
+  `both Studio list filters must restate ${POST_TYPE_PREDICATE} themselves, found ${structureTypeClauses} occurrence(s) in ${STRUCTURE_PATH}`,
+);
+
+// Serialising a document list whose filter differs from the preset warns without
+// an explicit api version, and the warning says it will become required.
+const apiVersionCalls = (structureSource.match(/\.apiVersion\(/g) ?? []).length;
+assert.strictEqual(
+  apiVersionCalls,
+  2,
+  `both filtered lists in ${STRUCTURE_PATH} need an explicit .apiVersion(), found ${apiVersionCalls}`,
+);
+const importedApiVersionCalls = (structureSource.match(/\.apiVersion\(\s*apiVersion\s*\)/g) ?? []).length;
+assert.strictEqual(
+  importedApiVersionCalls,
+  2,
+  `${STRUCTURE_PATH} must pass the apiVersion constant imported from ./env, not a hardcoded date string, to both lists. Found ${importedApiVersionCalls} of ${apiVersionCalls} calls using the constant.`,
+);
+assert.match(
+  structureSource,
+  /import\s*\{\s*apiVersion\s*\}\s*from\s*"\.\/env"/,
+  `${STRUCTURE_PATH} must import apiVersion from ./env, matching how src/sanity/lib/client.ts reads it`,
+);
+
+// Farsi documents come only from the Phase 3 pipeline. A document created through
+// a Studio form in the Farsi list would take the English initial value and land
+// misclassified, so the create button is removed from that list only (T-02-23).
+const emptyTemplateCalls = (structureSource.match(/\.initialValueTemplates\(\s*\[\s*\]\s*\)/g) ?? []).length;
+assert.strictEqual(
+  emptyTemplateCalls,
+  1,
+  `${STRUCTURE_PATH} must call .initialValueTemplates([]) exactly once, on the Farsi list only, found ${emptyTemplateCalls}`,
+);
+const faFilterIndex = structureSource.indexOf(FA_LANGUAGE_EQUALITY);
+const templatesIndex = structureSource.search(/\.initialValueTemplates\(\s*\[\s*\]\s*\)/);
+assert.ok(
+  faFilterIndex !== -1 && templatesIndex > faFilterIndex,
+  `the empty initialValueTemplates call in ${STRUCTURE_PATH} must sit after the Farsi filter, so it disables creation on the Farsi list and not the English one`,
+);
+
+// Tolerant on the English side so a post that somehow lacks a language value is
+// still visible and editable somewhere rather than invisible in both lists
+// (T-02-24). Strict on the Farsi side, since Farsi is always explicit by design.
+const tolerantInStructure = countOf(structureSource, D03_PREDICATE);
+assert.strictEqual(
+  tolerantInStructure,
+  1,
+  `the English Studio filter must use the tolerant predicate ${D03_PREDICATE} exactly once, found ${tolerantInStructure}`,
+);
+const strictFaInStructure = countOf(structureSource, FA_LANGUAGE_EQUALITY);
+assert.strictEqual(
+  strictFaInStructure,
+  1,
+  `the Farsi Studio filter must be the plain equality ${FA_LANGUAGE_EQUALITY}, found ${strictFaInStructure} occurrence(s)`,
+);
+
+assert.ok(
+  !/documentTypeListItem\(\s*["']post["']\s*\)/.test(structureSource),
+  `the stock post documentTypeListItem is still present in ${STRUCTURE_PATH}. It must be replaced by the two split lists, or posts are listed three times.`,
+);
+
+// ── K. Write-path stamps (D-04, threat T-02-10) ──────────────────────────────
 // initialValue is a Studio form affordance and never runs for client.create, so
 // every post-creating route must stamp the language itself.
 const LANGUAGE_STAMP = /language:\s*"en"/g;
@@ -360,7 +473,7 @@ for (const writer of POST_WRITERS) {
 }
 
 console.log(
-  `offline: fragment identity OK, ${totalEn} interpolations across ${QUERIES.length} queries, status predicates intact, ${interpolations.length} interpolations all allowlisted, 9/9 faithful to ${preExtractionRef.slice(0, 7)}, ${CALL_SITES.length} call sites free of inline GROQ, ${srcFiles.length} src files scanned, sole carrier ${carriers.join(", ")}, ${schemaFields.length} schema fields with language/translationOf/translationNotes intact, ${POST_WRITERS.length}/${POST_WRITERS.length} post writers stamping language`,
+  `offline: fragment identity OK, ${totalEn} interpolations across ${QUERIES.length} queries, status predicates intact, ${interpolations.length} interpolations all allowlisted, 9/9 faithful to ${preExtractionRef.slice(0, 7)}, ${CALL_SITES.length} call sites free of inline GROQ, ${srcFiles.length} src files scanned, sole carrier ${carriers.join(", ")}, ${schemaFields.length} schema fields with language/translationOf/translationNotes intact, Studio split pinned (${STRUCTURE_LIST_IDS.map(([id]) => id).join(" + ")}, ${structureTypeClauses} type clauses, ${apiVersionCalls} apiVersion calls, ${emptyTemplateCalls} create-disabled list), ${POST_WRITERS.length}/${POST_WRITERS.length} post writers stamping language`,
 );
 
 const argv = process.argv.slice(2);
