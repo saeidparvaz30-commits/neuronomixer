@@ -1,0 +1,62 @@
+migrate-post-language: projectId=pz9ppas8 dataset=blog_posts apiVersion=2025-10-07 mode=DRY RUN
+26 post document(s) in blog_posts with no language field:
+  5f84b594-cbcc-4018-bbc6-a465a00ccad8  data-the-red-cells-of-our-digital-worlds-veins  Data, the Red Cells of Our Digital World’s Veins
+  b2708764-5411-4678-aa88-0c4b59652482  a-practical-guide-to-data-driven-decisions  A Practical Guide to Data-Driven Decisions
+  801d1d2c-34aa-4977-ad23-a294d1025ff3  inside-the-data-ecosystem  The Data Ecosystem
+  06328150-884b-4c2c-bccb-be209af6d96c  the-modern-data-career-map  The Modern Data Career Map
+  8311afc2-ffe0-46ed-81f3-c58de50b7aa5  exploring-how-machine-learning-and-analytics-shape-the-future  Exploring How Machine Learning and Analytics Shape the Future?
+  8456f262-eb1e-44b7-9ad1-7f60e1f4c615  foundational-tools-for-data-related-careers  Foundational Tools for Data-Related Careers
+  23e130bc-d702-4168-82b5-acba5d039152  learning-excel-for-free-in-2025  Learning Excel for Free in 2025
+  10c83b39-b709-4543-93a2-3ef464386809  learning-sql-for-free-in-2025  Learning SQL for Free in 2025 
+  bnKHE8NFvD5dhRfAAzQ0Mx  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  What NeuroNomixer Stands For: AI, Data, and the Future of Systems
+  S9mF1lBwsv6MdFz668s22Z  what-is-data-a-complete-beginners-guide-for-the-curious-mind  What Is Data? A Complete Beginner's Guide for the Curious Mind
+  bnKHE8NFvD5dhRfAB0dtGt  why-explainable-ai-matters-more-than-you-think  Why Explainable AI Matters More Than You Think
+  S9mF1lBwsv6MdFz6693aV9  the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation  The EU AI Act in 2026: What It Actually Means for Business and Innovation
+  ESi6o53PQdAxfwmpqtIDvk  the-data-lifecycle-how-information-flows-through-modern-organisations  The Data Lifecycle: How Information Flows Through Modern Organisations
+  ESi6o53PQdAxfwmpqtLm8A  data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you  Data Analyst vs Data Scientist vs Analytics Engineer: Which Role Fits You?
+  ESi6o53PQdAxfwmpqtSyOd  interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai  Interpretable vs Black-Box Models: The Trade-Off That Defines Modern AI
+  9lVVoe5GuStwdVe6ygGPQa  signal-from-the-frontier-the-ai-developments-that-actually-matter-in-q2-2026  Signal from the Frontier: The AI Developments That Actually Matter in Q2 2026
+  7jn2fDKswJjzFhbPpk42s0  why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it  Why SQL Is Still the Most Important Skill in Data: And How to Start Learning It
+  46oLupG9ruTgFco3qkAVg9  industry-50-explained-why-the-future-is-human-centred-not-just-automated  Industry 5.0 Explained: Why the Future Is Human-Centred, Not Just Automated
+  pn7GvmYaTH5iJ6kzusx4Fp  excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt  Excel for Data Analysis in 2026: What Still Matters and What Doesn't
+  v2I8xbswIO3h0NWvyPhR4C  explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes  Explainable AI in Credit Risk: Why Banks Cannot Afford Black Boxes
+  pn7GvmYaTH5iJ6kzut0prR  regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe  Regulation Meets Innovation: How AI Governance Is Reshaping Tech in Europe
+  v2I8xbswIO3h0NWvyPjR6C  learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners  Learning Python for Analytics: A No-Nonsense Roadmap for Beginners
+  ugPOXnc5BljH1c0F0KoxUi  model-risk-management-what-it-is-and-why-every-ai-team-needs-it  Model Risk Management: What It Is and Why Every AI Team Needs It
+  Fin89qgk1podGr6JhFagz3  fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a  FCA AI Live Testing Cohort 2: What Barclays, Lloyds, and UBS Are Quietly Telling UK Banking About AI Maturity
+  Fin89qgk1podGr6JhFchGh  171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep  171 Emotion Vectors Inside Claude: What Anthropic's New Interpretability Paper Means for Banks Deploying AI Agents
+  MBZBrDZ1v9o0BF3FgmgdoF  nigeria-just-wrote-ai-into-anti-money-laundering-the-18-month-clock-for-african-banks-has-starte  Nigeria Just Wrote AI Into Anti-Money Laundering: The 18-Month Clock for African Banks Has Started
+DRY RUN: mutation validated server-side, nothing written.
+Re-run with --execute to apply: npx tsx --env-file <env> scripts/migrate-post-language.ts --execute
+
+migrate-post-language: projectId=pz9ppas8 dataset=blog_posts apiVersion=2025-10-07 mode=EXECUTE
+!! TARGET IS THE PRODUCTION DATASET !!
+26 post document(s) in blog_posts with no language field:
+  5f84b594-cbcc-4018-bbc6-a465a00ccad8  data-the-red-cells-of-our-digital-worlds-veins  Data, the Red Cells of Our Digital World’s Veins
+  b2708764-5411-4678-aa88-0c4b59652482  a-practical-guide-to-data-driven-decisions  A Practical Guide to Data-Driven Decisions
+  801d1d2c-34aa-4977-ad23-a294d1025ff3  inside-the-data-ecosystem  The Data Ecosystem
+  06328150-884b-4c2c-bccb-be209af6d96c  the-modern-data-career-map  The Modern Data Career Map
+  8311afc2-ffe0-46ed-81f3-c58de50b7aa5  exploring-how-machine-learning-and-analytics-shape-the-future  Exploring How Machine Learning and Analytics Shape the Future?
+  8456f262-eb1e-44b7-9ad1-7f60e1f4c615  foundational-tools-for-data-related-careers  Foundational Tools for Data-Related Careers
+  23e130bc-d702-4168-82b5-acba5d039152  learning-excel-for-free-in-2025  Learning Excel for Free in 2025
+  10c83b39-b709-4543-93a2-3ef464386809  learning-sql-for-free-in-2025  Learning SQL for Free in 2025 
+  bnKHE8NFvD5dhRfAAzQ0Mx  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  What NeuroNomixer Stands For: AI, Data, and the Future of Systems
+  S9mF1lBwsv6MdFz668s22Z  what-is-data-a-complete-beginners-guide-for-the-curious-mind  What Is Data? A Complete Beginner's Guide for the Curious Mind
+  bnKHE8NFvD5dhRfAB0dtGt  why-explainable-ai-matters-more-than-you-think  Why Explainable AI Matters More Than You Think
+  S9mF1lBwsv6MdFz6693aV9  the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation  The EU AI Act in 2026: What It Actually Means for Business and Innovation
+  ESi6o53PQdAxfwmpqtIDvk  the-data-lifecycle-how-information-flows-through-modern-organisations  The Data Lifecycle: How Information Flows Through Modern Organisations
+  ESi6o53PQdAxfwmpqtLm8A  data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you  Data Analyst vs Data Scientist vs Analytics Engineer: Which Role Fits You?
+  ESi6o53PQdAxfwmpqtSyOd  interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai  Interpretable vs Black-Box Models: The Trade-Off That Defines Modern AI
+  9lVVoe5GuStwdVe6ygGPQa  signal-from-the-frontier-the-ai-developments-that-actually-matter-in-q2-2026  Signal from the Frontier: The AI Developments That Actually Matter in Q2 2026
+  7jn2fDKswJjzFhbPpk42s0  why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it  Why SQL Is Still the Most Important Skill in Data: And How to Start Learning It
+  46oLupG9ruTgFco3qkAVg9  industry-50-explained-why-the-future-is-human-centred-not-just-automated  Industry 5.0 Explained: Why the Future Is Human-Centred, Not Just Automated
+  pn7GvmYaTH5iJ6kzusx4Fp  excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt  Excel for Data Analysis in 2026: What Still Matters and What Doesn't
+  v2I8xbswIO3h0NWvyPhR4C  explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes  Explainable AI in Credit Risk: Why Banks Cannot Afford Black Boxes
+  pn7GvmYaTH5iJ6kzut0prR  regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe  Regulation Meets Innovation: How AI Governance Is Reshaping Tech in Europe
+  v2I8xbswIO3h0NWvyPjR6C  learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners  Learning Python for Analytics: A No-Nonsense Roadmap for Beginners
+  ugPOXnc5BljH1c0F0KoxUi  model-risk-management-what-it-is-and-why-every-ai-team-needs-it  Model Risk Management: What It Is and Why Every AI Team Needs It
+  Fin89qgk1podGr6JhFagz3  fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a  FCA AI Live Testing Cohort 2: What Barclays, Lloyds, and UBS Are Quietly Telling UK Banking About AI Maturity
+  Fin89qgk1podGr6JhFchGh  171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep  171 Emotion Vectors Inside Claude: What Anthropic's New Interpretability Paper Means for Banks Deploying AI Agents
+  MBZBrDZ1v9o0BF3FgmgdoF  nigeria-just-wrote-ai-into-anti-money-laundering-the-18-month-clock-for-african-banks-has-starte  Nigeria Just Wrote AI Into Anti-Money Laundering: The 18-Month Clock for African Banks Has Started
+EXECUTE: stamped 26 post document(s) with language "en" in blog_posts.
+Remaining without a language field in blog_posts: 0
