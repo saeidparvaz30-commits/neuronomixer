@@ -1,8 +1,8 @@
 ---
 phase: 3
 slug: translation-pipeline
-status: draft
-nyquist_compliant: false
+status: approved
+nyquist_compliant: true
 wave_0_complete: false
 created: 2026-08-22
 ---
@@ -36,9 +36,11 @@ created: 2026-08-22
 
 ## Per-Task Verification Map
 
+**Superseded by per-plan `<verify>` blocks.** All 10 plans (03-01..03-10) carry a real `<automated>` verify command on every auto task (verified by plan checker 2026-08-22: sampling continuity holds, no watch-mode flags, no 3 consecutive tasks without automated verify). The authoritative per-task map lives in each plan's `<verify>` and `<acceptance_criteria>` blocks; this table is intentionally not duplicated here.
+
 | Task ID | Plan | Wave | Requirement | Threat Ref | Secure Behavior | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|------------|-----------------|-----------|-------------------|-------------|--------|
-| (filled by planner) | | | PIPE-01, PIPE-02 | | | check script | | | ⬜ pending |
+| see per-plan verify blocks | 03-01..03-10 | 1-6 | PIPE-01, PIPE-02 | per-plan threat_model | per-plan | check script | per-plan `<automated>` | ✅ | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -64,11 +66,11 @@ created: 2026-08-22
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 120s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references (03-01: lockfile repair + env preflight)
+- [x] No watch-mode flags
+- [x] Feedback latency < 120s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** approved 2026-08-22 (plan checker pass: 0 blockers, 4 hygiene warnings addressed)

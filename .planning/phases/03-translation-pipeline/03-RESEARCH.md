@@ -1092,22 +1092,22 @@ ASVS Level 1. This is a developer-operated CLI with no HTTP surface, no user inp
 | A7 | The registry state on the day Wave 0 runs still yields the same 4-package lock delta | Wave 0 | A larger delta means a framework moved. Mitigation is step 2 of the procedure: diff and stop if `next-sanity`, `sanity`, `next`, or `react` moved. |
 | A8 | `custom_id` accepts a 72-character slug-derived string | Pattern 3 | Trivially falsifiable at batch-create time; fall back to a short hash if rejected. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **In-body reader-visible text that is not `span.text`: tables, image alt, video captions.**
+1. **In-body reader-visible text that is not `span.text`: tables, image alt, video captions.** RESOLVED: CONTEXT.md D-13 (Saeid 2026-08-22) — walker extended to table cells, image/mainImage alt, video caption.
    - What we know: production has 10 `table` blocks with English `cells[]` strings, 61 `image.alt` strings (some 200+ characters of descriptive prose), 7 `mainImage.alt`, and 2 `video.caption`. All are reader-visible. `pt::text(body)` includes table text, so the glossary corpus already covers it. The success criterion says "only `span.text` translated"; D-07 enumerates title, description, and SEO fields but is silent on these.
    - What is unclear: whether Saeid wants a Farsi post shipping with an English comparison table and English alt text, or whether the walker should be extended.
    - Recommendation: **ask Saeid before planning task boundaries.** Recommended answer is to extend the walker to a small, explicit, code-enumerated list of translatable string paths (`table.rows[].cells[]`, `image.alt`, `video.caption`, `mainImage.alt`), each index-keyed and each still covered by the structural fingerprint gate, so the "code decides what is translatable" property is preserved. That is roughly 20 extra lines and it turns a visible defect into a non-issue. If Saeid prefers strict criterion compliance for this phase, the tables and alt text should be listed explicitly in `translationNotes` as known untranslated regions so a reviewer is not surprised.
 
-2. **`--dry-run` versus the Phase 2 `--execute` default.**
+2. **`--dry-run` versus the Phase 2 `--execute` default.** RESOLVED: CONTEXT.md D-14 — dry-run default, `--execute` writes, `--dry-run` kept as alias.
    - What we know: D-09 lists `--dry-run` as a flag, which implies writing is the default. `scripts/migrate-post-language.ts` states the opposite convention in its header, and D-09 also says to mirror that script.
    - Recommendation: keep dry-run as the **default**, accept `--dry-run` as an explicit no-op alias for readability, and require `--execute` to write. This satisfies both halves of D-09. Confirm in one line during planning.
 
-3. **`featured` and `heroOrder` on Farsi drafts.**
+3. **`featured` and `heroOrder` on Farsi drafts.** RESOLVED: CONTEXT.md D-15 — omitted entirely; Phase 4 decides Farsi hero curation.
    - What we know: `homePageQuery` selects hero posts by `defined(heroOrder)` and is now filtered to `EN_LANGUAGE`, so a Farsi document with a `heroOrder` cannot reach the English homepage today. But Phase 4 adds Farsi routes and will likely mirror those queries.
    - Recommendation: omit `featured` and `heroOrder` from the created draft entirely (rather than copying them), and let Phase 4 decide Farsi hero curation deliberately. Low cost now, avoids a surprise later.
 
-4. **Whether the verify pass needs `output_config.effort`.**
+4. **Whether the verify pass needs `output_config.effort`.** RESOLVED: Claude's Discretion per CONTEXT — left unset (defaults to high); settled in 03-08 Task 1.
    - What we know: `OutputConfig.effort` accepts `low | medium | high | max` in SDK 0.80.0, and Sonnet 5 additionally supports `xhigh`. The default is `high`.
    - Recommendation: leave it unset (defaults to `high`) for the verify pass, and consider `low` for the translate pass if cost matters, since translation is mechanical. Measure before tuning. Claude's discretion per CONTEXT.
 
