@@ -5,16 +5,16 @@ milestone_name: milestone
 current_phase: 3
 current_phase_name: Translation Pipeline
 status: executing
-stopped_at: Completed 03-03-PLAN.md
-last_updated: "2026-08-22T21:00:47.507Z"
+stopped_at: Completed 03-07-PLAN.md
+last_updated: "2026-08-22T21:13:49.680Z"
 last_activity: 2026-08-22
-last_activity_desc: "Completed plan 03-03 (Portable Text walker + structural fingerprint gate + translationNotes formatter, proven offline with 6/6 mutations detected and live byte identical: dev 11/11, prod 26/26)"
+last_activity_desc: "Completed plan 03-07 (translate-posts.ts CLI: dry-run-default flag surface, raw-perspective selection 11 dev / 26 prod with 0 stale, translatable enumeration, $1.52 backlog estimate, run-state artifact and a server-validated write-scope probe; zero Farsi documents written on either dataset)"
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 17
-  completed_plans: 10
-  percent: 59
+  completed_plans: 11
+  percent: 65
 ---
 
 # Project State
@@ -29,11 +29,11 @@ See: .planning/PROJECT.md (updated 2026-08-11)
 ## Current Position
 
 Phase: 3 (Translation Pipeline) — EXECUTING
-Plan: 4 of 10
+Plan: 4 of 10 (03-01, 03-02, 03-03 and 03-07 have SUMMARYs; 03-04 is the next unexecuted plan by number)
 Status: Ready to execute
-Last activity: 2026-08-22 — Completed plan 03-03 (Portable Text walker + structural fingerprint gate + translationNotes formatter, proven offline with 6/6 mutations detected and live byte identical: dev 11/11, prod 26/26)
+Last activity: 2026-08-22 — Completed plan 03-07 (translate-posts.ts CLI: dry-run-default flag surface, raw-perspective selection 11 dev / 26 prod with 0 stale, translatable enumeration, $1.52 backlog estimate, run-state artifact and a server-validated write-scope probe; zero Farsi documents written on either dataset)
 
-Progress: [██████░░░░] 59% (10/17 plans)
+Progress: [███████░░░] 65% (11/17 plans)
 
 ## Performance Metrics
 
@@ -58,6 +58,7 @@ Progress: [██████░░░░] 59% (10/17 plans)
 | Phase 03 P01 | 10 min | 3 tasks | 4 files |
 | Phase 03 P02 | 15 min | 3 tasks | 3 files |
 | Phase 03 P03 | 25 min | 3 tasks | 3 files |
+| Phase 03 P07 | 15 min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -92,6 +93,9 @@ Decisions are logged in PROJECT.md Key Decisions table. Recent decisions affecti
 - [Phase 03]: structuralFingerprint is derived from applyTranslatables rather than written as an independent JSON replacer, so the D-05 tier 1 gate blanks exactly the slots the walker owns and compares every other leaf verbatim (plan 03-03, 2026-08-22)
 - [Phase 03]: applyTranslatables compares counts BEFORE writing, so a short or long model response never leaves a half-translated body in memory (plan 03-03, 2026-08-22)
 - [Phase 03]: the translation check's --post-run flag is a reserved stub that exits 1 before the offline suite, so it can never print ALL PASS for assertions plan 03-09 has not written yet (plan 03-03, 2026-08-22)
+- [Phase 03]: the run-state artifact carries a SHA-256 digest of the structural fingerprint, not the fingerprint itself; equality is the only property 03-08 needs and the raw value is hundreds of KB of document structure in a version-controlled directory (plan 03-07, 2026-08-22)
+- [Phase 03]: the printed header is asserted against client.config().dataset before the first read, so the operator read-back cannot drift from the content lake actually being talked to (plan 03-07, 2026-08-22)
+- [Phase 03]: the multi-post brake is evaluated on the resolved working set, and a non-stale Farsi sibling is promoted into that set only when --slug accompanies --retranslate, because doing it across the backlog would rewrite every Farsi draft (plan 03-07, 2026-08-22)
 
 ### Pending Todos
 
@@ -125,8 +129,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-22T21:00:47.499Z
-Stopped at: Completed 03-03-PLAN.md
+Last session: 2026-08-22T21:13:33.070Z
+Stopped at: Completed 03-07-PLAN.md
 Resume file: None
 
 Outstanding human check (needs Saeid's Chrome against `npx next start`): `/fa` styled and right to left, `/` unchanged with nav and footer, a nonsense URL showing the branded 404. All four items are already green under automated assertion.
