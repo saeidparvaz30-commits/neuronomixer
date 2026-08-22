@@ -5,16 +5,16 @@ milestone_name: milestone
 current_phase: 3
 current_phase_name: Translation Pipeline
 status: executing
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-08-22T20:40:20.376Z"
+stopped_at: Completed 03-02-PLAN.md
+last_updated: "2026-08-22T20:47:34.058Z"
 last_activity: 2026-08-22
-last_activity_desc: Completed plan 03-01 (Wave 0 preconditions)
+last_activity_desc: "Completed plan 03-02 (sourceUpdatedAt field + pipeline selection queries, proven live on both datasets)"
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 17
-  completed_plans: 8
-  percent: 47
+  completed_plans: 9
+  percent: 53
 ---
 
 # Project State
@@ -29,11 +29,11 @@ See: .planning/PROJECT.md (updated 2026-08-11)
 ## Current Position
 
 Phase: 3 (Translation Pipeline) — EXECUTING
-Plan: 2 of 10
+Plan: 3 of 10
 Status: Ready to execute
-Last activity: 2026-08-22 — Completed plan 03-01 (Wave 0 preconditions: npm ci repaired, env preflight recorded)
+Last activity: 2026-08-22 — Completed plan 03-02 (postType field 18 `sourceUpdatedAt`, `translationCandidatesQuery` + `translationStaleQuery`, proven live: dev 11 candidates / 0 stale, prod 26 / 0)
 
-Progress: [█████░░░░░] 47% (8/17 plans)
+Progress: [█████░░░░░] 53% (9/17 plans)
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Progress: [█████░░░░░] 47% (8/17 plans)
 | Phase 02 P02 | 9 min | 3 tasks | 2 files |
 | Phase 02 P03 | 6 min | 3 tasks | 4 files |
 | Phase 03 P01 | 10 min | 3 tasks | 4 files |
+| Phase 03 P02 | 15 min | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,9 @@ Decisions are logged in PROJECT.md Key Decisions table. Recent decisions affecti
 - [Phase 03]: STATE.md's npm ci diagnosis is superseded. The root manifest was never out of sync; the failure was four transitive version mismatches, repaired by npm install --package-lock-only (plan 03-01, 2026-08-22)
 - [Phase 03]: env-preflight.check.ts rows carry three states. FAIL means this phase's plumbing is broken and exits 1; BLOCKER means a later plan is gated on a human action and exits 0 (plan 03-01, 2026-08-22)
 - [Phase 03]: CLI TokenUsage writes are awaited and never swallowed, and resolveAdminUserId throws, so a missing ADMIN aborts a run before paid spend rather than losing the record after (plan 03-01, 2026-08-22)
+- [Phase 03]: D-08 staleness is exact via a stored sourceUpdatedAt on the Farsi document, not a comparison of the two documents' _updatedAt values, which Saeid editing the Farsi draft would invert (plan 03-02, 2026-08-22)
+- [Phase 03]: One new schema field, not two. postType goes 17 to 18; the Farsi draft's own _createdAt answers when it was translated, so no translatedAt companion (plan 03-02, 2026-08-22)
+- [Phase 03]: The two pipeline queries stay OUT of language-filter.check.ts's nine-query QUERIES array. Its per-query counts are CONTENT-02's public read contract; a script-side read gets its own assertion section L instead (plan 03-02, 2026-08-22)
 
 ### Pending Todos
 
@@ -116,8 +120,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-22T20:40:11.707Z
-Stopped at: Completed 03-01-PLAN.md
+Last session: 2026-08-22T20:47:34.050Z
+Stopped at: Completed 03-02-PLAN.md
 Resume file: None
 
 Outstanding human check (needs Saeid's Chrome against `npx next start`): `/fa` styled and right to left, `/` unchanged with nav and footer, a nonsense URL showing the branded 404. All four items are already green under automated assertion.
