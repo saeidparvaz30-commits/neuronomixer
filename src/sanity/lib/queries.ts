@@ -182,3 +182,75 @@ export const authorReviewPostsQuery = `*[_type == "post" && ${EN_LANGUAGE} && au
         _type == "video" => { ..., "fileUrl": file.asset->url }
       }
     }`;
+
+// ── Pipeline reads (PIPE-01) ─────────────────────────────────────────────────
+//
+// The two queries below are the translation pipeline's SCRIPT-side reads. They
+// are deliberately NOT part of the public read path: no server component, route
+// handler or metadata route may consume them, and they are deliberately absent
+// from the nine-query QUERIES array in scripts/checks/language-filter.check.ts,
+// whose expected counts encode CONTENT-02's public read contract. A script-side
+// read is a different surface, and they get their own assertion section there.
+//
+// They live in this module rather than in scripts/ because this is one of the
+// three files under src/ allowed to carry the `language ==` text, and because
+// the English source predicate they need is EN_LANGUAGE itself, interpolated
+// rather than retyped.
+//
+// Both must be run through a client with `perspective: "raw"`. Farsi siblings
+// exist only as drafts, so under the default published perspective the sibling
+// count is always 0 and every post looks untranslated on every run.
+//
+// $slug is a GROQ parameter and never a template interpolation: its value comes
+// off the command line (T-03-09). Pass `{ slug: null }` to select every post.
+
+/** Approved English posts that have no Farsi sibling yet. */
+export const translationCandidatesQuery = `*[
+  _type == "post"
+  && !(_id in path("drafts.**"))
+  && ${EN_LANGUAGE}
+  && ${STATUS_APPROVED}
+  && (!defined($slug) || slug.current == $slug)
+  && count(*[_type == "post" && language == "fa" && translationOf._ref in [^._id, "drafts." + ^._id]]) == 0
+]{
+  _id,
+  _updatedAt,
+  title,
+  description,
+  metaDescription,
+  "slug": slug.current,
+  publishedAt,
+  category,
+  author,
+  mainImage,
+  body
+}`;
+
+// The D-08 reporting surface. Identical filter to the candidates query with the
+// sibling test inverted, so a run can LIST siblings whose source has moved on.
+// Stale siblings are reported and never touched: retranslation is an explicit,
+// separate action, not something a select query decides.
+export const translationStaleQuery = `*[
+  _type == "post"
+  && !(_id in path("drafts.**"))
+  && ${EN_LANGUAGE}
+  && ${STATUS_APPROVED}
+  && (!defined($slug) || slug.current == $slug)
+  && count(*[_type == "post" && language == "fa" && translationOf._ref in [^._id, "drafts." + ^._id]]) > 0
+]{
+  _id,
+  _updatedAt,
+  title,
+  description,
+  metaDescription,
+  "slug": slug.current,
+  publishedAt,
+  category,
+  author,
+  mainImage,
+  body,
+  "sibling": *[_type == "post" && language == "fa" && translationOf._ref in [^._id, "drafts." + ^._id]][0]{
+    _id,
+    sourceUpdatedAt
+  }
+}`;
