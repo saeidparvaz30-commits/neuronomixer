@@ -109,12 +109,12 @@ Plans:
   5. Token spend for every run is recorded through the existing `TokenUsage` model.
 
 **Implementation notes (fixed by design):** Claude Sonnet 5 (`claude-sonnet-5`) via the Batch API using the existing `@anthropic-ai/sdk`; results keyed by `custom_id` (batch results arrive in arbitrary order). Success gate for the phase: one real post translated end-to-end, structurally intact.
-**Plans**: 10 plans
+**Plans**: 1/10 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 03-01-PLAN.md — Wave 0 gates: repair `package-lock.json` until `npm ci --dry-run` is green (D-11 step 1), add `scripts/lib/token-usage.ts` with ADMIN resolution and awaited spend recording, author and run an env preflight check answering research assumptions A2, A3 and A4
+- [x] 03-01-PLAN.md — Wave 0 gates: repair `package-lock.json` until `npm ci --dry-run` is green (D-11 step 1), add `scripts/lib/token-usage.ts` with ADMIN resolution and awaited spend recording, author and run an env preflight check answering research assumptions A2, A3 and A4
 - [ ] 03-02-PLAN.md — Sanity surfaces: add `sourceUpdatedAt` to `postType` and move the field-count tripwire 17 to 18, add `translationCandidatesQuery` and `translationStaleQuery` to the one allowlisted GROQ module, assert both offline and live
 - [ ] 03-03-PLAN.md — The correctness core: `portable-text-walk.ts` (D-13 enumeration, index-keyed apply, structural fingerprint), `translation-notes.ts` (D-06), and `translation.check.ts` with six negative fingerprint fixtures plus a read-only live round trip over every real post
 
@@ -200,6 +200,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Route Groups | 2/2 | Complete    | 2026-08-16 |
 | 2. Content Model | 5/5 | Complete    | 2026-08-21 |
-| 3. Translation Pipeline | 0/TBD | Not started | - |
+| 3. Translation Pipeline | 1/10 | In Progress|  |
 | 4. Farsi Routes and Chrome | 0/TBD | Not started | - |
 | 5. SEO and Ship | 0/TBD | Not started | - |

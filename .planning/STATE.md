@@ -4,17 +4,17 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 3
 current_phase_name: Translation Pipeline
-status: paused
-stopped_at: Phase 3 context gathered
-last_updated: "2026-08-22T18:26:22.830Z"
-last_activity: 2026-08-21
-last_activity_desc: Phase 02 complete, transitioned to Phase 3
+status: executing
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-08-22T20:40:20.376Z"
+last_activity: 2026-08-22
+last_activity_desc: Completed plan 03-01 (Wave 0 preconditions)
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 7
-  completed_plans: 7
-  percent: 40
+  total_plans: 17
+  completed_plans: 8
+  percent: 47
 ---
 
 # Project State
@@ -24,16 +24,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-08-11)
 
 **Core value:** Every published claim is correct and checkable; anything that puts unverified content under Saeid's byline is a failure regardless of reach.
-**Current focus:** Phase 2 — Content Model
+**Current focus:** Phase 3 — Translation Pipeline
 
 ## Current Position
 
-Phase: 3 — Translation Pipeline
-Plan: Not started
-Status: Phase 2 mid-execution: waves 1-3 complete (queries extracted, EN_LANGUAGE filter live at 12 positions, schema fields + writer stamps in). Plan 02-04 PAUSED at Task 3 checkpoint: production migration awaiting Saeid's execute-now/defer decision. Prod dry-run verified this session: dataset blog_posts, 26 docs, setIfMissing, token write scope proven, nothing written. Resume: spawn continuation for plan 02-04 with the decision, then wave 5 (Studio split). Re-run command if executing manually: npx tsx --env-file=.env.vercel-prod scripts/migrate-post-language.ts --execute (then scripts/checks/language-filter.check.ts --post-migration --live against prod). Wave 5 (02-05) not started.
-Last activity: 2026-08-21 — Phase 02 complete, transitioned to Phase 3
+Phase: 3 (Translation Pipeline) — EXECUTING
+Plan: 2 of 10
+Status: Ready to execute
+Last activity: 2026-08-22 — Completed plan 03-01 (Wave 0 preconditions: npm ci repaired, env preflight recorded)
 
-Progress: [##########] 100%
+Progress: [█████░░░░░] 47% (8/17 plans)
 
 ## Performance Metrics
 
@@ -55,6 +55,7 @@ Progress: [##########] 100%
 | Phase 02 P01 | 42 min | 3 tasks | 9 files |
 | Phase 02 P02 | 9 min | 3 tasks | 2 files |
 | Phase 02 P03 | 6 min | 3 tasks | 4 files |
+| Phase 03 P01 | 10 min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,9 @@ Decisions are logged in PROJECT.md Key Decisions table. Recent decisions affecti
 - [Phase 02]: postsByAuthorIdQuery and authorReviewPostsQuery stay separate despite identical filters; their projections differ and merging would change a caller's output shape (plan 02-01, 2026-08-20)
 - [Phase 02]: Studio chrome is a separate surface from the public read path: assertion H's allowlist names postType.ts (D-07 picker resolver) and will name structure.ts (02-05), rather than the GROQ being reworded to dodge a text check. CONTENT-02 governs the public read predicate; a picker resolver constrains an editor's search, never a read (plan 02-03, 2026-08-20)
 - [Phase 02]: postType's field count is asserted at 17 as a deliberate tripwire, so a later schema addition fails at the check rather than drifting silently (plan 02-03, 2026-08-20)
+- [Phase 03]: STATE.md's npm ci diagnosis is superseded. The root manifest was never out of sync; the failure was four transitive version mismatches, repaired by npm install --package-lock-only (plan 03-01, 2026-08-22)
+- [Phase 03]: env-preflight.check.ts rows carry three states. FAIL means this phase's plumbing is broken and exits 1; BLOCKER means a later plan is gated on a human action and exits 0 (plan 03-01, 2026-08-22)
+- [Phase 03]: CLI TokenUsage writes are awaited and never swallowed, and resolveAdminUserId throws, so a missing ADMIN aborts a run before paid spend rather than losing the record after (plan 03-01, 2026-08-22)
 
 ### Pending Todos
 
@@ -86,7 +90,10 @@ None yet.
 
 ### Blockers/Concerns
 
-- **OPEN: `package-lock.json` is out of sync with `package.json`, so `npm ci` cannot run.** Predates this phase and is present at HEAD as well as in the working copy. `@sanity/visual-editing@3.0.5` requires `@sanity/client@^7.8.2`, its dependency edge is unrecorded in the lock, and the nested lock entry pins `@sanity/client@6.29.1`; npm resolves 7.26.2 from the registry and rejects the lock. Repair needs a real `npm install`, which rewrites the tracked lockfile, so it was deliberately deferred out of plan 01-01. Until it is fixed, `npm ci` is unavailable locally, in CI and on Vercel. Local `node_modules` currently comes from `npm install --no-package-lock`.
+- **BLOCKER (blocks plan 03-05): `ANTHROPIC_API_KEY` is absent from all three env files** (`.env`, `.env.local`, `.env.vercel-prod`). The existing Claude routes take it from the Vercel project environment, which is why nothing in the repo ever needed it locally. Saeid must add it to `.env.local` (dev rehearsal) and `.env.vercel-prod` (proof run) before the Batch API run. Nothing between here and 03-05 is affected. Recorded with live evidence in `.planning/phases/03-translation-pipeline/artifacts/preflight.md` (RESEARCH assumption A2). Re-check any time with `npx tsx --env-file .env.local scripts/checks/env-preflight.check.ts`.
+- **RESOLVED 2026-08-22 (plan 03-01, commit eb58469): `package-lock.json` out of sync, `npm ci` broken.** The recorded `@sanity/visual-editing@3.0.5` diagnosis was **wrong** and is superseded: that package does not depend on `@sanity/client` at all, and `package.json` was never out of sync with the lock's root maps. The real failure was four transitive version mismatches (`@sanity/client` 7.23.0 to 7.26.2, `@sanity/eventsource` 5.0.2 to 5.0.4, `get-it` 8.8.0 to 8.8.3, `nanoid` 3.3.11 to 3.3.18). Repaired with `npm install --package-lock-only` (never a bare `npm install`, which would reify the `--no-package-lock` `node_modules`). Delta was those four bumps plus six `@tailwindcss/oxide-wasm32-wasi` wasm shim entries, zero removals, and no movement in `next`, `react`, `next-sanity`, `sanity`, `prisma` or `@anthropic-ai/sdk`. Verified: `npm ci --dry-run` exit 0, `npx tsc --noEmit` 0, `npx next build` 0, route-smoke 28/28. `npm ci` is usable again locally, in CI and on Vercel, so the D-11 push-and-deploy gate is unblocked.
+- **RESOLVED 2026-08-22 (plan 03-01): the uncommitted `package-lock.json` working-tree drift.** It was a partial repair of the above, not unrelated noise, and was absorbed into the repair commit.
+- **ANSWERED 2026-08-22 (plan 03-01): dev DB parity for the Phase 3 spend path.** The dev database has the `TokenUsage` table and at least one `ADMIN` user, and `.env.vercel-prod` carries a reachable `DATABASE_URL` (RESEARCH assumptions A4 and A3, both TRUE). Both pre-authorised fallbacks are unused: the dev rehearsal can exercise the real spend path, and the prod proof run can satisfy success criterion 5 directly.
 - **OPEN (low priority): `/cv/[slug]`'s `generateStaticParams` has no try/catch fallback**, so an unreachable database fails the entire build. `sitemap.ts` already guards its build-time query this way. Surfaced when the dev DB was paused on 2026-08-16.
 - Note: `experimental.globalNotFound` is now enabled in `next.config.ts`. It is an experimental Next.js flag, so any Next.js upgrade should re-verify the branded 404 before deploy.
 - Resolved during plan 01-01 and recorded in `01-01-SUMMARY.md`: the hybrid npm/pnpm `node_modules` conflict, the paused Supabase dev project, and the global 404 regression (OQ-1).
@@ -95,7 +102,7 @@ None yet.
 - Phase 3 first run must be a dry-run to a scratch dataset.
 - Vercel previews sit behind SSO with no bypass secret — browser smoke rides Saeid's authenticated Chrome, not Playwright.
 - `content/fa-glossary.json` needs Saeid's correction pass after the drafted first pass (Phase 3 input).
-- OPEN (low priority, pre-existing): package-lock.json carries an uncommitted working-tree change (@sanity/client 7.23.0 to 7.24.0, @sanity/eventsource 5.0.2 to 5.0.4) unrelated to phase 2. Plan 02-01 left it alone per its scope boundary and proved manifest byte-stability via blob hash instead. Adjacent to the OPEN npm ci blocker.
+- ~~OPEN (low priority, pre-existing): package-lock.json carries an uncommitted working-tree change~~ RESOLVED 2026-08-22 in plan 03-01 (eb58469); see the lockfile entry above.
 - Handoff for plan 02-02: this repo checks out CRLF on Windows, so any git-fidelity check must normalise line endings (.replace(/\r\n/g, chr(10))) on both sides before diffing git show output against the working copy. Plan 02-01 pre-verified 9/9 byte fidelity against ref 293616f with that normalisation.
 - Phase 3 invariant: Farsi documents must never carry status scheduled. api/cron/publish-scheduled is unfiltered by D-02, patches scheduled posts to approved and mails every subscriber with an English subject. Nothing in the schema enforces it; the pipeline must.
 
@@ -109,8 +116,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-22T18:26:22.823Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-translation-pipeline/03-CONTEXT.md
+Last session: 2026-08-22T20:40:11.707Z
+Stopped at: Completed 03-01-PLAN.md
+Resume file: None
 
 Outstanding human check (needs Saeid's Chrome against `npx next start`): `/fa` styled and right to left, `/` unchanged with nav and footer, a nonsense URL showing the branded 404. All four items are already green under automated assertion.
