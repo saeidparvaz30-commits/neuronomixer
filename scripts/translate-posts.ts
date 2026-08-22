@@ -35,6 +35,10 @@
 
 import { createClient } from "@sanity/client";
 
+// Relative paths, not the `@/` alias: the scripts tree does not use it.
+import type { Body } from "./lib/portable-text-walk";
+import { translationCandidatesQuery, translationStaleQuery } from "../src/sanity/lib/queries";
+
 const PRODUCTION_DATASET = "blog_posts";
 
 // ── Flags ────────────────────────────────────────────────────────────────────
@@ -92,6 +96,66 @@ const client = createClient({
   perspective: "raw",
 });
 
+// ── Selection ────────────────────────────────────────────────────────────────
+// Local types declared next to the fetch rather than in a shared module, matching
+// scripts/migrate-post-language.ts. Each field below is in the query's projection.
+
+/** One approved English post, exactly as `translationCandidatesQuery` projects it. */
+type SourcePost = {
+  _id: string;
+  _updatedAt: string;
+  title?: string;
+  description?: string;
+  metaDescription?: string;
+  slug?: string;
+  publishedAt?: string;
+  category?: unknown;
+  author?: unknown;
+  mainImage?: { alt?: string; [key: string]: unknown };
+  body?: Body;
+};
+
+/** A source post that already has a Farsi sibling, as `translationStaleQuery` projects it. */
+type StaleRow = SourcePost & {
+  sibling: { _id: string; sourceUpdatedAt: string | null } | null;
+};
+
+/** Why a post is in the working set, which decides how the plan block labels it. */
+type WorkItem = {
+  post: SourcePost;
+  reason: "new" | "stale" | "forced";
+  existingSiblingId: string | null;
+};
+
+/**
+ * D-08 staleness, decided by the source timestamp the sibling recorded at translation time
+ * and never by comparing the two documents' `_updatedAt` values, which Saeid editing the
+ * Farsi draft would invert into "permanently fresh".
+ *
+ * A sibling with no recorded `sourceUpdatedAt` counts as stale: that is a sibling written
+ * before the field existed, and unknown has to read as stale rather than as fresh.
+ */
+function isStale(row: StaleRow): boolean {
+  const recorded = row.sibling?.sourceUpdatedAt ?? null;
+  if (recorded === null) return true;
+  return Date.parse(row._updatedAt) > Date.parse(recorded);
+}
+
+function describe(post: SourcePost): string {
+  return `${post.slug ?? "(no slug)"}  ${post._id}`;
+}
+
+/**
+ * Why a --slug run can come up empty. Printed on both empty paths, because an operator who
+ * typed a slug and got nothing needs the same three answers either way.
+ */
+const SLUG_MISS_REASONS =
+  "A --slug run selects nothing for one of three reasons:\n" +
+  '  1. the post is not approved: the pipeline reads status "approved" only\n' +
+  '  2. the post is not English: it must carry no language field, or language "en"\n' +
+  "  3. the post already has a Farsi sibling that is not stale, and --retranslate was not passed\n" +
+  "  (a slug that exists in no document at all in this dataset lands here too)";
+
 let databaseWasOpened = false;
 
 /**
@@ -144,6 +208,109 @@ async function run(): Promise<void> {
 
   if (adminUserId !== null) {
     console.log("ADMIN user resolved: token spend can be recorded. The id itself is not printed.");
+  }
+
+  // The slug always travels as the GROQ parameter $slug. It never reaches the query as a
+  // template interpolation, so a value off the command line cannot become query syntax
+  // (T-03-09). Passing null selects every post, which is what the queries' !defined($slug)
+  // branch is for.
+  const candidates = await client.fetch<SourcePost[]>(translationCandidatesQuery, {
+    slug: slugArg,
+  });
+  const siblingRows = await client.fetch<StaleRow[]>(translationStaleQuery, {
+    slug: slugArg,
+  });
+
+  const staleRows = siblingRows.filter((row) => isStale(row));
+  const freshRows = siblingRows.filter((row) => !isStale(row));
+
+  if (slugArg !== null && candidates.length === 0 && siblingRows.length === 0) {
+    console.error(`--slug ${slugArg} matched no post in ${dataset}.`);
+    console.error(SLUG_MISS_REASONS);
+    process.exit(1);
+  }
+
+  console.log(
+    `plan: ${candidates.length} candidate(s) with no Farsi sibling, ${staleRows.length} stale sibling(s), ${freshRows.length} fresh sibling(s)`,
+  );
+
+  if (staleRows.length > 0) {
+    console.log("stale sibling(s), reported and not touched:");
+    for (const row of staleRows) {
+      console.log(
+        `  ${row.slug ?? "(no slug)"}  source _updatedAt=${row._updatedAt}` +
+          `  sibling sourceUpdatedAt=${row.sibling?.sourceUpdatedAt ?? "(none recorded)"}` +
+          `  sibling _id=${row.sibling?._id ?? "(none)"}`,
+      );
+    }
+    if (!retranslate) {
+      console.log(
+        "stale siblings were reported and NOT retranslated. --retranslate is the only flag that changes that, because a hand-edited Farsi draft is never silently clobbered (D-08).",
+      );
+    }
+  }
+
+  const workingSet: WorkItem[] = candidates.map((post) => ({
+    post,
+    reason: "new" as const,
+    existingSiblingId: null,
+  }));
+
+  if (retranslate) {
+    for (const row of staleRows) {
+      workingSet.push({ post: row, reason: "stale", existingSiblingId: row.sibling?._id ?? null });
+    }
+    // A deliberate single-post retranslation is a legitimate operation, so --slug with
+    // --retranslate may also select a sibling that is not stale. Only with --slug: doing
+    // the same across the backlog would rewrite every Farsi draft in the dataset, which is
+    // the exact outcome D-08 exists to prevent.
+    if (slugArg !== null) {
+      for (const row of freshRows) {
+        workingSet.push({
+          post: row,
+          reason: "forced",
+          existingSiblingId: row.sibling?._id ?? null,
+        });
+      }
+    }
+  }
+
+  console.log(`working set: ${workingSet.length} post(s)`);
+  for (const item of workingSet) {
+    if (item.reason === "new") {
+      console.log(`  ${describe(item.post)}`);
+    } else if (item.reason === "stale") {
+      console.log(
+        `  ${describe(item.post)}  RETRANSLATION, rewrites stale sibling ${item.existingSiblingId ?? "(unknown)"}`,
+      );
+    } else {
+      console.log(
+        `  ${describe(item.post)}  RETRANSLATION, rewrites sibling ${item.existingSiblingId ?? "(unknown)"} which is NOT stale, selected deliberately by --slug with --retranslate`,
+      );
+    }
+  }
+
+  if (workingSet.length === 0) {
+    if (slugArg !== null) {
+      console.log(
+        `nothing to translate for --slug ${slugArg}: it matched the pipeline queries but is not selectable as it stands.`,
+      );
+      console.log(SLUG_MISS_REASONS);
+    } else {
+      console.log(
+        `nothing to translate in ${dataset}: every approved English post already has a Farsi sibling that is not stale. A run that finds nothing to do is the D-08 idempotence property, not an error.`,
+      );
+    }
+    return;
+  }
+
+  // D-09 turned into a brake rather than decoration: --all is what an operator types to
+  // confirm they meant a multi-post paid run, and the list above is exactly what it buys.
+  if (execute && workingSet.length > 1 && !all) {
+    console.error(
+      `refusing to translate ${workingSet.length} posts under --execute without --all. Re-run with --all to confirm the multi-post run, or with --slug <value> to translate one post. Nothing was written.`,
+    );
+    process.exit(1);
   }
 }
 
