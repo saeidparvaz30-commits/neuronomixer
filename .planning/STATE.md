@@ -5,8 +5,8 @@ milestone_name: milestone
 current_phase: 3
 current_phase_name: Translation Pipeline
 status: paused
-stopped_at: "Day ended 2026-08-20 mid-phase-2: plan 02-04 at production-migration checkpoint (execute-now/defer pending), plan 02-05 not started"
-last_updated: "2026-08-21T18:22:24.529Z"
+stopped_at: Phase 3 context gathered
+last_updated: "2026-08-22T18:26:22.830Z"
 last_activity: 2026-08-21
 last_activity_desc: Phase 02 complete, transitioned to Phase 3
 progress:
@@ -109,8 +109,8 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-20T21:49:26.108Z
-Stopped at: Day ended 2026-08-20 mid-phase-2: plan 02-04 at production-migration checkpoint (execute-now/defer pending), plan 02-05 not started
-Resume file: .planning/phases/02-content-model/02-04-PLAN.md
+Last session: 2026-08-22T18:26:22.823Z
+Stopped at: Phase 3 context gathered
+Resume file: .planning/phases/03-translation-pipeline/03-CONTEXT.md
 
 Outstanding human check (needs Saeid's Chrome against `npx next start`): `/fa` styled and right to left, `/` unchanged with nav and footer, a nonsense URL showing the branded 404. All four items are already green under automated assertion.
