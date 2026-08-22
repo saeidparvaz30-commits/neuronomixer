@@ -109,7 +109,36 @@ Plans:
   5. Token spend for every run is recorded through the existing `TokenUsage` model.
 
 **Implementation notes (fixed by design):** Claude Sonnet 5 (`claude-sonnet-5`) via the Batch API using the existing `@anthropic-ai/sdk`; results keyed by `custom_id` (batch results arrive in arbitrary order). Success gate for the phase: one real post translated end-to-end, structurally intact.
-**Plans**: TBD
+**Plans**: 10 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Wave 0 gates: repair `package-lock.json` until `npm ci --dry-run` is green (D-11 step 1), add `scripts/lib/token-usage.ts` with ADMIN resolution and awaited spend recording, author and run an env preflight check answering research assumptions A2, A3 and A4
+- [ ] 03-02-PLAN.md — Sanity surfaces: add `sourceUpdatedAt` to `postType` and move the field-count tripwire 17 to 18, add `translationCandidatesQuery` and `translationStaleQuery` to the one allowlisted GROQ module, assert both offline and live
+- [ ] 03-03-PLAN.md — The correctness core: `portable-text-walk.ts` (D-13 enumeration, index-keyed apply, structural fingerprint), `translation-notes.ts` (D-06), and `translation.check.ts` with six negative fingerprint fixtures plus a read-only live round trip over every real post
+
+**Wave 2** *(blocked on Wave 1)*
+
+- [ ] 03-04-PLAN.md — Deploy gate (D-11 step 2, Saeid-gated): assemble the pre-push evidence pack, take his explicit authorisation, push and deploy, then prove the Phase 2 English filter and the 18-field schema are live on production with zero Farsi documents present
+- [ ] 03-05-PLAN.md — Glossary first pass: deterministic corpus mining over `pt::text`, a Sonnet 5 classification pass into `content/fa-glossary.json` (60 to 100 entries, D-01/D-02/D-04), the HTML review companion, and a cache-stable serializer with offline assertions
+
+**Wave 3** *(blocked on Wave 2)*
+
+- [ ] 03-06-PLAN.md — Glossary correction gate (D-03, Saeid-gated): he reviews the HTML table, corrections are applied back to the JSON, the review page is regenerated and the file re-proven
+- [ ] 03-07-PLAN.md — CLI front half: flags (D-09/D-14), dataset-safe raw-perspective client with the loud header, selection plus D-08 staleness reporting, translatable extraction, cost estimate, and a dry-run path that proves write scope while persisting nothing
+
+**Wave 4** *(blocked on Wave 3)*
+
+- [ ] 03-08-PLAN.md — CLI paid half: Batch API translate pass with the cached glossary system block, the blocking structural gate, the structured-output verify pass, `translationNotes`, the draft write (D-07/D-12/D-15) and `TokenUsage` recording per post per pass
+
+**Wave 5** *(blocked on Wave 4)*
+
+- [ ] 03-09-PLAN.md — Dev rehearsal (D-10): implement the `--post-run` live assertions, run the pipeline against `blog_posts_dev` for the first time, then prove D-08 idempotence, staleness reporting and hand-edit protection
+
+**Wave 6** *(blocked on Wave 5)*
+
+- [ ] 03-10-PLAN.md — Production proof (D-11 step 3, Saeid-gated): one authorised real post translated end to end, verified by assertion, then Saeid's Studio walk and translation-quality judgement plus the six carried-over plan 02-05 Studio items
 
 ### Phase 4: Farsi Routes and Chrome
 
