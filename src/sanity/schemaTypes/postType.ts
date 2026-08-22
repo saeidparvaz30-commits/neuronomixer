@@ -163,6 +163,21 @@ export const postType = defineType({
       description:
         "Findings from the pipeline's verify pass. Written by the translation script, not by hand.",
     }),
+    defineField({
+      name: "sourceUpdatedAt",
+      title: "Source Updated At",
+      type: "datetime",
+      readOnly: true,
+      // Staleness is exact because it compares the source's revision against the
+      // revision this translation was made from, not against the Farsi document's
+      // own _updatedAt. Saeid reviewing and editing a Farsi draft bumps that
+      // timestamp, which would make a stale translation look permanently fresh.
+      // "When was this translated" is answered by the draft's own _createdAt, so
+      // no second field is needed (D-08, RESEARCH staleness option A).
+      hidden: ({ document }) => document?.language !== "fa",
+      description:
+        "The English source revision this translation was made from. Written by the translation script, not by hand.",
+    }),
   ],
   preview: {
     select: {

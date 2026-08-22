@@ -310,7 +310,15 @@ function optionsOf(field: Record<string, unknown>): Record<string, unknown> {
 
 // Deliberate tripwire. If a later phase adds a field to postType without updating
 // this number, the failure points at the check rather than at silent model drift.
-const EXPECTED_FIELD_COUNT = 17;
+//
+// 17 -> 18 in plan 03-02: `sourceUpdatedAt` (datetime, readOnly, hidden unless the
+// document is Farsi) records the English source revision a translation was made
+// from, which is what makes D-08 staleness exact. Comparing the two documents'
+// `_updatedAt` values instead would need no field, but Saeid reviewing and editing
+// a Farsi draft bumps that draft's `_updatedAt` and would make a stale translation
+// look permanently fresh. No companion `translatedAt` field was added: the draft's
+// own `_createdAt` already answers when it was translated.
+const EXPECTED_FIELD_COUNT = 18;
 assert.strictEqual(
   schemaFields.length,
   EXPECTED_FIELD_COUNT,
