@@ -35,6 +35,11 @@ Out of scope: Farsi routes/chrome (Phase 4), hreflang/sitemap/publishing (Phase 
 - **D-11:** Deploy gate folded in as WAVE 0 of this phase: (1) Simorgh repairs `package-lock.json` until `npm ci` is green, (2) Saeid gates push of main (~56 commits ahead) + prod deploy in-session, (3) only after the Phase-2 EN filter is live on prod and the prod build regenerated does the pipeline touch the production dataset. Phase ends proven end-to-end against prod (one real post translated, per success criteria).
 - **D-12 (carried from Phase 2 handoff, hard rule):** Farsi documents must NEVER carry `status: "scheduled"` — the unfiltered publish-scheduled cron would auto-approve and email subscribers in English. The pipeline must enforce this (drafts carry a safe status or none).
 
+### Post-research decisions (Saeid, 2026-08-22 — resolve RESEARCH.md open questions)
+- **D-13:** The walker translates a code-enumerated list of extra translatable string paths beyond `span.text`: table block `cells[]`, image `alt` (body images and `mainImage`), and video `caption`. Still index-keyed, still under the structural fingerprint gate. (Corpus ground truth: 10 English tables, 61 image alts, 2 video captions, zero code blocks.)
+- **D-14:** CLI default is DRY-RUN; writes require `--execute` (mirrors `migrate-post-language.ts`). `--dry-run` kept as a readability alias. This supersedes the D-09 wording that implied writes by default.
+- **D-15:** Farsi drafts OMIT `featured` / `heroOrder` entirely — Farsi hero/featured curation is a Phase 4 decision; no accidental homepage placement.
+
 ### Claude's Discretion
 - Batch chunking (whole backlog in one Batch API job vs chunks), polling cadence, and partial-failure resume strategy.
 - TokenUsage recording mechanics (which DB the script writes to and how it loads env — note `.env` = prod DB, `.env.local` = dev; follow existing script conventions).
