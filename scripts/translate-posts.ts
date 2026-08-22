@@ -33,13 +33,19 @@
  * No credential, connection string or other environment value is ever printed here.
  */
 
+import { createHash, randomUUID } from "node:crypto";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+
 import { createClient } from "@sanity/client";
 
 // Relative paths, not the `@/` alias: the scripts tree does not use it.
-import type { Body } from "./lib/portable-text-walk";
+import type { Body, Translatable } from "./lib/portable-text-walk";
+import { extractTranslatables, structuralFingerprint } from "./lib/portable-text-walk";
 import { translationCandidatesQuery, translationStaleQuery } from "../src/sanity/lib/queries";
 
 const PRODUCTION_DATASET = "blog_posts";
+const ARTIFACT_DIR = ".planning/phases/03-translation-pipeline/artifacts";
 
 // ── Flags ────────────────────────────────────────────────────────────────────
 // process.argv plus includes/indexOf, no argument-parsing library, matching
@@ -156,6 +162,108 @@ const SLUG_MISS_REASONS =
   "  3. the post already has a Farsi sibling that is not stale, and --retranslate was not passed\n" +
   "  (a slug that exists in no document at all in this dataset lands here too)";
 
+// ── Extraction and cost ──────────────────────────────────────────────────────
+
+/** One document-level translatable string. `label` is what the verify pass names it by. */
+type FieldItem = { label: string; text: string };
+
+/** Everything the pipeline needs about one post, computed before any model is involved. */
+type TranslationUnit = {
+  item: WorkItem;
+  bodyItems: Translatable[];
+  fieldItems: FieldItem[];
+  /**
+   * The D-05 tier 1 gate value, captured here and carried forward, so plan 03-08 compares
+   * the translated body against a fingerprint taken before any model saw the document.
+   */
+  sourceFingerprint: string;
+  translatableChars: number;
+};
+
+/**
+ * The document-level translatable strings, enumerated by code in a fixed order (D-07).
+ *
+ * Slug, category, author, publishedAt and the images themselves are carried over untouched:
+ * the slug is reused verbatim per the design spec, and a reference or an asset has no prose
+ * in it to translate. `mainImage.alt` does, so it is here, next to the body's image alts.
+ */
+function fieldItemsOf(post: SourcePost): FieldItem[] {
+  const items: FieldItem[] = [];
+  if (post.title) items.push({ label: "title", text: post.title });
+  if (post.description) items.push({ label: "description", text: post.description });
+  if (post.metaDescription) items.push({ label: "metaDescription", text: post.metaDescription });
+  if (typeof post.mainImage?.alt === "string" && post.mainImage.alt !== "") {
+    items.push({ label: "mainImage.alt", text: post.mainImage.alt });
+  }
+  return items;
+}
+
+function toUnit(item: WorkItem): TranslationUnit {
+  const body = item.post.body ?? [];
+  const bodyItems = extractTranslatables(body);
+  const fieldItems = fieldItemsOf(item.post);
+  const chars =
+    bodyItems.reduce((sum, t) => sum + t.text.length, 0) +
+    fieldItems.reduce((sum, f) => sum + f.text.length, 0);
+  return {
+    item,
+    bodyItems,
+    fieldItems,
+    sourceFingerprint: structuralFingerprint(body),
+    translatableChars: chars,
+  };
+}
+
+function countByKind(items: readonly Translatable[]): Record<Translatable["kind"], number> {
+  const counts: Record<Translatable["kind"], number> = { span: 0, alt: 0, caption: 0, cell: 0 };
+  for (const item of items) counts[item.kind] += 1;
+  return counts;
+}
+
+// Cost model. Every number below is an ASSUMPTION and is printed as one, because an
+// estimate that hides its inputs is a number nobody can argue with before spending money.
+// The Sonnet 5 intro rate is $2.00 / $10.00 per MTok and expires 2026-08-31, reverting to
+// $3.00 / $15.00. The batch surface halves whichever one applies.
+const INTRO_RATE_LAST_DAY = "2026-08-31";
+const BATCH_RATES = {
+  intro: { input: 1.0, output: 5.0 },
+  standard: { input: 1.5, output: 7.5 },
+} as const;
+/** English source, the usual rule of thumb. */
+const CHARS_PER_TOKEN = 4;
+/**
+ * Farsi output tokens per English input token. Persian tokenizes less densely than English,
+ * and this is deliberately set high so the printed figure reads as a ceiling, not a floor.
+ */
+const FARSI_OUTPUT_MULTIPLIER = 2;
+/** The cached glossary system block plus the per-request task framing, per request. */
+const REQUEST_OVERHEAD_TOKENS = 4000;
+/** The verify pass returns a compact findings object, not prose. */
+const VERIFY_OUTPUT_TOKENS = 600;
+
+type Estimate = { inputTokens: number; outputTokens: number };
+
+/**
+ * Both passes for one post: translate (source in, Farsi out) then verify (source plus the
+ * Farsi rendering in, a findings object out).
+ */
+function estimate(unit: TranslationUnit): Estimate {
+  const sourceTokens = Math.ceil(unit.translatableChars / CHARS_PER_TOKEN);
+  const farsiTokens = Math.ceil(sourceTokens * FARSI_OUTPUT_MULTIPLIER);
+  return {
+    inputTokens: sourceTokens + REQUEST_OVERHEAD_TOKENS + (sourceTokens + farsiTokens + REQUEST_OVERHEAD_TOKENS),
+    outputTokens: farsiTokens + VERIFY_OUTPUT_TOKENS,
+  };
+}
+
+function dollars(tokens: number, perMTok: number): number {
+  return (tokens / 1_000_000) * perMTok;
+}
+
+/** `Rule.warning(...).max(160)` on metaDescription, so a longer Farsi rendering shows a badge. */
+const META_DESCRIPTION_WARN_AT = 160;
+const META_DESCRIPTION_NOTE_AT = 140;
+
 let databaseWasOpened = false;
 
 /**
@@ -176,6 +284,94 @@ async function releaseDatabase(): Promise<void> {
   if (!databaseWasOpened) return;
   const { prisma } = await import("../src/lib/prisma");
   await prisma.$disconnect();
+}
+
+// ── Run state ────────────────────────────────────────────────────────────────
+
+/**
+ * A digest of the structural fingerprint rather than the fingerprint itself.
+ *
+ * The fingerprint is the whole body serialized with every translatable slot blanked, so for
+ * the production backlog it is hundreds of kilobytes of document structure, and this file
+ * lands in a version-controlled planning directory. Equality is the only thing plan 03-08
+ * asks of it, and a digest answers equality exactly. The full strings stay in memory, where
+ * a mismatch can still be diffed.
+ */
+function digest(value: string): string {
+  return createHash("sha256").update(value).digest("hex");
+}
+
+/** Ids, labels, counts and digests. No prose, no environment value, no credential. */
+type RunState = {
+  script: "translate-posts";
+  mode: "dry-run";
+  createdAt: string;
+  projectId: string;
+  dataset: string;
+  apiVersion: string;
+  flags: { slug: string | null; all: boolean; retranslate: boolean; resume: string | null };
+  adminResolved: boolean;
+  totals: {
+    posts: number;
+    bodyItems: number;
+    fieldItems: number;
+    translatableChars: number;
+    estimatedInputTokens: number;
+    estimatedOutputTokens: number;
+    estimatedCostUsd: number;
+  };
+  posts: Array<{
+    _id: string;
+    slug: string | null;
+    reason: WorkItem["reason"];
+    existingSiblingId: string | null;
+    bodyItemsByKind: Record<Translatable["kind"], number>;
+    bodyLabels: string[];
+    fieldLabels: string[];
+    translatableChars: number;
+    estimatedInputTokens: number;
+    estimatedOutputTokens: number;
+    sourceFingerprintSha256: string;
+  }>;
+};
+
+function writeRunState(state: RunState): string {
+  mkdirSync(ARTIFACT_DIR, { recursive: true });
+  // ISO 8601 with the colons swapped for dashes: `:` is not a legal Windows filename character.
+  const path = join(ARTIFACT_DIR, `${state.dataset}-${state.createdAt.replace(/:/g, "-")}.json`);
+  writeFileSync(path, `${JSON.stringify(state, null, 2)}\n`, "utf8");
+  return path;
+}
+
+/**
+ * The Farsi draft document as it will be shaped, with the English strings still in place.
+ *
+ * Used here only as the payload of the server-validated mutation that persists nothing, so
+ * the shape itself is what gets checked. Plan 03-08 swaps the translated strings in.
+ */
+function draftShell(post: SourcePost): { _id: string; _type: string; [key: string]: unknown } {
+  return {
+    // A `drafts.` id prefix is the whole of what makes a Sanity document a draft.
+    _id: `drafts.${randomUUID()}`,
+    _type: "post",
+    language: "fa",
+    translationOf: { _type: "reference", _ref: post._id },
+    // D-12: never "scheduled". api/cron/publish-scheduled is unfiltered by language, and it
+    // would patch a Farsi document to approved and mail every subscriber an English subject.
+    status: "draft",
+    title: post.title ?? "",
+    // The slug is reused verbatim per the design spec; the projection flattened it to a
+    // string, so the slug object has to be rebuilt here.
+    ...(post.slug === undefined ? {} : { slug: { _type: "slug", current: post.slug } }),
+    ...(post.description === undefined ? {} : { description: post.description }),
+    ...(post.metaDescription === undefined ? {} : { metaDescription: post.metaDescription }),
+    ...(post.category === undefined ? {} : { category: post.category }),
+    ...(post.author === undefined ? {} : { author: post.author }),
+    ...(post.mainImage === undefined ? {} : { mainImage: post.mainImage }),
+    ...(post.publishedAt === undefined ? {} : { publishedAt: post.publishedAt }),
+    body: post.body ?? [],
+    sourceUpdatedAt: post._updatedAt,
+  };
 }
 
 async function run(): Promise<void> {
@@ -312,6 +508,138 @@ async function run(): Promise<void> {
     );
     process.exit(1);
   }
+
+  // ── What each post actually costs to translate ─────────────────────────────
+  const units = workingSet.map((item) => toUnit(item));
+
+  const totals = { bodyItems: 0, fieldItems: 0, chars: 0, inputTokens: 0, outputTokens: 0 };
+  const metaNotes: string[] = [];
+
+  console.log("translatable text per post:");
+  for (const unit of units) {
+    const kinds = countByKind(unit.bodyItems);
+    const est = estimate(unit);
+    totals.bodyItems += unit.bodyItems.length;
+    totals.fieldItems += unit.fieldItems.length;
+    totals.chars += unit.translatableChars;
+    totals.inputTokens += est.inputTokens;
+    totals.outputTokens += est.outputTokens;
+
+    console.log(
+      `  ${unit.item.post.slug ?? "(no slug)"}` +
+        `  body ${unit.bodyItems.length} (span ${kinds.span}, cell ${kinds.cell}, alt ${kinds.alt}, caption ${kinds.caption})` +
+        `  fields ${unit.fieldItems.length} (${unit.fieldItems.map((f) => f.label).join(", ") || "none"})` +
+        `  chars ${unit.translatableChars}`,
+    );
+
+    const meta = unit.item.post.metaDescription;
+    if (meta !== undefined && meta.length >= META_DESCRIPTION_NOTE_AT) {
+      metaNotes.push(
+        `  ${unit.item.post.slug ?? "(no slug)"}  English metaDescription is ${meta.length} characters, against a ${META_DESCRIPTION_WARN_AT}-character Studio warning bound`,
+      );
+    }
+  }
+
+  if (metaNotes.length > 0) {
+    console.log(
+      "note, informational only: a Farsi rendering usually runs longer, so these will probably show a Studio warning badge. It is a warning, not an error, and it never blocks a publish:",
+    );
+    for (const note of metaNotes) console.log(note);
+  }
+
+  // Estimated before submission, which is the brake on a runaway paid run.
+  const introApplies = new Date().toISOString().slice(0, 10) <= INTRO_RATE_LAST_DAY;
+  const rate = introApplies ? BATCH_RATES.intro : BATCH_RATES.standard;
+  const cost = dollars(totals.inputTokens, rate.input) + dollars(totals.outputTokens, rate.output);
+
+  console.log(
+    `run total: ${units.length} post(s), ${totals.bodyItems} body item(s), ${totals.fieldItems} field item(s), ${totals.chars} translatable character(s)`,
+  );
+  console.log(
+    `estimated tokens: ${totals.inputTokens} in, ${totals.outputTokens} out, covering a translate pass and a verify pass`,
+  );
+  console.log(
+    `estimated cost: $${cost.toFixed(2)} at the batch rate $${rate.input.toFixed(2)} in / $${rate.output.toFixed(2)} out per MTok` +
+      (introApplies
+        ? `, which is the Sonnet 5 intro rate and expires after ${INTRO_RATE_LAST_DAY}`
+        : `, the Sonnet 5 standard rate`),
+  );
+  if (introApplies) {
+    const later =
+      dollars(totals.inputTokens, BATCH_RATES.standard.input) +
+      dollars(totals.outputTokens, BATCH_RATES.standard.output);
+    console.log(
+      `  the same run after ${INTRO_RATE_LAST_DAY} costs about $${later.toFixed(2)} at $${BATCH_RATES.standard.input.toFixed(2)} / $${BATCH_RATES.standard.output.toFixed(2)} per MTok`,
+    );
+  }
+  console.log(
+    `  assumptions: ${CHARS_PER_TOKEN} characters per English token, Farsi output at ${FARSI_OUTPUT_MULTIPLIER}x the source token count, ${REQUEST_OVERHEAD_TOKENS} overhead tokens per request, ${VERIFY_OUTPUT_TOKENS} output tokens per verify response. An estimate, not a quote.`,
+  );
+
+  const envFile = dataset === PRODUCTION_DATASET ? ".env.vercel-prod" : ".env.local";
+
+  if (!execute) {
+    const createdAt = new Date().toISOString();
+    const statePath = writeRunState({
+      script: "translate-posts",
+      mode: "dry-run",
+      createdAt,
+      projectId,
+      dataset,
+      apiVersion,
+      flags: { slug: slugArg, all, retranslate, resume: resumeArg },
+      adminResolved: adminUserId !== null,
+      totals: {
+        posts: units.length,
+        bodyItems: totals.bodyItems,
+        fieldItems: totals.fieldItems,
+        translatableChars: totals.chars,
+        estimatedInputTokens: totals.inputTokens,
+        estimatedOutputTokens: totals.outputTokens,
+        estimatedCostUsd: Number(cost.toFixed(4)),
+      },
+      posts: units.map((unit) => {
+        const est = estimate(unit);
+        return {
+          _id: unit.item.post._id,
+          slug: unit.item.post.slug ?? null,
+          reason: unit.item.reason,
+          existingSiblingId: unit.item.existingSiblingId,
+          bodyItemsByKind: countByKind(unit.bodyItems),
+          bodyLabels: unit.bodyItems.map((t) => t.label),
+          fieldLabels: unit.fieldItems.map((f) => f.label),
+          translatableChars: unit.translatableChars,
+          estimatedInputTokens: est.inputTokens,
+          estimatedOutputTokens: est.outputTokens,
+          sourceFingerprintSha256: digest(unit.sourceFingerprint),
+        };
+      }),
+    });
+    console.log(`run state written to ${statePath}`);
+
+    // Exactly one server-validated mutation that persists nothing. It is also the probe that
+    // proves this token carries write scope on this dataset BEFORE any paid run is submitted,
+    // because a scope failure discovered after the spend is the expensive version of the bug.
+    await client
+      .transaction()
+      .createIfNotExists(draftShell(units[0]!.item.post))
+      .commit({ dryRun: true });
+
+    console.log("DRY RUN: mutation validated server-side, nothing written.");
+    console.log(
+      `Re-run with --execute to apply: npx tsx --env-file ${envFile} scripts/translate-posts.ts ${[...argv, "--execute"].join(" ")}`,
+    );
+    return;
+  }
+
+  // ── SEAM: plan 03-08 attaches the translate and verify passes here ─────────
+  // Everything above is selection, enumeration and estimation, and none of it calls a model.
+  // Plan 03-08 adds the two passes, the structural gate, the draft writes and the spend
+  // record, and consumes `units`, `adminUserId`, `resumeArg` and `envFile` as they stand.
+  console.error(
+    `--execute was passed, but the translate and verify passes do not exist yet: plan 03-07 builds selection and the dry run, plan 03-08 adds the model calls. Nothing was written. Re-run without --execute to see the full plan for these ${units.length} post(s).`,
+  );
+  process.exit(1);
 }
 
 async function main(): Promise<void> {
