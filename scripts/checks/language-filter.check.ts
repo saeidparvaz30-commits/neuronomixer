@@ -22,6 +22,8 @@ import {
   sitemapQuery,
   postsByAuthorIdQuery,
   authorReviewPostsQuery,
+  translationCandidatesQuery,
+  translationStaleQuery,
 } from "../../src/sanity/lib/queries";
 import { postType } from "../../src/sanity/schemaTypes/postType";
 
@@ -480,8 +482,77 @@ for (const writer of POST_WRITERS) {
   );
 }
 
+// ── L. Pipeline selection queries (PIPE-01) ──────────────────────────────────
+// The two pipeline reads are deliberately NOT in the QUERIES array above: that
+// array is the nine PUBLIC post queries, and assertions B and C encode CONTENT-02's
+// public read contract through its expected counts. A script-side read is a
+// different surface, so it is pinned here instead, on its own terms.
+const PIPELINE_QUERIES: ReadonlyArray<readonly [string, string]> = [
+  ["translationCandidatesQuery", translationCandidatesQuery],
+  ["translationStaleQuery", translationStaleQuery],
+];
+
+for (const [name, text] of PIPELINE_QUERIES) {
+  const enCount = countOf(text, EN_LANGUAGE);
+  assert.strictEqual(
+    enCount,
+    1,
+    `${name} carries the English predicate ${enCount} time(s), expected 1. It must interpolate EN_LANGUAGE once and never retype the literal.`,
+  );
+
+  const approvedCount = countOf(text, STATUS_APPROVED);
+  assert.strictEqual(
+    approvedCount,
+    1,
+    `${name} carries ${STATUS_APPROVED} ${approvedCount} time(s), expected 1. The pipeline translates approved English posts only.`,
+  );
+  for (const [label, variant] of [
+    ["tolerant", STATUS_TOLERANT],
+    ["strict", STATUS_STRICT],
+  ] as const) {
+    assert.ok(
+      !text.includes(variant),
+      `${name} carries the ${label} status variant. The pipeline must select on ${STATUS_APPROVED} alone: a scheduled or status-less post is not a translation source. Replace the interpolation with STATUS_APPROVED.`,
+    );
+  }
+
+  // Assertion D already proves that queries.ts interpolates nothing but the four
+  // allowlisted fragment names, so all that is left to prove here is that the
+  // runtime slug is present AS a parameter rather than absent entirely (T-03-09).
+  assert.ok(
+    text.includes("$slug"),
+    `${name} does not reference $slug. A --slug value must reach GROQ as a parameter; expected the filter clause (!defined($slug) || slug.current == $slug).`,
+  );
+
+  const DRAFT_PATH_EXCLUSION = 'path("drafts.**")';
+  assert.ok(
+    text.includes(DRAFT_PATH_EXCLUSION),
+    `${name} does not exclude ${DRAFT_PATH_EXCLUSION}. Under the raw perspective the pipeline needs to see Farsi drafts, which means it can also see English drafts, and a draft English document must never be treated as a translation source.`,
+  );
+}
+
+// The sibling test is the only difference between the two queries, which makes it
+// the clause most likely to survive a copy-paste unchanged and be wrong in silence.
+const SIBLING_ABSENT = ") == 0";
+const SIBLING_PRESENT = ") > 0";
+assert.ok(
+  translationCandidatesQuery.includes(SIBLING_ABSENT) &&
+    !translationCandidatesQuery.includes(SIBLING_PRESENT),
+  `translationCandidatesQuery must close its sibling count with "${SIBLING_ABSENT}" and not "${SIBLING_PRESENT}". It selects posts that have NO Farsi sibling; inverted, it would hand the pipeline every already-translated post.`,
+);
+assert.ok(
+  translationStaleQuery.includes(SIBLING_PRESENT) &&
+    !translationStaleQuery.includes(SIBLING_ABSENT),
+  `translationStaleQuery must close its sibling count with "${SIBLING_PRESENT}" and not "${SIBLING_ABSENT}". It reports posts that HAVE a Farsi sibling; inverted, it would report every untranslated post as stale.`,
+);
+
+assert.ok(
+  translationStaleQuery.includes("sourceUpdatedAt"),
+  `translationStaleQuery must project the sibling's sourceUpdatedAt: it is the recorded source revision that staleness is measured against (D-08).`,
+);
+
 console.log(
-  `offline: fragment identity OK, ${totalEn} interpolations across ${QUERIES.length} queries, status predicates intact, ${interpolations.length} interpolations all allowlisted, 9/9 faithful to ${preExtractionRef.slice(0, 7)}, ${CALL_SITES.length} call sites free of inline GROQ, ${srcFiles.length} src files scanned, sole carrier ${carriers.join(", ")}, ${schemaFields.length} schema fields with language/translationOf/translationNotes intact, Studio split pinned (${STRUCTURE_LIST_IDS.map(([id]) => id).join(" + ")}, ${structureTypeClauses} type clauses, ${apiVersionCalls} apiVersion calls, ${emptyTemplateCalls} create-disabled list), ${POST_WRITERS.length}/${POST_WRITERS.length} post writers stamping language`,
+  `offline: fragment identity OK, ${totalEn} interpolations across ${QUERIES.length} queries, status predicates intact, ${interpolations.length} interpolations all allowlisted, 9/9 faithful to ${preExtractionRef.slice(0, 7)}, ${CALL_SITES.length} call sites free of inline GROQ, ${srcFiles.length} src files scanned, sole carrier ${carriers.join(", ")}, ${schemaFields.length} schema fields with language/translationOf/translationNotes intact, Studio split pinned (${STRUCTURE_LIST_IDS.map(([id]) => id).join(" + ")}, ${structureTypeClauses} type clauses, ${apiVersionCalls} apiVersion calls, ${emptyTemplateCalls} create-disabled list), ${POST_WRITERS.length}/${POST_WRITERS.length} post writers stamping language, ${PIPELINE_QUERIES.length} pipeline selection queries pinned (PIPE-01)`,
 );
 
 const argv = process.argv.slice(2);
@@ -651,6 +722,78 @@ async function runLive(): Promise<void> {
     `${zeroEnglish} distinct slug(s) have no English post. That means an English source was removed while a sibling survived.`,
   );
   console.log(`  slug uniqueness: ${bySlug.size} distinct slug(s), max 1 English match each, ${zeroEnglish} with zero English matches`);
+
+  // ── Live 4. Pipeline selection behaviour (PIPE-01) ─────────────────────────
+  // A third client, configured raw, for the same reason the post-migration block
+  // builds its own: the parity assertions above must keep running through the
+  // default published perspective, because that is what the app sees, while the
+  // pipeline queries must see drafts. Farsi siblings exist only as drafts, so a
+  // published-perspective sibling count is 0 by construction and would make this
+  // section pass without proving anything (research Pitfall 1).
+  const pipelineClient = createClient({
+    projectId,
+    dataset,
+    apiVersion,
+    token: process.env.SANITY_API_TOKEN,
+    useCdn: false,
+    perspective: "raw",
+  });
+
+  type PipelineRow = { _id: string; slug: string | null };
+
+  // The control count restates the candidates query's filter minus the sibling
+  // test, so any difference between the two is the sibling test and nothing else.
+  const approvedEnglish = await pipelineClient.fetch<number>(
+    `count(*[_type == "post" && !(_id in path("drafts.**")) && ${EN_LANGUAGE} && ${STATUS_APPROVED}])`,
+  );
+  const candidates = await pipelineClient.fetch<PipelineRow[]>(translationCandidatesQuery, {
+    slug: null,
+  });
+  const stale = await pipelineClient.fetch<PipelineRow[]>(translationStaleQuery, { slug: null });
+
+  console.log(
+    `  pipeline selection: dataset=${dataset} (raw perspective) approved-english=${approvedEnglish} candidates=${candidates.length} stale=${stale.length}`,
+  );
+
+  // Today every sibling count is 0, because no Farsi document exists in either
+  // dataset. That makes the two numbers below the whole assertion: candidates is
+  // the full approved English set, and stale is empty. The non-zero branch of the
+  // sibling subquery is therefore NOT exercised here and cannot be, since this
+  // check is read-only and must not fabricate a Farsi document. It is proven in
+  // plan 03-09's dev rehearsal, against drafts the pipeline itself wrote.
+  assert.strictEqual(
+    candidates.length,
+    approvedEnglish,
+    `translationCandidatesQuery returned ${candidates.length} row(s) but ${approvedEnglish} approved English post(s) exist and none has a Farsi sibling yet. The sibling count subquery is excluding posts it should not, or the perspective is not raw.`,
+  );
+  assert.strictEqual(
+    stale.length,
+    0,
+    `translationStaleQuery returned ${stale.length} row(s), expected 0: no Farsi sibling exists in dataset ${dataset}, so nothing can be stale. Check that its sibling count comparison is "> 0" and not "== 0".`,
+  );
+  assert.ok(
+    candidates.length > 0,
+    `translationCandidatesQuery returned 0 rows against ${dataset}, so the $slug assertion below would be vacuous`,
+  );
+
+  // Proves the parameter path end to end: the slug reaches GROQ as $slug and
+  // narrows the result set, which is what keeps a --slug value off the query text.
+  const firstSlug = candidates[0]!.slug;
+  assert.ok(firstSlug, "the first candidate has no slug, so the $slug path cannot be proven");
+  const oneCandidate = await pipelineClient.fetch<PipelineRow[]>(translationCandidatesQuery, {
+    slug: firstSlug,
+  });
+  assert.strictEqual(
+    oneCandidate.length,
+    1,
+    `translationCandidatesQuery with slug="${firstSlug}" returned ${oneCandidate.length} row(s), expected exactly 1. Either $slug is not being applied, or the slug is not unique among English posts.`,
+  );
+  assert.strictEqual(
+    oneCandidate[0]!.slug,
+    firstSlug,
+    `translationCandidatesQuery with slug="${firstSlug}" returned a row for "${oneCandidate[0]!.slug}"`,
+  );
+  console.log(`  pipeline $slug path: slug="${firstSlug}" narrowed ${candidates.length} row(s) to 1`);
 
   if (wantsPostMigration) {
     // Independent completeness verification of plan 02-04's migration. It re-counts
