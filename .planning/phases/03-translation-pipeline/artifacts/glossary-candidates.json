@@ -1,0 +1,2102 @@
+[
+  {
+    "term": "data",
+    "frequency": 843,
+    "example": "Why Data Matters?",
+    "exampleSlug": "data-the-red-cells-of-our-digital-worlds-veins"
+  },
+  {
+    "term": "AI",
+    "frequency": 518,
+    "example": "The EU AI Act",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "model",
+    "frequency": 307,
+    "example": "Build a model inventory",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "risk",
+    "frequency": 266,
+    "example": "The Four Risk Tiers",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "models",
+    "frequency": 223,
+    "example": "Models are not neutral tools",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "governance",
+    "frequency": 184,
+    "example": "Enterprise Data Governance",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "regulatory",
+    "frequency": 164,
+    "example": "It is a regulatory roadmap",
+    "exampleSlug": "fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a"
+  },
+  {
+    "term": "financial",
+    "frequency": 157,
+    "example": "In Financial Services",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "systems",
+    "frequency": 155,
+    "example": "AI & Decision Systems",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "credit",
+    "frequency": 154,
+    "example": "The Economics of AI in Credit",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "Act",
+    "frequency": 126,
+    "example": "The EU AI Act",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "SQL",
+    "frequency": 120,
+    "example": "Neglecting SQL.",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "compliance",
+    "frequency": 119,
+    "example": "Assess compliance gaps",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "learning",
+    "frequency": 119,
+    "example": "Not machine learning",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "analytics",
+    "frequency": 111,
+    "example": "Every analytics role uses it.",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "EU",
+    "frequency": 103,
+    "example": "EU Regulation",
+    "exampleSlug": "fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a"
+  },
+  {
+    "term": "decisions",
+    "frequency": 96,
+    "example": "To make data-driven decisions responsibly:",
+    "exampleSlug": "a-practical-guide-to-data-driven-decisions"
+  },
+  {
+    "term": "Excel",
+    "frequency": 95,
+    "example": "Excel is getting more powerful",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "analysis",
+    "frequency": 95,
+    "example": "Data Analysis & Insights",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "AI Act",
+    "frequency": 92,
+    "example": "The EU AI Act",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "Industry",
+    "frequency": 87,
+    "example": "What Is Industry 5.0?",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "Python",
+    "frequency": 87,
+    "example": "Not Python",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "tools",
+    "frequency": 83,
+    "example": "Core Tools and Skills",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "explainability",
+    "frequency": 82,
+    "example": "Explainability takes many forms",
+    "exampleSlug": "exploring-how-machine-learning-and-analytics-shape-the-future"
+  },
+  {
+    "term": "across",
+    "frequency": 81,
+    "example": "Governance Across the Lifecycle",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "management",
+    "frequency": 80,
+    "example": "Data Preparation & Management",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "business",
+    "frequency": 79,
+    "example": "Learn the business",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "EU AI",
+    "frequency": 78,
+    "example": "The EU AI Act",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "banks",
+    "frequency": 78,
+    "example": "Banks utilise data to detect fraud",
+    "exampleSlug": "data-the-red-cells-of-our-digital-worlds-veins"
+  },
+  {
+    "term": "framework",
+    "frequency": 74,
+    "example": "A Practical Decision Framework",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "machine",
+    "frequency": 74,
+    "example": "Not machine learning",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "finance",
+    "frequency": 72,
+    "example": "Resilience in Finance",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "banking",
+    "frequency": 71,
+    "example": "banking",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "machine learning",
+    "frequency": 69,
+    "example": "Not machine learning",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "organisations",
+    "frequency": 69,
+    "example": "For most organisations, the answer is messy",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "three",
+    "frequency": 69,
+    "example": "It is at least three",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "requirements",
+    "frequency": 68,
+    "example": "Regulatory Requirements at a Glance",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "understanding",
+    "frequency": 68,
+    "example": ": understanding which tools each role uses",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "interpretable",
+    "frequency": 67,
+    "example": "Are the features interpretable",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "build",
+    "frequency": 66,
+    "example": "build)",
+    "exampleSlug": "nigeria-just-wrote-ai-into-anti-money-laundering-the-18-month-clock-for-african-banks-has-starte"
+  },
+  {
+    "term": "services",
+    "frequency": 66,
+    "example": "In Financial Services",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "matters",
+    "frequency": 64,
+    "example": "Why Data Matters?",
+    "exampleSlug": "data-the-red-cells-of-our-digital-worlds-veins"
+  },
+  {
+    "term": "EU AI Act",
+    "frequency": 63,
+    "example": "The EU AI Act",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "analysts",
+    "frequency": 62,
+    "example": "For analysts, this is liberating",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "building",
+    "frequency": 62,
+    "example": "Not building real projects.",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "risk management",
+    "frequency": 61,
+    "example": "What Is Model Risk Management?",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "transparency",
+    "frequency": 61,
+    "example": "It mandates transparency",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "human",
+    "frequency": 60,
+    "example": "• Business impact framed in human language",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "model risk",
+    "frequency": 60,
+    "example": "What Is Model Risk Management?",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "explainable",
+    "frequency": 58,
+    "example": "What Is Explainable AI?",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "financial services",
+    "frequency": 58,
+    "example": "In Financial Services",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "learn",
+    "frequency": 58,
+    "example": "Then learn Python",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "means",
+    "frequency": 58,
+    "example": "That means SQL.",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "first",
+    "frequency": 56,
+    "example": "First it was NoSQL",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "requires",
+    "frequency": 56,
+    "example": "DORA requires detailed ICT risk documentation.",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "work",
+    "frequency": 56,
+    "example": "How These Job Functions Work Together",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "customer",
+    "frequency": 54,
+    "example": "A customer name",
+    "exampleSlug": "what-is-data-a-complete-beginners-guide-for-the-curious-mind"
+  },
+  {
+    "term": "institutions",
+    "frequency": 54,
+    "example": "For financial institutions, this is not abstract",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "technical",
+    "frequency": 54,
+    "example": "The technical solutions exist",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "regulation",
+    "frequency": 53,
+    "example": "EU Regulation",
+    "exampleSlug": "fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a"
+  },
+  {
+    "term": "system",
+    "frequency": 53,
+    "example": "A fraud detection system checks for suspicious patterns",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "decision",
+    "frequency": 52,
+    "example": "AI & Decision Systems",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "percent",
+    "frequency": 52,
+    "example": "Over 70 percent of top-tier U.S",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "real",
+    "frequency": 52,
+    "example": "Not building real projects.",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "practice",
+    "frequency": 50,
+    "example": "What You’ll Practice on Path A",
+    "exampleSlug": "learning-sql-for-free-in-2025"
+  },
+  {
+    "term": "teams",
+    "frequency": 50,
+    "example": "What This Means for AI Teams Outside Finance",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "performance",
+    "frequency": 48,
+    "example": "Evaluate performance",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "modern",
+    "frequency": 47,
+    "example": "DuckDB and Modern Analytics Tools",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "black-box",
+    "frequency": 46,
+    "example": "Step 3: Test Black-Box Alternatives",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "start",
+    "frequency": 46,
+    "example": "Start now.",
+    "exampleSlug": "fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a"
+  },
+  {
+    "term": "Power",
+    "frequency": 45,
+    "example": "Intuition holds power",
+    "exampleSlug": "a-practical-guide-to-data-driven-decisions"
+  },
+  {
+    "term": "roles",
+    "frequency": 44,
+    "example": "All three roles require SQL",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "analyst",
+    "frequency": 43,
+    "example": "Analyst / Scientist path:",
+    "exampleSlug": "learning-sql-for-free-in-2025"
+  },
+  {
+    "term": "new",
+    "frequency": 43,
+    "example": "Create a new notebook",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "question",
+    "frequency": 43,
+    "example": "The Question Manufacturing Asked First",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "high-risk",
+    "frequency": 42,
+    "example": "High-Risk AI Rules Go Live",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "practical",
+    "frequency": 42,
+    "example": "The practical implication",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "validation",
+    "frequency": 42,
+    "example": "Pillar 3: Model Validation",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "actually",
+    "frequency": 41,
+    "example": "Key Tools: What Actually Matters",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "complex",
+    "frequency": 41,
+    "example": "This does not mean complex models are never appropriate",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "documentation",
+    "frequency": 41,
+    "example": "The Documentation Gap",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "explain",
+    "frequency": 41,
+    "example": "Explain your choices",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "gap",
+    "frequency": 41,
+    "example": "The Documentation Gap",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "trust",
+    "frequency": 41,
+    "example": "Can you trust it",
+    "exampleSlug": "what-neuronomixer-stands-for-ai-data-and-the-future-of-systems"
+  },
+  {
+    "term": "language",
+    "frequency": 40,
+    "example": "SQL — The Universal Language of Data",
+    "exampleSlug": "foundational-tools-for-data-related-careers"
+  },
+  {
+    "term": "world",
+    "frequency": 40,
+    "example": "Why is data important in today’s world?",
+    "exampleSlug": "data-the-red-cells-of-our-digital-worlds-veins"
+  },
+  {
+    "term": "accuracy",
+    "frequency": 39,
+    "example": "Accuracy (is it correct?)",
+    "exampleSlug": "a-practical-guide-to-data-driven-decisions"
+  },
+  {
+    "term": "credit risk",
+    "frequency": 39,
+    "example": "Credit Risk: A Concrete Comparison",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "enforcement",
+    "frequency": 39,
+    "example": "This was not an isolated enforcement action",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "information",
+    "frequency": 39,
+    "example": "Here, data transforms into information",
+    "exampleSlug": "inside-the-data-ecosystem"
+  },
+  {
+    "term": "months",
+    "frequency": 39,
+    "example": "Phase 2: Intermediate Skills (Months 1 to 3)",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "AI systems",
+    "frequency": 38,
+    "example": "Inventory your AI systems",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "GDPR",
+    "frequency": 38,
+    "example": "GDPR and the Right to Explanation",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "bank",
+    "frequency": 38,
+    "example": "Data in the Real World: From Your Phone to Your Bank",
+    "exampleSlug": "what-is-data-a-complete-beginners-guide-for-the-curious-mind"
+  },
+  {
+    "term": "frameworks",
+    "frequency": 38,
+    "example": "Then big data frameworks",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "understand",
+    "frequency": 38,
+    "example": "Others can run it, understand it, and build on it.",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "companies",
+    "frequency": 37,
+    "example": "Over 203,000 verified companies run on it",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "foundation",
+    "frequency": 37,
+    "example": "SQL is the foundation",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "monitoring",
+    "frequency": 37,
+    "example": "Implement basic monitoring",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "rules",
+    "frequency": 37,
+    "example": "High-Risk AI Rules Go Live",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "technology",
+    "frequency": 37,
+    "example": "It is genuinely impressive technology",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "testing",
+    "frequency": 37,
+    "example": "What the FCA AI Live Testing Cohort 2 Just Announced",
+    "exampleSlug": "fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a"
+  },
+  {
+    "term": "code",
+    "frequency": 36,
+    "example": "No code review",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "innovation",
+    "frequency": 36,
+    "example": "It is a foundation for responsible innovation",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "patterns",
+    "frequency": 36,
+    "example": "Are there time-of-day patterns",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "regulators",
+    "frequency": 36,
+    "example": "Financial regulators have demanded model transparency long before the AI Act",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "clear",
+    "frequency": 35,
+    "example": "Assign clear ownership",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "digital",
+    "frequency": 35,
+    "example": "Digital twins in warehouses",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "ecosystem",
+    "frequency": 35,
+    "example": "Key Terms in the Ecosystem",
+    "exampleSlug": "inside-the-data-ecosystem"
+  },
+  {
+    "term": "lifecycle",
+    "frequency": 35,
+    "example": "What Is the Data Lifecycle?",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "model risk management",
+    "frequency": 35,
+    "example": "What Is Model Risk Management?",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "resilience",
+    "frequency": 35,
+    "example": "Resilience in Finance",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "tool",
+    "frequency": 35,
+    "example": "It is not becoming a different kind of tool",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "European",
+    "frequency": 34,
+    "example": "But this is not just a European story",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "billion",
+    "frequency": 34,
+    "example": "Between 1.1 and 1.5 billion people use Excel globally",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "engineer",
+    "frequency": 34,
+    "example": "Engineer path:",
+    "exampleSlug": "learning-sql-for-free-in-2025"
+  },
+  {
+    "term": "guide",
+    "frequency": 34,
+    "example": "Who This Guide Is For (Pick Your Path)",
+    "exampleSlug": "learning-sql-for-free-in-2025"
+  },
+  {
+    "term": "specific",
+    "frequency": 34,
+    "example": "Financial Services: Where AI Governance Gets Specific",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "time",
+    "frequency": 34,
+    "example": "What is the time window",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "AML",
+    "frequency": 33,
+    "example": "Banks can no longer operate black-box AML systems",
+    "exampleSlug": "nigeria-just-wrote-ai-into-anti-money-laundering-the-18-month-clock-for-african-banks-has-starte"
+  },
+  {
+    "term": "approach",
+    "frequency": 33,
+    "example": "This post takes a different approach",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "become",
+    "frequency": 33,
+    "example": "Or, how can I become a data engineer?",
+    "exampleSlug": "foundational-tools-for-data-related-careers"
+  },
+  {
+    "term": "operational",
+    "frequency": 33,
+    "example": "It is an operational deadline.",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "oversight",
+    "frequency": 33,
+    "example": "That is not a technical oversight; it is a structural failure",
+    "exampleSlug": "what-neuronomixer-stands-for-ai-data-and-the-future-of-systems"
+  },
+  {
+    "term": "years",
+    "frequency": 33,
+    "example": "Input: principal, rate, years",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "Engineers",
+    "frequency": 32,
+    "example": "Roles: Data engineers, data analysts",
+    "exampleSlug": "inside-the-data-ecosystem"
+  },
+  {
+    "term": "Explainable AI",
+    "frequency": 32,
+    "example": "What Is Explainable AI?",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "detection",
+    "frequency": 32,
+    "example": "Example: Credit card fraud detection data",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "different",
+    "frequency": 32,
+    "example": "NeuroNomixer is different because:",
+    "exampleSlug": "what-neuronomixer-stands-for-ai-data-and-the-future-of-systems"
+  },
+  {
+    "term": "next",
+    "frequency": 32,
+    "example": "Next Step in Your Data Journey",
+    "exampleSlug": "learning-sql-for-free-in-2025"
+  },
+  {
+    "term": "path",
+    "frequency": 32,
+    "example": "Engineer path:",
+    "exampleSlug": "learning-sql-for-free-in-2025"
+  },
+  {
+    "term": "scoring",
+    "frequency": 32,
+    "example": "A credit scoring model evaluates the customer's risk profile",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "standards",
+    "frequency": 32,
+    "example": "Standards Development",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "interpretability",
+    "frequency": 31,
+    "example": "The Accuracy Versus Interpretability Myth",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "point",
+    "frequency": 31,
+    "example": "They have a point",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "professionals",
+    "frequency": 31,
+    "example": "Almost all data professionals start here",
+    "exampleSlug": "foundational-tools-for-data-related-careers"
+  },
+  {
+    "term": "quality",
+    "frequency": 31,
+    "example": "Own quality",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "structured",
+    "frequency": 31,
+    "example": "Structured vs Unstructured Data",
+    "exampleSlug": "what-is-data-a-complete-beginners-guide-for-the-curious-mind"
+  },
+  {
+    "term": "vs",
+    "frequency": 31,
+    "example": "Data-Driven vs",
+    "exampleSlug": "a-practical-guide-to-data-driven-decisions"
+  },
+  {
+    "term": "Education",
+    "frequency": 30,
+    "example": "Education: CS/AI/Data Science.",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "SHAP",
+    "frequency": 30,
+    "example": "SHAP Limitations",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "challenge",
+    "frequency": 30,
+    "example": "The explainability challenge is evolving",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "cost",
+    "frequency": 30,
+    "example": "The Cost of Getting It Wrong",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "data-driven",
+    "frequency": 30,
+    "example": "Data-Driven vs",
+    "exampleSlug": "a-practical-guide-to-data-driven-decisions"
+  },
+  {
+    "term": "market",
+    "frequency": 30,
+    "example": "The market is responding",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "people",
+    "frequency": 30,
+    "example": "Data doesn’t make decision, people do",
+    "exampleSlug": "a-practical-guide-to-data-driven-decisions"
+  },
+  {
+    "term": "create",
+    "frequency": 29,
+    "example": "Create a new notebook",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "fraud",
+    "frequency": 29,
+    "example": "Banks utilise data to detect fraud",
+    "exampleSlug": "data-the-red-cells-of-our-digital-worlds-veins"
+  },
+  {
+    "term": "important",
+    "frequency": 29,
+    "example": "Why is data important in today’s world?",
+    "exampleSlug": "data-the-red-cells-of-our-digital-worlds-veins"
+  },
+  {
+    "term": "including",
+    "frequency": 29,
+    "example": "Data can take many forms, including numbers, words, sounds, and images",
+    "exampleSlug": "data-the-red-cells-of-our-digital-worlds-veins"
+  },
+  {
+    "term": "million",
+    "frequency": 29,
+    "example": "TransAlta lost $24 million from a formula error in hedging contracts",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "reporting",
+    "frequency": 29,
+    "example": "Pillar 4: Model Monitoring and Reporting",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "single",
+    "frequency": 29,
+    "example": "No single solution fits all three jurisdictions",
+    "exampleSlug": "nigeria-just-wrote-ai-into-anti-money-laundering-the-18-month-clock-for-african-banks-has-starte"
+  },
+  {
+    "term": "skill",
+    "frequency": 29,
+    "example": "Expanding Your Skill Set",
+    "exampleSlug": "learning-excel-for-free-in-2025"
+  },
+  {
+    "term": "Query",
+    "frequency": 28,
+    "example": "Power Query and Dynamic Arrays",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "audit",
+    "frequency": 28,
+    "example": "Audit them.",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "competitive",
+    "frequency": 28,
+    "example": "The United States: Competitive Fragmentation",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "credit scoring",
+    "frequency": 28,
+    "example": "A credit scoring model evaluates the customer's risk profile",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "functions",
+    "frequency": 28,
+    "example": "Data Usage and Job Functions",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "infrastructure",
+    "frequency": 28,
+    "example": "Data Collection & Infrastructure",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "portfolio",
+    "frequency": 28,
+    "example": "• PyPortfolioOpt: portfolio optimization",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "require",
+    "frequency": 28,
+    "example": "All three roles require SQL",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "right",
+    "frequency": 28,
+    "example": "Where to Start Right Now",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "August",
+    "frequency": 27,
+    "example": "Full obligations apply from 2 August 2026.",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "agentic",
+    "frequency": 27,
+    "example": "Agentic AI in Finance: From Demos to Deployment",
+    "exampleSlug": "signal-from-the-frontier-the-ai-developments-that-actually-matter-in-q2-2026"
+  },
+  {
+    "term": "already",
+    "frequency": 27,
+    "example": "This obligation is already in force.",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "black-box models",
+    "frequency": 27,
+    "example": "What Are Interpretable and Black-Box Models?",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "costs",
+    "frequency": 27,
+    "example": "The compliance costs are real",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "explanations",
+    "frequency": 27,
+    "example": "This distinction matters for regulatory explanations.",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "provides",
+    "frequency": 27,
+    "example": "Our free SQL learning guide provides a structured path.",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "role",
+    "frequency": 27,
+    "example": "Determine your role",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "BI",
+    "frequency": 26,
+    "example": "Power BI handles millions of rows",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "full",
+    "frequency": 26,
+    "example": "🎥 Watch the Full Course",
+    "exampleSlug": "learning-excel-for-free-in-2025"
+  },
+  {
+    "term": "global",
+    "frequency": 26,
+    "example": "The global AI governance landscape is not converging",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "internal",
+    "frequency": 26,
+    "example": "A black-box model is one whose internal logic is too complex for humans to trace directly",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "stage",
+    "frequency": 26,
+    "example": "Stage 4: Usage",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "Science",
+    "frequency": 25,
+    "example": "Education: CS/AI/Data Science.",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "complexity",
+    "frequency": 25,
+    "example": "However, complexity must serve clarity",
+    "exampleSlug": "exploring-how-machine-learning-and-analytics-shape-the-future"
+  },
+  {
+    "term": "context",
+    "frequency": 25,
+    "example": "In this context, explainability is not optional",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "core",
+    "frequency": 25,
+    "example": "Core Tools and Skills",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "design",
+    "frequency": 25,
+    "example": "Design normalized schemas and enforce relationships.",
+    "exampleSlug": "learning-sql-for-free-in-2025"
+  },
+  {
+    "term": "directly",
+    "frequency": 25,
+    "example": "Recent research challenges this assumption directly",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "document",
+    "frequency": 25,
+    "example": "Document them",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "engineering",
+    "frequency": 25,
+    "example": "Education: Computer Science/Data Engineering",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "evidence",
+    "frequency": 25,
+    "example": "The evidence so far is genuinely mixed",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "explanation",
+    "frequency": 25,
+    "example": "Post-Hoc Explanation Methods",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "four",
+    "frequency": 25,
+    "example": "The Four Risk Tiers",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "guidance",
+    "frequency": 25,
+    "example": "Sector-Specific Guidance",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "modelling",
+    "frequency": 25,
+    "example": "Advanced Analytics & Predictive Modelling",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "post",
+    "frequency": 25,
+    "example": "What You'll Learn in This Post",
+    "exampleSlug": "what-neuronomixer-stands-for-ai-data-and-the-future-of-systems"
+  },
+  {
+    "term": "regulated",
+    "frequency": 25,
+    "example": "In regulated industries, lineage is not optional",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "significant",
+    "frequency": 25,
+    "example": "There is one significant complication",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "skills",
+    "frequency": 25,
+    "example": "Core Tools and Skills",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "think",
+    "frequency": 25,
+    "example": "Think of it as “names only.”",
+    "exampleSlug": "data-the-red-cells-of-our-digital-worlds-veins"
+  },
+  {
+    "term": "cohort",
+    "frequency": 24,
+    "example": "What This Means for Banks Not in the Cohort",
+    "exampleSlug": "fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a"
+  },
+  {
+    "term": "critical",
+    "frequency": 24,
+    "example": "Keep humans in the loop for critical impacts.",
+    "exampleSlug": "a-practical-guide-to-data-driven-decisions"
+  },
+  {
+    "term": "dashboards",
+    "frequency": 24,
+    "example": "• Plotly: interactive charts, dashboards",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "deployment",
+    "frequency": 24,
+    "example": "Agentic AI in Finance: From Demos to Deployment",
+    "exampleSlug": "signal-from-the-frontier-the-ai-developments-that-actually-matter-in-q2-2026"
+  },
+  {
+    "term": "large",
+    "frequency": 24,
+    "example": "Now it is AI and large language models",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "raw",
+    "frequency": 24,
+    "example": "Because ELT preserves the raw data",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "Black",
+    "frequency": 23,
+    "example": "Accept a black box.",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "NeuroNomixer",
+    "frequency": 23,
+    "example": "Explore More on NeuroNomixer",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "algorithms",
+    "frequency": 23,
+    "example": "Ledgers to Algorithms: The Evolution of Data in Banking",
+    "exampleSlug": "exploring-how-machine-learning-and-analytics-shape-the-future"
+  },
+  {
+    "term": "beyond",
+    "frequency": 23,
+    "example": "Beyond the Gut Feeling:",
+    "exampleSlug": "a-practical-guide-to-data-driven-decisions"
+  },
+  {
+    "term": "career",
+    "frequency": 23,
+    "example": "Career sites list tools to learn",
+    "exampleSlug": "what-neuronomixer-stands-for-ai-data-and-the-future-of-systems"
+  },
+  {
+    "term": "case",
+    "frequency": 23,
+    "example": "The Case That Regulation Is Helping",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "essential",
+    "frequency": 23,
+    "example": "A few essential terms you’ll encounter:",
+    "exampleSlug": "inside-the-data-ecosystem"
+  },
+  {
+    "term": "features",
+    "frequency": 23,
+    "example": "The features are better",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "growth",
+    "frequency": 23,
+    "example": "Salary and Growth",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "obligations",
+    "frequency": 23,
+    "example": "They are legal obligations",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "pandas",
+    "frequency": 23,
+    "example": "• pandas: data manipulation",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "regression",
+    "frequency": 23,
+    "example": "Logistic regression came in at 88%",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "requirement",
+    "frequency": 23,
+    "example": "Explainability is not just a model requirement",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "data analyst",
+    "frequency": 22,
+    "example": "The Data Analyst: Turning Data into Decisions",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "financial institutions",
+    "frequency": 22,
+    "example": "For financial institutions, this is not abstract",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "AI governance",
+    "frequency": 21,
+    "example": "The global AI governance landscape is not converging",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "fraud detection",
+    "frequency": 21,
+    "example": "Example: Credit card fraud detection data",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "human oversight",
+    "frequency": 21,
+    "example": "Industry 5.0's emphasis on transparency and human oversight directly addresses this.",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "logistic regression",
+    "frequency": 21,
+    "example": "Logistic regression came in at 88%",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "interpretable models",
+    "frequency": 20,
+    "example": "Inherently Interpretable Models",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "data governance",
+    "frequency": 18,
+    "example": "Enterprise Data Governance",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "data lifecycle",
+    "frequency": 18,
+    "example": "What Is the Data Lifecycle?",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "analytics engineer",
+    "frequency": 17,
+    "example": "The Analytics Engineer: The Bridge Role Modern Teams Need",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "data scientists",
+    "frequency": 17,
+    "example": "Roles: Data analysts, BI developers, data scientists",
+    "exampleSlug": "inside-the-data-ecosystem"
+  },
+  {
+    "term": "modern data",
+    "frequency": 17,
+    "example": "· The Modern Data Career Map",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "data ecosystem",
+    "frequency": 16,
+    "example": "Components of the Data Ecosystem",
+    "exampleSlug": "inside-the-data-ecosystem"
+  },
+  {
+    "term": "data scientist",
+    "frequency": 16,
+    "example": "The Data Scientist: Building Models That Predict and Automate",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "AI Act's",
+    "frequency": 15,
+    "example": "By August 2, 2026, the EU AI Act's rules for high-risk AI systems take full effect",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "AI Matters",
+    "frequency": 15,
+    "example": "Why Explainable AI Matters More Than You Think",
+    "exampleSlug": "171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep"
+  },
+  {
+    "term": "Data Science",
+    "frequency": 15,
+    "example": "Education: CS/AI/Data Science.",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "Explainable AI Matters",
+    "frequency": 15,
+    "example": "Why Explainable AI Matters More Than You Think",
+    "exampleSlug": "171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep"
+  },
+  {
+    "term": "Power BI",
+    "frequency": 15,
+    "example": "Power BI handles millions of rows",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "data quality",
+    "frequency": 15,
+    "example": "Data quality is the quiet hero of every sound decision",
+    "exampleSlug": "a-practical-guide-to-data-driven-decisions"
+  },
+  {
+    "term": "high-risk AI",
+    "frequency": 15,
+    "example": "High-Risk AI Rules Go Live",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "Continue Reading",
+    "frequency": 14,
+    "example": "Continue Reading",
+    "exampleSlug": "171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep"
+  },
+  {
+    "term": "Data Engineers",
+    "frequency": 14,
+    "example": "Roles: Data engineers, data analysts",
+    "exampleSlug": "inside-the-data-ecosystem"
+  },
+  {
+    "term": "Power Query",
+    "frequency": 14,
+    "example": "Power Query and Dynamic Arrays",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "credit decisions",
+    "frequency": 14,
+    "example": "The technical challenge of explaining credit decisions is real, but it is solved",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "SR 11-7",
+    "frequency": 13,
+    "example": "United States: SR 11-7 and the Foundation",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "EU AI Act's",
+    "frequency": 12,
+    "example": "By August 2, 2026, the EU AI Act's rules for high-risk AI systems take full effect",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "credit models",
+    "frequency": 12,
+    "example": "Black-box credit models do not just create theoretical risk",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "data analysts",
+    "frequency": 12,
+    "example": "Roles: Data engineers, data analysts",
+    "exampleSlug": "inside-the-data-ecosystem"
+  },
+  {
+    "term": "inherently interpretable",
+    "frequency": 12,
+    "example": "Inherently Interpretable Models",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "raw data",
+    "frequency": 12,
+    "example": "Because ELT preserves the raw data",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "Explainable Boosting",
+    "frequency": 11,
+    "example": "The Third Option: Explainable Boosting Machines",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "agentic AI",
+    "frequency": 11,
+    "example": "Agentic AI in Finance: From Demos to Deployment",
+    "exampleSlug": "signal-from-the-frontier-the-ai-developments-that-actually-matter-in-q2-2026"
+  },
+  {
+    "term": "data analysis",
+    "frequency": 11,
+    "example": "Data Analysis & Insights",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "high-risk AI systems",
+    "frequency": 11,
+    "example": "The EU AI Act requires documented data governance for high-risk AI systems",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "model validation",
+    "frequency": 11,
+    "example": "Pillar 3: Model Validation",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "Act requires",
+    "frequency": 10,
+    "example": "What the EU AI Act Requires for Model Transparency",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "Boosting Machines",
+    "frequency": 10,
+    "example": "The Third Option: Explainable Boosting Machines",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "Explainable Boosting Machines",
+    "frequency": 10,
+    "example": "The Third Option: Explainable Boosting Machines",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "Operational Resilience",
+    "frequency": 10,
+    "example": "DORA mandates data integrity for operational resilience.",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "competitive advantage",
+    "frequency": 10,
+    "example": "It is a competitive advantage and a moral responsibility.",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "complex models",
+    "frequency": 10,
+    "example": "This does not mean complex models are never appropriate",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "data-driven decisions",
+    "frequency": 10,
+    "example": "To make data-driven decisions responsibly:",
+    "exampleSlug": "a-practical-guide-to-data-driven-decisions"
+  },
+  {
+    "term": "interpretable model",
+    "frequency": 10,
+    "example": "If you chose the interpretable model, document why",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "model performance",
+    "frequency": 10,
+    "example": "Model Performance Comparison",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "personal data",
+    "frequency": 10,
+    "example": "GDPR enforces accurate and up-to-date personal data",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "AI in Credit",
+    "frequency": 9,
+    "example": "The Economics of AI in Credit",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "AI models",
+    "frequency": 9,
+    "example": "But as the Harvard Data Science Review has detailed, banks rarely use AI models off the shelf",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "AI system",
+    "frequency": 9,
+    "example": "A provider is the entity that develops or places an AI system on the market",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "Actually Means",
+    "frequency": 9,
+    "example": "The EU AI Act in 2026: What It Actually Means for Business and Innovation",
+    "exampleSlug": "fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a"
+  },
+  {
+    "term": "Basel III",
+    "frequency": 9,
+    "example": "Basel III and Banking Regulation",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "Black Boxes",
+    "frequency": 9,
+    "example": "They are not black boxes",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "Business and Innovation",
+    "frequency": 9,
+    "example": "The EU AI Act in 2026: What It Actually Means for Business and Innovation",
+    "exampleSlug": "fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a"
+  },
+  {
+    "term": "Means for Business",
+    "frequency": 9,
+    "example": "The EU AI Act in 2026: What It Actually Means for Business and Innovation",
+    "exampleSlug": "fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a"
+  },
+  {
+    "term": "SHAP and LIME",
+    "frequency": 9,
+    "example": "SHAP and LIME: Useful but Imperfect",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "artificial intelligence",
+    "frequency": 9,
+    "example": "The EU AI Act takes a risk-based approach to regulating artificial intelligence",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "black box",
+    "frequency": 9,
+    "example": "Accept a black box.",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "compliance costs",
+    "frequency": 9,
+    "example": "The compliance costs are real",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "data analytics",
+    "frequency": 9,
+    "example": "• pandas: the non-negotiable library for data analytics",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "data career",
+    "frequency": 9,
+    "example": "· The Modern Data Career Map",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "data cleaning",
+    "frequency": 9,
+    "example": "Skipping data cleaning.",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "data flows",
+    "frequency": 9,
+    "example": "How Data Flows, Lives, and Connects",
+    "exampleSlug": "inside-the-data-ecosystem"
+  },
+  {
+    "term": "foundational tools",
+    "frequency": 9,
+    "example": "· Foundational Tools for Data-Related Careers",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "model development",
+    "frequency": 9,
+    "example": "They remain valuable for model development, debugging, and exploratory analysis",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "post-hoc explanation",
+    "frequency": 9,
+    "example": "Post-Hoc Explanation Methods",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "regulatory requirements",
+    "frequency": 9,
+    "example": "Regulatory Requirements at a Glance",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "starting point",
+    "frequency": 9,
+    "example": "It is the starting point.",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "three pillars",
+    "frequency": 9,
+    "example": "The Three Pillars of Industry 5.0",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "three roles",
+    "frequency": 9,
+    "example": "All three roles require SQL",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "unstructured data",
+    "frequency": 9,
+    "example": "Structured vs Unstructured Data",
+    "exampleSlug": "what-is-data-a-complete-beginners-guide-for-the-curious-mind"
+  },
+  {
+    "term": "AI literacy",
+    "frequency": 8,
+    "example": "Address AI literacy",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "Code of Practice",
+    "frequency": 8,
+    "example": "The final Code of Practice on transparency for AI-generated content is scheduled for June 2026",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "Computer Science",
+    "frequency": 8,
+    "example": "Education: Computer Science/Data Engineering",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "Python in Excel",
+    "frequency": 8,
+    "example": "Python in Excel is still young",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "United States",
+    "frequency": 8,
+    "example": "United States: SR 11-7 and the Foundation",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "agentic systems",
+    "frequency": 8,
+    "example": "Banks are rapidly deploying agentic systems powered by Claude Sonnet and similar models",
+    "exampleSlug": "171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep"
+  },
+  {
+    "term": "data pipelines",
+    "frequency": 8,
+    "example": "Power Query automates data pipelines",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "deep learning",
+    "frequency": 8,
+    "example": "• TensorFlow and PyTorch: deep learning frameworks",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "deploying AI",
+    "frequency": 8,
+    "example": "Why This Matters for Banks Deploying AI Agents (Financial Advice, Collections, and Customer Service)",
+    "exampleSlug": "171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep"
+  },
+  {
+    "term": "learning models",
+    "frequency": 8,
+    "example": "Dashboards, machine learning models, and reports provide trends, patterns, and predictions.",
+    "exampleSlug": "inside-the-data-ecosystem"
+  },
+  {
+    "term": "machine learning models",
+    "frequency": 8,
+    "example": "Dashboards, machine learning models, and reports provide trends, patterns, and predictions.",
+    "exampleSlug": "inside-the-data-ecosystem"
+  },
+  {
+    "term": "open banking",
+    "frequency": 8,
+    "example": "Over the last decade, Open Banking has altered the environment",
+    "exampleSlug": "exploring-how-machine-learning-and-analytics-shape-the-future"
+  },
+  {
+    "term": "regulatory reporting",
+    "frequency": 8,
+    "example": "• How SQL is used in real-world settings: from credit risk analysis to fraud detection and regulatory reporting",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "version control",
+    "frequency": 8,
+    "example": "Version control is still absent",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "Data Protection",
+    "frequency": 7,
+    "example": "The General Data Protection Regulation (GDPR) strikes an important balance between progress and privacy",
+    "exampleSlug": "exploring-how-machine-learning-and-analytics-shape-the-future"
+  },
+  {
+    "term": "Learning and Analytics",
+    "frequency": 7,
+    "example": "· Exploring How Machine Learning and Analytics Shape the Future",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "Management Framework",
+    "frequency": 7,
+    "example": "The NIST AI Risk Management Framework",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "Mechanistic interpretability",
+    "frequency": 7,
+    "example": "How Mechanistic Interpretability Works (A Gentle Technical Primer)",
+    "exampleSlug": "171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep"
+  },
+  {
+    "term": "Omnibus proposal",
+    "frequency": 7,
+    "example": "The EU's ongoing recalibration through the Omnibus proposal suggests Brussels recognises the balance needs adjustment.",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "Python for analytics",
+    "frequency": 7,
+    "example": "Why Python for Analytics in 2026",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "Risk Management Framework",
+    "frequency": 7,
+    "example": "The NIST AI Risk Management Framework",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "black-box model",
+    "frequency": 7,
+    "example": "If the black-box model shows meaningful improvement, ask:",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "career map",
+    "frequency": 7,
+    "example": "· The Modern Data Career Map",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "data career map",
+    "frequency": 7,
+    "example": "· The Modern Data Career Map",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "data careers",
+    "frequency": 7,
+    "example": "For a broader view of the tools you will encounter across different roles, see our guide to foundational tools for data careers.",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "data engineering",
+    "frequency": 7,
+    "example": "Education: Computer Science/Data Engineering",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "data lineage",
+    "frequency": 7,
+    "example": "Data Lineage: Tracking the Journey",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "data professionals",
+    "frequency": 7,
+    "example": "Almost all data professionals start here",
+    "exampleSlug": "foundational-tools-for-data-related-careers"
+  },
+  {
+    "term": "data sources",
+    "frequency": 7,
+    "example": "Data Sources – Where It Begins",
+    "exampleSlug": "inside-the-data-ecosystem"
+  },
+  {
+    "term": "disparate impact",
+    "frequency": 7,
+    "example": "It was that the company had failed to test its algorithmic models for disparate impact",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "distinction matters",
+    "frequency": 7,
+    "example": "The distinction matters",
+    "exampleSlug": "why-explainable-ai-matters-more-than-you-think"
+  },
+  {
+    "term": "domain knowledge",
+    "frequency": 7,
+    "example": "Demonstrate domain knowledge alongside technical skill",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "human judgment",
+    "frequency": 7,
+    "example": "Use data to narrow the options, and human judgment to finalize them.",
+    "exampleSlug": "a-practical-guide-to-data-driven-decisions"
+  },
+  {
+    "term": "modern data career",
+    "frequency": 7,
+    "example": "· The Modern Data Career Map",
+    "exampleSlug": "data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you"
+  },
+  {
+    "term": "neural network",
+    "frequency": 7,
+    "example": "A neural network reached 92%",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "tools for data",
+    "frequency": 7,
+    "example": "For a broader view of the tools you will encounter across different roles, see our guide to foundational tools for data careers.",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "AI Act requires",
+    "frequency": 6,
+    "example": "What the EU AI Act Requires for Model Transparency",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "Digital Operational Resilience",
+    "frequency": 6,
+    "example": "DORA (Digital Operational Resilience Act) requires financial entities to build operational resilience in their digital infrastructure",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "Education Computer Science",
+    "frequency": 6,
+    "example": "Education: Computer Science/Data Engineering",
+    "exampleSlug": "the-modern-data-career-map"
+  },
+  {
+    "term": "Operational Resilience Act",
+    "frequency": 6,
+    "example": "DORA (Digital Operational Resilience Act) requires financial entities to build operational resilience in their digital infrastructure",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "Understanding how data",
+    "frequency": 6,
+    "example": "Understanding how data flows through modern organisations is a necessary foundation for that mapping exercise.",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "classified as high-risk",
+    "frequency": 6,
+    "example": "· Which AI systems are classified as high-risk, with a focus on financial services",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "interpretable and black-box",
+    "frequency": 6,
+    "example": "What Are Interpretable and Black-Box Models?",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "AI and machine",
+    "frequency": 5,
+    "example": "Second, AI and machine learning depend on lifecycle discipline",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "Boosting Machines EBMs",
+    "frequency": 5,
+    "example": "Explainable Boosting Machines (EBMs) represent the most significant development in this space",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "GDPR and DORA",
+    "frequency": 5,
+    "example": "The Regulatory Stack: How the AI Act Interacts with GDPR and DORA",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "Understanding the data",
+    "frequency": 5,
+    "example": "Starting analysis without understanding the data.",
+    "exampleSlug": "learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners"
+  },
+  {
+    "term": "credit risk modelling",
+    "frequency": 5,
+    "example": "The more fundamental shift in credit risk modelling is the movement from explaining black boxes after the fact to building models that are transparent by design",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "credit scoring fraud",
+    "frequency": 5,
+    "example": "Financial services AI, including credit scoring, fraud detection, and insurance underwriting, falls squarely in the high-risk category",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "finance and risk",
+    "frequency": 5,
+    "example": "• Why SQL remains the most in-demand technical skill across data roles, including in finance and risk analytics",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "framework for choosing",
+    "frequency": 5,
+    "example": "• A practical framework for choosing the right tool for the right task",
+    "exampleSlug": "excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt"
+  },
+  {
+    "term": "guide to data-driven",
+    "frequency": 5,
+    "example": "· A Practical Guide to Data-Driven Decisions",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  },
+  {
+    "term": "large language models",
+    "frequency": 5,
+    "example": "Now it is AI and large language models",
+    "exampleSlug": "why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it"
+  },
+  {
+    "term": "methods like SHAP",
+    "frequency": 5,
+    "example": "Post-hoc methods like SHAP and LIME, while useful, are not substitutes for inherent transparency",
+    "exampleSlug": "interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai"
+  },
+  {
+    "term": "risk management systems",
+    "frequency": 5,
+    "example": "The requirements are substantial: mandatory risk management systems, data governance protocols, technical documentation, transparency obligations under Article 50, and continuous human oversight",
+    "exampleSlug": "signal-from-the-frontier-the-ai-developments-that-actually-matter-in-q2-2026"
+  },
+  {
+    "term": "scoring fraud detection",
+    "frequency": 5,
+    "example": "Financial services AI, including credit scoring, fraud detection, and insurance underwriting, falls squarely in the high-risk category",
+    "exampleSlug": "industry-50-explained-why-the-future-is-human-centred-not-just-automated"
+  },
+  {
+    "term": "sustainability and resilience",
+    "frequency": 5,
+    "example": "The European Commission defines Industry 5.0 through three pillars: human-centricity, sustainability, and resilience",
+    "exampleSlug": "what-neuronomixer-stands-for-ai-data-and-the-future-of-systems"
+  },
+  {
+    "term": "AI Live Testing",
+    "frequency": 4,
+    "example": "What the FCA AI Live Testing Cohort 2 Just Announced",
+    "exampleSlug": "fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a"
+  },
+  {
+    "term": "AI Risk Management",
+    "frequency": 4,
+    "example": "The NIST AI Risk Management Framework",
+    "exampleSlug": "model-risk-management-what-it-is-and-why-every-ai-team-needs-it"
+  },
+  {
+    "term": "Afford Black Boxes",
+    "frequency": 4,
+    "example": "Explainable AI in Credit Risk: Why Banks Cannot Afford Black Boxes",
+    "exampleSlug": "171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep"
+  },
+  {
+    "term": "Analysts Data Scientists",
+    "frequency": 4,
+    "example": "Path A — SQL for Analysts & Data Scientists (Overview)",
+    "exampleSlug": "learning-sql-for-free-in-2025"
+  },
+  {
+    "term": "Apple Card investigation",
+    "frequency": 4,
+    "example": "The Apple Card Investigation",
+    "exampleSlug": "explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes"
+  },
+  {
+    "term": "Banks Cannot Afford",
+    "frequency": 4,
+    "example": "Explainable AI in Credit Risk: Why Banks Cannot Afford Black Boxes",
+    "exampleSlug": "171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep"
+  },
+  {
+    "term": "DORA and sector-specific",
+    "frequency": 4,
+    "example": "The AI Act is complex, and the interaction with GDPR, DORA, and sector-specific regulation (CRD, MiFID, Solvency II) requires expert guidance.",
+    "exampleSlug": "the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation"
+  },
+  {
+    "term": "Data Protection Regulation",
+    "frequency": 4,
+    "example": "The General Data Protection Regulation (GDPR) strikes an important balance between progress and privacy",
+    "exampleSlug": "exploring-how-machine-learning-and-analytics-shape-the-future"
+  },
+  {
+    "term": "Digital Omnibus proposal",
+    "frequency": 4,
+    "example": "• What comes next in 2026 and 2027, including the Digital Omnibus proposal that could reshape the entire timeline",
+    "exampleSlug": "regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe"
+  },
+  {
+    "term": "ETL Extract Transform",
+    "frequency": 4,
+    "example": "For decades, the standard approach was ETL: Extract, Transform, Load",
+    "exampleSlug": "the-data-lifecycle-how-information-flows-through-modern-organisations"
+  }
+]
