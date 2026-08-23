@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Farsi glossary: first pass for review</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 2rem 1.5rem 4rem;
+    font: 15px/1.6 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1a1c20; background: #f6f7f9;
+  }
+  main { max-width: 1180px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin: 0 0 .35rem; letter-spacing: -.01em; }
+  .lede { color: #4a4f57; max-width: 70ch; margin: 0 0 1.25rem; }
+  .panel {
+    background: #fff; border: 1px solid #e2e5ea; border-radius: 10px;
+    padding: 1rem 1.25rem; margin: 0 0 1.5rem;
+  }
+  .panel h2 { font-size: .95rem; text-transform: uppercase; letter-spacing: .06em; color: #6b7280; margin: 0 0 .6rem; }
+  .panel ul { margin: 0; padding-left: 1.1rem; }
+  .panel li { margin: .3rem 0; }
+  .stats { font-variant-numeric: tabular-nums; color: #4a4f57; margin: .4rem 0 0; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #e2e5ea; border-radius: 10px; overflow: hidden; }
+  thead th {
+    position: sticky; top: 0; background: #eef1f5; text-align: left;
+    font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: #4a4f57;
+    padding: .6rem .7rem; border-bottom: 1px solid #d8dce3; white-space: nowrap;
+  }
+  tbody td { padding: .55rem .7rem; border-bottom: 1px solid #eef0f3; vertical-align: top; }
+  tbody tr:nth-child(even) { background: #fbfcfd; }
+  .term { font-weight: 600; white-space: nowrap; }
+  .rendering {
+    font-family: "Vazirmatn", "Segoe UI", Tahoma, "Iranian Sans", "B Nazanin", sans-serif;
+    font-size: 1.05rem; white-space: nowrap;
+  }
+  .freq { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .example { color: #3d424a; min-width: 26rem; }
+  .slug { display: block; margin-top: .2rem; font-size: .76rem; color: #8b919b; }
+  .correction { min-width: 12rem; background: #fffdf3; }
+  .tag { display: inline-block; padding: .1rem .45rem; border-radius: 999px; font-size: .74rem; white-space: nowrap; }
+  .tag-translate { background: #e4f1e6; color: #216032; }
+  .tag-transliterate { background: #e6ecf7; color: #22437f; }
+  .tag-keep-english { background: #f6ecdc; color: #7a4a12; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Farsi glossary: first pass for review</h1>
+  <p class="lede">
+    This is the drafted first pass of the translation glossary. Every term below was mined from
+    your own 26 published English posts, and the frequency column is a real count over that
+    corpus, computed in code rather than estimated. The example sentence is a real sentence
+    from the post named under it. Correct anything that reads wrong and the corrections are
+    applied straight back to <code>content/fa-glossary.json</code>.
+  </p>
+
+  <div class="panel">
+    <h2>What the three strategies mean</h2>
+    <ul>
+      <li><strong>translate</strong>: a real Farsi equivalent is idiomatic, so the rendering is Persian script</li>
+      <li><strong>transliterate</strong>: the English word is what Farsi writers say, spelled out in Persian script</li>
+      <li><strong>keep-english</strong>: Farsi tech prose keeps this one in Latin script, which is the correct answer here and not a missed translation</li>
+    </ul>
+    <p class="stats">98 entries. translate: 82, transliterate: 6, keep-english: 10.</p>
+  </div>
+
+  <div class="panel">
+    <h2>How to send corrections</h2>
+    <ul>
+      <li>Write the rendering you want in the <strong>Correction</strong> column, or mark the row for deletion.</li>
+      <li>To change only the strategy tag, write the tag you want in that column.</li>
+      <li>Send the marked-up table back, or list the corrections as "term: new rendering (strategy)" lines. Either form is applied to the JSON, and this page is then regenerated from it so the two can never disagree.</li>
+    </ul>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Term</th>
+        <th>Farsi rendering</th>
+        <th>Strategy</th>
+        <th>Corpus frequency</th>
+        <th>Example sentence from your posts</th>
+        <th>Correction</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="term">AI</td>
+        <td class="rendering" dir="rtl" lang="fa">هوش مصنوعی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">518</td>
+        <td class="example">The EU AI Act<span class="slug">why-explainable-ai-matters-more-than-you-think</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">AI governance</td>
+        <td class="rendering" dir="rtl" lang="fa">حکمرانی هوش مصنوعی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">21</td>
+        <td class="example">The global AI governance landscape is not converging<span class="slug">regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">AI literacy</td>
+        <td class="rendering" dir="rtl" lang="fa">سواد هوش مصنوعی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">8</td>
+        <td class="example">Address AI literacy<span class="slug">the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">AI systems</td>
+        <td class="rendering" dir="rtl" lang="fa">سیستم‌های هوش مصنوعی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">38</td>
+        <td class="example">Inventory your AI systems<span class="slug">the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">AML</td>
+        <td class="rendering" dir="rtl" lang="fa">مبارزه با پول‌شویی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">33</td>
+        <td class="example">Banks can no longer operate black-box AML systems<span class="slug">nigeria-just-wrote-ai-into-anti-money-laundering-the-18-month-clock-for-african-banks-has-starte</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">Basel III</td>
+        <td class="rendering" dir="rtl" lang="fa">بازل III</td>
+        <td class="strategy"><span class="tag tag-transliterate">transliterate</span></td>
+        <td class="freq">9</td>
+        <td class="example">Basel III and Banking Regulation<span class="slug">why-explainable-ai-matters-more-than-you-think</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">Data Engineers</td>
+        <td class="rendering" dir="rtl" lang="fa">مهندسان داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">14</td>
+        <td class="example">Roles: Data engineers, data analysts<span class="slug">inside-the-data-ecosystem</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">Digital Operational Resilience</td>
+        <td class="rendering" dir="rtl" lang="fa">تاب‌آوری عملیاتی دیجیتال</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">6</td>
+        <td class="example">DORA (Digital Operational Resilience Act) requires financial entities to build operational resilience in their digital infrastructure<span class="slug">industry-50-explained-why-the-future-is-human-centred-not-just-automated</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">EU</td>
+        <td class="rendering" dir="rtl" lang="fa">اتحادیه اروپا</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">103</td>
+        <td class="example">EU Regulation<span class="slug">fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">EU AI Act</td>
+        <td class="rendering" dir="rtl" lang="fa">قانون هوش مصنوعی اتحادیه اروپا</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">63</td>
+        <td class="example">The EU AI Act<span class="slug">why-explainable-ai-matters-more-than-you-think</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">Excel</td>
+        <td class="rendering" dir="rtl" lang="fa">Excel</td>
+        <td class="strategy"><span class="tag tag-keep-english">keep-english</span></td>
+        <td class="freq">95</td>
+        <td class="example">Excel is getting more powerful<span class="slug">excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">Explainable AI</td>
+        <td class="rendering" dir="rtl" lang="fa">هوش مصنوعی قابل‌تبیین</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">32</td>
+        <td class="example">What Is Explainable AI?<span class="slug">why-explainable-ai-matters-more-than-you-think</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">Explainable Boosting Machines</td>
+        <td class="rendering" dir="rtl" lang="fa">Explainable Boosting Machines</td>
+        <td class="strategy"><span class="tag tag-keep-english">keep-english</span></td>
+        <td class="freq">10</td>
+        <td class="example">The Third Option: Explainable Boosting Machines<span class="slug">interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">GDPR</td>
+        <td class="rendering" dir="rtl" lang="fa">GDPR</td>
+        <td class="strategy"><span class="tag tag-keep-english">keep-english</span></td>
+        <td class="freq">38</td>
+        <td class="example">GDPR and the Right to Explanation<span class="slug">why-explainable-ai-matters-more-than-you-think</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">Mechanistic interpretability</td>
+        <td class="rendering" dir="rtl" lang="fa">تفسیرپذیری مکانیستی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">7</td>
+        <td class="example">How Mechanistic Interpretability Works (A Gentle Technical Primer)<span class="slug">171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">Operational Resilience</td>
+        <td class="rendering" dir="rtl" lang="fa">تاب‌آوری عملیاتی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">10</td>
+        <td class="example">DORA mandates data integrity for operational resilience.<span class="slug">the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">Power BI</td>
+        <td class="rendering" dir="rtl" lang="fa">Power BI</td>
+        <td class="strategy"><span class="tag tag-keep-english">keep-english</span></td>
+        <td class="freq">15</td>
+        <td class="example">Power BI handles millions of rows<span class="slug">excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">Power Query</td>
+        <td class="rendering" dir="rtl" lang="fa">Power Query</td>
+        <td class="strategy"><span class="tag tag-keep-english">keep-english</span></td>
+        <td class="freq">14</td>
+        <td class="example">Power Query and Dynamic Arrays<span class="slug">excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">Python</td>
+        <td class="rendering" dir="rtl" lang="fa">Python</td>
+        <td class="strategy"><span class="tag tag-keep-english">keep-english</span></td>
+        <td class="freq">87</td>
+        <td class="example">Not Python<span class="slug">why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">Risk Management Framework</td>
+        <td class="rendering" dir="rtl" lang="fa">چارچوب مدیریت ریسک</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">7</td>
+        <td class="example">The NIST AI Risk Management Framework<span class="slug">model-risk-management-what-it-is-and-why-every-ai-team-needs-it</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">SHAP</td>
+        <td class="rendering" dir="rtl" lang="fa">SHAP</td>
+        <td class="strategy"><span class="tag tag-keep-english">keep-english</span></td>
+        <td class="freq">30</td>
+        <td class="example">SHAP Limitations<span class="slug">interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">SQL</td>
+        <td class="rendering" dir="rtl" lang="fa">SQL</td>
+        <td class="strategy"><span class="tag tag-keep-english">keep-english</span></td>
+        <td class="freq">120</td>
+        <td class="example">Neglecting SQL.<span class="slug">learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">SR 11-7</td>
+        <td class="rendering" dir="rtl" lang="fa">SR 11-7</td>
+        <td class="strategy"><span class="tag tag-keep-english">keep-english</span></td>
+        <td class="freq">13</td>
+        <td class="example">United States: SR 11-7 and the Foundation<span class="slug">model-risk-management-what-it-is-and-why-every-ai-team-needs-it</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">accuracy</td>
+        <td class="rendering" dir="rtl" lang="fa">دقت</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">39</td>
+        <td class="example">Accuracy (is it correct?)<span class="slug">a-practical-guide-to-data-driven-decisions</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">agentic AI</td>
+        <td class="rendering" dir="rtl" lang="fa">هوش مصنوعی عامل‌محور</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">11</td>
+        <td class="example">Agentic AI in Finance: From Demos to Deployment<span class="slug">signal-from-the-frontier-the-ai-developments-that-actually-matter-in-q2-2026</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">algorithms</td>
+        <td class="rendering" dir="rtl" lang="fa">الگوریتم‌ها</td>
+        <td class="strategy"><span class="tag tag-transliterate">transliterate</span></td>
+        <td class="freq">23</td>
+        <td class="example">Ledgers to Algorithms: The Evolution of Data in Banking<span class="slug">exploring-how-machine-learning-and-analytics-shape-the-future</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">analytics</td>
+        <td class="rendering" dir="rtl" lang="fa">تحلیل داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">111</td>
+        <td class="example">Every analytics role uses it.<span class="slug">learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">analytics engineer</td>
+        <td class="rendering" dir="rtl" lang="fa">مهندس تحلیل داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">17</td>
+        <td class="example">The Analytics Engineer: The Bridge Role Modern Teams Need<span class="slug">data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">audit</td>
+        <td class="rendering" dir="rtl" lang="fa">ممیزی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">28</td>
+        <td class="example">Audit them.<span class="slug">excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">banking</td>
+        <td class="rendering" dir="rtl" lang="fa">بانکداری</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">71</td>
+        <td class="example">banking<span class="slug">explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">banks</td>
+        <td class="rendering" dir="rtl" lang="fa">بانک‌ها</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">78</td>
+        <td class="example">Banks utilise data to detect fraud<span class="slug">data-the-red-cells-of-our-digital-worlds-veins</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">black-box</td>
+        <td class="rendering" dir="rtl" lang="fa">جعبه‌سیاه</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">46</td>
+        <td class="example">Step 3: Test Black-Box Alternatives<span class="slug">interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">compliance</td>
+        <td class="rendering" dir="rtl" lang="fa">انطباق</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">119</td>
+        <td class="example">Assess compliance gaps<span class="slug">the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">credit</td>
+        <td class="rendering" dir="rtl" lang="fa">اعتبار</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">154</td>
+        <td class="example">The Economics of AI in Credit<span class="slug">explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">credit decisions</td>
+        <td class="rendering" dir="rtl" lang="fa">تصمیمات اعتباری</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">14</td>
+        <td class="example">The technical challenge of explaining credit decisions is real, but it is solved<span class="slug">explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">credit models</td>
+        <td class="rendering" dir="rtl" lang="fa">مدل‌های اعتباری</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">12</td>
+        <td class="example">Black-box credit models do not just create theoretical risk<span class="slug">explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">credit risk</td>
+        <td class="rendering" dir="rtl" lang="fa">ریسک اعتباری</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">39</td>
+        <td class="example">Credit Risk: A Concrete Comparison<span class="slug">interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">credit scoring</td>
+        <td class="rendering" dir="rtl" lang="fa">امتیازدهی اعتباری</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">28</td>
+        <td class="example">A credit scoring model evaluates the customer&#39;s risk profile<span class="slug">the-data-lifecycle-how-information-flows-through-modern-organisations</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">data</td>
+        <td class="rendering" dir="rtl" lang="fa">داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">843</td>
+        <td class="example">Why Data Matters?<span class="slug">data-the-red-cells-of-our-digital-worlds-veins</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">data analyst</td>
+        <td class="rendering" dir="rtl" lang="fa">تحلیل‌گر داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">22</td>
+        <td class="example">The Data Analyst: Turning Data into Decisions<span class="slug">data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">data cleaning</td>
+        <td class="rendering" dir="rtl" lang="fa">پاکسازی داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">9</td>
+        <td class="example">Skipping data cleaning.<span class="slug">learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">data ecosystem</td>
+        <td class="rendering" dir="rtl" lang="fa">اکوسیستم داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">16</td>
+        <td class="example">Components of the Data Ecosystem<span class="slug">inside-the-data-ecosystem</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">data flows</td>
+        <td class="rendering" dir="rtl" lang="fa">جریان‌های داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">9</td>
+        <td class="example">How Data Flows, Lives, and Connects<span class="slug">inside-the-data-ecosystem</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">data governance</td>
+        <td class="rendering" dir="rtl" lang="fa">حکمرانی داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">18</td>
+        <td class="example">Enterprise Data Governance<span class="slug">excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">data lifecycle</td>
+        <td class="rendering" dir="rtl" lang="fa">چرخه عمر داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">18</td>
+        <td class="example">What Is the Data Lifecycle?<span class="slug">the-data-lifecycle-how-information-flows-through-modern-organisations</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">data lineage</td>
+        <td class="rendering" dir="rtl" lang="fa">ردیابی داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">7</td>
+        <td class="example">Data Lineage: Tracking the Journey<span class="slug">the-data-lifecycle-how-information-flows-through-modern-organisations</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">data quality</td>
+        <td class="rendering" dir="rtl" lang="fa">کیفیت داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">15</td>
+        <td class="example">Data quality is the quiet hero of every sound decision<span class="slug">a-practical-guide-to-data-driven-decisions</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">data scientist</td>
+        <td class="rendering" dir="rtl" lang="fa">دانشمند داده</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">16</td>
+        <td class="example">The Data Scientist: Building Models That Predict and Automate<span class="slug">data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">data-driven</td>
+        <td class="rendering" dir="rtl" lang="fa">داده‌محور</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">30</td>
+        <td class="example">Data-Driven vs<span class="slug">a-practical-guide-to-data-driven-decisions</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">data-driven decisions</td>
+        <td class="rendering" dir="rtl" lang="fa">تصمیمات داده‌محور</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">10</td>
+        <td class="example">To make data-driven decisions responsibly:<span class="slug">a-practical-guide-to-data-driven-decisions</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">deep learning</td>
+        <td class="rendering" dir="rtl" lang="fa">یادگیری عمیق</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">8</td>
+        <td class="example">• TensorFlow and PyTorch: deep learning frameworks<span class="slug">learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">deployment</td>
+        <td class="rendering" dir="rtl" lang="fa">استقرار</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">24</td>
+        <td class="example">Agentic AI in Finance: From Demos to Deployment<span class="slug">signal-from-the-frontier-the-ai-developments-that-actually-matter-in-q2-2026</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">disparate impact</td>
+        <td class="rendering" dir="rtl" lang="fa">تأثیر نامتناسب</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">7</td>
+        <td class="example">It was that the company had failed to test its algorithmic models for disparate impact<span class="slug">explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">documentation</td>
+        <td class="rendering" dir="rtl" lang="fa">مستندسازی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">41</td>
+        <td class="example">The Documentation Gap<span class="slug">explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">explainability</td>
+        <td class="rendering" dir="rtl" lang="fa">تبیین‌پذیری</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">82</td>
+        <td class="example">Explainability takes many forms<span class="slug">exploring-how-machine-learning-and-analytics-shape-the-future</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">features</td>
+        <td class="rendering" dir="rtl" lang="fa">ویژگی‌ها</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">23</td>
+        <td class="example">The features are better<span class="slug">excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">finance</td>
+        <td class="rendering" dir="rtl" lang="fa">امور مالی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">72</td>
+        <td class="example">Resilience in Finance<span class="slug">industry-50-explained-why-the-future-is-human-centred-not-just-automated</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">financial</td>
+        <td class="rendering" dir="rtl" lang="fa">مالی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">157</td>
+        <td class="example">In Financial Services<span class="slug">data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">financial institutions</td>
+        <td class="rendering" dir="rtl" lang="fa">نهادهای مالی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">22</td>
+        <td class="example">For financial institutions, this is not abstract<span class="slug">industry-50-explained-why-the-future-is-human-centred-not-just-automated</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">financial services</td>
+        <td class="rendering" dir="rtl" lang="fa">خدمات مالی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">58</td>
+        <td class="example">In Financial Services<span class="slug">data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">framework</td>
+        <td class="rendering" dir="rtl" lang="fa">چارچوب</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">74</td>
+        <td class="example">A Practical Decision Framework<span class="slug">interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">fraud detection</td>
+        <td class="rendering" dir="rtl" lang="fa">تشخیص تقلب</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">21</td>
+        <td class="example">Example: Credit card fraud detection data<span class="slug">learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">governance</td>
+        <td class="rendering" dir="rtl" lang="fa">حکمرانی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">184</td>
+        <td class="example">Enterprise Data Governance<span class="slug">excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">high-risk</td>
+        <td class="rendering" dir="rtl" lang="fa">پرریسک</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">42</td>
+        <td class="example">High-Risk AI Rules Go Live<span class="slug">regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">high-risk AI</td>
+        <td class="rendering" dir="rtl" lang="fa">هوش مصنوعی پرریسک</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">15</td>
+        <td class="example">High-Risk AI Rules Go Live<span class="slug">regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">human oversight</td>
+        <td class="rendering" dir="rtl" lang="fa">نظارت انسانی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">21</td>
+        <td class="example">Industry 5.0&#39;s emphasis on transparency and human oversight directly addresses this.<span class="slug">industry-50-explained-why-the-future-is-human-centred-not-just-automated</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">infrastructure</td>
+        <td class="rendering" dir="rtl" lang="fa">زیرساخت</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">28</td>
+        <td class="example">Data Collection &amp; Infrastructure<span class="slug">the-modern-data-career-map</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">interpretability</td>
+        <td class="rendering" dir="rtl" lang="fa">تفسیرپذیری</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">31</td>
+        <td class="example">The Accuracy Versus Interpretability Myth<span class="slug">why-explainable-ai-matters-more-than-you-think</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">interpretable</td>
+        <td class="rendering" dir="rtl" lang="fa">قابل‌تفسیر</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">67</td>
+        <td class="example">Are the features interpretable<span class="slug">explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">interpretable models</td>
+        <td class="rendering" dir="rtl" lang="fa">مدل‌های قابل‌تفسیر</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">20</td>
+        <td class="example">Inherently Interpretable Models<span class="slug">explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">large language models</td>
+        <td class="rendering" dir="rtl" lang="fa">مدل‌های زبانی بزرگ</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">5</td>
+        <td class="example">Now it is AI and large language models<span class="slug">why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">logistic regression</td>
+        <td class="rendering" dir="rtl" lang="fa">رگرسیون لجستیک</td>
+        <td class="strategy"><span class="tag tag-transliterate">transliterate</span></td>
+        <td class="freq">21</td>
+        <td class="example">Logistic regression came in at 88%<span class="slug">interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">machine learning</td>
+        <td class="rendering" dir="rtl" lang="fa">یادگیری ماشین</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">69</td>
+        <td class="example">Not machine learning<span class="slug">why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">model</td>
+        <td class="rendering" dir="rtl" lang="fa">مدل</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">307</td>
+        <td class="example">Build a model inventory<span class="slug">model-risk-management-what-it-is-and-why-every-ai-team-needs-it</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">model performance</td>
+        <td class="rendering" dir="rtl" lang="fa">عملکرد مدل</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">10</td>
+        <td class="example">Model Performance Comparison<span class="slug">explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">model risk</td>
+        <td class="rendering" dir="rtl" lang="fa">ریسک مدل</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">60</td>
+        <td class="example">What Is Model Risk Management?<span class="slug">model-risk-management-what-it-is-and-why-every-ai-team-needs-it</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">model risk management</td>
+        <td class="rendering" dir="rtl" lang="fa">مدیریت ریسک مدل</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">35</td>
+        <td class="example">What Is Model Risk Management?<span class="slug">model-risk-management-what-it-is-and-why-every-ai-team-needs-it</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">model validation</td>
+        <td class="rendering" dir="rtl" lang="fa">اعتبارسنجی مدل</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">11</td>
+        <td class="example">Pillar 3: Model Validation<span class="slug">model-risk-management-what-it-is-and-why-every-ai-team-needs-it</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">monitoring</td>
+        <td class="rendering" dir="rtl" lang="fa">پایش</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">37</td>
+        <td class="example">Implement basic monitoring<span class="slug">model-risk-management-what-it-is-and-why-every-ai-team-needs-it</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">neural network</td>
+        <td class="rendering" dir="rtl" lang="fa">شبکه عصبی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">7</td>
+        <td class="example">A neural network reached 92%<span class="slug">interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">obligations</td>
+        <td class="rendering" dir="rtl" lang="fa">تعهدات</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">23</td>
+        <td class="example">They are legal obligations<span class="slug">industry-50-explained-why-the-future-is-human-centred-not-just-automated</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">open banking</td>
+        <td class="rendering" dir="rtl" lang="fa">بانکداری باز</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">8</td>
+        <td class="example">Over the last decade, Open Banking has altered the environment<span class="slug">exploring-how-machine-learning-and-analytics-shape-the-future</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">pandas</td>
+        <td class="rendering" dir="rtl" lang="fa">pandas</td>
+        <td class="strategy"><span class="tag tag-keep-english">keep-english</span></td>
+        <td class="freq">23</td>
+        <td class="example">• pandas: data manipulation<span class="slug">learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">personal data</td>
+        <td class="rendering" dir="rtl" lang="fa">داده شخصی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">10</td>
+        <td class="example">GDPR enforces accurate and up-to-date personal data<span class="slug">the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">portfolio</td>
+        <td class="rendering" dir="rtl" lang="fa">پرتفوی</td>
+        <td class="strategy"><span class="tag tag-transliterate">transliterate</span></td>
+        <td class="freq">28</td>
+        <td class="example">• PyPortfolioOpt: portfolio optimization<span class="slug">learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">post-hoc explanation</td>
+        <td class="rendering" dir="rtl" lang="fa">تبیین پسینی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">9</td>
+        <td class="example">Post-Hoc Explanation Methods<span class="slug">explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">raw data</td>
+        <td class="rendering" dir="rtl" lang="fa">داده خام</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">12</td>
+        <td class="example">Because ELT preserves the raw data<span class="slug">the-data-lifecycle-how-information-flows-through-modern-organisations</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">regression</td>
+        <td class="rendering" dir="rtl" lang="fa">رگرسیون</td>
+        <td class="strategy"><span class="tag tag-transliterate">transliterate</span></td>
+        <td class="freq">23</td>
+        <td class="example">Logistic regression came in at 88%<span class="slug">interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">regulation</td>
+        <td class="rendering" dir="rtl" lang="fa">مقررات</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">53</td>
+        <td class="example">EU Regulation<span class="slug">fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">regulators</td>
+        <td class="rendering" dir="rtl" lang="fa">نهادهای نظارتی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">36</td>
+        <td class="example">Financial regulators have demanded model transparency long before the AI Act<span class="slug">why-explainable-ai-matters-more-than-you-think</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">regulatory</td>
+        <td class="rendering" dir="rtl" lang="fa">نظارتی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">164</td>
+        <td class="example">It is a regulatory roadmap<span class="slug">fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">regulatory reporting</td>
+        <td class="rendering" dir="rtl" lang="fa">گزارش‌دهی نظارتی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">8</td>
+        <td class="example">• How SQL is used in real-world settings: from credit risk analysis to fraud detection and regulatory reporting<span class="slug">why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">resilience</td>
+        <td class="rendering" dir="rtl" lang="fa">تاب‌آوری</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">35</td>
+        <td class="example">Resilience in Finance<span class="slug">industry-50-explained-why-the-future-is-human-centred-not-just-automated</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">risk</td>
+        <td class="rendering" dir="rtl" lang="fa">ریسک</td>
+        <td class="strategy"><span class="tag tag-transliterate">transliterate</span></td>
+        <td class="freq">266</td>
+        <td class="example">The Four Risk Tiers<span class="slug">the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">transparency</td>
+        <td class="rendering" dir="rtl" lang="fa">شفافیت</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">61</td>
+        <td class="example">It mandates transparency<span class="slug">interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">unstructured data</td>
+        <td class="rendering" dir="rtl" lang="fa">داده بدون‌ساختار</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">9</td>
+        <td class="example">Structured vs Unstructured Data<span class="slug">what-is-data-a-complete-beginners-guide-for-the-curious-mind</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">validation</td>
+        <td class="rendering" dir="rtl" lang="fa">اعتبارسنجی</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">42</td>
+        <td class="example">Pillar 3: Model Validation<span class="slug">model-risk-management-what-it-is-and-why-every-ai-team-needs-it</span></td>
+        <td class="correction"></td>
+      </tr>
+      <tr>
+        <td class="term">version control</td>
+        <td class="rendering" dir="rtl" lang="fa">کنترل نسخه</td>
+        <td class="strategy"><span class="tag tag-translate">translate</span></td>
+        <td class="freq">8</td>
+        <td class="example">Version control is still absent<span class="slug">excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt</span></td>
+        <td class="correction"></td>
+      </tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>
