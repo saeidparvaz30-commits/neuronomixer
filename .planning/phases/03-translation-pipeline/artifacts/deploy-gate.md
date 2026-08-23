@@ -316,5 +316,20 @@ walkthroughs: `npm ci --dry-run` exit 0 with zero removals, `npx tsc --noEmit` e
 
 ---
 
-<!-- The Authorisation section is written at the checkpoint, before Task 3 begins. -->
+## Authorisation
+
+Given 2026-08-23, in session, at the Task 2 checkpoint. Saeid selected:
+
+> "Approved — push main"
+
+from the checkpoint question "Authorize the push of main (80 commits) to origin and the
+resulting production deploy?". The branch named and confirmed is `main`, matching the
+production-branch finding above. The T-03-11 framing (this deploy as the evidence pass for
+the three too-new package verdicts) was presented in the same checkpoint and accepted with
+the approval.
+
+Note: the count at approval time is **80** commits, not the 79 captured in the Pre-push
+section — the one additional commit is `03a0dc0 docs(03-04): assemble the D-11 pre-push
+evidence pack`, this artifact itself. No source file changed after evidence capture.
+
 <!-- The Post-deploy section is written by Task 3, after the deploy reaches a ready state. -->
