@@ -4,17 +4,17 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 3
 current_phase_name: Translation Pipeline
-status: executing
-stopped_at: Completed 03-07-PLAN.md
-last_updated: "2026-08-22T21:13:49.680Z"
-last_activity: 2026-08-22
-last_activity_desc: "Completed plan 03-07 (translate-posts.ts CLI: dry-run-default flag surface, raw-perspective selection 11 dev / 26 prod with 0 stale, translatable enumeration, $1.52 backlog estimate, run-state artifact and a server-validated write-scope probe; zero Farsi documents written on either dataset)"
+status: paused
+stopped_at: Paused at 03-06 Task 1 (blocking human checkpoint — Saeid's glossary correction pass)
+last_updated: "2026-08-23T20:24:39.538Z"
+last_activity: 2026-08-23
+last_activity_desc: "Closed the D-11 deploy gate (03-04: main pushed, prod deploy READY at the pushed SHA, filter+schema live-proven, Farsi count 0), adopted D-16 (subscription CLI transport, plans 03-05..03-10 revised), executed 03-05 (98-entry glossary first pass + loader, zero open blockers); paused at the 03-06 glossary-review checkpoint"
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 17
-  completed_plans: 11
-  percent: 65
+  completed_plans: 13
+  percent: 76
 ---
 
 # Project State
@@ -28,12 +28,12 @@ See: .planning/PROJECT.md (updated 2026-08-11)
 
 ## Current Position
 
-Phase: 3 (Translation Pipeline) — EXECUTING
-Plan: 4 of 10 (03-01, 03-02, 03-03 and 03-07 have SUMMARYs; 03-04 is the next unexecuted plan by number)
-Status: Ready to execute
-Last activity: 2026-08-22 — Completed plan 03-07 (translate-posts.ts CLI: dry-run-default flag surface, raw-perspective selection 11 dev / 26 prod with 0 stale, translatable enumeration, $1.52 backlog estimate, run-state artifact and a server-validated write-scope probe; zero Farsi documents written on either dataset)
+Phase: 3 (Translation Pipeline) — PAUSED at 03-06 Task 1
+Plan: 6 of 10 (03-01..03-05 and 03-07 have SUMMARYs; 03-06 is open at its blocking checkpoint, then 03-08, 03-09, 03-10 remain)
+Status: Awaiting Saeid's glossary corrections (03-06 Task 1, checkpoint:human-verify)
+Last activity: 2026-08-23 — D-11 deploy gate closed; D-16 subscription-CLI transport adopted and plans revised; 03-05 executed (98-entry glossary, review HTML delivered to Saeid)
 
-Progress: [███████░░░] 65% (11/17 plans)
+Progress: [████████░░] 76% (13/17 plans)
 
 ## Performance Metrics
 
@@ -96,6 +96,7 @@ Decisions are logged in PROJECT.md Key Decisions table. Recent decisions affecti
 - [Phase 03]: the run-state artifact carries a SHA-256 digest of the structural fingerprint, not the fingerprint itself; equality is the only property 03-08 needs and the raw value is hundreds of KB of document structure in a version-controlled directory (plan 03-07, 2026-08-22)
 - [Phase 03]: the printed header is asserted against client.config().dataset before the first read, so the operator read-back cannot drift from the content lake actually being talked to (plan 03-07, 2026-08-22)
 - [Phase 03]: the multi-post brake is evaluated on the resolved working set, and a non-stale Farsi sibling is promoted into that set only when --slug accompanies --retranslate, because doing it across the backlog would rewrite every Farsi draft (plan 03-07, 2026-08-22)
+- [Phase 03] **D-16 (Saeid, 2026-08-23): the model transport is the Claude Code CLI on his subscription, not the paid API.** `scripts/translate-posts.ts` spawns `claude -p --model sonnet --output-format json` per request (prompt via stdin, clean JSON on stdout with a full `usage` block; CLI warnings go to stderr and must not be parsed). This supersedes D-03's Batch API half; the model stays Sonnet. Consequences: the `ANTHROPIC_API_KEY` blocker is VOID (no key anywhere); no batch ids, no `custom_id` matching, no 29-day resume — a crashed run resumes from the per-post status in the run-state artifact instead; passes run sequentially per post; TokenUsage rows record the CLI-reported token counts with cost 0 (subscription); prompt-cache economics are no longer a goal. Everything protective is unchanged: walker, structural fingerprint gate, D-05 tiers, D-08 staleness, draft-only writes, never-scheduled invariant. Headless transport proven in-session (subscription auth, `result` + `usage` parsed from JSON). Plans 03-05/03-08/03-09/03-10 revised to match.
 
 ### Pending Todos
 
@@ -103,7 +104,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- **BLOCKER (blocks plan 03-05): `ANTHROPIC_API_KEY` is absent from all three env files** (`.env`, `.env.local`, `.env.vercel-prod`). The existing Claude routes take it from the Vercel project environment, which is why nothing in the repo ever needed it locally. Saeid must add it to `.env.local` (dev rehearsal) and `.env.vercel-prod` (proof run) before the Batch API run. Nothing between here and 03-05 is affected. Recorded with live evidence in `.planning/phases/03-translation-pipeline/artifacts/preflight.md` (RESEARCH assumption A2). Re-check any time with `npx tsx --env-file .env.local scripts/checks/env-preflight.check.ts`. **2026-08-23: Saeid committed in-session to adding the key himself; re-run the preflight before dispatching 03-05.**
+- **VOID 2026-08-23 (superseded by D-16): the `ANTHROPIC_API_KEY` blocker.** Saeid decided the pipeline runs on his Claude Code subscription via `claude -p`, so no API key is needed in any env file, ever. The env-preflight check's BLOCKER row for the key must be replaced by a `claude -p` availability probe (folded into the revised plan 03-05).
 - **CLOSED 2026-08-23 (plan 03-04): the D-11 deploy gate.** Saeid authorised the push at the Task 2 checkpoint; `main` pushed `5ea9ddb..43b5dfe` (81 commits), Vercel production deployment `dpl_A16hZgLQZJozQsmvXq8NkY8C8qmD` READY with `gitSource.sha` equal to the pushed HEAD, live filter check ALL PASS against `blog_posts`, live `/blog` 200, Studio walk confirmed the split panes plus Language/Translation of/Translation Notes with `sourceUpdatedAt` correctly hidden on English docs, and the production Farsi count is 0 both sides of the deploy. Full evidence in `.planning/phases/03-translation-pipeline/artifacts/deploy-gate.md`. Plan 03-10's precondition is satisfied.
 - **RESOLVED 2026-08-22 (plan 03-01, commit eb58469): `package-lock.json` out of sync, `npm ci` broken.** The recorded `@sanity/visual-editing@3.0.5` diagnosis was **wrong** and is superseded: that package does not depend on `@sanity/client` at all, and `package.json` was never out of sync with the lock's root maps. The real failure was four transitive version mismatches (`@sanity/client` 7.23.0 to 7.26.2, `@sanity/eventsource` 5.0.2 to 5.0.4, `get-it` 8.8.0 to 8.8.3, `nanoid` 3.3.11 to 3.3.18). Repaired with `npm install --package-lock-only` (never a bare `npm install`, which would reify the `--no-package-lock` `node_modules`). Delta was those four bumps plus six `@tailwindcss/oxide-wasm32-wasi` wasm shim entries, zero removals, and no movement in `next`, `react`, `next-sanity`, `sanity`, `prisma` or `@anthropic-ai/sdk`. Verified: `npm ci --dry-run` exit 0, `npx tsc --noEmit` 0, `npx next build` 0, route-smoke 28/28. `npm ci` is usable again locally, in CI and on Vercel, so the D-11 push-and-deploy gate is unblocked.
 - **RESOLVED 2026-08-22 (plan 03-01): the uncommitted `package-lock.json` working-tree drift.** It was a partial repair of the above, not unrelated noise, and was absorbed into the repair commit.
@@ -130,8 +131,10 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-08-22T21:13:33.070Z
-Stopped at: Completed 03-07-PLAN.md
-Resume file: None
+Last session: 2026-08-23T20:24:39.538Z
+Stopped at: 03-06 Task 1 blocking checkpoint — Saeid reviews `content/fa-glossary-review.html` and replies "glossary approved" or a correction list
+Resume file: .planning/phases/03-translation-pipeline/.continue-here.md
 
-Outstanding human check (needs Saeid's Chrome against `npx next start`): `/fa` styled and right to left, `/` unchanged with nav and footer, a nonsense URL showing the branded 404. All four items are already green under automated assertion.
+Outstanding human checks:
+- 03-06 Task 1: glossary corrections (the review HTML was delivered to Saeid in-session on 2026-08-23; the JSON must stay untouched until he answers)
+- Carried from Phase 1 (needs Saeid's Chrome against `npx next start`): `/fa` styled and right to left, `/` unchanged with nav and footer, a nonsense URL showing the branded 404. All already green under automated assertion.

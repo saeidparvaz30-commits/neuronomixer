@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-08-23T20:24:39.538Z",
+  "phase": "03",
+  "phase_name": "translation-pipeline",
+  "phase_dir": ".planning/phases/03-translation-pipeline",
+  "plan": 6,
+  "task": 1,
+  "total_tasks": 2,
+  "status": "paused",
+  "completed_tasks": [
+    {"id": "03-04", "name": "D-11 deploy gate (push main + prod deploy + liveness proof)", "status": "done", "commit": "1da3792"},
+    {"id": "plan-revision", "name": "Plans 03-05..03-10 revised for D-16 subscription-CLI transport", "status": "done", "commit": "8bb0add"},
+    {"id": "03-05", "name": "Glossary first pass, loader, env-preflight CLI probe", "status": "done", "commit": "5c893be"},
+    {"id": "03-06/1", "name": "Saeid reviews and corrects the first-pass glossary", "status": "in_progress", "progress": "Review HTML delivered to Saeid in-session 2026-08-23; awaiting 'glossary approved' or a correction list; JSON untouched"}
+  ],
+  "remaining_tasks": [
+    {"id": "03-06/2", "name": "Apply corrections, regenerate review HTML, re-prove the file", "status": "not_started"},
+    {"id": "03-08", "name": "Translate + verify passes over the subscription CLI, gate, notes, draft write, spend record", "status": "not_started"},
+    {"id": "03-09", "name": "Dev-dataset rehearsal run with assertions", "status": "not_started"},
+    {"id": "03-10", "name": "One production post end to end + Studio walk + phase close (two human gates)", "status": "not_started"}
+  ],
+  "blockers": [
+    {"description": "03-06 Task 1 checkpoint: Saeid must review content/fa-glossary-review.html and reply 'glossary approved' or a correction list", "type": "human_action", "workaround": "none — D-03 requires his Farsi judgement before any post is translated"}
+  ],
+  "async_jobs": [],
+  "human_actions_pending": [
+    {"action": "Review the 98-entry glossary (content/fa-glossary-review.html) and reply with approval or corrections", "context": "03-06 Task 1 blocking checkpoint; the glossary shapes every future Farsi translation and is cheap to correct only before the backlog run", "blocking": true}
+  ],
+  "decisions": [
+    {"decision": "D-16: model transport is the Claude Code CLI on Saeid's subscription (claude -p --model sonnet --output-format json, stdin prompt, stdout-only parsing), not the paid API", "rationale": "Saeid has a subscription; zero marginal cost; ANTHROPIC_API_KEY blocker voided; all protective machinery unchanged", "phase": "03"},
+    {"decision": "Deploy gate D-11 closed with Saeid's explicit approval: main pushed 5ea9ddb..43b5dfe, prod deploy READY at the pushed SHA, filter+schema live, Farsi count 0 both sides", "rationale": "Phase 2 ordering invariant satisfied before any Farsi document exists; plan 03-10's precondition met", "phase": "03"}
+  ],
+  "uncommitted_files": [],
+  "next_action": "Resume with /gsd-execute-phase 3. Safe-resume will find 03-06 without a SUMMARY: that is the open Task 1 checkpoint, not lost work. Ask Saeid for his glossary verdict, transcribe it verbatim, then run 03-06 Task 2 (apply corrections, --regen-html, re-prove, commit the two content files together).",
+  "context_notes": "Production now runs the Phase 2 English filter, Studio split and 18-field schema (deploy-gate.md holds the full evidence). The pipeline is API-key-free end to end; env-preflight is 7/7 with a claude CLI probe. The glossary block is embedded at the top of every prompt (planner chose stdin embedding over --append-system-prompt for Windows quoting safety). TokenUsage rows record CLI usage at cost 0. Farsi docs must never carry status 'scheduled' (unfiltered cron would auto-approve and email subscribers in English); 03-08 enforces. NEVER npm run build locally (prisma migrate deploy reads .env = prod DB); the build gate is npx next build."
+}
