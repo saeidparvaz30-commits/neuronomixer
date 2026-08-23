@@ -1,7 +1,8 @@
 /**
  * Correctness proof for the translation pipeline's pure core: the Portable Text walker
- * (scripts/lib/portable-text-walk.ts), the D-05 tier 1 structural fingerprint gate, and the
- * translationNotes formatter (scripts/lib/translation-notes.ts).
+ * (scripts/lib/portable-text-walk.ts), the D-05 tier 1 structural fingerprint gate, the
+ * translationNotes formatter (scripts/lib/translation-notes.ts), and the glossary loader and
+ * its deterministic prompt block (scripts/lib/glossary.ts).
  * Run: npx tsx scripts/checks/translation.check.ts | live: npx tsx --env-file .env.local scripts/checks/translation.check.ts --live
  * The offline section needs no env, no network and no model. Only --live touches the Content Lake, read-only.
  * --post-run is reserved for plan 03-09 (assertions against a Farsi draft the pipeline wrote) and is not implemented yet.
@@ -17,6 +18,14 @@ import {
   type Translatable,
 } from "../lib/portable-text-walk";
 import { formatNotes, todayIso, type Finding } from "../lib/translation-notes";
+import {
+  glossaryTermIndex,
+  loadGlossary,
+  serializeGlossaryBlock,
+  MAX_ENTRIES,
+  MIN_ENTRIES,
+  STRATEGIES,
+} from "../lib/glossary";
 import { EN_LANGUAGE, STATUS_APPROVED } from "../../src/sanity/lib/queries";
 
 const argv = process.argv.slice(2);
@@ -430,8 +439,109 @@ assert.match(
   `todayIso must return YYYY-MM-DD so no two call sites invent competing date formats. Got: ${todayIso()}`,
 );
 
+// ── H. Glossary (SC-3, D-01, D-02, D-04) ─────────────────────────────────────
+// Everything here is offline: loadGlossary reads one file and serializeGlossaryBlock returns a
+// string. The point of asserting it in this check rather than at run time is that a malformed
+// glossary must be caught before a run starts, since the block below rides at the top of every
+// single request in that run.
+
+const glossary = loadGlossary();
+
+// Anti-vacuity first, in the style of section A: a loader that returned an empty entries array
+// would satisfy the sortedness, uniqueness and byte-identity assertions by doing nothing.
+assert.ok(
+  glossary.entries.length > 0,
+  "loadGlossary returned 0 entries. Every glossary assertion below would then be vacuous.",
+);
+assert.ok(
+  glossary.entries.length >= MIN_ENTRIES && glossary.entries.length <= MAX_ENTRIES,
+  `the glossary carries ${glossary.entries.length} entries, outside the D-01 bound of ${MIN_ENTRIES} to ${MAX_ENTRIES}.`,
+);
+
+for (const [i, entry] of glossary.entries.entries()) {
+  assert.ok(
+    (STRATEGIES as readonly string[]).includes(entry.strategy),
+    `glossary entries[${i}] ("${entry.term}") has strategy "${entry.strategy}", not one of ${STRATEGIES.join(", ")} (D-02).`,
+  );
+  assert.ok(entry.term.length > 0, `glossary entries[${i}] has an empty term.`);
+  assert.ok(entry.rendering.length > 0, `glossary entries[${i}] ("${entry.term}") has an empty rendering.`);
+}
+
+const lowerTerms = glossary.entries.map((e) => e.term.toLowerCase());
+assert.strictEqual(
+  new Set(lowerTerms).size,
+  lowerTerms.length,
+  `the glossary carries a case-insensitive duplicate term. Two entries for one term mean the translator is given two different instructions for the same word.\n  terms: ${lowerTerms.filter((t, i) => lowerTerms.indexOf(t) !== i).join(", ")}`,
+);
+
+const termsInFileOrder = glossary.entries.map((e) => e.term);
+assert.deepStrictEqual(
+  termsInFileOrder,
+  [...termsInFileOrder].sort(),
+  "the glossary file is not sorted by term ascending. Sorted output is what keeps a correction a clean one-line diff rather than a reshuffle.",
+);
+
+assert.strictEqual(
+  glossaryTermIndex(glossary).size,
+  glossary.entries.length,
+  "glossaryTermIndex lost an entry, so the verify pass would silently not check adherence for it.",
+);
+
+// Two INDEPENDENT loads, not one glossary serialised twice: this asserts determinism of the
+// whole load-and-serialise path, which is the property the cached prefix and the diffability of
+// the file both rest on.
+const blockA = serializeGlossaryBlock(loadGlossary());
+const blockB = serializeGlossaryBlock(loadGlossary());
+assert.strictEqual(
+  blockA,
+  blockB,
+  "serializeGlossaryBlock returned different bytes for two independent loads of the same glossary. Something in the block is not deterministic, which breaks the identical-instruction guarantee across a run.",
+);
+
+assert.ok(
+  !/\d{4}-\d{2}-\d{2}/.test(blockA),
+  `the serialised block contains a date. It must carry no timestamp: a date makes every request in a run different from the last and turns a regenerated block into a diff. Block starts: ${blockA.slice(0, 120)}`,
+);
+
+// The entry lines are exactly the tab-carrying lines; the framing lines carry no tab.
+const blockLines = blockA.split("\n");
+const entryLines = blockLines.filter((l) => l.includes("\t"));
+assert.strictEqual(
+  entryLines.length,
+  glossary.entries.length,
+  `the block carries ${entryLines.length} entry line(s) for ${glossary.entries.length} entries. Every entry must reach the prompt exactly once.`,
+);
+for (const [i, line] of entryLines.entries()) {
+  const parts = line.split("\t");
+  assert.strictEqual(
+    parts.length,
+    3,
+    `block entry line ${i} has ${parts.length} tab-separated field(s), expected term, strategy, rendering. Got: ${JSON.stringify(line)}`,
+  );
+}
+assert.deepStrictEqual(
+  entryLines.map((l) => l.split("\t")[0]),
+  [...termsInFileOrder].sort(),
+  "the block's entry lines are not in term-ascending order, so two serialisations of differently ordered files would not match.",
+);
+
+// D-04 is a standing instruction, not decoration: without it the model has no rule for the
+// terms the lean glossary deliberately omits, which is most of them.
+assert.ok(
+  blockA.includes("follow common Farsi tech-press usage"),
+  "the block does not carry the D-04 standing instruction for terms that are not in the glossary.",
+);
+assert.ok(
+  blockA.includes("Latin script"),
+  "the block does not tell the translator that keeping English in Latin script is idiomatic where it is the norm (D-04).",
+);
+
 console.log(
   `offline: fixture ${items.length} slot(s) over ${FIXTURE.length} block(s) (${EXPECTED_KINDS.filter((k) => k === "span").length} span, ${EXPECTED_KINDS.filter((k) => k === "cell").length} cell, 1 alt, 1 caption), identity round trip byte identical, fingerprint invariant under full substitution, ${MUTATIONS.length}/${MUTATIONS.length} structural mutations detected, unknown _type "code" contributed 0 slots and survived byte identical, count mismatch throws in both directions, notes format pinned (clean line, warn before info, one-lined, no em dash)`,
+);
+
+console.log(
+  `offline: glossary ${glossary.entries.length} entries (${STRATEGIES.map((s) => `${s} ${glossary.entries.filter((e) => e.strategy === s).length}`).join(", ")}), block ${blockA.length} chars over ${blockLines.length} line(s) with ${entryLines.length} entry line(s), byte identical across two independent loads, no date, D-04 standing instruction present`,
 );
 
 if (!wantsLive) {
