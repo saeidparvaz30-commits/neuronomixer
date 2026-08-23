@@ -332,4 +332,86 @@ Note: the count at approval time is **80** commits, not the 79 captured in the P
 section — the one additional commit is `03a0dc0 docs(03-04): assemble the D-11 pre-push
 evidence pack`, this artifact itself. No source file changed after evidence capture.
 
-<!-- The Post-deploy section is written by Task 3, after the deploy reaches a ready state. -->
+## Post-deploy
+
+Executed 2026-08-23, immediately after the authorisation above.
+
+### Push
+
+`git push origin main` ran clean, no force flag, no `--no-verify`, no `--no-gpg-sign`:
+
+```
+To https://github.com/saeidparvaz30-commits/NeuroNomixer.git
+   5ea9ddb..43b5dfe  main -> main
+```
+
+Pushed HEAD: `43b5dfe` (`docs(03-04): record the D-11 push authorisation`), 81 commits
+crossing (the 80 at approval plus the authorisation-record commit itself).
+
+### Deployment
+
+Vercel picked up the push automatically. Deployment `dpl_A16hZgLQZJozQsmvXq8NkY8C8qmD`
+(`neuro-nomixer-jl0954u2t`), target `production`, reached **READY** after roughly a
+3-minute build (polled via `npx vercel inspect` until Ready).
+
+SHA match, from the Vercel API deployment record:
+
+```
+gitSource.sha : 43b5dfef8ad9ac941c928bf481efbd55f57a97ed
+gitSource.ref : main
+target        : production
+readyState    : READY
+aliasAssigned : true
+```
+
+`43b5dfef8ad9...` is byte-identical to the pushed HEAD. `npx vercel inspect
+www.neuronomixer.com` resolves the apex domain to this same deployment id, so the
+production build serving readers is the pushed commit, not a stale one.
+
+### Liveness proof 1: live filter check
+
+`npx tsx --env-file .env.vercel-prod scripts/checks/language-filter.check.ts --live`
+exits **0** against `blog_posts` after the deploy: fragment behaviour kept
+`["en","none"]` and dropped `"fa"`, all nine query parities identical, pipeline
+selection 26 candidates / 0 stale, `$slug` path narrows 26 to 1. ALL PASS.
+
+### Liveness proof 2: live /blog fetch
+
+`https://www.neuronomixer.com/blog` returns HTTP **200**, 122,394 bytes, title
+`Blog | NeuroNomixer`. Combined with the SHA match above, the regenerated static
+build serving that page is the one that carries the filter.
+
+### Liveness proof 3: production Studio walk
+
+Walked in an authenticated Chrome session against `www.neuronomixer.com/studio`:
+
+| Check | Result |
+|---|---|
+| Studio split (02-05) | Live: sidebar shows `Posts — English` and `Posts — Farsi` panes |
+| Language radio | Present on an open English post, `English` selected, `Farsi` offered, with the "English posts are the source" description |
+| Translation of | Present, empty reference input, "Set on Farsi documents only. Points at the English source post." |
+| Translation Notes | Present, "Findings from the pipeline's verify pass. Written by the translation script, not by hand." |
+| Source Updated At | **Absent on the English document — the hidden rule firing, not a missing field.** The deployed SHA equals the pushed HEAD, and the pushed schema is the 18-field `postType` with `sourceUpdatedAt`, so the schema serving the Studio is the one that carries it |
+
+### Ordering invariant after the deploy
+
+Raw-perspective count against `.env.vercel-prod`, same query as the baseline:
+
+```
+raw-perspective count | dataset=blog_posts apiVersion=2025-10-07
+  posts total : 26
+  language en : 26
+  language fa : 0
+  no language : 0
+```
+
+**Production Farsi document count after the deploy: 0.** The filter went live before
+the first Farsi document exists. The Phase 2 ordering invariant held, and the gate
+closes in exactly the state plan 03-10 requires.
+
+### Gate verdict
+
+D-11 step 2 is **closed**. The repaired lockfile installed cleanly on Vercel (the
+deploy built and reached Ready, which is the T-03-11 evidence pass for the three
+too-new package bumps), production runs the Phase 2 English filter, the Studio split
+and the 18-field schema, and the production dataset holds zero Farsi documents.
