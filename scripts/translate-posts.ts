@@ -4,6 +4,10 @@
  *
  * Dry run is the DEFAULT. There is no flag that turns it on. Writing requires --execute.
  *
+ * The model transport is the Claude Code CLI on Saeid's subscription (D-16), not the paid
+ * API: every request is `claude -p --model sonnet --output-format json` with the prompt on
+ * stdin. There is no SDK client, no API key and no batch surface anywhere in this file.
+ *
  * Dry run, default selection (dev dataset):
  *   npx tsx --env-file .env.local scripts/translate-posts.ts
  * Dry run, whole backlog (dev dataset):
@@ -21,7 +25,7 @@
  *   --retranslate      the only way a stale or existing Farsi sibling enters the working set (D-08)
  *   --execute          the only way anything is written (D-14)
  *   --dry-run          an explicit alias for the default, accepted for readability, a no-op
- *   --resume <batch-id>  reattach to an already-created batch instead of re-spending tokens
+ *   --resume <path>    a prior run-state artifact; posts it records as written are skipped
  *
  * The resolved projectId, dataset, apiVersion and mode print as the FIRST line, before any
  * read and before any write. The two datasets here are `blog_posts` (production) and
@@ -33,15 +37,17 @@
  * No credential, connection string or other environment value is ever printed here.
  */
 
+import { spawn } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { createClient } from "@sanity/client";
 
 // Relative paths, not the `@/` alias: the scripts tree does not use it.
 import type { Body, Translatable } from "./lib/portable-text-walk";
-import { extractTranslatables, structuralFingerprint } from "./lib/portable-text-walk";
+import { extractTranslatables, structuralFingerprint, toTexts } from "./lib/portable-text-walk";
+import { loadGlossary, serializeGlossaryBlock } from "./lib/glossary";
 import { translationCandidatesQuery, translationStaleQuery } from "../src/sanity/lib/queries";
 
 const PRODUCTION_DATASET = "blog_posts";
@@ -101,6 +107,269 @@ const client = createClient({
   // re-translate the entire backlog on every run. This one line is the whole ballgame.
   perspective: "raw",
 });
+
+// ── The model transport (D-16) ───────────────────────────────────────────────
+// One helper pair, and nothing else in this file talks to a model.
+//
+// The prompt travels on stdin rather than in an argument: it is a multi-line block carrying
+// Farsi renderings and arbitrary post prose, and a Windows command line is both length
+// limited and a quoting minefield. stdin has neither problem.
+//
+// Only stdout is parsed. The CLI writes warnings to stderr, including permission-rule
+// notices, and a run that treated stderr as data would parse a warning as a translation
+// (T-03-32). stderr is captured for one purpose: printing it when the exit code is non-zero.
+
+/** The model the CLI is asked for. An alias, so the CLI resolves the current Sonnet. */
+const MODEL_ALIAS = "sonnet";
+
+/**
+ * Every built-in tool, denied.
+ *
+ * This transport runs a full agent CLI inside the repository working directory, so unlike the
+ * API transport D-16 replaced, the model on the other end of the pipe would otherwise be able
+ * to read and write files. The pipeline needs one thing from it, a string-in string-out
+ * transformation over Saeid's own prose, and the post bodies it is fed are untrusted input as
+ * far as this boundary is concerned (T-03-05). Denying the tool surface makes prompt injection
+ * unable to reach anything at all, rather than merely unable to get past the count gate.
+ */
+const DISALLOWED_TOOLS = [
+  "Bash",
+  "BashOutput",
+  "KillShell",
+  "Read",
+  "Write",
+  "Edit",
+  "NotebookEdit",
+  "Glob",
+  "Grep",
+  "WebFetch",
+  "WebSearch",
+  "Task",
+  "TodoWrite",
+  "SlashCommand",
+  "Skill",
+  "ExitPlanMode",
+];
+
+/**
+ * `--disallowedTools` is variadic, so it goes last and nothing may follow it.
+ * `--strict-mcp-config` with no `--mcp-config` means no MCP server is loaded either.
+ */
+function cliArgs(): string[] {
+  return [
+    "-p",
+    "--model",
+    MODEL_ALIAS,
+    "--output-format",
+    "json",
+    "--strict-mcp-config",
+    "--disallowedTools",
+    ...DISALLOWED_TOOLS,
+  ];
+}
+
+/** One call's token counts, exactly as the CLI reported them. No estimate is involved. */
+type Usage = {
+  calls: number;
+  /** uncached + cacheCreation + cacheRead: the whole prompt side of the call. */
+  inputTokens: number;
+  outputTokens: number;
+  uncachedInputTokens: number;
+  cacheCreationInputTokens: number;
+  cacheReadInputTokens: number;
+};
+
+const ZERO_USAGE: Usage = {
+  calls: 0,
+  inputTokens: 0,
+  outputTokens: 0,
+  uncachedInputTokens: 0,
+  cacheCreationInputTokens: 0,
+  cacheReadInputTokens: 0,
+};
+
+function addUsage(a: Usage, b: Usage): Usage {
+  return {
+    calls: a.calls + b.calls,
+    inputTokens: a.inputTokens + b.inputTokens,
+    outputTokens: a.outputTokens + b.outputTokens,
+    uncachedInputTokens: a.uncachedInputTokens + b.uncachedInputTokens,
+    cacheCreationInputTokens: a.cacheCreationInputTokens + b.cacheCreationInputTokens,
+    cacheReadInputTokens: a.cacheReadInputTokens + b.cacheReadInputTokens,
+  };
+}
+
+function numberAt(source: Record<string, unknown>, key: string): number {
+  const value = source[key];
+  return typeof value === "number" && Number.isFinite(value) ? value : 0;
+}
+
+type SpawnOutcome = {
+  code: number | null;
+  stdout: string;
+  stderr: string;
+  spawnError: NodeJS.ErrnoException | null;
+};
+
+/** One child process. `useShell` is the Windows `.cmd` shim fallback, never the first try. */
+function spawnClaude(prompt: string, useShell: boolean): Promise<SpawnOutcome> {
+  return new Promise<SpawnOutcome>((resolve) => {
+    const child = spawn("claude", cliArgs(), { shell: useShell, windowsHide: true });
+    let stdout = "";
+    let stderr = "";
+    let spawnError: NodeJS.ErrnoException | null = null;
+
+    child.stdout.setEncoding("utf8");
+    child.stderr.setEncoding("utf8");
+    child.stdout.on("data", (chunk: string) => {
+      stdout += chunk;
+    });
+    child.stderr.on("data", (chunk: string) => {
+      stderr += chunk;
+    });
+    child.on("error", (err: NodeJS.ErrnoException) => {
+      spawnError = err;
+    });
+    // A spawn that never started rejects the write with EPIPE. That is the same failure the
+    // error handler above already has, so it must not become an unhandled stream error.
+    child.stdin.on("error", () => undefined);
+    child.on("close", (code) => {
+      resolve({ code, stdout, stderr, spawnError });
+    });
+
+    child.stdin.end(prompt, "utf8");
+  });
+}
+
+const CLI_UNAVAILABLE =
+  "the Claude Code CLI could not be started, so no model call is possible. This pipeline runs on Saeid's subscription through `claude -p` (D-16) and has no API fallback by design. Install or PATH-resolve the `claude` command and re-run. Nothing was written";
+
+/** One model call. Returns the model's text and the CLI-reported usage for that call. */
+async function callClaude(prompt: string): Promise<{ text: string; usage: Usage }> {
+  let outcome = await spawnClaude(prompt, false);
+  // node cannot exec a `.cmd` shim directly on Windows; a shell can.
+  if (outcome.spawnError !== null && outcome.spawnError.code === "ENOENT") {
+    outcome = await spawnClaude(prompt, true);
+  }
+  if (outcome.spawnError !== null) {
+    throw new Error(`${CLI_UNAVAILABLE}: ${outcome.spawnError.message}`);
+  }
+  if (outcome.code !== 0) {
+    // A subscription usage-limit stop lands here too. stderr is printed, never parsed.
+    throw new Error(
+      `the Claude Code CLI exited ${String(outcome.code)}. Nothing was written for this post. CLI stderr follows and is printed only, never parsed: ${outcome.stderr.trim() || "(empty)"}`,
+    );
+  }
+
+  let envelope: unknown;
+  try {
+    envelope = JSON.parse(outcome.stdout);
+  } catch (err) {
+    throw new Error(
+      `the CLI exited 0 but its stdout was not valid JSON, so the --output-format contract was not honoured (${err instanceof Error ? err.message : String(err)}).`,
+    );
+  }
+  if (typeof envelope !== "object" || envelope === null) {
+    throw new Error("the CLI returned JSON that is not an object.");
+  }
+
+  const record = envelope as Record<string, unknown>;
+  if (record.is_error === true) {
+    throw new Error(
+      `the CLI reported an error result (subtype ${String(record.subtype ?? "unknown")}). Nothing was written for this post.`,
+    );
+  }
+  const text = record.result;
+  if (typeof text !== "string") {
+    throw new Error("the CLI envelope carried no string `result` field.");
+  }
+
+  const raw = typeof record.usage === "object" && record.usage !== null
+    ? (record.usage as Record<string, unknown>)
+    : {};
+  const uncached = numberAt(raw, "input_tokens");
+  const created = numberAt(raw, "cache_creation_input_tokens");
+  const read = numberAt(raw, "cache_read_input_tokens");
+
+  return {
+    text,
+    usage: {
+      calls: 1,
+      inputTokens: uncached + created + read,
+      outputTokens: numberAt(raw, "output_tokens"),
+      uncachedInputTokens: uncached,
+      cacheCreationInputTokens: created,
+      cacheReadInputTokens: read,
+    },
+  };
+}
+
+/**
+ * A parse failure that still spent tokens. The usage rides on the error so the caller can
+ * book the spend it already incurred instead of losing the record with the response.
+ */
+class ResponseParseError extends Error {
+  readonly usage: Usage;
+  constructor(message: string, usage: Usage) {
+    super(message);
+    this.name = "ResponseParseError";
+    this.usage = usage;
+  }
+}
+
+/**
+ * One model call whose response must parse as JSON, retried exactly once on a parse failure.
+ *
+ * The returned usage covers every attempt made, including the discarded one: a retry is real
+ * spend and a run that hid it would under-report itself. Markdown fences are deliberately NOT
+ * stripped. The prompt demands JSON and nothing else, and a response that needs its fences
+ * removed is a response that broke the contract, which the retry exists to catch.
+ */
+async function callClaudeJson(prompt: string, label: string): Promise<{ value: unknown; usage: Usage }> {
+  let usage = ZERO_USAGE;
+  let lastMessage = "";
+
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const call = await callClaude(prompt);
+    usage = addUsage(usage, call.usage);
+    try {
+      return { value: JSON.parse(call.text) as unknown, usage };
+    } catch (err) {
+      lastMessage = err instanceof Error ? err.message : String(err);
+      if (attempt === 1) {
+        console.log(`  ${label}: the response was not valid JSON (${lastMessage}). Retrying once.`);
+      }
+    }
+  }
+
+  throw new ResponseParseError(
+    `${label}: the response was not valid JSON on either attempt (${lastMessage}). The prompt demands a single JSON object and nothing else.`,
+    usage,
+  );
+}
+
+// ── Prompt blocks ────────────────────────────────────────────────────────────
+// Module-level constants with no per-post interpolation, so every request in a run carries
+// byte-identical instruction text and two posts in the same backlog can never be translated
+// against subtly different rules. `serializeGlossaryBlock` is deterministic by contract, and
+// `loadGlossary` throws on a malformed glossary here, before the first call rather than after.
+
+const GLOSSARY_BLOCK = serializeGlossaryBlock(loadGlossary());
+
+const TRANSLATE_INSTRUCTIONS = [
+  "TASK. You are translating strings from an English technical article into Farsi for a professional audience.",
+  "",
+  "Respond with a single JSON object of the shape { \"strings\": [...] } and nothing else. No prose before it, no prose after it, and no markdown fences of any kind.",
+  "Return exactly the number of strings the payload's `count` field states, in the same order as the payload's `strings` array. One output string per input string. Never merge two, never split one, never add or drop an entry. A string that genuinely needs no change is returned unchanged rather than omitted.",
+  "",
+  "Translate into natural Farsi technical prose. Aim for how a Farsi technology publication writes, not a literal word-by-word rendering.",
+  "Preserve every number, every date, every URL, every product name and every entity name exactly as written. Do not convert digits to Persian forms, do not localise a date, and do not rewrite a URL.",
+  "Follow the glossary block above exactly. For a term that is not in the glossary, follow common Farsi tech-press usage, and keep the English term in Latin script where that is the norm for Farsi technical writing.",
+  "Keep any inline formatting the string already carries, and keep leading and trailing whitespace as it is.",
+  "A string whose payload label is `metaDescription` should come back under 160 characters where the meaning survives it, because the content model warns above that length.",
+  "Introduce no reference to the United States, America or Israel. This is a standing rule for this catalogue and it applies even where a literal translation would produce one.",
+  "The house rule against em dashes is an English-prose rule for this project and does not apply to your Farsi output.",
+].join("\n");
 
 // ── Selection ────────────────────────────────────────────────────────────────
 // Local types declared next to the fetch rather than in a shared module, matching
@@ -162,7 +431,7 @@ const SLUG_MISS_REASONS =
   "  3. the post already has a Farsi sibling that is not stale, and --retranslate was not passed\n" +
   "  (a slug that exists in no document at all in this dataset lands here too)";
 
-// ── Extraction and cost ──────────────────────────────────────────────────────
+// ── Extraction and estimate ──────────────────────────────────────────────────
 
 /** One document-level translatable string. `label` is what the verify pass names it by. */
 type FieldItem = { label: string; text: string };
@@ -173,8 +442,8 @@ type TranslationUnit = {
   bodyItems: Translatable[];
   fieldItems: FieldItem[];
   /**
-   * The D-05 tier 1 gate value, captured here and carried forward, so plan 03-08 compares
-   * the translated body against a fingerprint taken before any model saw the document.
+   * The D-05 tier 1 gate value, captured before any model saw the document, so the
+   * comparison after reassembly is against a fingerprint the model could not influence.
    */
   sourceFingerprint: string;
   translatableChars: number;
@@ -220,15 +489,9 @@ function countByKind(items: readonly Translatable[]): Record<Translatable["kind"
   return counts;
 }
 
-// Cost model. Every number below is an ASSUMPTION and is printed as one, because an
-// estimate that hides its inputs is a number nobody can argue with before spending money.
-// The Sonnet 5 intro rate is $2.00 / $10.00 per MTok and expires 2026-08-31, reverting to
-// $3.00 / $15.00. The batch surface halves whichever one applies.
-const INTRO_RATE_LAST_DAY = "2026-08-31";
-const BATCH_RATES = {
-  intro: { input: 1.0, output: 5.0 },
-  standard: { input: 1.5, output: 7.5 },
-} as const;
+// Token estimate. Every number below is an ASSUMPTION and is printed as one. It is a size
+// brake before a long run, not a price: the transport is Saeid's subscription (D-16), so the
+// run has no marginal dollar cost and this file prints no dollar figure anywhere.
 /** English source, the usual rule of thumb. */
 const CHARS_PER_TOKEN = 4;
 /**
@@ -236,7 +499,7 @@ const CHARS_PER_TOKEN = 4;
  * and this is deliberately set high so the printed figure reads as a ceiling, not a floor.
  */
 const FARSI_OUTPUT_MULTIPLIER = 2;
-/** The cached glossary system block plus the per-request task framing, per request. */
+/** The glossary block plus the per-request instruction text, per request. */
 const REQUEST_OVERHEAD_TOKENS = 4000;
 /** The verify pass returns a compact findings object, not prose. */
 const VERIFY_OUTPUT_TOKENS = 600;
@@ -254,10 +517,6 @@ function estimate(unit: TranslationUnit): Estimate {
     inputTokens: sourceTokens + REQUEST_OVERHEAD_TOKENS + (sourceTokens + farsiTokens + REQUEST_OVERHEAD_TOKENS),
     outputTokens: farsiTokens + VERIFY_OUTPUT_TOKENS,
   };
-}
-
-function dollars(tokens: number, perMTok: number): number {
-  return (tokens / 1_000_000) * perMTok;
 }
 
 /** `Rule.warning(...).max(160)` on metaDescription, so a longer Farsi rendering shows a badge. */
@@ -293,18 +552,47 @@ async function releaseDatabase(): Promise<void> {
  *
  * The fingerprint is the whole body serialized with every translatable slot blanked, so for
  * the production backlog it is hundreds of kilobytes of document structure, and this file
- * lands in a version-controlled planning directory. Equality is the only thing plan 03-08
- * asks of it, and a digest answers equality exactly. The full strings stay in memory, where
- * a mismatch can still be diffed.
+ * lands in a version-controlled planning directory. Equality is the only thing the gate asks
+ * of it, and a digest answers equality exactly. The full strings stay in memory, where a
+ * mismatch can still be diffed, and a mismatch writes them to their own artifact.
  */
 function digest(value: string): string {
   return createHash("sha256").update(value).digest("hex");
 }
 
-/** Ids, labels, counts and digests. No prose, no environment value, no credential. */
+/**
+ * Where a post got to. Rewritten to disk after every transition, so a crash or a mid-run
+ * subscription usage-limit stop leaves an accurate record and `--resume` can skip what is
+ * already done (D-16).
+ */
+type PostStatus = "pending" | "translated" | "gate-blocked" | "verified" | "written" | "failed";
+
+type PostState = {
+  _id: string;
+  slug: string | null;
+  reason: WorkItem["reason"];
+  existingSiblingId: string | null;
+  status: PostStatus;
+  bodyItemsByKind: Record<Translatable["kind"], number>;
+  bodyLabels: string[];
+  fieldLabels: string[];
+  translatableChars: number;
+  estimatedInputTokens: number;
+  estimatedOutputTokens: number;
+  sourceFingerprintSha256: string;
+  translatedFingerprintSha256: string | null;
+  /** Set only on a gate block: the path of the artifact carrying both raw fingerprints. */
+  gateArtifact: string | null;
+  usage: { translate: Usage | null; verify: Usage | null };
+  /** A short reason code. Never the CLI's stderr, which is printed and never persisted. */
+  failure: string | null;
+};
+
+/** Ids, labels, counts, digests and token counts. No prose, no env value, no credential. */
 type RunState = {
   script: "translate-posts";
-  mode: "dry-run";
+  mode: "dry-run" | "execute";
+  transport: "claude-code-cli-subscription";
   createdAt: string;
   projectId: string;
   dataset: string;
@@ -318,36 +606,59 @@ type RunState = {
     translatableChars: number;
     estimatedInputTokens: number;
     estimatedOutputTokens: number;
-    estimatedCostUsd: number;
+    marginalCostUsd: 0;
   };
-  posts: Array<{
-    _id: string;
-    slug: string | null;
-    reason: WorkItem["reason"];
-    existingSiblingId: string | null;
-    bodyItemsByKind: Record<Translatable["kind"], number>;
-    bodyLabels: string[];
-    fieldLabels: string[];
-    translatableChars: number;
-    estimatedInputTokens: number;
-    estimatedOutputTokens: number;
-    sourceFingerprintSha256: string;
-  }>;
+  posts: PostState[];
 };
 
-function writeRunState(state: RunState): string {
+/** ISO 8601 with the colons swapped for dashes: `:` is not a legal Windows filename character. */
+function runStatePath(state: RunState): string {
+  return join(ARTIFACT_DIR, `${state.dataset}-${state.createdAt.replace(/:/g, "-")}.json`);
+}
+
+function saveRunState(state: RunState, path: string): void {
   mkdirSync(ARTIFACT_DIR, { recursive: true });
-  // ISO 8601 with the colons swapped for dashes: `:` is not a legal Windows filename character.
-  const path = join(ARTIFACT_DIR, `${state.dataset}-${state.createdAt.replace(/:/g, "-")}.json`);
   writeFileSync(path, `${JSON.stringify(state, null, 2)}\n`, "utf8");
-  return path;
+}
+
+/**
+ * The document ids a prior run recorded as written, so `--resume` can skip them.
+ *
+ * Without `--resume` a rerun is already safe, because D-08 sibling selection will not pick up
+ * a post that now has a fresh Farsi sibling. `--resume` covers the narrower case where the run
+ * stopped between the model call and the write.
+ */
+function loadResumeIds(path: string): Set<string> {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(readFileSync(path, "utf8")) as unknown;
+  } catch (err) {
+    console.error(
+      `--resume ${path} could not be read as a run-state artifact (${err instanceof Error ? err.message : String(err)}). Nothing was written.`,
+    );
+    process.exit(1);
+  }
+
+  const posts = (parsed as { posts?: unknown }).posts;
+  if (!Array.isArray(posts)) {
+    console.error(`--resume ${path} carries no \`posts\` array, so it is not a run-state artifact. Nothing was written.`);
+    process.exit(1);
+  }
+
+  const done = new Set<string>();
+  for (const entry of posts) {
+    if (typeof entry !== "object" || entry === null) continue;
+    const row = entry as { _id?: unknown; status?: unknown };
+    if (row.status === "written" && typeof row._id === "string") done.add(row._id);
+  }
+  return done;
 }
 
 /**
  * The Farsi draft document as it will be shaped, with the English strings still in place.
  *
  * Used here only as the payload of the server-validated mutation that persists nothing, so
- * the shape itself is what gets checked. Plan 03-08 swaps the translated strings in.
+ * the shape itself is what gets checked.
  */
 function draftShell(post: SourcePost): { _id: string; _type: string; [key: string]: unknown } {
   return {
@@ -356,8 +667,9 @@ function draftShell(post: SourcePost): { _id: string; _type: string; [key: strin
     _type: "post",
     language: "fa",
     translationOf: { _type: "reference", _ref: post._id },
-    // D-12: never "scheduled". api/cron/publish-scheduled is unfiltered by language, and it
-    // would patch a Farsi document to approved and mail every subscriber an English subject.
+    // D-12: the status value api/cron/publish-scheduled matches on must never appear on a
+    // Farsi document. That cron is unfiltered by language, and it would patch the document to
+    // approved and mail every subscriber an English subject line.
     status: "draft",
     title: post.title ?? "",
     // The slug is reused verbatim per the design spec; the projection flattened it to a
@@ -372,6 +684,58 @@ function draftShell(post: SourcePost): { _id: string; _type: string; [key: strin
     body: post.body ?? [],
     sourceUpdatedAt: post._updatedAt,
   };
+}
+
+// ── The translate pass ───────────────────────────────────────────────────────
+
+/**
+ * The per-post payload: the field items first, then the body items, which is the one fixed
+ * order reassembly relies on. `count` is what the instruction block tells the model to match.
+ */
+function sourceStrings(unit: TranslationUnit): string[] {
+  return [...unit.fieldItems.map((f) => f.text), ...toTexts(unit.bodyItems)];
+}
+
+function translatePrompt(unit: TranslationUnit): string {
+  const strings = sourceStrings(unit);
+  const payload = JSON.stringify({
+    slug: unit.item.post.slug ?? null,
+    count: strings.length,
+    strings,
+  });
+  return `${GLOSSARY_BLOCK}\n\n${TRANSLATE_INSTRUCTIONS}\n\nPAYLOAD\n${payload}\n`;
+}
+
+/**
+ * The parsed response, validated in code.
+ *
+ * There is no request-level schema on this transport, so the shape demand in the prompt is
+ * only a request and this function is the thing that actually decides. The count check is the
+ * hard gate against a truncated or padded response (T-03-29): it runs before anything is
+ * reassembled, so a short response can never leave a half-translated body behind.
+ */
+function readStrings(value: unknown, expected: number, label: string): string[] {
+  if (typeof value !== "object" || value === null) {
+    throw new Error(`${label}: the response parsed but is not a JSON object.`);
+  }
+  const strings = (value as { strings?: unknown }).strings;
+  if (!Array.isArray(strings)) {
+    throw new Error(`${label}: the response carries no \`strings\` array.`);
+  }
+  if (strings.length !== expected) {
+    throw new Error(
+      `${label}: the response carries ${strings.length} string(s) but the payload demanded exactly ${expected}. Nothing was written for this post.`,
+    );
+  }
+  const out: string[] = [];
+  for (let i = 0; i < strings.length; i += 1) {
+    const entry: unknown = strings[i];
+    if (typeof entry !== "string") {
+      throw new Error(`${label}: strings[${i}] is not a string.`);
+    }
+    out.push(entry);
+  }
+  return out;
 }
 
 async function run(): Promise<void> {
@@ -392,7 +756,7 @@ async function run(): Promise<void> {
   try {
     adminUserId = await resolveAdmin();
   } catch (err) {
-    // Fatal for a run that will spend money. A dry run spends nothing, so it continues and
+    // Fatal for a run that will spend tokens. A dry run spends nothing, so it continues and
     // says so, which keeps the script usable against an environment whose database parity
     // the phase preflight artifact flagged as missing.
     if (execute) throw err;
@@ -446,7 +810,7 @@ async function run(): Promise<void> {
     }
   }
 
-  const workingSet: WorkItem[] = candidates.map((post) => ({
+  let workingSet: WorkItem[] = candidates.map((post) => ({
     post,
     reason: "new" as const,
     existingSiblingId: null,
@@ -469,6 +833,15 @@ async function run(): Promise<void> {
         });
       }
     }
+  }
+
+  if (resumeArg !== null) {
+    const done = loadResumeIds(resumeArg);
+    const before = workingSet.length;
+    workingSet = workingSet.filter((item) => !done.has(item.post._id));
+    console.log(
+      `--resume ${resumeArg}: that artifact records ${done.size} post(s) as written, ${before - workingSet.length} of which are in this working set and are skipped.`,
+    );
   }
 
   console.log(`working set: ${workingSet.length} post(s)`);
@@ -501,7 +874,7 @@ async function run(): Promise<void> {
   }
 
   // D-09 turned into a brake rather than decoration: --all is what an operator types to
-  // confirm they meant a multi-post paid run, and the list above is exactly what it buys.
+  // confirm they meant a multi-post run, and the list above is exactly what it buys.
   if (execute && workingSet.length > 1 && !all) {
     console.error(
       `refusing to translate ${workingSet.length} posts under --execute without --all. Re-run with --all to confirm the multi-post run, or with --slug <value> to translate one post. Nothing was written.`,
@@ -547,11 +920,6 @@ async function run(): Promise<void> {
     for (const note of metaNotes) console.log(note);
   }
 
-  // Estimated before submission, which is the brake on a runaway paid run.
-  const introApplies = new Date().toISOString().slice(0, 10) <= INTRO_RATE_LAST_DAY;
-  const rate = introApplies ? BATCH_RATES.intro : BATCH_RATES.standard;
-  const cost = dollars(totals.inputTokens, rate.input) + dollars(totals.outputTokens, rate.output);
-
   console.log(
     `run total: ${units.length} post(s), ${totals.bodyItems} body item(s), ${totals.fieldItems} field item(s), ${totals.chars} translatable character(s)`,
   );
@@ -559,67 +927,64 @@ async function run(): Promise<void> {
     `estimated tokens: ${totals.inputTokens} in, ${totals.outputTokens} out, covering a translate pass and a verify pass`,
   );
   console.log(
-    `estimated cost: $${cost.toFixed(2)} at the batch rate $${rate.input.toFixed(2)} in / $${rate.output.toFixed(2)} out per MTok` +
-      (introApplies
-        ? `, which is the Sonnet 5 intro rate and expires after ${INTRO_RATE_LAST_DAY}`
-        : `, the Sonnet 5 standard rate`),
+    "estimated cost: $0 marginal. The transport is the Claude Code CLI on Saeid's subscription (D-16), so the token figures above are a size brake on the run, not a price.",
   );
-  if (introApplies) {
-    const later =
-      dollars(totals.inputTokens, BATCH_RATES.standard.input) +
-      dollars(totals.outputTokens, BATCH_RATES.standard.output);
-    console.log(
-      `  the same run after ${INTRO_RATE_LAST_DAY} costs about $${later.toFixed(2)} at $${BATCH_RATES.standard.input.toFixed(2)} / $${BATCH_RATES.standard.output.toFixed(2)} per MTok`,
-    );
-  }
   console.log(
-    `  assumptions: ${CHARS_PER_TOKEN} characters per English token, Farsi output at ${FARSI_OUTPUT_MULTIPLIER}x the source token count, ${REQUEST_OVERHEAD_TOKENS} overhead tokens per request, ${VERIFY_OUTPUT_TOKENS} output tokens per verify response. An estimate, not a quote.`,
+    `  assumptions: ${CHARS_PER_TOKEN} characters per English token, Farsi output at ${FARSI_OUTPUT_MULTIPLIER}x the source token count, ${REQUEST_OVERHEAD_TOKENS} overhead tokens per request, ${VERIFY_OUTPUT_TOKENS} output tokens per verify response. An estimate, not a measurement; the run reports its measured totals at the end.`,
   );
 
   const envFile = dataset === PRODUCTION_DATASET ? ".env.vercel-prod" : ".env.local";
 
+  const runState: RunState = {
+    script: "translate-posts",
+    mode: execute ? "execute" : "dry-run",
+    transport: "claude-code-cli-subscription",
+    createdAt: new Date().toISOString(),
+    projectId,
+    dataset,
+    apiVersion,
+    flags: { slug: slugArg, all, retranslate, resume: resumeArg },
+    adminResolved: adminUserId !== null,
+    totals: {
+      posts: units.length,
+      bodyItems: totals.bodyItems,
+      fieldItems: totals.fieldItems,
+      translatableChars: totals.chars,
+      estimatedInputTokens: totals.inputTokens,
+      estimatedOutputTokens: totals.outputTokens,
+      marginalCostUsd: 0,
+    },
+    posts: units.map((unit) => {
+      const est = estimate(unit);
+      return {
+        _id: unit.item.post._id,
+        slug: unit.item.post.slug ?? null,
+        reason: unit.item.reason,
+        existingSiblingId: unit.item.existingSiblingId,
+        status: "pending" as const,
+        bodyItemsByKind: countByKind(unit.bodyItems),
+        bodyLabels: unit.bodyItems.map((t) => t.label),
+        fieldLabels: unit.fieldItems.map((f) => f.label),
+        translatableChars: unit.translatableChars,
+        estimatedInputTokens: est.inputTokens,
+        estimatedOutputTokens: est.outputTokens,
+        sourceFingerprintSha256: digest(unit.sourceFingerprint),
+        translatedFingerprintSha256: null,
+        gateArtifact: null,
+        usage: { translate: null, verify: null },
+        failure: null,
+      };
+    }),
+  };
+  const statePath = runStatePath(runState);
+
   if (!execute) {
-    const createdAt = new Date().toISOString();
-    const statePath = writeRunState({
-      script: "translate-posts",
-      mode: "dry-run",
-      createdAt,
-      projectId,
-      dataset,
-      apiVersion,
-      flags: { slug: slugArg, all, retranslate, resume: resumeArg },
-      adminResolved: adminUserId !== null,
-      totals: {
-        posts: units.length,
-        bodyItems: totals.bodyItems,
-        fieldItems: totals.fieldItems,
-        translatableChars: totals.chars,
-        estimatedInputTokens: totals.inputTokens,
-        estimatedOutputTokens: totals.outputTokens,
-        estimatedCostUsd: Number(cost.toFixed(4)),
-      },
-      posts: units.map((unit) => {
-        const est = estimate(unit);
-        return {
-          _id: unit.item.post._id,
-          slug: unit.item.post.slug ?? null,
-          reason: unit.item.reason,
-          existingSiblingId: unit.item.existingSiblingId,
-          bodyItemsByKind: countByKind(unit.bodyItems),
-          bodyLabels: unit.bodyItems.map((t) => t.label),
-          fieldLabels: unit.fieldItems.map((f) => f.label),
-          translatableChars: unit.translatableChars,
-          estimatedInputTokens: est.inputTokens,
-          estimatedOutputTokens: est.outputTokens,
-          sourceFingerprintSha256: digest(unit.sourceFingerprint),
-        };
-      }),
-    });
+    saveRunState(runState, statePath);
     console.log(`run state written to ${statePath}`);
 
     // Exactly one server-validated mutation that persists nothing. It is also the probe that
-    // proves this token carries write scope on this dataset BEFORE any paid run is submitted,
-    // because a scope failure discovered after the spend is the expensive version of the bug.
+    // proves this token carries write scope on this dataset BEFORE any real run is submitted,
+    // because a scope failure discovered after the work is the expensive version of the bug.
     await client
       .transaction()
       .createIfNotExists(draftShell(units[0]!.item.post))
@@ -632,12 +997,59 @@ async function run(): Promise<void> {
     return;
   }
 
-  // ── SEAM: plan 03-08 attaches the translate and verify passes here ─────────
-  // Everything above is selection, enumeration and estimation, and none of it calls a model.
-  // Plan 03-08 adds the two passes, the structural gate, the draft writes and the spend
-  // record, and consumes `units`, `adminUserId`, `resumeArg` and `envFile` as they stand.
+  // ── Execute: one post at a time over the subscription CLI (D-16) ───────────
+  console.log("");
+  console.log(
+    `transport: the Claude Code CLI on the subscription, model alias "${MODEL_ALIAS}", prompt on stdin, stdout parsed and stderr never parsed. Posts run strictly sequentially, so no response can be matched to the wrong post (T-03-06).`,
+  );
+  console.log(`run state: ${statePath}, rewritten after every per-post transition.`);
+  saveRunState(runState, statePath);
+
+  let translateUsage = ZERO_USAGE;
+
+  for (let i = 0; i < units.length; i += 1) {
+    const unit = units[i]!;
+    const state = runState.posts[i]!;
+    const slug = unit.item.post.slug ?? "(no slug)";
+    const expected = unit.fieldItems.length + unit.bodyItems.length;
+
+    console.log("");
+    console.log(`[${i + 1}/${units.length}] ${slug}: translating ${expected} string(s)`);
+
+    let translated: string[];
+    try {
+      const call = await callClaudeJson(translatePrompt(unit), `${slug} translate`);
+      state.usage.translate = call.usage;
+      translateUsage = addUsage(translateUsage, call.usage);
+      translated = readStrings(call.value, expected, `${slug} translate`);
+      state.status = "translated";
+      saveRunState(runState, statePath);
+    } catch (err) {
+      if (err instanceof ResponseParseError) {
+        state.usage.translate = err.usage;
+        translateUsage = addUsage(translateUsage, err.usage);
+      }
+      state.status = "failed";
+      state.failure = `translate pass did not complete: ${err instanceof Error ? err.message : String(err)}`;
+      saveRunState(runState, statePath);
+      console.error(`  ${slug}: FAILED. ${state.failure}`);
+      continue;
+    }
+
+    console.log(
+      `  ${slug}: translated ${translated.length} string(s), ${state.usage.translate?.inputTokens ?? 0} in / ${state.usage.translate?.outputTokens ?? 0} out as reported by the CLI`,
+    );
+
+    // ── SEAM: task 2 inserts the structural gate and the verify pass here, task 3 the write.
+  }
+
+  console.log("");
+  console.log(
+    `translate pass measured totals: ${translateUsage.calls} call(s), ${translateUsage.inputTokens} input token(s), ${translateUsage.outputTokens} output token(s)`,
+  );
+  console.log("run cost: subscription-funded, $0 marginal.");
   console.error(
-    `--execute was passed, but the translate and verify passes do not exist yet: plan 03-07 builds selection and the dry run, plan 03-08 adds the model calls. Nothing was written. Re-run without --execute to see the full plan for these ${units.length} post(s).`,
+    "the structural gate, the verify pass and the draft write are added by plan 03-08 tasks 2 and 3. Nothing was written.",
   );
   process.exit(1);
 }
