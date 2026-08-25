@@ -109,7 +109,7 @@ Plans:
   5. Token spend for every run is recorded through the existing `TokenUsage` model.
 
 **Implementation notes (fixed by design):** Claude Sonnet 5 (`claude-sonnet-5`) via the Batch API using the existing `@anthropic-ai/sdk`; results keyed by `custom_id` (batch results arrive in arbitrary order). Success gate for the phase: one real post translated end-to-end, structurally intact.
-**Plans**: 8/10 plans executed
+**Plans**: 9/10 plans executed
 
 Plans:
 **Wave 1**
@@ -134,7 +134,7 @@ Plans:
 
 **Wave 5** *(blocked on Wave 4)*
 
-- [ ] 03-09-PLAN.md — Dev rehearsal (D-10): implement the `--post-run` live assertions, run the pipeline against `blog_posts_dev` for the first time, then prove D-08 idempotence, staleness reporting and hand-edit protection
+- [x] 03-09-PLAN.md — Dev rehearsal (D-10): implement the `--post-run` live assertions, run the pipeline against `blog_posts_dev` for the first time, then prove D-08 idempotence, staleness reporting and hand-edit protection
 
 **Wave 6** *(blocked on Wave 5)*
 
@@ -200,6 +200,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Route Groups | 2/2 | Complete    | 2026-08-16 |
 | 2. Content Model | 5/5 | Complete    | 2026-08-21 |
-| 3. Translation Pipeline | 8/10 | In Progress|  |
+| 3. Translation Pipeline | 9/10 | In Progress|  |
 | 4. Farsi Routes and Chrome | 0/TBD | Not started | - |
 | 5. SEO and Ship | 0/TBD | Not started | - |
