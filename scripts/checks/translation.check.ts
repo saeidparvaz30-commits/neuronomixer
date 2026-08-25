@@ -911,6 +911,9 @@ async function runPostRun(): Promise<void> {
 
   const EM_DASH_CHAR = String.fromCharCode(0x2014);
 
+  /** Siblings whose source has moved on since they were translated. Reported, never a failure. */
+  const staleSiblings: string[] = [];
+
   for (const { slug, source, sibling } of pairs) {
     const at = `"${slug}" (sibling ${sibling._id}, source ${source._id})`;
 
@@ -938,11 +941,27 @@ async function runPostRun(): Promise<void> {
       (source.slug as { current?: unknown } | undefined)?.current,
       `${at}: slug.current differs from the source's. The design reuses the English slug verbatim, so /fa/<slug> and /<slug> are the same post at two addresses.`,
     );
-    eq(
-      sibling.sourceUpdatedAt,
-      source._updatedAt,
-      `${at}: sourceUpdatedAt is ${JSON.stringify(sibling.sourceUpdatedAt)} but the source's _updatedAt is ${JSON.stringify(source._updatedAt)}. That field is the D-08 staleness anchor; if they disagree right after a run, either the source moved during the run or the anchor was never stamped.`,
+    // The D-08 staleness anchor. It is deliberately NOT asserted equal to the source's
+    // _updatedAt: a sibling whose source has since been edited is STALE, and stale is a state
+    // the pipeline supports on purpose (it reports stale siblings and leaves them alone until
+    // someone passes --retranslate). An equality assertion here would mean this check could
+    // never be run as a routine gate on a live dataset, because the first time Saeid edited an
+    // English post it would start failing. What must never happen is an anchor claiming a
+    // source revision that does not exist yet.
+    const anchor: unknown = sibling.sourceUpdatedAt;
+    const sourceUpdatedAt = source._updatedAt;
+    ok(
+      typeof anchor === "string" && anchor.length > 0,
+      `${at}: sourceUpdatedAt is ${JSON.stringify(anchor)}. Expected the source _updatedAt the translation was made from. Without it, D-08 cannot tell a fresh sibling from a stale one and the backlog would either never or always look stale.`,
     );
+    ok(
+      typeof anchor !== "string" ||
+        typeof sourceUpdatedAt !== "string" ||
+        anchor <= sourceUpdatedAt,
+      `${at}: sourceUpdatedAt is ${JSON.stringify(anchor)}, which is LATER than the source's own _updatedAt ${JSON.stringify(sourceUpdatedAt)}. The anchor records the source revision the translation was made from, so it can equal the source or lag it, never lead it. A leading anchor means the sibling would never be reported stale again.`,
+    );
+    const stale = typeof anchor === "string" && anchor !== sourceUpdatedAt;
+    if (stale) staleSiblings.push(`${slug} (anchor ${String(anchor)}, source ${String(sourceUpdatedAt)})`);
 
     const sourceBody = bodyOf(source, `${at} source`);
     const siblingBody = bodyOf(sibling, `${at} sibling`);
@@ -1031,8 +1050,15 @@ async function runPostRun(): Promise<void> {
       return acc;
     }, {});
     console.log(
-      `  ${slug}: sibling=${sibling._id} items=${total} (span ${kinds.span ?? 0}, cell ${kinds.cell ?? 0}, alt ${kinds.alt ?? 0}, caption ${kinds.caption ?? 0}) changed=${changedPct}% arabic-script=${arabicPct}% hrefs=${siblingHrefs.length} notes=${JSON.stringify(notesText.split("\n")[0])}`,
+      `  ${slug}: sibling=${sibling._id} items=${total} (span ${kinds.span ?? 0}, cell ${kinds.cell ?? 0}, alt ${kinds.alt ?? 0}, caption ${kinds.caption ?? 0}) changed=${changedPct}% arabic-script=${arabicPct}% hrefs=${siblingHrefs.length}${stale ? " STALE" : ""} notes=${JSON.stringify(notesText.split("\n")[0])}`,
     );
+  }
+
+  if (staleSiblings.length > 0) {
+    console.log(
+      `  stale, reported not failed: ${staleSiblings.length} sibling(s) whose English source has been edited since they were translated. D-08 reports these and leaves them alone; --retranslate is the only thing that rewrites one.`,
+    );
+    for (const entry of staleSiblings) console.log(`    ${entry}`);
   }
 
   // ── Spend (T-03-08, success criterion 5) ───────────────────────────────────

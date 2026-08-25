@@ -589,3 +589,179 @@ count it did not predict stops the run, and that is what happened.
    posts needing a second run.
 4. Never run two writing commands against one dataset at the same time, and do not trust a
    harness "stopped" notification for a long-running background write; confirm the process is gone.
+
+
+## Idempotence re-run
+translate-posts: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 mode=DRY RUN
+translate-posts: slug=(none) all=true retranslate=false resume=(none)
+ADMIN user resolved: token spend can be recorded. The id itself is not printed.
+plan: 0 candidate(s) with no Farsi sibling, 0 stale sibling(s), 11 fresh sibling(s)
+working set: 0 post(s)
+nothing to translate in blog_posts_dev: every approved English post already has a Farsi sibling that is not stale. A run that finds nothing to do is the D-08 idempotence property, not an error.
+
+(stderr was empty.)
+
+`npx tsx --env-file .env.local scripts/translate-posts.ts --all`, no --execute, exit 0.
+The candidate count went from 11 on the first dry run to 0, lower by exactly the number of
+drafts created. Zero posts translated, zero model calls, zero tokens: the run never reaches
+the transport because the working set is empty.
+
+This is the direct test of research Pitfall 1 and it is the only place in the phase where it
+can be run, because it needs Farsi documents to actually exist. If the client's perspective
+were wrong, the sibling count subquery would see zero siblings for every post, this run would
+report the same 11 candidates as the first, and the whole backlog would be re-translatable
+forever at full token cost.
+
+
+## Staleness report
+### Touching one English source
+slug: inside-the-data-ecosystem
+before: _id=801d1d2c-34aa-4977-ad23-a294d1025ff3 _updatedAt=2026-08-20T20:22:31Z title="The Data Ecosystem"
+patch 1: set title to "The Data Ecosystem " (one trailing space)
+patch 2: set title back to "The Data Ecosystem"
+after:  _updatedAt=2026-08-25T17:59:30Z title="The Data Ecosystem"
+title byte identical to before: true
+_updatedAt moved: true
+
+What was patched, exactly: `inside-the-data-ecosystem`, published English source
+`801d1d2c-34aa-4977-ad23-a294d1025ff3`. Two patches through the Sanity client: `title` set to
+`"The Data Ecosystem "` (the original plus one trailing space), then `title` set straight back
+to `"The Data Ecosystem"`. Final content byte identical to the starting content; `_updatedAt`
+moved from 2026-08-20T20:22:31Z to 2026-08-25T17:59:30Z. No other field was touched and the
+body was not read or written.
+
+The plan suggested patching a field to its own current value. That was tried first and does
+nothing: Sanity treats a same-value `set` as a no-op and creates no revision, so `_updatedAt`
+came back unchanged at 2026-08-20T20:22:31Z. The set-and-restore pair is the smallest thing
+that actually produces a revision without changing content.
+
+### The report
+translate-posts: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 mode=DRY RUN
+translate-posts: slug=(none) all=true retranslate=false resume=(none)
+ADMIN user resolved: token spend can be recorded. The id itself is not printed.
+plan: 0 candidate(s) with no Farsi sibling, 1 stale sibling(s), 10 fresh sibling(s)
+stale sibling(s), reported and not touched:
+  inside-the-data-ecosystem  source _updatedAt=2026-08-25T17:59:30Z  sibling sourceUpdatedAt=2026-08-20T20:22:31Z  sibling _id=drafts.4983006e-d75a-40d2-9f13-4bfe5acd7d83
+stale siblings were reported and NOT retranslated. --retranslate is the only flag that changes that, because a hand-edited Farsi draft is never silently clobbered (D-08).
+working set: 0 post(s)
+nothing to translate in blog_posts_dev: every approved English post already has a Farsi sibling that is not stale. A run that finds nothing to do is the D-08 idempotence property, not an error.
+
+The stale line names all four things the plan asked for: the slug, the source `_updatedAt`,
+the sibling `sourceUpdatedAt` and the sibling `_id`. The working set is still 0 posts, and
+the run states that stale siblings were reported and NOT retranslated.
+
+
+## Retranslate plan, dry run
+translate-posts: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 mode=DRY RUN
+translate-posts: slug=inside-the-data-ecosystem all=false retranslate=true resume=(none)
+ADMIN user resolved: token spend can be recorded. The id itself is not printed.
+plan: 0 candidate(s) with no Farsi sibling, 1 stale sibling(s), 0 fresh sibling(s)
+stale sibling(s), reported and not touched:
+  inside-the-data-ecosystem  source _updatedAt=2026-08-25T17:59:30Z  sibling sourceUpdatedAt=2026-08-20T20:22:31Z  sibling _id=drafts.4983006e-d75a-40d2-9f13-4bfe5acd7d83
+working set: 1 post(s)
+  inside-the-data-ecosystem  801d1d2c-34aa-4977-ad23-a294d1025ff3  RETRANSLATION, rewrites stale sibling drafts.4983006e-d75a-40d2-9f13-4bfe5acd7d83
+translatable text per post:
+  inside-the-data-ecosystem  body 40 (span 39, cell 0, alt 1, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 3986
+note, informational only: a Farsi rendering usually runs longer, so these will probably show a Studio warning badge. It is a warning, not an error, and it never blocks a publish:
+  inside-the-data-ecosystem  English metaDescription is 152 characters, against a 160-character Studio warning bound
+run total: 1 post(s), 40 body item(s), 3 field item(s), 3986 translatable character(s)
+estimated tokens: 11988 in, 2594 out, covering a translate pass and a verify pass
+estimated cost: $0 marginal. The transport is the Claude Code CLI on Saeid's subscription (D-16), so the token figures above are a size brake on the run, not a price.
+  assumptions: 4 characters per English token, Farsi output at 2x the source token count, 4000 overhead tokens per request, 600 output tokens per verify response. An estimate, not a measurement; the run reports its measured totals at the end.
+run state written to .planning\phases\03-translation-pipeline\artifacts\blog_posts_dev-2026-08-25T17-59-44.632Z.json
+DRY RUN: mutation validated server-side, nothing written.
+Re-run with --execute to apply: npx tsx --env-file .env.local scripts/translate-posts.ts --slug inside-the-data-ecosystem --retranslate --execute
+
+`--slug inside-the-data-ecosystem --retranslate`, no --execute. The working-set line reads
+`RETRANSLATION, rewrites stale sibling drafts.4983006e-d75a-40d2-9f13-4bfe5acd7d83`, so the
+plan labels it as a retranslation and names the existing sibling id rather than proposing a
+second document. The printed plan is correct, so it was not executed: a second paid pass over
+the same post buys nothing beyond the plan itself. The sibling is therefore still stale at the
+end of this plan, on purpose, and the `--post-run` check reports it as stale rather than
+failing on it.
+
+
+## Hand-edit protection
+=== mark ===
+sibling: drafts.d9093bfc-933d-4d0a-9624-089221805d6f
+original title: "یادگیری رایگان SQL در 2025 "
+title patched to marker: "GSD-0309 HAND EDIT MARKER, do not clobber"
+=== default --all dry run after the hand edit ===
+translate-posts: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 mode=DRY RUN
+translate-posts: slug=(none) all=true retranslate=false resume=(none)
+ADMIN user resolved: token spend can be recorded. The id itself is not printed.
+plan: 0 candidate(s) with no Farsi sibling, 1 stale sibling(s), 10 fresh sibling(s)
+stale sibling(s), reported and not touched:
+  inside-the-data-ecosystem  source _updatedAt=2026-08-25T17:59:30Z  sibling sourceUpdatedAt=2026-08-20T20:22:31Z  sibling _id=drafts.4983006e-d75a-40d2-9f13-4bfe5acd7d83
+stale siblings were reported and NOT retranslated. --retranslate is the only flag that changes that, because a hand-edited Farsi draft is never silently clobbered (D-08).
+working set: 0 post(s)
+nothing to translate in blog_posts_dev: every approved English post already has a Farsi sibling that is not stale. A run that finds nothing to do is the D-08 idempotence property, not an error.
+=== check ===
+raw-perspective fetch of drafts.d9093bfc-933d-4d0a-9624-089221805d6f
+title now: "GSD-0309 HAND EDIT MARKER, do not clobber"
+marker survived: true
+
+### Restore
+title restored to: "یادگیری رایگان SQL در 2025 "
+restored correctly: true
+
+Marker string: `GSD-0309 HAND EDIT MARKER, do not clobber`, written over the `title` of
+`drafts.d9093bfc-933d-4d0a-9624-089221805d6f`, the Farsi sibling of
+`learning-sql-for-free-in-2025`. A default `--all` run was then made with the marker in place.
+The post did not enter the working set (0 posts), the run made no model call, and a
+raw-perspective re-fetch afterwards still returned the marker. The original Farsi title was
+then restored, and the restore was verified by re-fetching rather than assumed.
+
+This is T-03-12: a hand-edited Farsi draft is never silently clobbered by a default run.
+
+
+## Verify: whole dataset, after Task 3
+offline: fixture 14 slot(s) over 10 block(s) (7 span, 5 cell, 1 alt, 1 caption), identity round trip byte identical, fingerprint invariant under full substitution, 6/6 structural mutations detected, unknown _type "code" contributed 0 slots and survived byte identical, count mismatch throws in both directions, notes format pinned (clean line, warn before info, one-lined, no em dash)
+offline: glossary 98 entries (translate 82, transliterate 6, keep-english 10), block 4078 chars over 102 line(s) with 98 entry line(s), byte identical across two independent loads, no date, D-04 standing instruction present
+post-run: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 (raw perspective) farsi-documents=11 slug=(every Farsi document)
+  the-modern-data-career-map: sibling=drafts.1d40d099-4a79-4120-a466-9a64615a8cb3 items=78 (span 77, cell 0, alt 1, caption 0) changed=100% arabic-script=100% hrefs=0 notes="Verify pass clean (2026-08-25)"
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind: sibling=drafts.2a6a96b6-21e7-424f-b201-f9a375d6d470 items=132 (span 129, cell 0, alt 3, caption 0) changed=94.7% arabic-script=86.4% hrefs=21 notes="Verify pass 2026-08-25: 1 finding(s)"
+  learning-excel-for-free-in-2025: sibling=drafts.3a34f9c9-b0c3-4a67-b8c3-9352dfa51969 items=29 (span 28, cell 0, alt 0, caption 1) changed=96.6% arabic-script=96.6% hrefs=0 notes="Verify pass clean (2026-08-25)"
+  inside-the-data-ecosystem: sibling=drafts.4983006e-d75a-40d2-9f13-4bfe5acd7d83 items=40 (span 39, cell 0, alt 1, caption 0) changed=100% arabic-script=100% hrefs=0 STALE notes="Verify pass clean (2026-08-25)"
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems: sibling=drafts.62b84d07-bbee-48a7-a0e4-700df4ee5fce items=117 (span 115, cell 0, alt 2, caption 0) changed=96.6% arabic-script=88.9% hrefs=20 notes="Verify pass clean (2026-08-25)"
+  exploring-how-machine-learning-and-analytics-shape-the-future: sibling=drafts.afa41737-b112-42e4-b76c-629f51de2ba5 items=65 (span 62, cell 0, alt 3, caption 0) changed=95.4% arabic-script=93.8% hrefs=3 notes="Verify pass clean (2026-08-25)"
+  foundational-tools-for-data-related-careers: sibling=drafts.c8f2b68b-2366-47a3-843c-3c89fc6d810b items=81 (span 42, cell 39, alt 0, caption 0) changed=85.2% arabic-script=85.2% hrefs=2 notes="Verify pass clean (2026-08-25)"
+  data-the-red-cells-of-our-digital-world-veins: sibling=drafts.cdc6e65d-2b20-40a3-9548-596f8ae928e7 items=86 (span 84, cell 0, alt 2, caption 0) changed=100% arabic-script=100% hrefs=0 notes="Verify pass clean (2026-08-25)"
+  why-explainable-ai-matters-more-than-you-think: sibling=drafts.d152504c-fcad-44a1-b93f-1cfdf6eb415e items=100 (span 97, cell 0, alt 3, caption 0) changed=98% arabic-script=93% hrefs=19 notes="Verify pass 2026-08-25: 1 finding(s)"
+  learning-sql-for-free-in-2025: sibling=drafts.d9093bfc-933d-4d0a-9624-089221805d6f items=79 (span 79, cell 0, alt 0, caption 0) changed=96.2% arabic-script=96.2% hrefs=4 notes="Verify pass clean (2026-08-25)"
+  a-practical-guide-to-data-driven-decisions: sibling=drafts.e14dc377-56a6-4883-a61a-bea451c69d2d items=59 (span 58, cell 0, alt 1, caption 0) changed=98.3% arabic-script=98.3% hrefs=0 notes="Verify pass clean (2026-08-25)"
+  stale, reported not failed: 1 sibling(s) whose English source has been edited since they were translated. D-08 reports these and leaves them alone; --retranslate is the only thing that rewrites one.
+    inside-the-data-ecosystem (anchor 2026-08-20T20:22:31Z, source 2026-08-25T17:59:30Z)
+  spend: translate-post 6 row(s) 536467 in / 242944 out, translate-verify 4 row(s) 187521 in / 25725 out, in the last 24h, at cost 0 because TokenUsage has no money column and the run is subscription-funded (D-16)
+post-run: 238 assertion(s) over 11 sibling(s) of 11 Farsi document(s) in blog_posts_dev, 0 carrying the publish-cron status, all translationOf refs resolve and none is shared
+translation.check.ts: ALL PASS
+
+(stderr was empty.)
+
+Exit 0, 238 assertions over all eleven siblings, with the one deliberately staled sibling
+reported as stale rather than treated as a failure. The Farsi document count in
+blog_posts_dev is 11, unchanged across the whole of Task 3: nothing in this task created,
+patched or deleted a Farsi document except the marker write and its restore, both on a field
+the count does not depend on.
+
+
+## The sourceUpdatedAt assertion was relaxed during Task 3
+
+As first written in Task 1, the `--post-run` check asserted `sibling.sourceUpdatedAt` equals
+the source `_updatedAt` exactly. Task 3 then deliberately made one sibling stale, and the
+check failed on it:
+
+    "inside-the-data-ecosystem" (sibling drafts.4983006e-..., source 801d1d2c-...):
+    sourceUpdatedAt is "2026-08-20T20:22:31Z" but the source's _updatedAt is
+    "2026-08-25T17:59:30Z".
+
+The check was wrong, not the data. A stale sibling is a state the pipeline supports on
+purpose: D-08 reports stale siblings and leaves them alone until someone passes
+`--retranslate`. An equality assertion means the check could never be run as a routine gate on
+a live dataset, because it would start failing the first time Saeid edited an English post,
+and the D-12 tripwire it carries is supposed to live in this check permanently.
+
+The assertion is now: `sourceUpdatedAt` must be present and non-empty, and it must be equal to
+or older than the source's `_updatedAt`, never newer. An anchor that leads its source is
+nonsense and would mean the sibling could never be reported stale again, so that still fails.
+A lagging anchor is printed as STALE on the post's line and listed in a summary block.

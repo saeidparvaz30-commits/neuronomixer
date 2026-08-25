@@ -1,0 +1,103 @@
+{
+  "script": "translate-posts",
+  "mode": "dry-run",
+  "transport": "claude-code-cli-subscription",
+  "createdAt": "2026-08-25T17:59:44.632Z",
+  "projectId": "pz9ppas8",
+  "dataset": "blog_posts_dev",
+  "apiVersion": "2025-10-07",
+  "flags": {
+    "slug": "inside-the-data-ecosystem",
+    "all": false,
+    "retranslate": true,
+    "resume": null
+  },
+  "adminResolved": true,
+  "totals": {
+    "posts": 1,
+    "bodyItems": 40,
+    "fieldItems": 3,
+    "translatableChars": 3986,
+    "estimatedInputTokens": 11988,
+    "estimatedOutputTokens": 2594,
+    "marginalCostUsd": 0
+  },
+  "posts": [
+    {
+      "_id": "801d1d2c-34aa-4977-ad23-a294d1025ff3",
+      "slug": "inside-the-data-ecosystem",
+      "reason": "stale",
+      "existingSiblingId": "drafts.4983006e-d75a-40d2-9f13-4bfe5acd7d83",
+      "status": "pending",
+      "bodyItemsByKind": {
+        "span": 39,
+        "alt": 1,
+        "caption": 0,
+        "cell": 0
+      },
+      "bodyLabels": [
+        "block[0]/span[0]",
+        "block[1]/span[0]",
+        "block[2]/span[0]",
+        "block[3]/span[0]",
+        "block[4]/span[0]",
+        "block[5]/span[0]",
+        "block[6]/span[0]",
+        "block[7]/span[0]",
+        "block[8]/span[0]",
+        "block[9]/span[0]",
+        "block[10]/span[0]",
+        "block[11]/span[0]",
+        "block[12]/span[0]",
+        "block[13]/span[0]",
+        "block[14]/span[0]",
+        "block[15]/span[0]",
+        "block[16]/span[0]",
+        "block[17]/span[0]",
+        "block[18]/span[0]",
+        "block[19]/span[0]",
+        "block[20]/span[0]",
+        "block[21]/span[0]",
+        "block[22]/span[0]",
+        "block[23]/span[0]",
+        "block[24]/span[0]",
+        "block[25]/span[0]",
+        "block[26]/span[0]",
+        "block[27]/span[0]",
+        "image[28]/alt",
+        "block[29]/span[0]",
+        "block[30]/span[0]",
+        "block[31]/span[0]",
+        "block[32]/span[0]",
+        "block[33]/span[0]",
+        "block[34]/span[0]",
+        "block[35]/span[0]",
+        "block[36]/span[0]",
+        "block[37]/span[0]",
+        "block[38]/span[0]",
+        "block[39]/span[0]"
+      ],
+      "fieldLabels": [
+        "title",
+        "metaDescription",
+        "mainImage.alt"
+      ],
+      "translatableChars": 3986,
+      "estimatedInputTokens": 11988,
+      "estimatedOutputTokens": 2594,
+      "sourceFingerprintSha256": "eb4dcebe1a45eb8541a34333276fd5f3587ce29a0585795f057369b1424cc54e",
+      "translatedFingerprintSha256": null,
+      "gateArtifact": null,
+      "verifyCompleted": null,
+      "findings": null,
+      "writtenId": null,
+      "writeVerb": null,
+      "usage": {
+        "translate": null,
+        "verify": null
+      },
+      "failure": null
+    }
+  ],
+  "spendRows": []
+}
