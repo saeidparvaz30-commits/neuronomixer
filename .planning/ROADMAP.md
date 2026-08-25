@@ -109,7 +109,7 @@ Plans:
   5. Token spend for every run is recorded through the existing `TokenUsage` model.
 
 **Implementation notes (fixed by design):** Claude Sonnet 5 (`claude-sonnet-5`) via the Batch API using the existing `@anthropic-ai/sdk`; results keyed by `custom_id` (batch results arrive in arbitrary order). Success gate for the phase: one real post translated end-to-end, structurally intact.
-**Plans**: 4/10 plans executed
+**Plans**: 7/10 plans executed
 
 Plans:
 **Wave 1**
@@ -120,12 +120,12 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1)*
 
-- [ ] 03-04-PLAN.md — Deploy gate (D-11 step 2, Saeid-gated): assemble the pre-push evidence pack, take his explicit authorisation, push and deploy, then prove the Phase 2 English filter and the 18-field schema are live on production with zero Farsi documents present
-- [ ] 03-05-PLAN.md — Glossary first pass: deterministic corpus mining over `pt::text`, a Sonnet 5 classification pass into `content/fa-glossary.json` (60 to 100 entries, D-01/D-02/D-04), the HTML review companion, and a cache-stable serializer with offline assertions
+- [x] 03-04-PLAN.md — Deploy gate (D-11 step 2, Saeid-gated): assemble the pre-push evidence pack, take his explicit authorisation, push and deploy, then prove the Phase 2 English filter and the 18-field schema are live on production with zero Farsi documents present
+- [x] 03-05-PLAN.md — Glossary first pass: deterministic corpus mining over `pt::text`, a Sonnet 5 classification pass into `content/fa-glossary.json` (60 to 100 entries, D-01/D-02/D-04), the HTML review companion, and a cache-stable serializer with offline assertions
 
 **Wave 3** *(blocked on Wave 2)*
 
-- [ ] 03-06-PLAN.md — Glossary correction gate (D-03, Saeid-gated): he reviews the HTML table, corrections are applied back to the JSON, the review page is regenerated and the file re-proven
+- [x] 03-06-PLAN.md — Glossary correction gate (D-03, Saeid-gated): he reviews the HTML table, corrections are applied back to the JSON, the review page is regenerated and the file re-proven
 - [x] 03-07-PLAN.md — CLI front half: flags (D-09/D-14), dataset-safe raw-perspective client with the loud header, selection plus D-08 staleness reporting, translatable extraction, cost estimate, and a dry-run path that proves write scope while persisting nothing
 
 **Wave 4** *(blocked on Wave 3)*
@@ -200,6 +200,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Route Groups | 2/2 | Complete    | 2026-08-16 |
 | 2. Content Model | 5/5 | Complete    | 2026-08-21 |
-| 3. Translation Pipeline | 4/10 | In Progress|  |
+| 3. Translation Pipeline | 7/10 | In Progress|  |
 | 4. Farsi Routes and Chrome | 0/TBD | Not started | - |
 | 5. SEO and Ship | 0/TBD | Not started | - |
