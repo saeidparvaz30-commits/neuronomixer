@@ -46,7 +46,13 @@ import { createClient } from "@sanity/client";
 
 // Relative paths, not the `@/` alias: the scripts tree does not use it.
 import type { Body, Translatable } from "./lib/portable-text-walk";
-import { extractTranslatables, structuralFingerprint, toTexts } from "./lib/portable-text-walk";
+import {
+  applyTranslatables,
+  extractTranslatables,
+  structuralFingerprint,
+  toTexts,
+} from "./lib/portable-text-walk";
+import { formatNotes, todayIso, type Finding } from "./lib/translation-notes";
 import { loadGlossary, serializeGlossaryBlock } from "./lib/glossary";
 import { translationCandidatesQuery, translationStaleQuery } from "../src/sanity/lib/queries";
 
@@ -255,9 +261,12 @@ async function callClaude(prompt: string): Promise<{ text: string; usage: Usage 
     throw new Error(`${CLI_UNAVAILABLE}: ${outcome.spawnError.message}`);
   }
   if (outcome.code !== 0) {
-    // A subscription usage-limit stop lands here too. stderr is printed, never parsed.
+    // A subscription usage-limit stop lands here too. stderr is PRINTED and never returned:
+    // keeping it out of the thrown message keeps it out of the run-state artifact and out of
+    // the `translationNotes` line a failed verify writes into a document (T-03-04, T-03-32).
+    console.error(`  CLI stderr (printed only, never parsed): ${outcome.stderr.trim() || "(empty)"}`);
     throw new Error(
-      `the Claude Code CLI exited ${String(outcome.code)}. Nothing was written for this post. CLI stderr follows and is printed only, never parsed: ${outcome.stderr.trim() || "(empty)"}`,
+      `the Claude Code CLI exited ${String(outcome.code)}. Its stderr was printed above. Nothing was written for this post.`,
     );
   }
 
@@ -369,6 +378,53 @@ const TRANSLATE_INSTRUCTIONS = [
   "A string whose payload label is `metaDescription` should come back under 160 characters where the meaning survives it, because the content model warns above that length.",
   "Introduce no reference to the United States, America or Israel. This is a standing rule for this catalogue and it applies even where a literal translation would produce one.",
   "The house rule against em dashes is an English-prose rule for this project and does not apply to your Farsi output.",
+].join("\n");
+
+/**
+ * The finding categories, keyed by the union imported from the notes formatter.
+ *
+ * A `Record` keyed by `Finding["category"]` is exhaustive by construction: adding a category
+ * to the type breaks this object until it is listed, and a category that is not in the type
+ * cannot be listed at all. That is why the union is imported rather than retyped here. The
+ * validator and the formatter cannot drift into disagreeing about what a finding can be.
+ */
+const FINDING_CATEGORIES: Readonly<Record<Finding["category"], true>> = {
+  number: true,
+  date: true,
+  url: true,
+  "entity-name": true,
+  "code-content": true,
+  "glossary-adherence": true,
+  "untranslated-leftover": true,
+};
+
+const FINDING_SEVERITIES: Readonly<Record<Finding["severity"], true>> = {
+  info: true,
+  warn: true,
+};
+
+const VERIFY_INSTRUCTIONS = [
+  "TASK. You are checking a Farsi translation of an English technical article for prose-level drift. You are NOT checking structure: the document structure is compared byte for byte by code before you are asked, and you cannot see or change it.",
+  "",
+  "The payload gives you aligned pairs. Each pair carries a `label` naming where in the document the string lives, the English source in `english`, and the Farsi rendering in `farsi`.",
+  "",
+  "Report drift in these categories and no others:",
+  `  ${Object.keys(FINDING_CATEGORIES).join("\n  ")}`,
+  "",
+  "number: a figure, percentage, quantity or ordinal that changed value, was dropped, or was rewritten in a different numeral system.",
+  "date: a date or a year that changed, was dropped, or was converted to another calendar.",
+  "url: any link text or address that differs in any way from the English.",
+  "entity-name: a person, company, organisation or product name that was altered rather than carried across.",
+  "code-content: identifiers, commands, file names or code fragments that were translated when they should have been left alone.",
+  "glossary-adherence: a glossary term rendered differently from the glossary block above.",
+  "untranslated-leftover: English that should have become Farsi and did not.",
+  "",
+  "NUANCE, and this one matters. Keeping a term in Latin script is often the idiomatic Farsi rendering, and the glossary block above marks many terms exactly that way. Report an untranslated-leftover ONLY where the English reads as an accidental leftover, for example a whole clause or sentence that was simply not translated. Never report one merely because a technical term appears in Latin script.",
+  "",
+  "Respond with a single JSON object of the shape { \"findings\": [...] } and nothing else. No prose before it, no prose after it, and no markdown fences of any kind. An empty array is the correct answer when nothing drifted.",
+  "Each finding is an object with exactly four string fields: `category`, one of the values listed above; `severity`, either \"warn\" or \"info\"; `location`, the `label` of the pair the finding is about; and `summary`, one English line describing the drift.",
+  "Use \"warn\" for anything a reviewer would have to act on and \"info\" for anything merely worth knowing.",
+  "Every `summary` must be a single English line. No newline inside it, and no em dash anywhere in it: that is a house style rule for this project.",
 ].join("\n");
 
 // ── Selection ────────────────────────────────────────────────────────────────
@@ -583,6 +639,9 @@ type PostState = {
   translatedFingerprintSha256: string | null;
   /** Set only on a gate block: the path of the artifact carrying both raw fingerprints. */
   gateArtifact: string | null;
+  /** Whether the verify pass returned a valid findings object. A false NEVER blocks a draft. */
+  verifyCompleted: boolean | null;
+  findings: number | null;
   usage: { translate: Usage | null; verify: Usage | null };
   /** A short reason code. Never the CLI's stderr, which is printed and never persisted. */
   failure: string | null;
@@ -736,6 +795,143 @@ function readStrings(value: unknown, expected: number, label: string): string[] 
     out.push(entry);
   }
   return out;
+}
+
+// ── Reassembly, the blocking gate, and the verify pass ───────────────────────
+
+/** The labels of the payload strings, in the same fields-then-body order the prompt used. */
+function sourceLabels(unit: TranslationUnit): string[] {
+  return [...unit.fieldItems.map((f) => f.label), ...unit.bodyItems.map((b) => b.label)];
+}
+
+/**
+ * The first index at which two fingerprints diverge, or -1 when they are identical.
+ * A length difference with a common prefix reports the end of the shorter one.
+ */
+function firstDifferingOffset(a: string, b: string): number {
+  const limit = Math.min(a.length, b.length);
+  for (let i = 0; i < limit; i += 1) {
+    if (a[i] !== b[i]) return i;
+  }
+  return a.length === b.length ? -1 : limit;
+}
+
+/**
+ * Both raw fingerprints, written only when the gate blocks a post.
+ *
+ * They live in their own file rather than in the run-state artifact because a fingerprint is
+ * the whole body with the translatable slots blanked, which for a long post is hundreds of
+ * kilobytes. The run state keeps the digests and names this path, so a blocked post can be
+ * diffed without every clean run carrying the weight.
+ */
+function writeGateArtifact(
+  postId: string,
+  slug: string,
+  sourceFingerprint: string,
+  translatedFingerprint: string,
+): string {
+  mkdirSync(ARTIFACT_DIR, { recursive: true });
+  const safeSlug = slug.replace(/[^a-zA-Z0-9-]+/g, "-").slice(0, 60);
+  const stamp = new Date().toISOString().replace(/:/g, "-");
+  const path = join(ARTIFACT_DIR, `gate-mismatch-${safeSlug}-${stamp}.json`);
+  writeFileSync(
+    path,
+    `${JSON.stringify(
+      {
+        reason: "D-05 tier 1 structural fingerprint mismatch: the draft was refused for this post",
+        postId,
+        slug,
+        firstDifferingOffset: firstDifferingOffset(sourceFingerprint, translatedFingerprint),
+        sourceFingerprintSha256: digest(sourceFingerprint),
+        translatedFingerprintSha256: digest(translatedFingerprint),
+        sourceFingerprint,
+        translatedFingerprint,
+      },
+      null,
+      2,
+    )}\n`,
+    "utf8",
+  );
+  return path;
+}
+
+function verifyPrompt(unit: TranslationUnit, translated: readonly string[]): string {
+  const labels = sourceLabels(unit);
+  const english = sourceStrings(unit);
+  const pairs = labels.map((label, i) => ({
+    label,
+    english: english[i] ?? "",
+    farsi: translated[i] ?? "",
+  }));
+  const payload = JSON.stringify({ slug: unit.item.post.slug ?? null, pairs });
+  return `${GLOSSARY_BLOCK}\n\n${VERIFY_INSTRUCTIONS}\n\nPAYLOAD\n${payload}\n`;
+}
+
+/**
+ * The verify response, validated in code.
+ *
+ * This transport carries no request-level schema, so nothing but this function stands between
+ * a model's improvised object and the `translationNotes` field on a document. A response that
+ * parses but fails here is treated exactly like a parse failure: that post's verify did not
+ * complete, and the draft is still written, because verify findings never block (D-05 tier 2).
+ */
+function validateFindings(value: unknown, label: string): Finding[] {
+  if (typeof value !== "object" || value === null) {
+    throw new Error(`${label}: the response parsed but is not a JSON object.`);
+  }
+  const findings = (value as { findings?: unknown }).findings;
+  if (!Array.isArray(findings)) {
+    throw new Error(`${label}: the response carries no \`findings\` array.`);
+  }
+
+  const out: Finding[] = [];
+  for (let i = 0; i < findings.length; i += 1) {
+    const entry: unknown = findings[i];
+    if (typeof entry !== "object" || entry === null) {
+      throw new Error(`${label}: findings[${i}] is not an object.`);
+    }
+    const row = entry as Record<string, unknown>;
+    const category = row.category;
+    const severity = row.severity;
+    const location = row.location;
+    const summary = row.summary;
+
+    if (typeof category !== "string" || !Object.hasOwn(FINDING_CATEGORIES, category)) {
+      throw new Error(
+        `${label}: findings[${i}].category is ${JSON.stringify(category)}, which is not one of ${Object.keys(FINDING_CATEGORIES).join(", ")}.`,
+      );
+    }
+    if (typeof severity !== "string" || !Object.hasOwn(FINDING_SEVERITIES, severity)) {
+      throw new Error(
+        `${label}: findings[${i}].severity is ${JSON.stringify(severity)}, which is not one of ${Object.keys(FINDING_SEVERITIES).join(", ")}.`,
+      );
+    }
+    if (typeof location !== "string") {
+      throw new Error(`${label}: findings[${i}].location is not a string.`);
+    }
+    if (typeof summary !== "string") {
+      throw new Error(`${label}: findings[${i}].summary is not a string.`);
+    }
+
+    out.push({
+      category: category as Finding["category"],
+      severity: severity as Finding["severity"],
+      location,
+      summary,
+    });
+  }
+  return out;
+}
+
+/**
+ * A one-line reason safe to put in front of a human and, in the verify case, into a document
+ * field. The CLI's stderr never reaches here: a non-zero exit prints it and keeps it out of
+ * the thrown message on purpose.
+ */
+function shortReason(err: unknown): string {
+  const message = err instanceof Error ? err.message : String(err);
+  const line = message.split("\n")[0]!.trim();
+  return line.length > 220 ? `${line.slice(0, 217)}...` : line;
 }
 
 async function run(): Promise<void> {
@@ -971,6 +1167,8 @@ async function run(): Promise<void> {
         sourceFingerprintSha256: digest(unit.sourceFingerprint),
         translatedFingerprintSha256: null,
         gateArtifact: null,
+        verifyCompleted: null,
+        findings: null,
         usage: { translate: null, verify: null },
         failure: null,
       };
@@ -1006,6 +1204,8 @@ async function run(): Promise<void> {
   saveRunState(runState, statePath);
 
   let translateUsage = ZERO_USAGE;
+  let verifyUsage = ZERO_USAGE;
+  let blocked = 0;
 
   for (let i = 0; i < units.length; i += 1) {
     const unit = units[i]!;
@@ -1030,7 +1230,7 @@ async function run(): Promise<void> {
         translateUsage = addUsage(translateUsage, err.usage);
       }
       state.status = "failed";
-      state.failure = `translate pass did not complete: ${err instanceof Error ? err.message : String(err)}`;
+      state.failure = `translate pass did not complete: ${shortReason(err)}`;
       saveRunState(runState, statePath);
       console.error(`  ${slug}: FAILED. ${state.failure}`);
       continue;
@@ -1040,17 +1240,97 @@ async function run(): Promise<void> {
       `  ${slug}: translated ${translated.length} string(s), ${state.usage.translate?.inputTokens ?? 0} in / ${state.usage.translate?.outputTokens ?? 0} out as reported by the CLI`,
     );
 
-    // ── SEAM: task 2 inserts the structural gate and the verify pass here, task 3 the write.
+    // ── Reassembly, then the D-05 tier 1 gate ────────────────────────────────
+    // The split is the same fields-then-body order the payload used, and reassembly writes
+    // only into the slots the walker enumerated. Code decides whether a draft may be written;
+    // the model is never asked to sign off on its own output.
+    const translatedFieldTexts = translated.slice(0, unit.fieldItems.length);
+    const translatedBodyTexts = translated.slice(unit.fieldItems.length);
+
+    let translatedBody: Body;
+    let translatedFingerprint: string;
+    try {
+      translatedBody = applyTranslatables(unit.item.post.body ?? [], translatedBodyTexts);
+      translatedFingerprint = structuralFingerprint(translatedBody);
+    } catch (err) {
+      state.status = "failed";
+      state.failure = `reassembly did not complete: ${shortReason(err)}`;
+      saveRunState(runState, statePath);
+      console.error(`  ${slug}: FAILED. ${state.failure}`);
+      continue;
+    }
+
+    state.translatedFingerprintSha256 = digest(translatedFingerprint);
+
+    if (translatedFingerprint !== unit.sourceFingerprint) {
+      const offset = firstDifferingOffset(unit.sourceFingerprint, translatedFingerprint);
+      const artifact = writeGateArtifact(
+        unit.item.post._id,
+        slug,
+        unit.sourceFingerprint,
+        translatedFingerprint,
+      );
+      blocked += 1;
+      state.status = "gate-blocked";
+      state.gateArtifact = artifact;
+      state.failure = `structural fingerprint mismatch, first differing offset ${offset}`;
+      saveRunState(runState, statePath);
+      console.error("");
+      console.error(`  !! GATE BLOCKED: ${slug} !!`);
+      console.error(
+        `  reason: the reassembled body's structural fingerprint differs from the source fingerprint captured before any model saw the document, first differing offset ${offset}. No draft was created for this post (D-05 tier 1).`,
+      );
+      console.error(`  both fingerprints written to: ${artifact}`);
+      console.error("  the run continues with the remaining posts.");
+      continue;
+    }
+
+    console.log("  gate: structural fingerprint identical to the source. The draft may be written.");
+
+    // ── The verify pass. Findings never block (D-05 tier 2) ──────────────────
+    let notes: string;
+    try {
+      const call = await callClaudeJson(verifyPrompt(unit, translated), `${slug} verify`);
+      state.usage.verify = call.usage;
+      verifyUsage = addUsage(verifyUsage, call.usage);
+      const findings = validateFindings(call.value, `${slug} verify`);
+      notes = formatNotes(findings, todayIso());
+      state.verifyCompleted = true;
+      state.findings = findings.length;
+      state.status = "verified";
+      console.log(
+        `  verify: ${findings.length} finding(s), ${call.usage.inputTokens} in / ${call.usage.outputTokens} out as reported by the CLI`,
+      );
+    } catch (err) {
+      if (err instanceof ResponseParseError) {
+        state.usage.verify = err.usage;
+        verifyUsage = addUsage(verifyUsage, err.usage);
+      }
+      const reason = shortReason(err);
+      notes = `Verify pass did not complete (${todayIso()}): ${reason} The Farsi prose in this draft has not been checked for drift, so read it before publishing.`;
+      state.verifyCompleted = false;
+      state.findings = null;
+      state.status = "verified";
+      console.error(`  verify: DID NOT COMPLETE. ${reason}`);
+      console.error("  the draft is still written: verify findings never block (D-05 tier 2).");
+    }
+    saveRunState(runState, statePath);
+
+    // ── SEAM: task 3 writes the draft from translatedFieldTexts, translatedBody and notes.
+    void translatedFieldTexts;
+    void notes;
   }
 
   console.log("");
   console.log(
     `translate pass measured totals: ${translateUsage.calls} call(s), ${translateUsage.inputTokens} input token(s), ${translateUsage.outputTokens} output token(s)`,
   );
-  console.log("run cost: subscription-funded, $0 marginal.");
-  console.error(
-    "the structural gate, the verify pass and the draft write are added by plan 03-08 tasks 2 and 3. Nothing was written.",
+  console.log(
+    `verify pass measured totals: ${verifyUsage.calls} call(s), ${verifyUsage.inputTokens} input token(s), ${verifyUsage.outputTokens} output token(s)`,
   );
+  console.log(`gate: ${blocked} post(s) blocked.`);
+  console.log("run cost: subscription-funded, $0 marginal.");
+  console.error("the draft write and the spend record are added by plan 03-08 task 3. Nothing was written.");
   process.exit(1);
 }
 
