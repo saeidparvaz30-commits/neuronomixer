@@ -1,0 +1,597 @@
+# Production run log
+
+Phase 3, plan 03-10. The production proof run: the dry run over the whole production
+candidate set, the authorisation Saeid gives at the Task 1 checkpoint, the single
+authorised execute, and the Studio walk.
+
+No environment value, credential or connection string appears anywhere in this file.
+
+---
+
+## Deploy-gate precondition
+
+D-11 step 3 forbids touching the production dataset until the Phase 2 English filter is
+live on production and the production build has been regenerated. Confirmed before the dry
+run below was started:
+
+`.planning/phases/03-translation-pipeline/artifacts/deploy-gate.md` carries a **Post-deploy**
+section. Its gate verdict reads:
+
+> D-11 step 2 is **closed**. The repaired lockfile installed cleanly on Vercel (the
+> deploy built and reached Ready, which is the T-03-11 evidence pass for the three
+> too-new package bumps), production runs the Phase 2 English filter, the Studio split
+> and the 18-field schema, and the production dataset holds zero Farsi documents.
+
+Supporting facts recorded in that section: the push moved `origin/main` `5ea9ddb..43b5dfe`,
+Vercel deployment `dpl_A16hZgLQZJozQsmvXq8NkY8C8qmD` reached READY with
+`gitSource.sha` byte-identical to the pushed HEAD and the apex domain aliased to it, the
+live filter check exited 0 against `blog_posts`, and the post-deploy raw-perspective count
+read `language fa : 0`.
+
+The precondition holds. The dry run below was the first command this plan ran against the
+production dataset.
+
+---
+
+## Dry run
+
+Command, run from the repository root:
+
+```
+npx tsx --env-file .env.vercel-prod scripts/translate-posts.ts --all
+```
+
+No `--execute`. Dry run is the default and is the only mode this command can be in: the
+script has no flag that turns dry run on, and `--execute` is the single flag that writes
+(D-14). The run reads production, makes no model call, and writes nothing to the dataset.
+Exit code **0**. Captured stdout verbatim; stderr was captured separately and was empty
+(0 bytes).
+
+```
+translate-posts: projectId=pz9ppas8 dataset=blog_posts apiVersion=2025-10-07 mode=DRY RUN
+translate-posts: slug=(none) all=true retranslate=false resume=(none)
+ADMIN user resolved: token spend can be recorded. The id itself is not printed.
+plan: 26 candidate(s) with no Farsi sibling, 0 stale sibling(s), 0 fresh sibling(s)
+working set: 26 post(s)
+  the-modern-data-career-map  06328150-884b-4c2c-bccb-be209af6d96c
+  learning-sql-for-free-in-2025  10c83b39-b709-4543-93a2-3ef464386809
+  learning-excel-for-free-in-2025  23e130bc-d702-4168-82b5-acba5d039152
+  industry-50-explained-why-the-future-is-human-centred-not-just-automated  46oLupG9ruTgFco3qkAVg9
+  data-the-red-cells-of-our-digital-worlds-veins  5f84b594-cbcc-4018-bbc6-a465a00ccad8
+  why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it  7jn2fDKswJjzFhbPpk42s0
+  inside-the-data-ecosystem  801d1d2c-34aa-4977-ad23-a294d1025ff3
+  exploring-how-machine-learning-and-analytics-shape-the-future  8311afc2-ffe0-46ed-81f3-c58de50b7aa5
+  foundational-tools-for-data-related-careers  8456f262-eb1e-44b7-9ad1-7f60e1f4c615
+  signal-from-the-frontier-the-ai-developments-that-actually-matter-in-q2-2026  9lVVoe5GuStwdVe6ygGPQa
+  the-data-lifecycle-how-information-flows-through-modern-organisations  ESi6o53PQdAxfwmpqtIDvk
+  data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you  ESi6o53PQdAxfwmpqtLm8A
+  interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai  ESi6o53PQdAxfwmpqtSyOd
+  fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a  Fin89qgk1podGr6JhFagz3
+  171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep  Fin89qgk1podGr6JhFchGh
+  nigeria-just-wrote-ai-into-anti-money-laundering-the-18-month-clock-for-african-banks-has-starte  MBZBrDZ1v9o0BF3FgmgdoF
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind  S9mF1lBwsv6MdFz668s22Z
+  the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation  S9mF1lBwsv6MdFz6693aV9
+  a-practical-guide-to-data-driven-decisions  b2708764-5411-4678-aa88-0c4b59652482
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  bnKHE8NFvD5dhRfAAzQ0Mx
+  why-explainable-ai-matters-more-than-you-think  bnKHE8NFvD5dhRfAB0dtGt
+  excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt  pn7GvmYaTH5iJ6kzusx4Fp
+  regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe  pn7GvmYaTH5iJ6kzut0prR
+  model-risk-management-what-it-is-and-why-every-ai-team-needs-it  ugPOXnc5BljH1c0F0KoxUi
+  explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes  v2I8xbswIO3h0NWvyPhR4C
+  learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners  v2I8xbswIO3h0NWvyPjR6C
+translatable text per post:
+  the-modern-data-career-map  body 78 (span 77, cell 0, alt 1, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 9139
+  learning-sql-for-free-in-2025  body 79 (span 79, cell 0, alt 0, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 5833
+  learning-excel-for-free-in-2025  body 29 (span 28, cell 0, alt 0, caption 1)  fields 3 (title, metaDescription, mainImage.alt)  chars 6172
+  industry-50-explained-why-the-future-is-human-centred-not-just-automated  body 171 (span 135, cell 33, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 19592
+  data-the-red-cells-of-our-digital-worlds-veins  body 81 (span 79, cell 0, alt 2, caption 0)  fields 2 (title, metaDescription)  chars 8426
+  why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it  body 113 (span 110, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 11997
+  inside-the-data-ecosystem  body 40 (span 39, cell 0, alt 1, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 3986
+  exploring-how-machine-learning-and-analytics-shape-the-future  body 65 (span 62, cell 0, alt 3, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 15264
+  foundational-tools-for-data-related-careers  body 81 (span 42, cell 39, alt 0, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 10682
+  signal-from-the-frontier-the-ai-developments-that-actually-matter-in-q2-2026  body 162 (span 123, cell 36, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 16370
+  the-data-lifecycle-how-information-flows-through-modern-organisations  body 113 (span 110, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 12856
+  data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you  body 112 (span 109, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 13434
+  interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai  body 134 (span 131, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 16859
+  fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a  body 65 (span 62, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 9540
+  171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep  body 43 (span 40, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 11077
+  nigeria-just-wrote-ai-into-anti-money-laundering-the-18-month-clock-for-african-banks-has-starte  body 56 (span 53, cell 0, alt 3, caption 0)  fields 3 (title, description, metaDescription)  chars 13782
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind  body 132 (span 129, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 10398
+  the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation  body 124 (span 121, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 14139
+  a-practical-guide-to-data-driven-decisions  body 59 (span 58, cell 0, alt 1, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 5446
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  body 117 (span 115, cell 0, alt 2, caption 0)  fields 2 (title, metaDescription)  chars 10350
+  why-explainable-ai-matters-more-than-you-think  body 100 (span 97, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 11921
+  excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt  body 156 (span 138, cell 15, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 16618
+  regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe  body 186 (span 159, cell 24, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 24654
+  model-risk-management-what-it-is-and-why-every-ai-team-needs-it  body 127 (span 124, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 17639
+  explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes  body 230 (span 183, cell 44, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 34563
+  learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners  body 309 (span 269, cell 37, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 22262
+note, informational only: a Farsi rendering usually runs longer, so these will probably show a Studio warning badge. It is a warning, not an error, and it never blocks a publish:
+  the-modern-data-career-map  English metaDescription is 158 characters, against a 160-character Studio warning bound
+  learning-sql-for-free-in-2025  English metaDescription is 158 characters, against a 160-character Studio warning bound
+  learning-excel-for-free-in-2025  English metaDescription is 166 characters, against a 160-character Studio warning bound
+  data-the-red-cells-of-our-digital-worlds-veins  English metaDescription is 160 characters, against a 160-character Studio warning bound
+  why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it  English metaDescription is 144 characters, against a 160-character Studio warning bound
+  inside-the-data-ecosystem  English metaDescription is 152 characters, against a 160-character Studio warning bound
+  exploring-how-machine-learning-and-analytics-shape-the-future  English metaDescription is 157 characters, against a 160-character Studio warning bound
+  foundational-tools-for-data-related-careers  English metaDescription is 161 characters, against a 160-character Studio warning bound
+  signal-from-the-frontier-the-ai-developments-that-actually-matter-in-q2-2026  English metaDescription is 160 characters, against a 160-character Studio warning bound
+  the-data-lifecycle-how-information-flows-through-modern-organisations  English metaDescription is 160 characters, against a 160-character Studio warning bound
+  data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you  English metaDescription is 140 characters, against a 160-character Studio warning bound
+  interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai  English metaDescription is 159 characters, against a 160-character Studio warning bound
+  fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a  English metaDescription is 159 characters, against a 160-character Studio warning bound
+  171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep  English metaDescription is 160 characters, against a 160-character Studio warning bound
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind  English metaDescription is 143 characters, against a 160-character Studio warning bound
+  the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation  English metaDescription is 143 characters, against a 160-character Studio warning bound
+  a-practical-guide-to-data-driven-decisions  English metaDescription is 165 characters, against a 160-character Studio warning bound
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  English metaDescription is 143 characters, against a 160-character Studio warning bound
+  why-explainable-ai-matters-more-than-you-think  English metaDescription is 141 characters, against a 160-character Studio warning bound
+  excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt  English metaDescription is 158 characters, against a 160-character Studio warning bound
+  regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe  English metaDescription is 150 characters, against a 160-character Studio warning bound
+  model-risk-management-what-it-is-and-why-every-ai-team-needs-it  English metaDescription is 157 characters, against a 160-character Studio warning bound
+  explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes  English metaDescription is 144 characters, against a 160-character Studio warning bound
+  learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners  English metaDescription is 146 characters, against a 160-character Studio warning bound
+run total: 26 post(s), 2962 body item(s), 60 field item(s), 352999 translatable character(s)
+estimated tokens: 561040 in, 192120 out, covering a translate pass and a verify pass
+estimated cost: $0 marginal. The transport is the Claude Code CLI on Saeid's subscription (D-16), so the token figures above are a size brake on the run, not a price.
+  assumptions: 4 characters per English token, Farsi output at 2x the source token count, 4000 overhead tokens per request, 600 output tokens per verify response. An estimate, not a measurement; the run reports its measured totals at the end.
+run state written to .planning\phases\03-translation-pipeline\artifacts\blog_posts-2026-08-25T18-08-41.044Z.json
+DRY RUN: mutation validated server-side, nothing written.
+Re-run with --execute to apply: npx tsx --env-file .env.vercel-prod scripts/translate-posts.ts --all --execute
+```
+
+(stderr for this command was empty.)
+
+### What the capture establishes
+
+| Fact | Value |
+|---|---|
+| Dataset | `blog_posts` (production) |
+| Mode | `DRY RUN` |
+| Candidates with no Farsi sibling | 26 |
+| Stale siblings | 0 |
+| Fresh siblings | 0 |
+| Translatable body items across the set | 2,962 |
+| Translatable field items across the set | 60 |
+| Translatable characters across the set | 352,999 |
+| Estimated tokens for the whole set | 561,040 in, 192,120 out |
+| Marginal cost | $0, subscription transport (D-16) |
+| Written to the production dataset | Nothing. `DRY RUN: mutation validated server-side, nothing written.` |
+| Model calls made | None. The dry run stops before the transport |
+
+The 26 candidates match the 26 approved English posts the deploy gate counted, and the
+0 stale / 0 fresh line confirms production still holds no Farsi sibling of any kind.
+
+### Per-post breakdown
+
+Item counts are as printed by the dry run. The token columns are the script's own per-post
+estimate recomputed from the printed character counts using the assumptions the run states:
+4 characters per English token, Farsi output at 2x the source token count, 4,000 overhead
+tokens per request, 600 output tokens per verify response. The 26 rows sum to exactly the
+561,040 in / 192,120 out the run printed, so the derivation is faithful to the script.
+
+Sorted by table-cell count, because table cells are the shape D-13 exists for and the shape
+a span-only walker would silently drop.
+
+| # | Slug | span | cell | alt | caption | items | chars | est in | est out |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | `explainable-ai-in-credit-risk-why-banks-cannot-afford-black-boxes` | 183 | 44 | 3 | 0 | 232 | 34,563 | 42,564 | 17,882 |
+| 2 | `foundational-tools-for-data-related-careers` | 42 | 39 | 0 | 0 | 84 | 10,682 | 18,684 | 5,942 |
+| 3 | `learning-python-for-analytics-a-no-nonsense-roadmap-for-beginners` | 269 | 37 | 3 | 0 | 311 | 22,262 | 30,264 | 11,732 |
+| 4 | `signal-from-the-frontier-the-ai-developments-that-actually-matter-in-q2-2026` | 123 | 36 | 3 | 0 | 164 | 16,370 | 24,372 | 8,786 |
+| 5 | `industry-50-explained-why-the-future-is-human-centred-not-just-automated` | 135 | 33 | 3 | 0 | 173 | 19,592 | 27,592 | 10,396 |
+| 6 | `regulation-meets-innovation-how-ai-governance-is-reshaping-tech-in-europe` | 159 | 24 | 3 | 0 | 188 | 24,654 | 32,656 | 12,928 |
+| 7 | `excel-for-data-analysis-in-2026-what-still-matters-and-what-doesnt` | 138 | 15 | 3 | 0 | 158 | 16,618 | 24,620 | 8,910 |
+| 8 | `model-risk-management-what-it-is-and-why-every-ai-team-needs-it` | 124 | 0 | 3 | 0 | 129 | 17,639 | 25,640 | 9,420 |
+| 9 | `interpretable-vs-black-box-models-the-trade-off-that-defines-modern-ai` | 131 | 0 | 3 | 0 | 136 | 16,859 | 24,860 | 9,030 |
+| 10 | `exploring-how-machine-learning-and-analytics-shape-the-future` | 62 | 0 | 3 | 0 | 68 | 15,264 | 23,264 | 8,232 |
+| 11 | `the-eu-ai-act-in-2026-what-it-actually-means-for-business-and-innovation` | 121 | 0 | 3 | 0 | 126 | 14,139 | 22,140 | 7,670 |
+| 12 | `nigeria-just-wrote-ai-into-anti-money-laundering-the-18-month-clock-for-african-banks-has-starte` | 53 | 0 | 3 | 0 | 59 | 13,782 | 21,784 | 7,492 |
+| 13 | `data-analyst-vs-data-scientist-vs-analytics-engineer-which-role-fits-you` | 109 | 0 | 3 | 0 | 114 | 13,434 | 21,436 | 7,318 |
+| 14 | `the-data-lifecycle-how-information-flows-through-modern-organisations` | 110 | 0 | 3 | 0 | 115 | 12,856 | 20,856 | 7,028 |
+| 15 | `why-sql-is-still-the-most-important-skill-in-data-and-how-to-start-learning-it` | 110 | 0 | 3 | 0 | 115 | 11,997 | 20,000 | 6,600 |
+| 16 | `why-explainable-ai-matters-more-than-you-think` | 97 | 0 | 3 | 0 | 102 | 11,921 | 19,924 | 6,562 |
+| 17 | `171-emotion-vectors-inside-claude-what-anthropics-new-interpretability-paper-means-for-banks-dep` | 40 | 0 | 3 | 0 | 45 | 11,077 | 19,080 | 6,140 |
+| 18 | `what-is-data-a-complete-beginners-guide-for-the-curious-mind` | 129 | 0 | 3 | 0 | 134 | 10,398 | 18,400 | 5,800 |
+| 19 | `what-neuronomixer-stands-for-ai-data-and-the-future-of-systems` | 115 | 0 | 2 | 0 | 119 | 10,350 | 18,352 | 5,776 |
+| 20 | `fca-ai-live-testing-cohort-2-what-barclays-lloyds-and-ubs-are-quietly-telling-uk-banking-about-a` | 62 | 0 | 3 | 0 | 67 | 9,540 | 17,540 | 5,370 |
+| 21 | `the-modern-data-career-map` | 77 | 0 | 1 | 0 | 81 | 9,139 | 17,140 | 5,170 |
+| 22 | `data-the-red-cells-of-our-digital-worlds-veins` | 79 | 0 | 2 | 0 | 83 | 8,426 | 16,428 | 4,814 |
+| 23 | `learning-excel-for-free-in-2025` | 28 | 0 | 0 | 1 | 32 | 6,172 | 14,172 | 3,686 |
+| 24 | `learning-sql-for-free-in-2025` | 79 | 0 | 0 | 0 | 82 | 5,833 | 13,836 | 3,518 |
+| 25 | `a-practical-guide-to-data-driven-decisions` | 58 | 0 | 1 | 0 | 62 | 5,446 | 13,448 | 3,324 |
+| 26 | `inside-the-data-ecosystem` | 39 | 0 | 1 | 0 | 43 | 3,986 | 11,988 | 2,594 |
+| | **Total** | **2,872** | **228** | **62** | **1** | **3,022** | **352,999** | **561,040** | **192,120** |
+
+`items` is body items plus field items, which is the string count one translate call carries.
+
+Seven of the 26 posts carry table cells. Only one of them, `foundational-tools-for-data-related-careers`,
+was in the dev set, so six of the seven production table posts are shapes the pipeline has
+never seen. Exactly one post in the set carries a video caption, `learning-excel-for-free-in-2025`,
+which is the same post that failed twice on the dev run for an unrelated reason.
+
+### Known risk carried in from plan 03-09
+
+03-09 diagnosed a per-call defect: the model can return an empty string for a slot whose
+source is the bare English definite article `"The "` immediately before an inline link.
+Persian has no definite article, so the response is defensible in isolation, but an empty
+leaf stops being a translatable slot and the structural fingerprint gate then refuses the
+write. It blocked roughly one dev post in six. The fix belongs to the code and was not made
+in this plan.
+
+The dry run does **not** print string contents, so this pattern is not visible in the
+capture above and no additional production query was run to look for it, the dry run being
+the only read this dispatch permits against `blog_posts`. What is known without any further
+query is that both dev posts 03-09 diagnosed the defect on are also production candidates,
+with the same slugs and the same block keys:
+
+| Slug | Block | Diagnosed on the dev run |
+|---|---|---|
+| `why-explainable-ai-matters-more-than-you-think` | k51 | `["The ", "EU AI Act", ", which enters its enforcement phase in August 2026, ..."]` |
+| `what-neuronomixer-stands-for-ai-data-and-the-future-of-systems` | k114 | `["The ", "European Commission defines Industry 5.0", " through three pillars: ..."]` |
+
+Those two are the only production candidates known to carry the pattern. Any of the other
+24 may carry it undetected. The defect is per call rather than per post: both dev posts
+blocked and then passed on a later attempt with nothing changed.
+
+---
+
+## Authorisation
+
+Given 2026-08-25, in session, at the plan 03-10 Task 1 blocking checkpoint. The per-post
+breakdown above was put in front of Saeid first, and three slugs were recommended from it.
+He selected:
+
+> "industry-50-explained (Recommended)"
+
+Resolved slug:
+
+```
+industry-50-explained-why-the-future-is-human-centred-not-just-automated
+```
+
+Scope authorised: **one post**. `--all` with `--execute` was not authorised and is forbidden
+by the plan; the 26-post backlog sweep belongs to Phase 5.
+
+Why this post was the recommendation, restated so the choice is checkable rather than taken
+on trust: 33 table cells, 135 spans and 3 image alts across 173 strings and 19,592
+characters. It exercises D-13 table-cell translation and image alt text together in one
+document, at roughly two thirds the token volume of the largest candidate, and it is
+evergreen and European-framed rather than a time-stamped news roundup. It is also not one
+of the two candidates known to carry the `"The "` empty-string pattern.
+
+Nothing had been written to the production dataset at the time this authorisation was
+recorded. The dry run above was the only command that had touched `blog_posts`.
+
+---
+
+## Production execute
+
+Command, run from the repository root:
+
+```
+npx tsx --env-file .env.vercel-prod scripts/translate-posts.ts --slug industry-50-explained-why-the-future-is-human-centred-not-just-automated --execute
+```
+
+One `--slug`, no `--all`. Exit code **0**. Captured stdout verbatim; stderr was captured
+separately and was empty (0 bytes).
+
+```
+translate-posts: projectId=pz9ppas8 dataset=blog_posts apiVersion=2025-10-07 mode=EXECUTE
+!! TARGET IS THE PRODUCTION DATASET !!
+translate-posts: slug=industry-50-explained-why-the-future-is-human-centred-not-just-automated all=false retranslate=false resume=(none)
+ADMIN user resolved: token spend can be recorded. The id itself is not printed.
+plan: 1 candidate(s) with no Farsi sibling, 0 stale sibling(s), 0 fresh sibling(s)
+working set: 1 post(s)
+  industry-50-explained-why-the-future-is-human-centred-not-just-automated  46oLupG9ruTgFco3qkAVg9
+translatable text per post:
+  industry-50-explained-why-the-future-is-human-centred-not-just-automated  body 171 (span 135, cell 33, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 19592
+run total: 1 post(s), 171 body item(s), 2 field item(s), 19592 translatable character(s)
+estimated tokens: 27592 in, 10396 out, covering a translate pass and a verify pass
+estimated cost: $0 marginal. The transport is the Claude Code CLI on Saeid's subscription (D-16), so the token figures above are a size brake on the run, not a price.
+  assumptions: 4 characters per English token, Farsi output at 2x the source token count, 4000 overhead tokens per request, 600 output tokens per verify response. An estimate, not a measurement; the run reports its measured totals at the end.
+
+transport: the Claude Code CLI on the subscription, model alias "sonnet", prompt on stdin, stdout parsed and stderr never parsed. Posts run strictly sequentially, so no response can be matched to the wrong post (T-03-06).
+run state: .planning\phases\03-translation-pipeline\artifacts\blog_posts-2026-08-25T19-40-20.694Z.json, rewritten after every per-post transition.
+Farsi documents in blog_posts before this run: 0
+
+[1/1] industry-50-explained-why-the-future-is-human-centred-not-just-automated: translating 173 string(s)
+  industry-50-explained-why-the-future-is-human-centred-not-just-automated translate: the response was not valid JSON (Unexpected token '`', "```json
+{""... is not valid JSON). Retrying once.
+  industry-50-explained-why-the-future-is-human-centred-not-just-automated: translated 173 string(s), 172000 in / 120147 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 0 finding(s), 58296 in / 7744 out as reported by the CLI
+  wrote: created draft drafts.23396d5b-5d90-461b-b9ba-d31768bc73a6
+
+Farsi documents in blog_posts after this run: 1 (was 0, 1 draft(s) created, 0 sibling(s) patched)
+  the count matches: re-queried after mutating rather than taken on trust.
+TokenUsage: 2 row(s) written, one per post per pass, at cost 0 because the run is subscription-funded.
+
+run summary
+  posts selected:   1
+  translated:       1
+  blocked by gate:  0
+  drafts created:   1
+  drafts patched:   0
+  findings written: 0 (0 post(s) whose verify pass did not complete)
+  failed:           0
+  translate pass:   2 call(s), 172000 input token(s), 120147 output token(s), as reported by the CLI
+  verify pass:      1 call(s), 58296 input token(s), 7744 output token(s), as reported by the CLI
+  cost:             subscription-funded, $0 marginal.
+  run state:        .planning\phases\03-translation-pipeline\artifacts\blog_posts-2026-08-25T19-40-20.694Z.json
+```
+
+(stderr for this command was empty.)
+
+### The header line and the production banner, verbatim
+
+The first two lines of the capture, in order, which is the pairing the plan requires:
+
+```
+translate-posts: projectId=pz9ppas8 dataset=blog_posts apiVersion=2025-10-07 mode=EXECUTE
+!! TARGET IS THE PRODUCTION DATASET !!
+```
+
+The header carries ` dataset=blog_posts ` and ` mode=EXECUTE`, and the banner is the line
+immediately after it with nothing between them.
+
+### Per-post CLI call results
+
+```
+[1/1] industry-50-explained-why-the-future-is-human-centred-not-just-automated: translating 173 string(s)
+  industry-50-explained-why-the-future-is-human-centred-not-just-automated translate: the response was not valid JSON (Unexpected token '`', "```json
+{""... is not valid JSON). Retrying once.
+  industry-50-explained-why-the-future-is-human-centred-not-just-automated: translated 173 string(s), 172000 in / 120147 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 0 finding(s), 58296 in / 7744 out as reported by the CLI
+  wrote: created draft drafts.23396d5b-5d90-461b-b9ba-d31768bc73a6
+```
+
+Attempt counts: **2 translate calls for 1 post**, because the first response came back
+fenced in a ```` ```json ```` block and failed to parse. The script's single retry recovered
+it. This is the 03-09 precedent exactly, where 6 of 15 first responses (40.0 percent) were
+fenced, and it is not a new failure mode. No fence stripping was added; a fenced response is
+still a broken contract and is still paid for with a retry.
+
+**The structural gate passed on the first written attempt.** The `"The "` empty-string defect
+03-09 diagnosed did not fire on this post, which is consistent with the pre-run reading: this
+post is not one of the two candidates known to carry that pattern.
+
+### Per-pass token totals, as reported by the CLI
+
+| Pass | Calls | Input tokens | Output tokens |
+|---|---:|---:|---:|
+| translate | 2 | 172,000 | 120,147 |
+| verify | 1 | 58,296 | 7,744 |
+| **Total** | **3** | **230,296** | **127,891** |
+
+Subscription-funded, $0 marginal (D-16). The dry run estimated 27,592 in / 10,396 out for
+this post. The measured figures are roughly 8x the input estimate and 12x the output
+estimate, so **the estimator is a long way low and should not be trusted as a size brake on
+a 26-post sweep**. Two causes, both visible in the numbers: the estimate assumes one
+translate call and this run made two, and its input model does not account for prompt cache
+creation and cache read, which the 03-08 decision counts as input. Carried to Phase 5 as a
+named follow-up rather than adjusted here.
+
+### Run summary
+
+```
+run summary
+  posts selected:   1
+  translated:       1
+  blocked by gate:  0
+  drafts created:   1
+  drafts patched:   0
+  findings written: 0 (0 post(s) whose verify pass did not complete)
+  failed:           0
+```
+
+Dataset state moved `Farsi documents in blog_posts before this run: 0` to
+`after this run: 1 (was 0, 1 draft(s) created, 0 sibling(s) patched)`, re-queried after
+mutating rather than taken on trust. `TokenUsage: 2 row(s) written, one per post per pass,
+at cost 0 because the run is subscription-funded.`
+
+The document written is `drafts.23396d5b-5d90-461b-b9ba-d31768bc73a6`. It is a draft. No
+published Farsi document was created, and nothing was patched on the English source.
+
+---
+
+## Verification
+
+All five steps below were run after the execute, against production, read-only.
+
+### 1. Post-run check, the authorised slug
+
+`npx tsx --env-file .env.vercel-prod scripts/checks/translation.check.ts --post-run --slug industry-50-explained-why-the-future-is-human-centred-not-just-automated`
+
+Exit **0**, stderr empty.
+
+```
+post-run: projectId=pz9ppas8 dataset=blog_posts apiVersion=2025-10-07 (raw perspective) farsi-documents=1 slug=industry-50-explained-why-the-future-is-human-centred-not-just-automated
+  industry-50-explained-why-the-future-is-human-centred-not-just-automated: sibling=drafts.23396d5b-5d90-461b-b9ba-d31768bc73a6 items=171 (span 135, cell 33, alt 3, caption 0) changed=97.7% arabic-script=94.2% hrefs=18 notes="Verify pass clean (2026-08-25)"
+  spend: translate-post 1 row(s) 172000 in / 120147 out, translate-verify 1 row(s) 58296 in / 7744 out, in the last 24h, at cost 0 because TokenUsage has no money column and the run is subscription-funded (D-16)
+post-run: 28 assertion(s) over 1 sibling(s) of 1 Farsi document(s) in blog_posts, 0 carrying the publish-cron status, all translationOf refs resolve and none is shared
+translation.check.ts: ALL PASS
+```
+
+Both T-03-30 anti-vacuity guards cleared with room: **97.7 percent of translatable strings
+differ from the source** and **94.2 percent carry Arabic script**, against an 80 percent
+bound. A structurally perfect English passthrough would have failed both. All 33 table cells
+and all 3 image alts are inside that count, so D-13 held on a shape six of the seven
+production table posts share and only one dev post had.
+
+**18 link hrefs** asserted byte identical and in order, the most of any post translated so
+far in this phase.
+
+### 2. Post-run check, dataset-wide
+
+`npx tsx --env-file .env.vercel-prod scripts/checks/translation.check.ts --post-run`
+
+Exit **0**, stderr empty. Reports `farsi-documents=1` and
+`0 carrying the publish-cron status`. Exactly one Farsi document exists in `blog_posts`,
+which is the authorised scope, and the D-12 tripwire (T-03-03) is green on production for
+the first time with a Farsi document actually present rather than vacuously.
+
+This is the same command that exited 1 with the no-sibling message throughout plan 03-09.
+It now exits 0 with ALL PASS, which is what 03-09 handed to this plan as its closing
+condition.
+
+### 3. Spend, criterion 5
+
+Proven in place, no fallback needed. `.env.vercel-prod` does carry a reachable
+`DATABASE_URL`: the run resolved an ADMIN user (`ADMIN user resolved: token spend can be
+recorded. The id itself is not printed.`) and wrote its rows, and the post-run spend line
+above reads them back independently under **both** activities, `translate-post` and
+`translate-verify`, at cost 0. The counts in the Postgres rows match the CLI-reported
+counts in the run summary exactly.
+
+Worth recording against 03-09's finding that spend is booked once at the end of a run: this
+run reached the end, so the record is complete. The underlying fragility is unchanged and
+still belongs to Phase 5.
+
+### 4. The English side did not move
+
+`npx tsx --env-file .env.vercel-prod scripts/checks/language-filter.check.ts --live`
+
+Exit **0**, stderr empty. See the deviation below for the one assertion that had to be
+corrected before this could pass.
+
+```
+live: projectId=pz9ppas8 dataset=blog_posts apiVersion=2025-10-07 posts=26
+  fragment behaviour: kept ["en","none"], dropped "fa"
+  parity blogIndexQuery: identical, 26 row(s)
+  parity homePageQuery: identical, 9 row(s)
+  parity postBySlugQuery: identical, 1 row(s)
+  parity postStaticParamsQuery: identical, 26 row(s)
+  parity postMetadataBySlugQuery: identical, 1 row(s)
+  parity postsByAuthorSlugQuery: identical, 20 row(s)
+  parity sitemapQuery: identical, 26 row(s)
+  parity postsByAuthorIdQuery: identical, 26 row(s)
+  parity authorReviewPostsQuery: identical, 26 row(s)
+  slug uniqueness: 26 distinct slug(s), max 1 English match each, 0 with zero English matches
+  pipeline selection: dataset=blog_posts (raw perspective) approved-english=26 candidates=25 with-sibling=1
+  pipeline $slug path: slug="the-modern-data-career-map" narrowed 25 row(s) to 1
+language-filter.check.ts: ALL PASS
+```
+
+**This is the first time the Phase 2 filter has been observable rather than merely present.**
+The deploy gate recorded the same nine parities as identical on 2026-08-23 and said so
+plainly: they were identical because production held zero Farsi documents, so the filter had
+nothing to drop. A Farsi document now exists, `posts=26` is unchanged, every one of the nine
+parities is still identical at the same row counts, and the fragment line reports it
+`dropped "fa"`. The filter is doing work and the English reader sees nothing.
+
+The slug uniqueness line is worth noting separately: the Farsi draft reuses the English
+post's slug on purpose, and the check still reports 26 distinct slugs with **max 1 English
+match each**. Slug reuse across languages does not collide because the uniqueness test is
+English-scoped.
+
+### 5. Route smoke
+
+`GATE_BASE_URL=https://www.neuronomixer.com node scripts/checks/route-smoke.mjs --verify`
+
+Exit **0**, stderr empty. **28/28 passed**, `route-smoke.mjs: ALL PASS`.
+
+Run against the **live production site** rather than a local `npx next start`. The plan
+allows either. Live was chosen deliberately: a local server resolves its dataset from the
+local env files, where `.env.local` points at the preview database, so a local run would
+have smoke-tested the wrong dataset and proved nothing about what a reader sees. The 28
+routes compare status, redirect behaviour, final path, content type, the `<html>` tag, and
+the presence of nav, footer and the branded not-found body, all of which are base-URL
+independent. Every one matches the Phase 1 baseline.
+
+### 6. Offline suites and types
+
+| Gate | Command | Result |
+|---|---|---|
+| Types | `npx tsc --noEmit` | exit 0, no output |
+| Lint | `npx eslint scripts/checks/language-filter.check.ts` | exit 0 |
+| Offline translation suite | `npx tsx scripts/checks/translation.check.ts` | exit 0, ALL PASS |
+| Offline filter suite | `npx tsx scripts/checks/language-filter.check.ts` | exit 0 |
+
+The offline translation suite also re-confirms the glossary is untouched: 98 entries
+(translate 82, transliterate 6, keep-english 10), byte identical across two independent
+loads.
+
+### 7. Leak scan on this log
+
+Run over this file after every section above was written, with the three forbidden
+substrings supplied to the scanner rather than spelled out here. Writing them into the log
+would be the one way a passing scan could make the log fail its own criterion.
+
+| Substring scanned for | Occurrences |
+|---|---:|
+| the Anthropic API key prefix | 0 |
+| the unqualified Postgres URL scheme | 0 |
+| the qualified Postgres URL scheme | 0 |
+
+Zero for all three. No environment value, credential or connection string appears anywhere
+in this log, and no run-state artifact path in it carries one either (T-03-04).
+
+---
+
+## Deviation: the live filter check could not survive the write this plan authorises
+
+**[Rule 1 - Bug] `language-filter.check.ts --live` asserted a precondition that plan 03-10
+exists to end.**
+
+**Found during:** Task 2, step 4, on the first run after the execute.
+
+**Issue:** The check exited **1**:
+
+```
+AssertionError [ERR_ASSERTION]: translationCandidatesQuery returned 25 row(s) but 26 approved English post(s) exist and none has a Farsi sibling yet. The sibling count subquery is excluding posts it should not, or the perspective is not raw.
+25 !== 26
+```
+
+Both numbers were correct and the data was fine. 26 approved English posts exist, one of
+them now has a Farsi sibling, so `translationCandidatesQuery` correctly returns the other
+25. The assertion demanded `candidates == approvedEnglish`, which is only true while no
+Farsi document exists anywhere in the dataset. The code said so itself, in the comment
+sitting directly above it:
+
+> Today every sibling count is 0, because no Farsi document exists in either dataset. That
+> makes the two numbers below the whole assertion.
+
+A second assertion had the same shape, requiring `translationStaleQuery` to return 0 rows
+because "no Farsi sibling exists in dataset". The plan's own acceptance criteria require
+this check to exit 0 **after** the write that makes both statements false, so the plan
+contradicts itself, exactly as 03-09's plan did over the `sourceUpdatedAt` anchor. Written
+literally, the check retires itself the moment the pipeline is used for real.
+
+**A second, quieter defect surfaced with it.** The check printed `stale=1` for a sibling
+that is not stale. `translationStaleQuery` returns every approved English post that HAS a
+sibling; it projects `sourceUpdatedAt` but does not compare timestamps, because the D-08
+staleness comparison happens in `translate-posts.ts` after the fetch. The number measures
+"has a sibling", and calling it `stale` would have raised a false alarm on every future
+green run.
+
+**Fix,** in `scripts/checks/language-filter.check.ts` only. The queries, the schema and the
+pipeline were not touched:
+
+1. Replaced `candidates == approvedEnglish` with the partition invariant
+   `candidates + withSibling == approvedEnglish`. The two queries are the same filter with
+   the sibling test inverted, so they partition the approved English set. That is true in
+   every state of the dataset, before and after any translation, and it is a stronger
+   statement than the original: it still catches a sibling subquery that excludes posts it
+   should not, and it now also catches one that includes them twice.
+2. Added a disjointness assertion, so no post can appear in both result sets.
+3. Replaced the `stale == 0` assertion with one that closes the gap the partition
+   invariant alone cannot see. A straight swap of the two sibling tests still sums to 26,
+   so it would slip through. Every row `translationStaleQuery` returns must resolve to a
+   real sibling; under a swap those rows would be the posts with no sibling and the
+   `sibling` projection would come back null. That is now asserted.
+4. Renamed the printed field `stale=` to `with-sibling=` so it names what it measures.
+
+**Why this was auto-fixed rather than escalated:** it is deviation Rule 1, a wrong
+assertion, and Rule 3, a blocker on an acceptance criterion the plan states outright. It
+changes no behaviour, no query, no schema and no production data. The non-zero branch of
+the sibling subquery it now exercises was already proven correct in 03-09's dev rehearsal
+against drafts the pipeline itself wrote.
+
+**Verification:** `npx tsc --noEmit` exit 0, `npx eslint scripts/checks/language-filter.check.ts`
+exit 0, the offline suite exit 0 unchanged, and `--live` against production exit 0 with
+ALL PASS as captured in step 4 above.
+
+**Scope note:** `scripts/checks/language-filter.check.ts` is outside this plan's declared
+`files_modified`, which lists only this log. Recorded here rather than widened silently.
