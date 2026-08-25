@@ -129,6 +129,16 @@ const client = createClient({
 const MODEL_ALIAS = "sonnet";
 
 /**
+ * The label `TokenUsage.model` carries. Deliberately unversioned: the alias above picks the
+ * build, so pinning a dated id here would be a claim this file cannot keep.
+ */
+const TOKEN_USAGE_MODEL_LABEL = "claude-sonnet-5";
+
+/** The two `TokenUsage.activity` values, so the admin dashboard's groupBy separates the passes. */
+const TRANSLATE_ACTIVITY = "translate-post";
+const VERIFY_ACTIVITY = "translate-verify";
+
+/**
  * Every built-in tool, denied.
  *
  * This transport runs a full agent CLI inside the repository working directory, so unlike the
@@ -378,6 +388,8 @@ const TRANSLATE_INSTRUCTIONS = [
   "A string whose payload label is `metaDescription` should come back under 160 characters where the meaning survives it, because the content model warns above that length.",
   "Introduce no reference to the United States, America or Israel. This is a standing rule for this catalogue and it applies even where a literal translation would produce one.",
   "The house rule against em dashes is an English-prose rule for this project and does not apply to your Farsi output.",
+  "",
+  "FORMAT, once more, because it is the one thing that makes a response usable: your entire response is the JSON object. The first character you emit is an opening brace and the last is a closing brace. Nothing before, nothing after, and no code fence around it.",
 ].join("\n");
 
 /**
@@ -425,6 +437,8 @@ const VERIFY_INSTRUCTIONS = [
   "Each finding is an object with exactly four string fields: `category`, one of the values listed above; `severity`, either \"warn\" or \"info\"; `location`, the `label` of the pair the finding is about; and `summary`, one English line describing the drift.",
   "Use \"warn\" for anything a reviewer would have to act on and \"info\" for anything merely worth knowing.",
   "Every `summary` must be a single English line. No newline inside it, and no em dash anywhere in it: that is a house style rule for this project.",
+  "",
+  "FORMAT, once more, because it is the one thing that makes a response usable: your entire response is the JSON object. The first character you emit is an opening brace and the last is a closing brace. Nothing before, nothing after, and no code fence around it.",
 ].join("\n");
 
 // ── Selection ────────────────────────────────────────────────────────────────
@@ -642,6 +656,9 @@ type PostState = {
   /** Whether the verify pass returned a valid findings object. A false NEVER blocks a draft. */
   verifyCompleted: boolean | null;
   findings: number | null;
+  /** The id of the document this post produced, and how it got there. */
+  writtenId: string | null;
+  writeVerb: "create" | "patch" | null;
   usage: { translate: Usage | null; verify: Usage | null };
   /** A short reason code. Never the CLI's stderr, which is printed and never persisted. */
   failure: string | null;
@@ -668,6 +685,12 @@ type RunState = {
     marginalCostUsd: 0;
   };
   posts: PostState[];
+  /**
+   * The spend rows as they were booked, written here as well as to Postgres. Belt and braces:
+   * the run artifact keeps a readable record even if the database write is the thing that
+   * failed, which is the documented fallback for an environment with no reachable ADMIN.
+   */
+  spendRows: Array<{ activity: string; model: string; inputTokens: number; outputTokens: number; costUsd: 0 }>;
 };
 
 /** ISO 8601 with the colons swapped for dashes: `:` is not a legal Windows filename character. */
@@ -714,35 +737,98 @@ function loadResumeIds(path: string): Set<string> {
 }
 
 /**
- * The Farsi draft document as it will be shaped, with the English strings still in place.
+ * The Farsi draft document, built field by field so that what is NOT here is as deliberate as
+ * what is (D-07, D-12, D-15).
  *
- * Used here only as the payload of the server-validated mutation that persists nothing, so
- * the shape itself is what gets checked.
+ * `translatedByLabel` maps a field item's label to its Farsi rendering. An absent label falls
+ * back to the English value, which is what the dry run's shape probe uses.
+ *
+ * Three keys are omitted rather than copied or set false. Two are the homepage curation keys,
+ * which are a Phase 4 decision and which an omitted key cannot accidentally claim (D-15). The
+ * third records a human submitter and has no meaning for a document a script produced.
  */
-function draftShell(post: SourcePost): { _id: string; _type: string; [key: string]: unknown } {
+type DraftDocument = { _id: string; _type: string } & Record<string, unknown>;
+
+function buildDraft(
+  post: SourcePost,
+  translatedByLabel: Readonly<Record<string, string>>,
+  body: Body,
+  notes: string,
+): DraftDocument {
+  const description = translatedByLabel.description ?? post.description;
+  const metaDescription = translatedByLabel.metaDescription ?? post.metaDescription;
+  const altText = translatedByLabel["mainImage.alt"];
+  const mainImage =
+    post.mainImage === undefined
+      ? undefined
+      : { ...post.mainImage, ...(altText === undefined ? {} : { alt: altText }) };
+
   return {
     // A `drafts.` id prefix is the whole of what makes a Sanity document a draft.
     _id: `drafts.${randomUUID()}`,
     _type: "post",
     language: "fa",
     translationOf: { _type: "reference", _ref: post._id },
-    // D-12: the status value api/cron/publish-scheduled matches on must never appear on a
-    // Farsi document. That cron is unfiltered by language, and it would patch the document to
-    // approved and mail every subscriber an English subject line.
+    // D-12, the highest severity threat in this phase. api/cron/publish-scheduled is
+    // deliberately unfiltered by language (Phase 2 D-02): it patches every post matching its
+    // status predicate to approved and mails every subscriber with an English subject line. A
+    // Farsi document carrying that status would therefore announce a Farsi post to Saeid's
+    // whole list in English. The value it matches on appears nowhere in this file, in code or
+    // in a comment, and an acceptance criterion greps the whole source for it.
     status: "draft",
-    title: post.title ?? "",
+    title: translatedByLabel.title ?? post.title ?? "",
     // The slug is reused verbatim per the design spec; the projection flattened it to a
     // string, so the slug object has to be rebuilt here.
     ...(post.slug === undefined ? {} : { slug: { _type: "slug", current: post.slug } }),
-    ...(post.description === undefined ? {} : { description: post.description }),
-    ...(post.metaDescription === undefined ? {} : { metaDescription: post.metaDescription }),
+    ...(description === undefined ? {} : { description }),
+    ...(metaDescription === undefined ? {} : { metaDescription }),
     ...(post.category === undefined ? {} : { category: post.category }),
     ...(post.author === undefined ? {} : { author: post.author }),
-    ...(post.mainImage === undefined ? {} : { mainImage: post.mainImage }),
+    ...(mainImage === undefined ? {} : { mainImage }),
     ...(post.publishedAt === undefined ? {} : { publishedAt: post.publishedAt }),
-    body: post.body ?? [],
+    body,
+    translationNotes: notes,
+    // The D-08 staleness anchor, and the reason it is a schema field rather than a value
+    // someone would have to parse back out of the notes.
     sourceUpdatedAt: post._updatedAt,
   };
+}
+
+/**
+ * The ONE create call site, shared by the dry run's server-validated probe and the real write.
+ *
+ * The create-if-not-exists verb is the D-08-safe one and is the only default write path here.
+ * The replace verb appears nowhere in this file, and an acceptance criterion greps for its
+ * absence, because replacing a document would discard whatever Saeid had already edited in
+ * the Studio on a field the pipeline does not own.
+ */
+async function commitDraft(doc: DraftDocument, dryRun: boolean): Promise<void> {
+  await client.transaction().createIfNotExists(doc).commit({ dryRun });
+}
+
+/**
+ * The `--retranslate` path: patch the named field set on the existing sibling and leave the
+ * rest alone. `_createdAt` survives, and so do `language`, `translationOf`, `status`, `slug`,
+ * `category`, `author` and `publishedAt`, which the pipeline does not own once a sibling
+ * exists.
+ */
+async function patchSibling(siblingId: string, draft: DraftDocument): Promise<void> {
+  const set: Record<string, unknown> = {
+    title: draft.title,
+    body: draft.body,
+    translationNotes: draft.translationNotes,
+    sourceUpdatedAt: draft.sourceUpdatedAt,
+  };
+  if (draft.description !== undefined) set.description = draft.description;
+  if (draft.metaDescription !== undefined) set.metaDescription = draft.metaDescription;
+  if (draft.mainImage !== undefined) set.mainImage = draft.mainImage;
+
+  await client.patch(siblingId).set(set).commit();
+}
+
+/** The raw-perspective Farsi document count, re-queried after mutating rather than assumed. */
+async function farsiCount(): Promise<number> {
+  return client.fetch<number>('count(*[_type == "post" && language == "fa"])');
 }
 
 // ── The translate pass ───────────────────────────────────────────────────────
@@ -1169,10 +1255,13 @@ async function run(): Promise<void> {
         gateArtifact: null,
         verifyCompleted: null,
         findings: null,
+        writtenId: null,
+        writeVerb: null,
         usage: { translate: null, verify: null },
         failure: null,
       };
     }),
+    spendRows: [],
   };
   const statePath = runStatePath(runState);
 
@@ -1183,10 +1272,13 @@ async function run(): Promise<void> {
     // Exactly one server-validated mutation that persists nothing. It is also the probe that
     // proves this token carries write scope on this dataset BEFORE any real run is submitted,
     // because a scope failure discovered after the work is the expensive version of the bug.
-    await client
-      .transaction()
-      .createIfNotExists(draftShell(units[0]!.item.post))
-      .commit({ dryRun: true });
+    // It goes through the same call site the real write uses, so the shape being validated is
+    // the shape that would be written.
+    const probe = units[0]!;
+    await commitDraft(
+      buildDraft(probe.item.post, {}, probe.item.post.body ?? [], "Dry run: the verify pass did not run."),
+      true,
+    );
 
     console.log("DRY RUN: mutation validated server-side, nothing written.");
     console.log(
@@ -1203,9 +1295,17 @@ async function run(): Promise<void> {
   console.log(`run state: ${statePath}, rewritten after every per-post transition.`);
   saveRunState(runState, statePath);
 
+  // Counted before the first write, so the re-query afterwards has something to be checked
+  // against rather than only a success line to be believed.
+  const farsiBefore = await farsiCount();
+  console.log(`Farsi documents in ${dataset} before this run: ${farsiBefore}`);
+
   let translateUsage = ZERO_USAGE;
   let verifyUsage = ZERO_USAGE;
   let blocked = 0;
+  let created = 0;
+  let patched = 0;
+  let findingsWritten = 0;
 
   for (let i = 0; i < units.length; i += 1) {
     const unit = units[i]!;
@@ -1295,6 +1395,7 @@ async function run(): Promise<void> {
       verifyUsage = addUsage(verifyUsage, call.usage);
       const findings = validateFindings(call.value, `${slug} verify`);
       notes = formatNotes(findings, todayIso());
+      findingsWritten += findings.length;
       state.verifyCompleted = true;
       state.findings = findings.length;
       state.status = "verified";
@@ -1316,22 +1417,141 @@ async function run(): Promise<void> {
     }
     saveRunState(runState, statePath);
 
-    // ── SEAM: task 3 writes the draft from translatedFieldTexts, translatedBody and notes.
-    void translatedFieldTexts;
-    void notes;
+    // ── The write ────────────────────────────────────────────────────────────
+    const translatedByLabel: Record<string, string> = {};
+    for (let f = 0; f < unit.fieldItems.length; f += 1) {
+      translatedByLabel[unit.fieldItems[f]!.label] = translatedFieldTexts[f]!;
+    }
+    const draft = buildDraft(unit.item.post, translatedByLabel, translatedBody, notes);
+
+    try {
+      if (retranslate && unit.item.existingSiblingId !== null) {
+        await patchSibling(unit.item.existingSiblingId, draft);
+        patched += 1;
+        state.writtenId = unit.item.existingSiblingId;
+        state.writeVerb = "patch";
+        console.log(`  wrote: patched the existing sibling ${unit.item.existingSiblingId}, its _createdAt unchanged`);
+      } else {
+        await commitDraft(draft, false);
+        created += 1;
+        state.writtenId = String(draft._id);
+        state.writeVerb = "create";
+        console.log(`  wrote: created draft ${String(draft._id)}`);
+      }
+      state.status = "written";
+    } catch (err) {
+      state.status = "failed";
+      state.failure = `write did not complete: ${shortReason(err)}`;
+      saveRunState(runState, statePath);
+      console.error(`  ${slug}: FAILED. ${state.failure}`);
+      continue;
+    }
+    saveRunState(runState, statePath);
   }
 
+  // ── The re-query, not the success line ──────────────────────────────────────
+  const farsiAfter = await farsiCount();
+  const expectedAfter = farsiBefore + created;
   console.log("");
   console.log(
-    `translate pass measured totals: ${translateUsage.calls} call(s), ${translateUsage.inputTokens} input token(s), ${translateUsage.outputTokens} output token(s)`,
+    `Farsi documents in ${dataset} after this run: ${farsiAfter} (was ${farsiBefore}, ${created} draft(s) created, ${patched} sibling(s) patched)`,
+  );
+  if (farsiAfter !== expectedAfter) {
+    throw new Error(
+      `the Farsi document count is ${farsiAfter} but ${expectedAfter} was expected after creating ${created} draft(s) from a pre-run count of ${farsiBefore}. The run is not trusted; inspect ${statePath}.`,
+    );
+  }
+  console.log("  the count matches: re-queried after mutating rather than taken on trust.");
+
+  // ── Spend ───────────────────────────────────────────────────────────────────
+  // One row per post per pass, carrying the counts the CLI reported. The run is funded by
+  // Saeid's subscription (D-16), so its marginal cost is zero, which the TokenUsage model
+  // expresses structurally: it stores token counts and no money column at all.
+  const spendRows = runState.posts.flatMap((post) => {
+    const rows: Array<{ activity: string; model: string; inputTokens: number; outputTokens: number; costUsd: 0 }> = [];
+    if (post.usage.translate !== null) {
+      rows.push({
+        activity: TRANSLATE_ACTIVITY,
+        model: TOKEN_USAGE_MODEL_LABEL,
+        inputTokens: post.usage.translate.inputTokens,
+        outputTokens: post.usage.translate.outputTokens,
+        costUsd: 0,
+      });
+    }
+    if (post.usage.verify !== null) {
+      rows.push({
+        activity: VERIFY_ACTIVITY,
+        model: TOKEN_USAGE_MODEL_LABEL,
+        inputTokens: post.usage.verify.inputTokens,
+        outputTokens: post.usage.verify.outputTokens,
+        costUsd: 0,
+      });
+    }
+    return rows;
+  });
+
+  runState.spendRows = spendRows;
+  saveRunState(runState, statePath);
+
+  if (spendRows.length > 0) {
+    if (adminUserId === null) {
+      // The documented fallback. It is unreachable as the code stands, because --execute
+      // aborts on an unresolvable ADMIN before any work, and it is kept so a future relaxation
+      // of that abort cannot silently lose the record.
+      console.error(
+        `no ADMIN user was resolved, so ${spendRows.length} spend row(s) could not be booked to Postgres. They are recorded in ${statePath} and printed here instead.`,
+      );
+      for (const row of spendRows) {
+        console.error(`  ${row.activity}  ${row.model}  ${row.inputTokens} in / ${row.outputTokens} out  $0`);
+      }
+    } else {
+      // Awaited, with no `.catch` attached. In a route handler a fire-and-forget spend log
+      // costs a log line; in a CLI that exits straight afterwards it loses the record.
+      const { recordTokenUsage } = await import("./lib/token-usage");
+      const written = await recordTokenUsage(
+        adminUserId,
+        spendRows.map((row) => ({
+          activity: row.activity,
+          model: row.model,
+          inputTokens: row.inputTokens,
+          outputTokens: row.outputTokens,
+        })),
+      );
+      console.log(
+        `TokenUsage: ${written} row(s) written, one per post per pass, at cost 0 because the run is subscription-funded.`,
+      );
+    }
+  }
+
+  // ── Run summary ─────────────────────────────────────────────────────────────
+  const failed = runState.posts.filter((post) => post.status === "failed").length;
+  const verifyGaps = runState.posts.filter((post) => post.verifyCompleted === false).length;
+
+  console.log("");
+  console.log("run summary");
+  console.log(`  posts selected:   ${units.length}`);
+  console.log(`  translated:       ${runState.posts.filter((p) => p.status !== "pending" && p.status !== "failed").length}`);
+  console.log(`  blocked by gate:  ${blocked}`);
+  console.log(`  drafts created:   ${created}`);
+  console.log(`  drafts patched:   ${patched}`);
+  console.log(`  findings written: ${findingsWritten} (${verifyGaps} post(s) whose verify pass did not complete)`);
+  console.log(`  failed:           ${failed}`);
+  console.log(
+    `  translate pass:   ${translateUsage.calls} call(s), ${translateUsage.inputTokens} input token(s), ${translateUsage.outputTokens} output token(s), as reported by the CLI`,
   );
   console.log(
-    `verify pass measured totals: ${verifyUsage.calls} call(s), ${verifyUsage.inputTokens} input token(s), ${verifyUsage.outputTokens} output token(s)`,
+    `  verify pass:      ${verifyUsage.calls} call(s), ${verifyUsage.inputTokens} input token(s), ${verifyUsage.outputTokens} output token(s), as reported by the CLI`,
   );
-  console.log(`gate: ${blocked} post(s) blocked.`);
-  console.log("run cost: subscription-funded, $0 marginal.");
-  console.error("the draft write and the spend record are added by plan 03-08 task 3. Nothing was written.");
-  process.exit(1);
+  console.log("  cost:             subscription-funded, $0 marginal.");
+  console.log(`  run state:        ${statePath}`);
+
+  if (blocked > 0 || failed > 0) {
+    console.error("");
+    console.error(
+      `${blocked} post(s) were blocked by the structural gate and ${failed} failed. Every other post was written. Exiting non-zero so a caller can see it.`,
+    );
+    process.exit(1);
+  }
 }
 
 async function main(): Promise<void> {
