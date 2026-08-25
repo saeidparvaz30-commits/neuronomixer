@@ -1,0 +1,591 @@
+# Phase 3 Plan 09: dev rehearsal run log
+
+Dataset: blog_posts_dev (D-10). Every command below was run with `--env-file .env.local`.
+Neither `.env` nor `.env.vercel-prod` was used for any writing command in this plan; the
+production run is plan 03-10 and it sits behind a human gate. The one production command in
+this log is the read-only `--post-run` guard at the end, which proves the production Farsi
+count is still zero.
+
+Secret discipline: every capture below is this repository's own stdout and stderr. No
+environment value was pasted in, and no key prefix or Postgres connection-URL scheme appears
+anywhere in this file. Asserted mechanically at the end of the plan.
+
+Transport: the Claude Code CLI on Saeid's subscription (D-16). Marginal cost of everything in
+this log is $0. The token counts recorded here are CLI-reported measurements, not prices.
+
+
+## Dry run
+translate-posts: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 mode=DRY RUN
+translate-posts: slug=(none) all=true retranslate=false resume=(none)
+ADMIN user resolved: token spend can be recorded. The id itself is not printed.
+plan: 11 candidate(s) with no Farsi sibling, 0 stale sibling(s), 0 fresh sibling(s)
+working set: 11 post(s)
+  the-modern-data-career-map  06328150-884b-4c2c-bccb-be209af6d96c
+  learning-sql-for-free-in-2025  10c83b39-b709-4543-93a2-3ef464386809
+  learning-excel-for-free-in-2025  23e130bc-d702-4168-82b5-acba5d039152
+  data-the-red-cells-of-our-digital-world-veins  5f84b594-cbcc-4018-bbc6-a465a00ccad8
+  inside-the-data-ecosystem  801d1d2c-34aa-4977-ad23-a294d1025ff3
+  exploring-how-machine-learning-and-analytics-shape-the-future  8311afc2-ffe0-46ed-81f3-c58de50b7aa5
+  foundational-tools-for-data-related-careers  8456f262-eb1e-44b7-9ad1-7f60e1f4c615
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind  S9mF1lBwsv6MdFz668s22Z
+  a-practical-guide-to-data-driven-decisions  b2708764-5411-4678-aa88-0c4b59652482
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  bnKHE8NFvD5dhRfAAzQ0Mx
+  why-explainable-ai-matters-more-than-you-think  bnKHE8NFvD5dhRfAB0dtGt
+translatable text per post:
+  the-modern-data-career-map  body 78 (span 77, cell 0, alt 1, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 9139
+  learning-sql-for-free-in-2025  body 79 (span 79, cell 0, alt 0, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 5833
+  learning-excel-for-free-in-2025  body 29 (span 28, cell 0, alt 0, caption 1)  fields 3 (title, metaDescription, mainImage.alt)  chars 6172
+  data-the-red-cells-of-our-digital-world-veins  body 86 (span 84, cell 0, alt 2, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 8667
+  inside-the-data-ecosystem  body 40 (span 39, cell 0, alt 1, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 3986
+  exploring-how-machine-learning-and-analytics-shape-the-future  body 65 (span 62, cell 0, alt 3, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 15264
+  foundational-tools-for-data-related-careers  body 81 (span 42, cell 39, alt 0, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 10682
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind  body 132 (span 129, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 10398
+  a-practical-guide-to-data-driven-decisions  body 59 (span 58, cell 0, alt 1, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 5446
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  body 117 (span 115, cell 0, alt 2, caption 0)  fields 2 (title, metaDescription)  chars 10350
+  why-explainable-ai-matters-more-than-you-think  body 100 (span 97, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 11921
+note, informational only: a Farsi rendering usually runs longer, so these will probably show a Studio warning badge. It is a warning, not an error, and it never blocks a publish:
+  the-modern-data-career-map  English metaDescription is 158 characters, against a 160-character Studio warning bound
+  learning-sql-for-free-in-2025  English metaDescription is 158 characters, against a 160-character Studio warning bound
+  learning-excel-for-free-in-2025  English metaDescription is 166 characters, against a 160-character Studio warning bound
+  data-the-red-cells-of-our-digital-world-veins  English metaDescription is 160 characters, against a 160-character Studio warning bound
+  inside-the-data-ecosystem  English metaDescription is 152 characters, against a 160-character Studio warning bound
+  exploring-how-machine-learning-and-analytics-shape-the-future  English metaDescription is 157 characters, against a 160-character Studio warning bound
+  foundational-tools-for-data-related-careers  English metaDescription is 161 characters, against a 160-character Studio warning bound
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind  English metaDescription is 143 characters, against a 160-character Studio warning bound
+  a-practical-guide-to-data-driven-decisions  English metaDescription is 165 characters, against a 160-character Studio warning bound
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  English metaDescription is 143 characters, against a 160-character Studio warning bound
+  why-explainable-ai-matters-more-than-you-think  English metaDescription is 141 characters, against a 160-character Studio warning bound
+run total: 11 post(s), 866 body item(s), 30 field item(s), 97858 translatable character(s)
+estimated tokens: 185876 in, 55538 out, covering a translate pass and a verify pass
+estimated cost: $0 marginal. The transport is the Claude Code CLI on Saeid's subscription (D-16), so the token figures above are a size brake on the run, not a price.
+  assumptions: 4 characters per English token, Farsi output at 2x the source token count, 4000 overhead tokens per request, 600 output tokens per verify response. An estimate, not a measurement; the run reports its measured totals at the end.
+run state written to .planning\phases\03-translation-pipeline\artifacts\blog_posts_dev-2026-08-25T15-37-36.581Z.json
+DRY RUN: mutation validated server-side, nothing written.
+Re-run with --execute to apply: npx tsx --env-file .env.local scripts/translate-posts.ts --all --execute
+
+(stderr for this command was empty.)
+
+The very first run of this plan, and the evidence for roadmap success criterion 4: the
+first run was a dry run, and it targeted the dev dataset. Nothing was written.
+
+
+## Single post execute
+translate-posts: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 mode=EXECUTE
+translate-posts: slug=foundational-tools-for-data-related-careers all=false retranslate=false resume=(none)
+ADMIN user resolved: token spend can be recorded. The id itself is not printed.
+plan: 1 candidate(s) with no Farsi sibling, 0 stale sibling(s), 0 fresh sibling(s)
+working set: 1 post(s)
+  foundational-tools-for-data-related-careers  8456f262-eb1e-44b7-9ad1-7f60e1f4c615
+translatable text per post:
+  foundational-tools-for-data-related-careers  body 81 (span 42, cell 39, alt 0, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 10682
+note, informational only: a Farsi rendering usually runs longer, so these will probably show a Studio warning badge. It is a warning, not an error, and it never blocks a publish:
+  foundational-tools-for-data-related-careers  English metaDescription is 161 characters, against a 160-character Studio warning bound
+run total: 1 post(s), 81 body item(s), 3 field item(s), 10682 translatable character(s)
+estimated tokens: 18684 in, 5942 out, covering a translate pass and a verify pass
+estimated cost: $0 marginal. The transport is the Claude Code CLI on Saeid's subscription (D-16), so the token figures above are a size brake on the run, not a price.
+  assumptions: 4 characters per English token, Farsi output at 2x the source token count, 4000 overhead tokens per request, 600 output tokens per verify response. An estimate, not a measurement; the run reports its measured totals at the end.
+
+transport: the Claude Code CLI on the subscription, model alias "sonnet", prompt on stdin, stdout parsed and stderr never parsed. Posts run strictly sequentially, so no response can be matched to the wrong post (T-03-06).
+run state: .planning\phases\03-translation-pipeline\artifacts\blog_posts_dev-2026-08-25T15-37-49.284Z.json, rewritten after every per-post transition.
+Farsi documents in blog_posts_dev before this run: 0
+
+[1/1] foundational-tools-for-data-related-careers: translating 84 string(s)
+  foundational-tools-for-data-related-careers translate: the response was not valid JSON (Unexpected token '`', "```json
+{""... is not valid JSON). Retrying once.
+  foundational-tools-for-data-related-careers: translated 84 string(s), 76904 in / 49529 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 0 finding(s), 47840 in / 5526 out as reported by the CLI
+  wrote: created draft drafts.c8f2b68b-2366-47a3-843c-3c89fc6d810b
+
+Farsi documents in blog_posts_dev after this run: 1 (was 0, 1 draft(s) created, 0 sibling(s) patched)
+  the count matches: re-queried after mutating rather than taken on trust.
+TokenUsage: 2 row(s) written, one per post per pass, at cost 0 because the run is subscription-funded.
+
+run summary
+  posts selected:   1
+  translated:       1
+  blocked by gate:  0
+  drafts created:   1
+  drafts patched:   0
+  findings written: 0 (0 post(s) whose verify pass did not complete)
+  failed:           0
+  translate pass:   2 call(s), 76904 input token(s), 49529 output token(s), as reported by the CLI
+  verify pass:      1 call(s), 47840 input token(s), 5526 output token(s), as reported by the CLI
+  cost:             subscription-funded, $0 marginal.
+  run state:        .planning\phases\03-translation-pipeline\artifacts\blog_posts_dev-2026-08-25T15-37-49.284Z.json
+
+(stderr for this command was empty.)
+
+Chosen post: `foundational-tools-for-data-related-careers`. It is the only dev candidate
+with table cells (39 of them) and it also carries a `mainImage.alt` field item, so D-13
+(table cells are translatable and are invisible to a span-only walker) is exercised on the
+first run that ever wrote anything.
+
+
+## Verify: single post
+offline: fixture 14 slot(s) over 10 block(s) (7 span, 5 cell, 1 alt, 1 caption), identity round trip byte identical, fingerprint invariant under full substitution, 6/6 structural mutations detected, unknown _type "code" contributed 0 slots and survived byte identical, count mismatch throws in both directions, notes format pinned (clean line, warn before info, one-lined, no em dash)
+offline: glossary 98 entries (translate 82, transliterate 6, keep-english 10), block 4078 chars over 102 line(s) with 98 entry line(s), byte identical across two independent loads, no date, D-04 standing instruction present
+post-run: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 (raw perspective) farsi-documents=1 slug=foundational-tools-for-data-related-careers
+  foundational-tools-for-data-related-careers: sibling=drafts.c8f2b68b-2366-47a3-843c-3c89fc6d810b items=81 (span 42, cell 39, alt 0, caption 0) changed=85.2% arabic-script=85.2% hrefs=2 notes="Verify pass clean (2026-08-25)"
+  spend: translate-post 2 row(s) 149128 in / 66202 out, translate-verify 1 row(s) 47840 in / 5526 out, in the last 24h, at cost 0 because TokenUsage has no money column and the run is subscription-funded (D-16)
+post-run: 27 assertion(s) over 1 sibling(s) of 1 Farsi document(s) in blog_posts_dev, 0 carrying the publish-cron status, all translationOf refs resolve and none is shared
+translation.check.ts: ALL PASS
+
+(stderr for this command was empty.)
+
+`npx tsx --env-file .env.local scripts/checks/translation.check.ts --post-run --slug foundational-tools-for-data-related-careers`, exit 0.
+
+
+## Backlog sweep
+translate-posts: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 mode=EXECUTE
+translate-posts: slug=(none) all=true retranslate=false resume=(none)
+ADMIN user resolved: token spend can be recorded. The id itself is not printed.
+plan: 10 candidate(s) with no Farsi sibling, 0 stale sibling(s), 1 fresh sibling(s)
+working set: 10 post(s)
+  the-modern-data-career-map  06328150-884b-4c2c-bccb-be209af6d96c
+  learning-sql-for-free-in-2025  10c83b39-b709-4543-93a2-3ef464386809
+  learning-excel-for-free-in-2025  23e130bc-d702-4168-82b5-acba5d039152
+  data-the-red-cells-of-our-digital-world-veins  5f84b594-cbcc-4018-bbc6-a465a00ccad8
+  inside-the-data-ecosystem  801d1d2c-34aa-4977-ad23-a294d1025ff3
+  exploring-how-machine-learning-and-analytics-shape-the-future  8311afc2-ffe0-46ed-81f3-c58de50b7aa5
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind  S9mF1lBwsv6MdFz668s22Z
+  a-practical-guide-to-data-driven-decisions  b2708764-5411-4678-aa88-0c4b59652482
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  bnKHE8NFvD5dhRfAAzQ0Mx
+  why-explainable-ai-matters-more-than-you-think  bnKHE8NFvD5dhRfAB0dtGt
+translatable text per post:
+  the-modern-data-career-map  body 78 (span 77, cell 0, alt 1, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 9139
+  learning-sql-for-free-in-2025  body 79 (span 79, cell 0, alt 0, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 5833
+  learning-excel-for-free-in-2025  body 29 (span 28, cell 0, alt 0, caption 1)  fields 3 (title, metaDescription, mainImage.alt)  chars 6172
+  data-the-red-cells-of-our-digital-world-veins  body 86 (span 84, cell 0, alt 2, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 8667
+  inside-the-data-ecosystem  body 40 (span 39, cell 0, alt 1, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 3986
+  exploring-how-machine-learning-and-analytics-shape-the-future  body 65 (span 62, cell 0, alt 3, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 15264
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind  body 132 (span 129, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 10398
+  a-practical-guide-to-data-driven-decisions  body 59 (span 58, cell 0, alt 1, caption 0)  fields 3 (title, metaDescription, mainImage.alt)  chars 5446
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  body 117 (span 115, cell 0, alt 2, caption 0)  fields 2 (title, metaDescription)  chars 10350
+  why-explainable-ai-matters-more-than-you-think  body 100 (span 97, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 11921
+note, informational only: a Farsi rendering usually runs longer, so these will probably show a Studio warning badge. It is a warning, not an error, and it never blocks a publish:
+  the-modern-data-career-map  English metaDescription is 158 characters, against a 160-character Studio warning bound
+  learning-sql-for-free-in-2025  English metaDescription is 158 characters, against a 160-character Studio warning bound
+  learning-excel-for-free-in-2025  English metaDescription is 166 characters, against a 160-character Studio warning bound
+  data-the-red-cells-of-our-digital-world-veins  English metaDescription is 160 characters, against a 160-character Studio warning bound
+  inside-the-data-ecosystem  English metaDescription is 152 characters, against a 160-character Studio warning bound
+  exploring-how-machine-learning-and-analytics-shape-the-future  English metaDescription is 157 characters, against a 160-character Studio warning bound
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind  English metaDescription is 143 characters, against a 160-character Studio warning bound
+  a-practical-guide-to-data-driven-decisions  English metaDescription is 165 characters, against a 160-character Studio warning bound
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  English metaDescription is 143 characters, against a 160-character Studio warning bound
+  why-explainable-ai-matters-more-than-you-think  English metaDescription is 141 characters, against a 160-character Studio warning bound
+run total: 10 post(s), 785 body item(s), 27 field item(s), 87176 translatable character(s)
+estimated tokens: 167192 in, 49596 out, covering a translate pass and a verify pass
+estimated cost: $0 marginal. The transport is the Claude Code CLI on Saeid's subscription (D-16), so the token figures above are a size brake on the run, not a price.
+  assumptions: 4 characters per English token, Farsi output at 2x the source token count, 4000 overhead tokens per request, 600 output tokens per verify response. An estimate, not a measurement; the run reports its measured totals at the end.
+
+transport: the Claude Code CLI on the subscription, model alias "sonnet", prompt on stdin, stdout parsed and stderr never parsed. Posts run strictly sequentially, so no response can be matched to the wrong post (T-03-06).
+run state: .planning\phases\03-translation-pipeline\artifacts\blog_posts_dev-2026-08-25T15-50-09.849Z.json, rewritten after every per-post transition.
+Farsi documents in blog_posts_dev before this run: 1
+
+[1/10] the-modern-data-career-map: translating 81 string(s)
+  the-modern-data-career-map translate: the response was not valid JSON (Unexpected token '`', "```json
+{""... is not valid JSON). Retrying once.
+  the-modern-data-career-map: translated 81 string(s), 134181 in / 58166 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 0 finding(s), 100487 in / 7073 out as reported by the CLI
+  wrote: created draft drafts.1d40d099-4a79-4120-a466-9a64615a8cb3
+
+[2/10] learning-sql-for-free-in-2025: translating 82 string(s)
+  learning-sql-for-free-in-2025: translated 82 string(s), 86472 in / 16856 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 0 finding(s), 43608 in / 4245 out as reported by the CLI
+  wrote: created draft drafts.d9093bfc-933d-4d0a-9624-089221805d6f
+
+[3/10] learning-excel-for-free-in-2025: translating 32 string(s)
+  learning-excel-for-free-in-2025 translate: the response was not valid JSON (Unexpected token '`', "```json
+{""... is not valid JSON). Retrying once.
+
+[4/10] data-the-red-cells-of-our-digital-world-veins: translating 89 string(s)
+  data-the-red-cells-of-our-digital-world-veins translate: the response was not valid JSON (Unexpected token '`', "```json
+{""... is not valid JSON). Retrying once.
+  data-the-red-cells-of-our-digital-world-veins: translated 89 string(s), 126894 in / 42589 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 0 finding(s), 45952 in / 2417 out as reported by the CLI
+  wrote: created draft drafts.cdc6e65d-2b20-40a3-9548-596f8ae928e7
+
+[5/10] inside-the-data-ecosystem: translating 43 string(s)
+  inside-the-data-ecosystem: translated 43 string(s), 78524 in / 8721 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 0 finding(s), 40124 in / 1911 out as reported by the CLI
+  wrote: created draft drafts.4983006e-d75a-40d2-9f13-4bfe5acd7d83
+
+[6/10] exploring-how-machine-learning-and-analytics-shape-the-future: translating 68 string(s)
+  exploring-how-machine-learning-and-analytics-shape-the-future: translated 68 string(s), 39533 in / 40889 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 0 finding(s), 51378 in / 6064 out as reported by the CLI
+  wrote: created draft drafts.afa41737-b112-42e4-b76c-629f51de2ba5
+
+[7/10] what-is-data-a-complete-beginners-guide-for-the-curious-mind: translating 134 string(s)
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind translate: the response was not valid JSON (Unexpected token '`', "```json
+{""... is not valid JSON). Retrying once.
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind: translated 134 string(s), 138781 in / 48400 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 1 finding(s), 48352 in / 6119 out as reported by the CLI
+  wrote: created draft drafts.2a6a96b6-21e7-424f-b201-f9a375d6d470
+
+[8/10] a-practical-guide-to-data-driven-decisions: translating 62 string(s)
+  a-practical-guide-to-data-driven-decisions: translated 62 string(s), 84361 in / 14741 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 0 finding(s), 42386 in / 2524 out as reported by the CLI
+  wrote: created draft drafts.e14dc377-56a6-4883-a61a-bea451c69d2d
+
+[9/10] what-neuronomixer-stands-for-ai-data-and-the-future-of-systems: translating 119 string(s)
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems: translated 119 string(s), 38247 in / 35068 out as reported by the CLI
+
+[10/10] why-explainable-ai-matters-more-than-you-think: translating 102 string(s)
+  why-explainable-ai-matters-more-than-you-think translate: the response was not valid JSON (Unexpected token '`', "```json
+{""... is not valid JSON). Retrying once.
+  why-explainable-ai-matters-more-than-you-think: translated 102 string(s), 149225 in / 79777 out as reported by the CLI
+
+Farsi documents in blog_posts_dev after this run: 9 (was 1, 7 draft(s) created, 0 sibling(s) patched)
+
+### stderr for: Backlog sweep
+  learning-excel-for-free-in-2025: FAILED. translate pass did not complete: learning-excel-for-free-in-2025 translate: the response was not valid JSON on either attempt (Unexpected token '`', "```json
+
+  !! GATE BLOCKED: what-neuronomixer-stands-for-ai-data-and-the-future-of-systems !!
+  reason: the reassembled body's structural fingerprint differs from the source fingerprint captured before any model saw the document, first differing offset 8061. No draft was created for this post (D-05 tier 1).
+  both fingerprints written to: .planning\phases\03-translation-pipeline\artifacts\gate-mismatch-what-neuronomixer-stands-for-ai-data-and-the-future-of-syste-2026-08-25T16-54-20.735Z.json
+  the run continues with the remaining posts.
+
+  !! GATE BLOCKED: why-explainable-ai-matters-more-than-you-think !!
+  reason: the reassembled body's structural fingerprint differs from the source fingerprint captured before any model saw the document, first differing offset 3289. No draft was created for this post (D-05 tier 1).
+  both fingerprints written to: .planning\phases\03-translation-pipeline\artifacts\gate-mismatch-why-explainable-ai-matters-more-than-you-think-2026-08-25T17-09-32.145Z.json
+  the run continues with the remaining posts.
+Error: the Farsi document count is 9 but 8 was expected after creating 7 draft(s) from a pre-run count of 1. The run is not trusted; inspect .planning\phases\03-translation-pipeline\artifacts\blog_posts_dev-2026-08-25T15-50-09.849Z.json.
+    at run (C:\Users\saeid\Desktop\Personal Website\NeuroNomixer\NeuroNomixer\neuronomixer\scripts\translate-posts.ts:1460:11)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async main (C:\Users\saeid\Desktop\Personal Website\NeuroNomixer\NeuroNomixer\neuronomixer\scripts\translate-posts.ts:1570:5)
+
+`npx tsx --env-file .env.local scripts/translate-posts.ts --all --execute` over the ten
+remaining dev candidates. Read the ending carefully: this run did NOT stop on a usage
+limit. It ran to completion and then aborted at its own post-run count assertion, because
+a second writing run had been started against the same dataset while it was still active
+(see "Overlapping runs" below). The assertion caught the concurrent mutation, which is
+exactly what it exists for.
+
+
+## Backlog sweep, resume
+translate-posts: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 mode=EXECUTE
+translate-posts: slug=(none) all=true retranslate=false resume=(none)
+ADMIN user resolved: token spend can be recorded. The id itself is not printed.
+plan: 3 candidate(s) with no Farsi sibling, 0 stale sibling(s), 8 fresh sibling(s)
+working set: 3 post(s)
+  learning-excel-for-free-in-2025  23e130bc-d702-4168-82b5-acba5d039152
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  bnKHE8NFvD5dhRfAAzQ0Mx
+  why-explainable-ai-matters-more-than-you-think  bnKHE8NFvD5dhRfAB0dtGt
+translatable text per post:
+  learning-excel-for-free-in-2025  body 29 (span 28, cell 0, alt 0, caption 1)  fields 3 (title, metaDescription, mainImage.alt)  chars 6172
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  body 117 (span 115, cell 0, alt 2, caption 0)  fields 2 (title, metaDescription)  chars 10350
+  why-explainable-ai-matters-more-than-you-think  body 100 (span 97, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 11921
+note, informational only: a Farsi rendering usually runs longer, so these will probably show a Studio warning badge. It is a warning, not an error, and it never blocks a publish:
+  learning-excel-for-free-in-2025  English metaDescription is 166 characters, against a 160-character Studio warning bound
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems  English metaDescription is 143 characters, against a 160-character Studio warning bound
+  why-explainable-ai-matters-more-than-you-think  English metaDescription is 141 characters, against a 160-character Studio warning bound
+run total: 3 post(s), 246 body item(s), 7 field item(s), 28443 translatable character(s)
+estimated tokens: 52448 in, 16024 out, covering a translate pass and a verify pass
+estimated cost: $0 marginal. The transport is the Claude Code CLI on Saeid's subscription (D-16), so the token figures above are a size brake on the run, not a price.
+  assumptions: 4 characters per English token, Farsi output at 2x the source token count, 4000 overhead tokens per request, 600 output tokens per verify response. An estimate, not a measurement; the run reports its measured totals at the end.
+
+transport: the Claude Code CLI on the subscription, model alias "sonnet", prompt on stdin, stdout parsed and stderr never parsed. Posts run strictly sequentially, so no response can be matched to the wrong post (T-03-06).
+run state: .planning\phases\03-translation-pipeline\artifacts\blog_posts_dev-2026-08-25T16-59-49.944Z.json, rewritten after every per-post transition.
+Farsi documents in blog_posts_dev before this run: 8
+
+[1/3] learning-excel-for-free-in-2025: translating 32 string(s)
+  learning-excel-for-free-in-2025: translated 32 string(s), 82964 in / 12725 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 0 finding(s), 41828 in / 2080 out as reported by the CLI
+  wrote: created draft drafts.3a34f9c9-b0c3-4a67-b8c3-9352dfa51969
+
+[2/3] what-neuronomixer-stands-for-ai-data-and-the-future-of-systems: translating 119 string(s)
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems: translated 119 string(s), 103396 in / 33583 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 0 finding(s), 48334 in / 9814 out as reported by the CLI
+  wrote: created draft drafts.62b84d07-bbee-48a7-a0e4-700df4ee5fce
+
+[3/3] why-explainable-ai-matters-more-than-you-think: translating 102 string(s)
+  why-explainable-ai-matters-more-than-you-think: translated 102 string(s), 122933 in / 53021 out as reported by the CLI
+
+Farsi documents in blog_posts_dev after this run: 10 (was 8, 2 draft(s) created, 0 sibling(s) patched)
+  the count matches: re-queried after mutating rather than taken on trust.
+TokenUsage: 5 row(s) written, one per post per pass, at cost 0 because the run is subscription-funded.
+
+run summary
+  posts selected:   3
+  translated:       3
+  blocked by gate:  1
+  drafts created:   2
+  drafts patched:   0
+  findings written: 0 (0 post(s) whose verify pass did not complete)
+  failed:           0
+  translate pass:   3 call(s), 309293 input token(s), 99329 output token(s), as reported by the CLI
+  verify pass:      2 call(s), 90162 input token(s), 11894 output token(s), as reported by the CLI
+  cost:             subscription-funded, $0 marginal.
+  run state:        .planning\phases\03-translation-pipeline\artifacts\blog_posts_dev-2026-08-25T16-59-49.944Z.json
+SWEEP2_EXIT=1
+
+### stderr for: Backlog sweep, resume
+
+  !! GATE BLOCKED: why-explainable-ai-matters-more-than-you-think !!
+  reason: the reassembled body's structural fingerprint differs from the source fingerprint captured before any model saw the document, first differing offset 3289. No draft was created for this post (D-05 tier 1).
+  both fingerprints written to: .planning\phases\03-translation-pipeline\artifacts\gate-mismatch-why-explainable-ai-matters-more-than-you-think-2026-08-25T17-21-12.258Z.json
+  the run continues with the remaining posts.
+
+1 post(s) were blocked by the structural gate and 0 failed. Every other post was written. Exiting non-zero so a caller can see it.
+
+`--all --execute` again. The header line `plan: 3 candidate(s) with no Farsi sibling,
+0 stale sibling(s), 8 fresh sibling(s)` is the first proof in this phase that the sibling
+count subquery works with Farsi documents actually present under the raw perspective: the
+eight posts already written are excluded from the working set rather than re-translated
+(research Pitfall 1).
+
+
+## Blocked post, second attempt
+translate-posts: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 mode=EXECUTE
+translate-posts: slug=why-explainable-ai-matters-more-than-you-think all=false retranslate=false resume=(none)
+ADMIN user resolved: token spend can be recorded. The id itself is not printed.
+plan: 1 candidate(s) with no Farsi sibling, 0 stale sibling(s), 0 fresh sibling(s)
+working set: 1 post(s)
+  why-explainable-ai-matters-more-than-you-think  bnKHE8NFvD5dhRfAB0dtGt
+translatable text per post:
+  why-explainable-ai-matters-more-than-you-think  body 100 (span 97, cell 0, alt 3, caption 0)  fields 2 (title, metaDescription)  chars 11921
+note, informational only: a Farsi rendering usually runs longer, so these will probably show a Studio warning badge. It is a warning, not an error, and it never blocks a publish:
+  why-explainable-ai-matters-more-than-you-think  English metaDescription is 141 characters, against a 160-character Studio warning bound
+run total: 1 post(s), 100 body item(s), 2 field item(s), 11921 translatable character(s)
+estimated tokens: 19924 in, 6562 out, covering a translate pass and a verify pass
+estimated cost: $0 marginal. The transport is the Claude Code CLI on Saeid's subscription (D-16), so the token figures above are a size brake on the run, not a price.
+  assumptions: 4 characters per English token, Farsi output at 2x the source token count, 4000 overhead tokens per request, 600 output tokens per verify response. An estimate, not a measurement; the run reports its measured totals at the end.
+
+transport: the Claude Code CLI on the subscription, model alias "sonnet", prompt on stdin, stdout parsed and stderr never parsed. Posts run strictly sequentially, so no response can be matched to the wrong post (T-03-06).
+run state: .planning\phases\03-translation-pipeline\artifacts\blog_posts_dev-2026-08-25T17-30-31.419Z.json, rewritten after every per-post transition.
+Farsi documents in blog_posts_dev before this run: 10
+
+[1/1] why-explainable-ai-matters-more-than-you-think: translating 102 string(s)
+  why-explainable-ai-matters-more-than-you-think translate: the response was not valid JSON (Expected ',' or ']' after array element in JSON at position 2178 (line 1 column 2179)). Retrying once.
+  why-explainable-ai-matters-more-than-you-think: translated 102 string(s), 78046 in / 77413 out as reported by the CLI
+  gate: structural fingerprint identical to the source. The draft may be written.
+  verify: 1 finding(s), 49519 in / 8305 out as reported by the CLI
+  wrote: created draft drafts.d152504c-fcad-44a1-b93f-1cfdf6eb415e
+
+Farsi documents in blog_posts_dev after this run: 11 (was 10, 1 draft(s) created, 0 sibling(s) patched)
+  the count matches: re-queried after mutating rather than taken on trust.
+TokenUsage: 2 row(s) written, one per post per pass, at cost 0 because the run is subscription-funded.
+
+run summary
+  posts selected:   1
+  translated:       1
+  blocked by gate:  0
+  drafts created:   1
+  drafts patched:   0
+  findings written: 1 (0 post(s) whose verify pass did not complete)
+  failed:           0
+  translate pass:   2 call(s), 78046 input token(s), 77413 output token(s), as reported by the CLI
+  verify pass:      1 call(s), 49519 input token(s), 8305 output token(s), as reported by the CLI
+  cost:             subscription-funded, $0 marginal.
+  run state:        .planning\phases\03-translation-pipeline\artifacts\blog_posts_dev-2026-08-25T17-30-31.419Z.json
+RETRY_EXIT=0
+
+(stderr for this command was empty.)
+
+`--slug why-explainable-ai-matters-more-than-you-think --execute`. The same post had been
+blocked by the structural gate twice; on this attempt it passed the gate and was written,
+which is what establishes that the defect is per-call sampling rather than a property of
+the post. See "Gate blocks: diagnosis".
+
+
+## Verify: whole dataset
+offline: fixture 14 slot(s) over 10 block(s) (7 span, 5 cell, 1 alt, 1 caption), identity round trip byte identical, fingerprint invariant under full substitution, 6/6 structural mutations detected, unknown _type "code" contributed 0 slots and survived byte identical, count mismatch throws in both directions, notes format pinned (clean line, warn before info, one-lined, no em dash)
+offline: glossary 98 entries (translate 82, transliterate 6, keep-english 10), block 4078 chars over 102 line(s) with 98 entry line(s), byte identical across two independent loads, no date, D-04 standing instruction present
+post-run: projectId=pz9ppas8 dataset=blog_posts_dev apiVersion=2025-10-07 (raw perspective) farsi-documents=11 slug=(every Farsi document)
+  the-modern-data-career-map: sibling=drafts.1d40d099-4a79-4120-a466-9a64615a8cb3 items=78 (span 77, cell 0, alt 1, caption 0) changed=100% arabic-script=100% hrefs=0 notes="Verify pass clean (2026-08-25)"
+  what-is-data-a-complete-beginners-guide-for-the-curious-mind: sibling=drafts.2a6a96b6-21e7-424f-b201-f9a375d6d470 items=132 (span 129, cell 0, alt 3, caption 0) changed=94.7% arabic-script=86.4% hrefs=21 notes="Verify pass 2026-08-25: 1 finding(s)"
+  learning-excel-for-free-in-2025: sibling=drafts.3a34f9c9-b0c3-4a67-b8c3-9352dfa51969 items=29 (span 28, cell 0, alt 0, caption 1) changed=96.6% arabic-script=96.6% hrefs=0 notes="Verify pass clean (2026-08-25)"
+  inside-the-data-ecosystem: sibling=drafts.4983006e-d75a-40d2-9f13-4bfe5acd7d83 items=40 (span 39, cell 0, alt 1, caption 0) changed=100% arabic-script=100% hrefs=0 notes="Verify pass clean (2026-08-25)"
+  what-neuronomixer-stands-for-ai-data-and-the-future-of-systems: sibling=drafts.62b84d07-bbee-48a7-a0e4-700df4ee5fce items=117 (span 115, cell 0, alt 2, caption 0) changed=96.6% arabic-script=88.9% hrefs=20 notes="Verify pass clean (2026-08-25)"
+  exploring-how-machine-learning-and-analytics-shape-the-future: sibling=drafts.afa41737-b112-42e4-b76c-629f51de2ba5 items=65 (span 62, cell 0, alt 3, caption 0) changed=95.4% arabic-script=93.8% hrefs=3 notes="Verify pass clean (2026-08-25)"
+  foundational-tools-for-data-related-careers: sibling=drafts.c8f2b68b-2366-47a3-843c-3c89fc6d810b items=81 (span 42, cell 39, alt 0, caption 0) changed=85.2% arabic-script=85.2% hrefs=2 notes="Verify pass clean (2026-08-25)"
+  data-the-red-cells-of-our-digital-world-veins: sibling=drafts.cdc6e65d-2b20-40a3-9548-596f8ae928e7 items=86 (span 84, cell 0, alt 2, caption 0) changed=100% arabic-script=100% hrefs=0 notes="Verify pass clean (2026-08-25)"
+  why-explainable-ai-matters-more-than-you-think: sibling=drafts.d152504c-fcad-44a1-b93f-1cfdf6eb415e items=100 (span 97, cell 0, alt 3, caption 0) changed=98% arabic-script=93% hrefs=19 notes="Verify pass 2026-08-25: 1 finding(s)"
+  learning-sql-for-free-in-2025: sibling=drafts.d9093bfc-933d-4d0a-9624-089221805d6f items=79 (span 79, cell 0, alt 0, caption 0) changed=96.2% arabic-script=96.2% hrefs=4 notes="Verify pass clean (2026-08-25)"
+  a-practical-guide-to-data-driven-decisions: sibling=drafts.e14dc377-56a6-4883-a61a-bea451c69d2d items=59 (span 58, cell 0, alt 1, caption 0) changed=98.3% arabic-script=98.3% hrefs=0 notes="Verify pass clean (2026-08-25)"
+  spend: translate-post 6 row(s) 536467 in / 242944 out, translate-verify 4 row(s) 187521 in / 25725 out, in the last 24h, at cost 0 because TokenUsage has no money column and the run is subscription-funded (D-16)
+post-run: 227 assertion(s) over 11 sibling(s) of 11 Farsi document(s) in blog_posts_dev, 0 carrying the publish-cron status, all translationOf refs resolve and none is shared
+translation.check.ts: ALL PASS
+
+(stderr for this command was empty.)
+
+`npx tsx --env-file .env.local scripts/checks/translation.check.ts --post-run`, exit 0,
+227 assertions over all eleven siblings.
+
+
+## Production guard
+offline: fixture 14 slot(s) over 10 block(s) (7 span, 5 cell, 1 alt, 1 caption), identity round trip byte identical, fingerprint invariant under full substitution, 6/6 structural mutations detected, unknown _type "code" contributed 0 slots and survived byte identical, count mismatch throws in both directions, notes format pinned (clean line, warn before info, one-lined, no em dash)
+offline: glossary 98 entries (translate 82, transliterate 6, keep-english 10), block 4078 chars over 102 line(s) with 98 entry line(s), byte identical across two independent loads, no date, D-04 standing instruction present
+post-run: projectId=pz9ppas8 dataset=blog_posts apiVersion=2025-10-07 (raw perspective) farsi-documents=0 slug=(every Farsi document)
+
+### stderr for: Production guard
+--post-run: dataset blog_posts carries 0 Farsi document(s), so there is no sibling to assert against and every per-document assertion would be vacuous. Expected at least one document with language "fa". Remedy: run the pipeline against this dataset first, or pass the env file of a dataset that has been translated.
+
+`npx tsx --env-file .env.vercel-prod scripts/checks/translation.check.ts --post-run`.
+Read-only. Exit code 1, with the no-sibling message rather than a pass, which is the
+correct result: the production dataset still carries zero Farsi documents and plan 03-10
+has not run.
+
+
+## Measured totals
+
+Farsi documents in blog_posts_dev before the first writing command: 0
+Farsi documents in blog_posts_dev after the last writing command: 11
+Drafts created across all writing commands: 11 (1 single post, 7 in the sweep, 2 in the resume, 1 in the second attempt)
+Sources in the dev candidate set: 11. Every one now has exactly one Farsi sibling.
+The dev Farsi document count equals the number of drafts the runs reported creating: 11 = 1 + 7 + 2 + 1.
+
+Per-pass token totals, as reported by the CLI, summed from the four run-state artifacts:
+
+| Run | translate calls | translate in | translate out | verify calls | verify in | verify out |
+|---|---|---|---|---|---|---|
+| Single post execute | 2 | 76,904 | 49,529 | 1 | 47,840 | 5,526 |
+| Backlog sweep | 15 | 949,992 | 372,958 | 7 | 372,287 | 30,353 |
+| Backlog sweep, resume | 3 | 309,293 | 99,329 | 2 | 90,162 | 11,894 |
+| Blocked post, second attempt | 2 | 78,046 | 77,413 | 1 | 49,519 | 8,305 |
+| **Total** | **22** | **1,414,235** | **599,229** | **11** | **559,808** | **56,078** |
+
+Combined across both passes: 1,974,043 input tokens and 655,307 output tokens.
+
+The run is subscription-funded at $0 marginal. The transport is `claude -p` on Saeid's Claude
+Code subscription (D-16), so those figures are a measurement of size, not a price, and every
+TokenUsage row is booked at cost 0.
+
+Input tokens are uncached plus cache-creation plus cache-read, per the 03-08 decision. The
+CLI's bare `input_tokens` field reports single digits for a 30 KB prompt.
+
+Item-kind breakdown actually translated across the eleven posts: 866 body items, of which 39
+are table cells (all in `foundational-tools-for-data-related-careers`), 16 are image alt texts
+and 1 is a video caption; plus 30 field items (title, metaDescription, mainImage.alt). Every
+one of the 69 `markDefs[].href` values across the eleven bodies survived byte identical, which
+the `--post-run` check asserts as its own named assertion separate from the fingerprint.
+
+## TokenUsage rows actually booked
+
+9 rows were written to the dev Postgres by this plan: 2 from the single-post run, 0 from the
+backlog sweep, 5 from the resume run and 2 from the second attempt. Together with the one
+pre-existing probe row from plan 03-08 that makes 6 `translate-post` rows and 4
+`translate-verify` rows in the last 24 hours, which is what the `--post-run` spend line
+reports.
+
+The backlog sweep booked zero rows despite making 22 of the run's model calls. This is not a
+concurrency artefact and it is worth carrying into 03-10: spend is booked once, at the end of
+a run, and the post-run count assertion throws before it. Any run that trips that assertion,
+or is interrupted, loses its entire Postgres spend record. The per-post usage survives in the
+run-state artifact either way, so nothing is unknowable, but it is not on the books. A
+26-post production run is the case where this matters.
+
+## Gate blocks: diagnosis
+
+Three gate blocks occurred, on two posts. None was worked around, and no draft was written for
+a blocked post.
+
+| Slug | Offset | Artifact |
+|---|---|---|
+| what-neuronomixer-stands-for-ai-data-and-the-future-of-systems | 8061 | gate-mismatch-what-neuronomixer-stands-for-ai-data-and-the-future-of-syste-2026-08-25T16-54-20.735Z.json |
+| why-explainable-ai-matters-more-than-you-think | 3289 | gate-mismatch-why-explainable-ai-matters-more-than-you-think-2026-08-25T17-09-32.145Z.json |
+| why-explainable-ai-matters-more-than-you-think | 3289 | gate-mismatch-why-explainable-ai-matters-more-than-you-think-2026-08-25T17-21-12.258Z.json |
+
+Both fingerprints were diffed at the reported offset. The cause is identical in every case.
+
+Source, at the offset (fingerprint form, translatable slots blanked to NUL):
+
+    {"_key":"k114","_type":"block","children":[{"_key":"k110","_type":"span","marks":[],"text":"\u0000"},{"_key":"k112","_type":"span","marks":["k111"],"text":"\u0000"},...
+
+Translated, same offset:
+
+    {"_key":"k114","_type":"block","children":[{"_key":"k110","_type":"span","marks":[],"text":""},{"_key":"k112","_type":"span","marks":["k111"],"text":"\u0000"},...
+
+The model returned an empty string for that slot. The source text of both offending slots was
+fetched to confirm it:
+
+- `why-explainable-ai-matters-more-than-you-think`, block k51, children k47/k49/k50:
+  `["The ", "EU AI Act", ", which enters its enforcement phase in August 2026, ..."]`
+- `what-neuronomixer-stands-for-ai-data-and-the-future-of-systems`, block k114, children k110/k112/k113:
+  `["The ", "European Commission defines Industry 5.0", " through three pillars: ..."]`
+
+In both cases the lost slot is the bare English definite article "The " immediately before an
+inline link. Persian has no definite article, so an empty response is a defensible translation
+of that fragment in isolation. It is still content loss at the document level, and it is
+invisible to the count check: the model returned exactly the demanded number of strings, one of
+which was empty.
+
+Why the gate catches it at all: `walkSlots` skips a span whose `text` is the empty string, so an
+emptied slot stops being a translatable slot. The source fingerprint has that slot blanked to
+NUL; the translated fingerprint has it as a literal empty string, because the walker no longer
+enumerates it and so never blanks it. The two serialisations differ, and the D-05 tier 1 gate
+refuses the write. That is the gate working, and it is the first time in this phase that it has
+blocked real model output rather than a deliberately corrupted body.
+
+The defect is per-call, not per-post. `why-explainable-ai-matters-more-than-you-think` blocked
+on two separate attempts and passed on a third; `what-neuronomixer-stands-for-...` blocked once
+and passed on its next attempt. Nothing about the post is unusual beyond having a bare article
+before an inline link, which is ordinary English prose and is common in the production corpus.
+
+Nothing was changed in `scripts/translate-posts.ts` to accommodate this. The plan says a blocked
+post is the gate doing its job and must be diagnosed rather than worked around, and the model
+transport is not this plan's to modify. The recommendation for 03-10 is recorded below.
+
+## First-attempt response quality
+
+Measured across 15 per-post translate attempts in this rehearsal:
+
+- 6 first responses arrived wrapped in a markdown code fence (40.0 percent), despite the
+  instruction hardening 03-08 added. The fence rate did not fall.
+- 1 further first response was truncated or malformed JSON (`Expected ',' or ']' after array
+  element at position 2178`).
+- 7 of 15 first attempts therefore failed to parse (46.7 percent), each costing one retry.
+- 1 post (`learning-excel-for-free-in-2025`, during the sweep) came back fenced on BOTH attempts
+  and was reported as failed with no draft written. It was translated successfully on the next
+  run. That is 1 post in 15 lost per pass to the fence alone.
+- Total translate calls were 22 for 15 post attempts, so the fence and the malformed response
+  together cost 47 percent more model calls than a clean run would have.
+
+No fence stripping was added. A fenced response remains a broken contract.
+
+## Overlapping runs
+
+The backlog sweep was launched as a background command. The harness reported it as stopped after
+roughly 66 minutes, and the resume run was started on that basis. The sweep had not stopped: it
+kept running for a further 12 minutes and both runs were writing to `blog_posts_dev` at the same
+time. This was an operator error in executing the plan and it is recorded rather than tidied away.
+
+What it cost: the sweep's own post-run count assertion tripped, because the dataset had gained a
+document the sweep did not create, and the sweep exited non-zero before booking its spend rows.
+
+What it did not cost: nothing was corrupted and nothing was duplicated. Each post is created with
+`createIfNotExists` under a fresh id, and the two runs never had the same post in a writable state
+at the same time, because the two posts still outstanding when the resume started were the ones the
+sweep had already gate-blocked. Verified afterwards, not assumed: the `--post-run` check asserts
+that no two Farsi documents share a `translationOf` target and that every one resolves to an
+existing source, and it passes over all eleven.
+
+The assertion behaved correctly. It is a re-query rather than a success line precisely so that a
+count it did not predict stops the run, and that is what happened.
+
+## Carried into plan 03-10
+
+1. An empty translated string should be rejected in code, before reassembly. `readStrings`
+   already checks the count; it should also reject an empty string in a slot whose source string
+   was non-empty. That turns a cryptic "fingerprint differs at offset 8061" into a named error,
+   and it makes the condition retryable through the existing single retry instead of costing the
+   post. The translate instruction should also say that no slot may come back empty. On this
+   rehearsal's numbers, roughly one production post in six would otherwise block on it.
+2. Spend booking is end-of-run only. A run that trips the count assertion or is interrupted
+   loses every Postgres row for that run. Consider booking per post, or booking what has
+   accumulated in a failure path.
+3. The fence rate did not improve. 40 percent of first attempts, and one post lost outright to
+   a double fence. 26 production posts at these rates means roughly 12 wasted calls and one or two
+   posts needing a second run.
+4. Never run two writing commands against one dataset at the same time, and do not trust a
+   harness "stopped" notification for a long-running background write; confirm the process is gone.

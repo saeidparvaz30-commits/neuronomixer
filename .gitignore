@@ -64,3 +64,6 @@ next-env.d.ts
 *.xlsx
 .~lock.*#
 sanity-backup*
+
+# GSD executor scratch space (run captures, throwaway probes)
+.gsd-scratch/
