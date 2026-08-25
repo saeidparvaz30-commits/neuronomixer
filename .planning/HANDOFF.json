@@ -1,37 +1,34 @@
 {
   "version": "1.0",
-  "timestamp": "2026-08-23T20:24:39.538Z",
+  "timestamp": "2026-08-25T21:30:15.776Z",
   "phase": "03",
   "phase_name": "translation-pipeline",
   "phase_dir": ".planning/phases/03-translation-pipeline",
-  "plan": 6,
-  "task": 1,
-  "total_tasks": 2,
+  "plan": 10,
+  "task": 3,
+  "total_tasks": 3,
   "status": "paused",
   "completed_tasks": [
-    {"id": "03-04", "name": "D-11 deploy gate (push main + prod deploy + liveness proof)", "status": "done", "commit": "1da3792"},
-    {"id": "plan-revision", "name": "Plans 03-05..03-10 revised for D-16 subscription-CLI transport", "status": "done", "commit": "8bb0add"},
-    {"id": "03-05", "name": "Glossary first pass, loader, env-preflight CLI probe", "status": "done", "commit": "5c893be"},
-    {"id": "03-06/1", "name": "Saeid reviews and corrects the first-pass glossary", "status": "in_progress", "progress": "Review HTML delivered to Saeid in-session 2026-08-23; awaiting 'glossary approved' or a correction list; JSON untouched"}
+    {"id": 1, "name": "Saeid authorises the production run (D-11 step 3)", "status": "done", "commit": "719c8c2", "note": "Slug industry-50-explained-why-the-future-is-human-centred-not-just-automated, chosen via AskUserQuestion, recorded under ## Authorisation"},
+    {"id": 2, "name": "The production proof run and its verification", "status": "done", "commit": "719c8c2", "note": "Draft drafts.23396d5b-5d90-461b-b9ba-d31768bc73a6 created; post-run ALL PASS; filter --live exit 0; route-smoke 28/28 live; spend 230296 in / 127891 out at cost 0; filter-check partition-invariant fix in dd4dcf5"}
   ],
   "remaining_tasks": [
-    {"id": "03-06/2", "name": "Apply corrections, regenerate review HTML, re-prove the file", "status": "not_started"},
-    {"id": "03-08", "name": "Translate + verify passes over the subscription CLI, gate, notes, draft write, spend record", "status": "not_started"},
-    {"id": "03-09", "name": "Dev-dataset rehearsal run with assertions", "status": "not_started"},
-    {"id": "03-10", "name": "One production post end to end + Studio walk + phase close (two human gates)", "status": "not_started"}
+    {"id": 3, "name": "Saeid walks the Studio and judges the translation", "status": "not_started", "note": "Fourteen-item walk (8 new + 6 carried from 02-05); verdict recorded verbatim under ## Studio walk; then SUMMARY, phase verification, close"}
   ],
   "blockers": [
-    {"description": "03-06 Task 1 checkpoint: Saeid must review content/fa-glossary-review.html and reply 'glossary approved' or a correction list", "type": "human_action", "workaround": "none — D-03 requires his Farsi judgement before any post is translated"}
+    {"description": "Saeid's Studio walk and translation-quality judgement (he deferred to tomorrow, 2026-08-25)", "type": "human_action", "workaround": null}
   ],
   "async_jobs": [],
   "human_actions_pending": [
-    {"action": "Review the 98-entry glossary (content/fa-glossary-review.html) and reply with approval or corrections", "context": "03-06 Task 1 blocking checkpoint; the glossary shapes every future Farsi translation and is cheap to correct only before the backlog run", "blocking": true}
+    {"action": "Walk https://www.neuronomixer.com/studio per the 03-10 Task 3 checklist and read the Farsi draft end to end; reply 'phase approved' or list defects", "context": "Phase success gate; no automated check substitutes for his reading", "blocking": true}
   ],
   "decisions": [
-    {"decision": "D-16: model transport is the Claude Code CLI on Saeid's subscription (claude -p --model sonnet --output-format json, stdin prompt, stdout-only parsing), not the paid API", "rationale": "Saeid has a subscription; zero marginal cost; ANTHROPIC_API_KEY blocker voided; all protective machinery unchanged", "phase": "03"},
-    {"decision": "Deploy gate D-11 closed with Saeid's explicit approval: main pushed 5ea9ddb..43b5dfe, prod deploy READY at the pushed SHA, filter+schema live, Farsi count 0 both sides", "rationale": "Phase 2 ordering invariant satisfied before any Farsi document exists; plan 03-10's precondition met", "phase": "03"}
+    {"decision": "Glossary approved with zero corrections; 98 entries frozen, serialized block 4078 chars", "rationale": "Saeid's verdict at the 03-06 checkpoint, 2026-08-25", "phase": "03"},
+    {"decision": "Production proof post = industry-50-explained", "rationale": "Best shape balance: 33 table cells, 135 spans, 3 image alts, evergreen", "phase": "03"},
+    {"decision": "CLI transport runs with all built-in tools disabled (--strict-mcp-config --disallowedTools list; --tools '' does not work)", "rationale": "D-16 replaced a tool-less API transport with an agent CLI in the repo cwd; T-03-05 hardening, empirically proven", "phase": "03"},
+    {"decision": "language-filter.check.ts live section uses partition invariant candidates + withSibling == approvedEnglish", "rationale": "Old equality assertions were only true at zero Farsi documents and were falsified by the plan's own required write", "phase": "03"}
   ],
   "uncommitted_files": [],
-  "next_action": "Resume with /gsd-execute-phase 3. Safe-resume will find 03-06 without a SUMMARY: that is the open Task 1 checkpoint, not lost work. Ask Saeid for his glossary verdict, transcribe it verbatim, then run 03-06 Task 2 (apply corrections, --regen-html, re-prove, commit the two content files together).",
-  "context_notes": "Production now runs the Phase 2 English filter, Studio split and 18-field schema (deploy-gate.md holds the full evidence). The pipeline is API-key-free end to end; env-preflight is 7/7 with a claude CLI probe. The glossary block is embedded at the top of every prompt (planner chose stdin embedding over --append-system-prompt for Windows quoting safety). TokenUsage rows record CLI usage at cost 0. Farsi docs must never carry status 'scheduled' (unfiltered cron would auto-approve and email subscribers in English); 03-08 enforces. NEVER npm run build locally (prisma migrate deploy reads .env = prod DB); the build gate is npx next build."
+  "next_action": "/gsd-execute-phase 3 — resume at 03-10 Task 3: present the Studio walk, collect Saeid's verdict, record under ## Studio walk, write 03-10-SUMMARY.md, run phase verification, close the phase",
+  "context_notes": "Everything mechanical is done; only Saeid's judgement remains. Do not publish, edit, or sweep the draft before he reads it. Phase 5 inherits: readStrings empty-string fix ('The ' before inline links blocks ~1 post in 6), fence-rate hardening (40% first attempts), per-post spend booking, and dry-run token estimator recalibration (~8x low in / ~12x low out)."
 }
