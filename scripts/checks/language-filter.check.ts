@@ -749,27 +749,46 @@ async function runLive(): Promise<void> {
   const candidates = await pipelineClient.fetch<PipelineRow[]>(translationCandidatesQuery, {
     slug: null,
   });
-  const stale = await pipelineClient.fetch<PipelineRow[]>(translationStaleQuery, { slug: null });
+  // translationStaleQuery is the candidates query with the sibling test inverted, so
+  // it returns every approved English post that HAS a Farsi sibling. It does not
+  // itself compare timestamps: the D-08 staleness comparison happens in the script,
+  // against the sourceUpdatedAt it projects. So this number is "has a sibling", not
+  // "is stale", and it is named for what it measures.
+  type SiblingRow = PipelineRow & {
+    sibling: { _id: string; sourceUpdatedAt: string | null } | null;
+  };
+  const withSibling = await pipelineClient.fetch<SiblingRow[]>(translationStaleQuery, {
+    slug: null,
+  });
 
   console.log(
-    `  pipeline selection: dataset=${dataset} (raw perspective) approved-english=${approvedEnglish} candidates=${candidates.length} stale=${stale.length}`,
+    `  pipeline selection: dataset=${dataset} (raw perspective) approved-english=${approvedEnglish} candidates=${candidates.length} with-sibling=${withSibling.length}`,
   );
 
-  // Today every sibling count is 0, because no Farsi document exists in either
-  // dataset. That makes the two numbers below the whole assertion: candidates is
-  // the full approved English set, and stale is empty. The non-zero branch of the
-  // sibling subquery is therefore NOT exercised here and cannot be, since this
-  // check is read-only and must not fabricate a Farsi document. It is proven in
-  // plan 03-09's dev rehearsal, against drafts the pipeline itself wrote.
+  // The two queries partition the approved English set on the sibling test: a post
+  // either has a Farsi sibling or it does not. Asserting the partition holds in every
+  // state of the dataset, rather than asserting candidates equals the whole set, which
+  // is only true while no Farsi document exists anywhere.
   assert.strictEqual(
-    candidates.length,
+    candidates.length + withSibling.length,
     approvedEnglish,
-    `translationCandidatesQuery returned ${candidates.length} row(s) but ${approvedEnglish} approved English post(s) exist and none has a Farsi sibling yet. The sibling count subquery is excluding posts it should not, or the perspective is not raw.`,
+    `translationCandidatesQuery returned ${candidates.length} row(s) and translationStaleQuery returned ${withSibling.length}, which sum to ${candidates.length + withSibling.length} rather than the ${approvedEnglish} approved English post(s) that exist. The two queries must partition that set on the sibling test, so either one of them is excluding posts it should not, or they are testing the sibling count the same way instead of inverting it, or the perspective is not raw.`,
   );
+  const overlap = candidates.filter((row) => withSibling.some((other) => other._id === row._id));
   assert.strictEqual(
-    stale.length,
+    overlap.length,
     0,
-    `translationStaleQuery returned ${stale.length} row(s), expected 0: no Farsi sibling exists in dataset ${dataset}, so nothing can be stale. Check that its sibling count comparison is "> 0" and not "== 0".`,
+    `${overlap.length} post(s) are returned by BOTH translationCandidatesQuery and translationStaleQuery, starting with "${overlap[0]?.slug}". The sibling test is meant to be inverted between them, so no post can appear in both.`,
+  );
+  // Guards the swap the partition assertion alone cannot see, since a straight swap
+  // still sums correctly. Every row the stale query returns must resolve to a real
+  // sibling; under a swap these rows would be the posts with no sibling and the
+  // projection would come back null.
+  const unresolved = withSibling.filter((row) => !row.sibling?._id);
+  assert.strictEqual(
+    unresolved.length,
+    0,
+    `translationStaleQuery returned ${unresolved.length} row(s) whose sibling projection is null, starting with "${unresolved[0]?.slug}". A row it returns passed a "sibling count > 0" test, so the sibling must resolve. If every row is null the two queries' sibling tests are swapped.`,
   );
   assert.ok(
     candidates.length > 0,
