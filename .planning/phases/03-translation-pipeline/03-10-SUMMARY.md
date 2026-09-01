@@ -294,6 +294,18 @@ None. No external service configuration was needed; the run used the existing su
 - **Phase 4 (Farsi presentation) inherits:** the `/fa` routes still do not exist, which is why the Studio is the only Farsi review surface today, and Finding B changes what those routes must look a post up by.
 - **Phase 5 (backlog sweep) inherits:** the eight follow-ups above. Items 1, 4 and 5 should land before the 26-post sweep runs, because each one either changes the output the sweep would produce or wastes subscription calls at scale.
 
+## Self-Check: PASSED
+
+All claimed files exist on disk and all three task commits resolve in `git log`:
+
+- FOUND `.planning/phases/03-translation-pipeline/artifacts/translate-prod.log`
+- FOUND `.planning/phases/03-translation-pipeline/artifacts/blog_posts-2026-08-25T18-08-41.044Z.json`
+- FOUND `.planning/phases/03-translation-pipeline/artifacts/blog_posts-2026-08-25T19-40-20.694Z.json`
+- FOUND `scripts/checks/language-filter.check.ts`
+- FOUND commit `dd4dcf5`, FOUND commit `719c8c2`, FOUND commit `50d3f3b`
+- Task 3's automated verify (`## Studio walk` present in the run log) exits 0
+- The leak scan re-run over the extended log still reports 0 occurrences of all three forbidden substrings
+
 ---
 *Phase: 03-translation-pipeline*
 *Completed: 2026-09-01*
