@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 3
-current_phase_name: Translation Pipeline
-status: in_progress
-stopped_at: "Completed 03-10 (production proof run + Saeid's Studio walk, verdict PASS with two findings). Phase 3 execution is done at 17/17 plans; next is phase verification and close."
-last_updated: "2026-09-01T00:00:00.000Z"
+current_phase: 4
+current_phase_name: Farsi Routes and Chrome
+status: verifying
+stopped_at: "Completed 03-10 (production proof run, Saeid's Studio walk answered, verdict PASS with Findings A and B). Phase 3 execution is complete at 17/17 plans. Next: phase verification and close, then Phase 4."
+last_updated: "2026-09-01T20:14:10.642Z"
 last_activity: 2026-09-01
-last_activity_desc: "03-10 closed: dd4dcf5 (the live filter check now asserts a partition invariant instead of a precondition this plan ends), 719c8c2 (the production execute and its verification), 50d3f3b (Saeid's Studio walk). The phase success gate is met: `industry-50-explained-...` is a structurally intact Farsi draft in `blog_posts` (drafts.23396d5b-5d90-461b-b9ba-d31768bc73a6), 28 post-run assertions ALL PASS, changed 97.7% / Arabic script 94.2%, 18 hrefs byte identical, spend 230,296 in / 127,891 out at cost 0 on the subscription. The English site is provably unchanged with a Farsi document present for the first time. Saeid read the Farsi and approved it with two findings: pin post/article to مقاله (Phase 5 glossary), and give Farsi documents their own slugs (Phase 4/5 design change)."
+last_activity_desc: Phase 3 complete, transitioned to Phase 4
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 17
   completed_plans: 17
-  percent: 100
+  percent: 60
 ---
 
 # Project State
@@ -28,10 +28,10 @@ See: .planning/PROJECT.md (updated 2026-08-11)
 
 ## Current Position
 
-Phase: 3 (Translation Pipeline), EXECUTION COMPLETE, awaiting phase verification and close
-Plan: 10 of 10 (03-01..03-10 all have SUMMARYs)
+Phase: 4 — Farsi Routes and Chrome
+Plan: Not started
 Status: 03-10 CLOSED and the phase success gate is MET. One real approved English production post, `industry-50-explained-why-the-future-is-human-centred-not-just-automated`, is now a structurally intact Farsi draft in `blog_posts` (`drafts.23396d5b-5d90-461b-b9ba-d31768bc73a6`), created under a single `--slug --execute` run Saeid authorised by name. `translation.check.ts --post-run` exits 0 with ALL PASS over 28 assertions: 97.7 percent of strings changed, 94.2 percent Arabic script, all 33 table cells and 3 image alts translated, 18 link hrefs byte identical and in order, notes in the D-06 clean-line format, and zero Farsi documents carrying the publish-cron status. The Phase 2 English filter was observable for the first time rather than merely present: nine query parities identical at unchanged row counts with a Farsi document present, fragment `dropped "fa"`, route smoke 28/28 against the live site. Spend 230,296 in / 127,891 out booked under both activities at cost 0 (subscription, D-16). Saeid walked the production Studio on 2026-09-01, read the Farsi and approved it with two findings; the six carried-over plan 02-05 Studio items are closed. Next: phase verification and close, owned by the orchestrator, not another plan.
-Last activity: 2026-09-01. 03-10 executed across three commits and two blocking human gates: Saeid chose the post from a 26-candidate dry-run breakdown, the run wrote its draft with the structural gate passing on the first written attempt, one wrong check assertion was auto-fixed, and Saeid's own reading of the Farsi returned a glossary follow-up and a slug design change
+Last activity: 2026-09-01 — Phase 3 complete, transitioned to Phase 4
 
 Progress: [██████████] 100% (17/17 plans)
 
@@ -39,7 +39,7 @@ Progress: [██████████] 100% (17/17 plans)
 
 **Velocity:**
 
-- Total plans completed: 7
+- Total plans completed: 17
 - Average duration: ~1h active execution per plan
 - Total execution time: ~2h05m active (~9h50m wall clock including three human checkpoints)
 
@@ -50,6 +50,7 @@ Progress: [██████████] 100% (17/17 plans)
 | 01 route-groups | 2/2 | ~2h05m active | ~1h03m |
 | 01 | 2 | - | - |
 | 02 | 5 | - | - |
+| 3 | 10 | - | - |
 
 *Updated after each plan completion*
 | Phase 02 P01 | 42 min | 3 tasks | 9 files |

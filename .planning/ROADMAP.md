@@ -26,7 +26,7 @@ Publish a Farsi edition of the NeuroNomixer blog at `neuronomixer.com/fa`. The j
 
 - [x] **Phase 1: Route Groups** - Move all existing routes into `(en)` untouched, add the `(fa)` root layout with a placeholder route (completed 2026-08-16)
 - [x] **Phase 2: Content Model** - Shared GROQ module with a single language filter, Sanity language fields, `en` migration, Studio split (completed 2026-08-21)
-- [ ] **Phase 3: Translation Pipeline** - Batch API translation script with glossary, structure passthrough, verify pass, and draft-only output
+- [x] **Phase 3: Translation Pipeline** - Batch API translation script with glossary, structure passthrough, verify pass, and draft-only output (completed 2026-09-01)
 - [ ] **Phase 4: Farsi Routes and Chrome** - `/fa` blog tree, Farsi dictionary, Vazirmatn, Jalali dates, RTL chrome, language switcher
 - [ ] **Phase 5: SEO and Ship** - hreflang + sitemap, preview browser smoke, backlog translation run, Saeid review and manual publish
 
@@ -138,7 +138,7 @@ Plans:
 
 **Wave 6** *(blocked on Wave 5)*
 
-- [ ] 03-10-PLAN.md — Production proof (D-11 step 3, Saeid-gated): one authorised real post translated end to end, verified by assertion, then Saeid's Studio walk and translation-quality judgement plus the six carried-over plan 02-05 Studio items
+- [x] 03-10-PLAN.md — Production proof (D-11 step 3, Saeid-gated): one authorised real post translated end to end, verified by assertion, then Saeid's Studio walk and translation-quality judgement plus the six carried-over plan 02-05 Studio items
 
 ### Phase 4: Farsi Routes and Chrome
 
@@ -200,6 +200,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Route Groups | 2/2 | Complete    | 2026-08-16 |
 | 2. Content Model | 5/5 | Complete    | 2026-08-21 |
-| 3. Translation Pipeline | 9/10 | In Progress|  |
+| 3. Translation Pipeline | 10/10 | Complete    | 2026-09-01 |
 | 4. Farsi Routes and Chrome | 0/TBD | Not started | - |
 | 5. SEO and Ship | 0/TBD | Not started | - |
