@@ -595,3 +595,156 @@ ALL PASS as captured in step 4 above.
 
 **Scope note:** `scripts/checks/language-filter.check.ts` is outside this plan's declared
 `files_modified`, which lists only this log. Recorded here rather than widened silently.
+
+---
+
+## Studio walk
+
+Held **2026-09-01**, in session, at the plan 03-10 Task 3 blocking checkpoint. Saeid opened
+the production Studio in his own Chrome and walked the fourteen items the plan lists: the
+eight new to this phase, and the six carried over as OUTSTANDING from plan 02-05, which
+became observable for the first time because the Farsi list is no longer empty.
+
+The document under review is `drafts.23396d5b-5d90-461b-b9ba-d31768bc73a6`, the Farsi
+sibling of `industry-50-explained-why-the-future-is-human-centred-not-just-automated`. It
+was not published, not edited, and not retranslated at any point during or after this walk.
+
+### Saeid's responses, verbatim and in the order he gave them
+
+> "Instead of نوشته we should use مقاله. Also, the SLug needs fixing. It should be something
+> else than the original one. Any idea what to use for best experience?"
+
+> "I can't really preview the final page here can I/"
+
+> "Other than that everything looks good."
+
+### Verdict
+
+**The walk PASSES.** The third quote is a blanket confirmation covering every item he did
+not single out, which is all of them except item 7. Item 7, his own reading of the Farsi,
+is **approved with two findings**, recorded below as Finding A and Finding B. Neither
+finding is a structural defect and neither one blocks the phase gate: the draft is
+structurally intact, asserted, and reviewed. Both are carried forward as named follow-up
+items, per the plan's rule that a terminology complaint becomes a glossary item for Phase 5
+rather than being fixed silently here.
+
+### The no-preview exchange, item 2 of his responses
+
+His second quote asks whether he can preview the final rendered page from the Studio. He
+cannot, and that is **expected behaviour rather than a defect**. The `/fa` routes do not
+exist yet: plan 01-02 left the `(fa)` root layout deliberately subtractive and Phase 4 owns
+Farsi presentation in full. Until Phase 4 ships, the Studio editor is the only surface on
+which a Farsi document can be read at all, which is exactly the review surface this phase
+was designed around and the reason the pipeline writes drafts rather than publishing. No
+item is failed by it, and no follow-up is opened for it beyond Phase 4's existing scope.
+
+### Per-item disposition, the eight new to this phase
+
+| # | Item | Disposition |
+|---|---|---|
+| 1 | "Posts, Farsi" list shows exactly one document, with a draft indicator | PASS (blanket confirmation) |
+| 2 | List subtitle reads as the Farsi-of-English pairing, naming the English source title | PASS (blanket confirmation) |
+| 3 | Language reads Farsi, Translation of points at the English post, Translation Notes populated and read-only, legible at a glance | PASS (blanket confirmation). The notes read `Verify pass clean (2026-08-25)`, the single explicit clean line with a date that D-06 specifies; no ambiguity was reported |
+| 4 | Source Updated At populated with the English post's last-modified timestamp | PASS (blanket confirmation) |
+| 5 | Farsi body renders right to left; paragraphs, headings, blockquotes, lists, images and tables in the same positions; links go where the English ones go | PASS (blanket confirmation). Consistent with the 18 link hrefs asserted byte identical and in order under `## Verification` step 1 |
+| 6 | English source post unchanged, still no Source Updated At value shown | PASS (blanket confirmation) |
+| 7 | **Read the Farsi end to end and judge it** | **APPROVED WITH FINDINGS.** "Other than that everything looks good" is the judgement; the two exceptions are Finding A (terminology) and Finding B (slug), below |
+| 8 | Live production `/blog` and the English post unchanged; the Farsi draft appears nowhere on the English site | PASS (blanket confirmation). Independently asserted the same day by `language-filter.check.ts --live` exit 0 with `dropped "fa"` and nine identical parities, and by route-smoke 28/28 |
+
+### Per-item disposition, the six carried over from plan 02-05
+
+These six were left OUTSTANDING when the Studio split shipped, because none of them could be
+observed against an empty Farsi list. Each now has an explicit recorded disposition, which
+is what the plan's done condition requires. All six are PASS under Saeid's blanket
+confirmation; none was singled out as wrong.
+
+| # | Carried-over item | Disposition |
+|---|---|---|
+| 9 | `/studio` shows two post lists plus the unchanged Categories, Authors, divider and trailing types | PASS (blanket confirmation) |
+| 10 | English list shows the existing posts, newest first, subtitles unchanged | PASS (blanket confirmation) |
+| 11 | The Farsi list offers no create button | PASS (blanket confirmation) |
+| 12 | Devtools console stays clean across both lists: no custom-filter or apiVersion warning, no duplicate-id error | PASS (blanket confirmation) |
+| 13 | A post shows the Language radio defaulting to English, the Translation of reference, and a read-only Translation Notes | PASS (blanket confirmation) |
+| 14 | The Translation of picker offers English posts only, offers no create, and does not offer the open post itself | PASS (blanket confirmation) |
+
+The six carried-over items are hereby **CLOSED**. They were the last outstanding manual
+checks from plan 02-05.
+
+### Finding A: the rendering of "post" and "article", a Phase 5 glossary item
+
+**What he said:** `Instead of نوشته we should use مقاله`.
+
+**What it means.** The draft renders the English "post" / "article" as `نوشته`. Saeid wants
+`مقاله`, which is the register a published article on his site should carry.
+
+**Why this is a glossary gap rather than a translation bug, verified rather than assumed.**
+`content/fa-glossary.json` was read for this record: it holds 98 entries and **neither
+`نوشته` nor `مقاله` appears anywhere in it**, and no entry has the term `post`, `article` or
+`blog` (the only near match is `post-hoc explanation`, an unrelated XAI term). The word was
+therefore the model's own free choice on an unpinned term, not a violation of an approved
+rendering. The glossary is doing exactly what it was built to do: what is pinned holds, and
+what is not pinned drifts. This is the first real evidence of that boundary on production
+content.
+
+**The follow-up, carried to Phase 5 and NOT actioned here.** Add two glossary entries,
+`post` to `مقاله` and `article` to `مقاله`, both under the `translate` strategy, then
+regenerate the frozen prompt block (the glossary would move from 98 entries to 100 and the
+4078-character prompt block would change, both of which the offline suite asserts). The
+existing proof draft is then corrected by re-running the authorised slug with
+`--retranslate`, which is the path plan 03-07 built for exactly this case. Nothing about
+this is done in plan 03-10: `content/fa-glossary.json` is frozen by Saeid's 03-06 approval
+and the plan states outright that a terminology complaint becomes a named Phase 5 item.
+
+### Finding B: Farsi slugs must differ from the English slug, a Phase 4 and 5 design change
+
+**What he said:** `Also, the SLug needs fixing. It should be something else than the original
+one. Any idea what to use for best experience?`
+
+**Current behaviour, and it is deliberate.** The pipeline copies the English slug onto the
+Farsi document verbatim. `scripts/translate-posts.ts` line 780 says so in a comment ("The
+slug is reused verbatim per the design spec"), and `scripts/checks/translation.check.ts`
+line 942 asserts it, failing with "slug.current differs from the source's. The design reuses
+the English slug verbatim, so /fa/<slug> and /<slug> are the same post at two addresses."
+So this is not a defect against the current design; it is a request to change the design.
+
+**Direction discussed in session, proposed by Simorgh and NOT yet ratified by Saeid as
+final.** A Persian-script slug derived from the Farsi title: short, roughly three to five
+words, Persian stop words (`از`, `به`, `در`, `برای`) stripped, Latin digits kept, and any
+`keep-english` glossary term left in Latin script. The English-Farsi pairing key then
+becomes `translationOf` exclusively, which it already is at the data layer.
+
+**Impacts that must be planned before any of this is built:**
+
+1. Phase 4's `/fa` route lookup can no longer resolve a Farsi post by the English slug.
+2. Phase 5's hreflang mapping between the two language versions.
+3. The post-run check's same-slug assertion (`translation.check.ts` around line 942) inverts:
+   it would have to assert the slugs DIFFER and that the pairing resolves through
+   `translationOf`.
+4. Slug uniqueness becomes per-language rather than global. Note that
+   `language-filter.check.ts` already scopes its uniqueness test to English ("26 distinct
+   slugs, max 1 English match each"), so that check survives the change unmodified.
+5. Slug generation has to be added to the pipeline, and the field has to be editable in the
+   Studio so Saeid can override a generated slug.
+6. Any Farsi draft already written under the old rule (currently one) needs its slug
+   rewritten.
+
+**Recorded as a named follow-up for Phase 4 and Phase 5 planning. No code, no query, no
+schema and no draft was changed in this plan.**
+
+### What was deliberately not done
+
+- The draft was **not published**. It remains `drafts.23396d5b-5d90-461b-b9ba-d31768bc73a6`
+  with the draft status, and the dataset-wide D-12 tripwire still reports 0 Farsi documents
+  carrying the publish-cron status.
+- The draft was **not edited or retranslated**, so the assertions captured under
+  `## Verification` still describe the document as it stands.
+- **No backlog sweep was started.** The 26-post sweep belongs to Phase 5.
+- `content/fa-glossary.json` was **read but not modified**.
+
+### Task 3 verification
+
+```
+node -e "const s=require('fs').readFileSync('.planning/phases/03-translation-pipeline/artifacts/translate-prod.log','utf8');process.exit(/## Studio walk/.test(s)?0:1)"
+```
+
+Exit **0**.
