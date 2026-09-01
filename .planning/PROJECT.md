@@ -33,11 +33,11 @@ The Farsi edition milestone. Design approved 2026-08-11.
 
 - [ ] Farsi blog reachable at `neuronomixer.com/fa` with correct `lang="fa"` and `dir="rtl"` at the document level (document-level scaffold validated in Phase 1: `(fa)` root layout + `/fa` placeholder live locally; full blog tree lands in Phase 4)
 - [x] Existing English routes keep their exact URLs and rendering behavior — Validated in Phase 1: Route Groups (284 URLs byte-identical after the `(en)` move; branded 404 preserved via approved `globalNotFound` contingency)
-- [ ] Sanity models Farsi posts as sibling documents linked to their English source
-- [ ] Blog queries read from a single shared module and filter by language in exactly one place
-- [ ] A script translates approved English posts to Farsi drafts, preserving Portable Text structure, links, and code
-- [ ] Translation output is checked for drift in numbers, dates, URLs, entity names, and glossary terms before it reaches Saeid
-- [ ] Saeid publishes Farsi posts himself; nothing goes live unreviewed
+- [x] Sanity models Farsi posts as sibling documents linked to their English source — Validated in Phase 2: Content Model (language + translationOf + translationNotes fields, Studio split, prod migration 26/26)
+- [x] Blog queries read from a single shared module and filter by language in exactly one place — Validated in Phase 2: Content Model (`src/sanity/lib/queries.ts`, EN_LANGUAGE at 12 positions, check script)
+- [x] A script translates approved English posts to Farsi drafts, preserving Portable Text structure, links, and code — Validated in Phase 3: Translation Pipeline (`scripts/translate-posts.ts`, production proof draft, post-run ALL PASS)
+- [x] Translation output is checked for drift in numbers, dates, URLs, entity names, and glossary terms before it reaches Saeid — Validated in Phase 3: Translation Pipeline (code gate + verify pass + `translation.check.ts --post-run`)
+- [x] Saeid publishes Farsi posts himself; nothing goes live unreviewed — Validated in Phase 3: Translation Pipeline (draft-only writes, never status `scheduled`, Studio walk passed 2026-09-01)
 - [ ] Site chrome, dates, and numerals render correctly in Farsi and right-to-left
 - [ ] Search engines see correct hreflang pairing and Farsi URLs in the sitemap
 
@@ -106,4 +106,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-16 after Phase 1 (Route Groups) completion*
+*Last updated: 2026-09-01 after Phase 3 (Translation Pipeline) completion — first production Farsi draft approved in Saeid's Studio walk; carried follow-ups: glossary مقاله pin + distinct Persian-script Farsi slugs (Phase 4/5)*
